@@ -4,7 +4,10 @@ riscvio_lib = $HDS_PROJECT_DIR/riscvio_lib/hdl
 riscvio_lib = $HDS_PROJECT_DIR/riscvio_lib/hds
 [hds_settings]
 default_library = riscvio_lib
+design_root = riscvio_lib.riscvio(struct)riscvio/struct.bd
 version = 3
+[library_files_inclusion]
+riscvio_lib = specify
 [library_type]
 riscvio_lib = regular
 [shared]

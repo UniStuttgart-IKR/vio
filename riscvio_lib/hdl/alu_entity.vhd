@@ -1,0 +1,27 @@
+--
+-- VHDL Entity riscvio_lib.alu.arch_name
+--
+-- Created:
+--          by - surfer.UNKNOWN (SURFER-A0000001)
+--          at - 15:08:10 01.05.2024
+--
+-- using Mentor Graphics HDL Designer(TM) 2021.1 Built on 14 Jan 2021 at 15:11:42
+--
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+USE ieee.std_logic_arith.all;
+library RiscViO;
+use RiscViO.isa.all;
+
+ENTITY alu IS
+   PORT( 
+      a       : IN     dword_T;
+      b       : IN     dword_T;
+      mode    : IN     alu_mode_T;
+      alu_out : OUT    dword_T
+   );
+
+-- Declarations
+
+END alu ;
+

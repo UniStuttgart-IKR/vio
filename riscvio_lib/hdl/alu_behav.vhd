@@ -12,27 +12,26 @@ use ieee.numeric_std.all;
 library riscvio_lib;
 use riscvio_lib.isa.all;
 
-
 ARCHITECTURE behav OF alu IS
 BEGIN
-    process(a, b, alu_mode) is
+    process(a, b, mode) is
         constant one: word_T := (0 => '1', others => '0');
         variable highest_bit_of_a_as_word: word_T;
         constant zeros: word_T := (others => '0');
     BEGIN
         for i in highest_bit_of_a_as_word'range loop
-            highest_bit_of_a_as_word(i) := b(b'left);
+            highest_bit_of_a_as_word(i) := a(a'left);
         end loop;
         
-        case alu_mode is 
+        case mode is 
             when alu_add => 
-                alu_out <= std_logic_vector(unsigned(a)) + unsigned(b)), alu_out'length);
+                alu_out <= std_logic_vector(unsigned(a) + unsigned(b));
             when alu_sub => 
-                alu_out <= std_logic_vector(unsigned(a)) - unsigned(b)), alu_out'length);
+                alu_out <= std_logic_vector(unsigned(a) - unsigned(b));
             when alu_sll => 
                 alu_out <= a(a'left - to_integer(unsigned(b)) downto a'right) & zeros(to_integer(unsigned(b)) - 1 downto zeros'right) when to_integer(unsigned(b)) /= 0 else a;
-            when alu_slt => one when signed(a) < signed(b) else (others => '0');
-            when alu_sltu => one when unsigned(a) < unsigned(b) else (others => '0');
+            when alu_slt => alu_out <= one when signed(a) < signed(b) else (others => '0');
+            when alu_sltu => alu_out <= one when unsigned(a) < unsigned(b) else (others => '0');
             when alu_xor => alu_out <= a xor b;
             when alu_srl => 
                 alu_out <= zeros(to_integer(unsigned(b)) - 1 downto zeros'right) & a(a'left downto a'right + to_integer(unsigned(b))) when to_integer(unsigned(b)) /= 0 else a;
@@ -42,6 +41,11 @@ BEGIN
             when alu_and => alu_out <= a and b;
             when alu_illegal => alu_out <= (others => '0');
         end case;
+        
+        
+        flags.eq <= a = b;
+        flags.altb <= signed(a) < signed(b);
+        flags.altbu <= unsigned(a) < unsigned(b);
     end process;
 END ARCHITECTURE behav;
 

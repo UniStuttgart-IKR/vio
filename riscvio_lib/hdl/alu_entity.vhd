@@ -9,16 +9,16 @@
 --
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-USE ieee.std_logic_arith.all;
-library RiscViO;
-use RiscViO.isa.all;
+library riscvio_lib;
+use riscvio_lib.isa.all;
 
 ENTITY alu IS
    PORT( 
       a       : IN     dword_T;
       b       : IN     dword_T;
       mode    : IN     alu_mode_T;
-      alu_out : OUT    dword_T
+      alu_out : OUT    dword_T;
+      flags   : OUT    alu_flags_T
    );
 
 -- Declarations

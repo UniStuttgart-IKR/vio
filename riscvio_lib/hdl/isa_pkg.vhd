@@ -20,11 +20,17 @@ PACKAGE isa IS
     subtype dword_T is std_logic_vector(DWORD_SIZE - 1 downto 0);
     subtype half_double_word_T is std_logic_vector(HALF_WORD_SIZE - 1 downto 0);
     subtype byte_T is std_logic_vector(BYTE_SIZE - 1 downto 0);
+    subtype imm_12_bit_T is std_logic_vector(11 downto 0);
     
     subtype register_index_T is natural range 0 to 31;
     
     type register_mode_T is (DATA, POINTER);
       
+    type ctrl_signals_T is record
+      dummy: boolean;
+    end record ctrl_signals_T;
+    
+    
     type register_T is record
       mode: register_mode_T;
       data: dword_T;
@@ -32,5 +38,12 @@ PACKAGE isa IS
       delta: dword_T;
     end record register_T;
     
+    type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, alu_illegal);
+    
+    type alu_flags_T is record
+      eq: boolean;
+      altb: boolean;
+      altbu: boolean;
+    end record alu_flags_T;
     
 END isa;

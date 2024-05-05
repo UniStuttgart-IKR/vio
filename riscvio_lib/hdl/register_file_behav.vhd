@@ -12,9 +12,9 @@ ARCHITECTURE behav OF register_file IS
   signal registers: register_file_T;
 BEGIN
     
-    reg_a <= registers(to_integer(unsigned(reg_a_index)));
-    reg_b <= registers(to_integer(unsigned(reg_b_index)));
-    reg_c <= registers(to_integer(unsigned(reg_c_index)));
+    reg_a <= registers(reg_a_index);
+    reg_b <= registers(reg_b_index);
+    reg_c <= registers(reg_c_index);
     
     write: process(clk, res_n) is
     begin
@@ -25,7 +25,7 @@ BEGIN
       else
         if clk'event and clk = '1' then
           if write_reg_en then
-            registers(to_integer(unsigned(write_index))) <= write_reg;
+            registers(write_index) <= write_reg;
           end if;
         end if;
       end if;

@@ -10,8 +10,8 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_arith.all;
-library RiscViO;
-use RiscViO.isa.all;
+library riscvio_lib;
+use riscvio_lib.isa.all;
 
 
 ENTITY alu_input_mux IS

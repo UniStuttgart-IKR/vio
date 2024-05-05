@@ -13,7 +13,7 @@ BEGIN
     variable high_bit_extended: std_logic_vector(dword_T'length - imm_12_bit_T'length - 1 downto 0);
   begin
     for i in high_bit_extended'range loop
-      high_bit_extended(i) := dc_alu_imm(imm_12_bit_T'left);
+      high_bit_extended(i) := imm(imm_12_bit_T'left);
     end loop;
     
     b <= high_bit_extended & imm when use_imm else reg_data;

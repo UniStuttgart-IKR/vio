@@ -1,10 +1,14 @@
+[ModelSim]
+riscvio_lib = $HDS_PROJECT_DIR\riscvio_lib\modelsim
+[QuestaSim]
+riscvio_lib = $HDS_PROJECT_DIR\riscvio_lib\questasim
 [hdl]
 riscvio_lib = $HDS_PROJECT_DIR/riscvio_lib/hdl
 [hds]
 riscvio_lib = $HDS_PROJECT_DIR/riscvio_lib/hds
 [hds_settings]
 default_library = riscvio_lib
-design_root = riscvio_lib.riscvio(struct)riscvio/struct.bd
+design_root = riscvio_lib.riscvio_tb(struct)riscvio_tb/struct.bd
 version = 3
 [library_files_inclusion]
 riscvio_lib = specify

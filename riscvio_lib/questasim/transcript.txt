@@ -1472,3 +1472,943 @@ run
 run
 # 0
 # 
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.std_logic_arith(body)
+# Loading work.riscvio_tb(struct)#1
+# Loading work.clk_res_gen_var(behav)#1
+# Loading work.isa(body)
+# Loading ieee.numeric_std(body)
+# Loading work.riscvio(struct)#1
+# Loading work.alu(behav)#1
+# Loading work.at_reg(behav)#1
+# Loading work.dc_reg(behav)#1
+# Loading work.decoder(behav)#1
+# Loading work.ex_reg(behav)#1
+# Loading work.if_reg(behav)#1
+# Loading work.imm_mux(behav)#1
+# Loading work.instruction_memory(mixed)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.fpga_compatible_block_ram(cyclonevbehav)#1
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_common_conversion(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.altsyncram(translated)#1
+# Loading work.me_reg(behav)#1
+# Loading work.next_pc_mux(behav)#1
+# Loading work.pc_incrementer(behav)#1
+# Loading work.pc_reg(behav)#1
+# Loading work.register_file(behav)#1
+# Loading /ext/eda/hds/2022_3/resources/downstream/modelsim/ModelSim_64Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_index, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_index.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rd.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rd_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs1.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs1_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs2.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs2.reg_alias.
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/instruction_memory_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Fatal: (vsim-3420) Array lengths do not match. Left is 11 (10 downto 0). Right is 10 (30 downto 21).
+#    Time: 0 ns  Iteration: 0  Process: /riscvio_tb/U_1/decoder_i/line__39 File: /u/home/stud/rbnlux/Documents/FP/riscViO/riscvio_lib/hdl/isa_pkg_body.vhd
+# Fatal error in Subprogram extractJalImm at /u/home/stud/rbnlux/Documents/FP/riscViO/riscvio_lib/hdl/isa_pkg_body.vhd line 125
+# 
+# HDL call sequence:
+# Stopped at /u/home/stud/rbnlux/Documents/FP/riscViO/riscvio_lib/hdl/isa_pkg_body.vhd 125 Subprogram extractJalImm
+# called from  /u/home/stud/rbnlux/Documents/FP/riscViO/riscvio_lib/hdl/decoder_behav.vhd 39 Architecture behav
+# 
+run
+# Cannot continue because of fatal error.
+# HDL call sequence:
+# Stopped at /u/home/stud/rbnlux/Documents/FP/riscViO/riscvio_lib/hdl/isa_pkg_body.vhd 125 Subprogram extractJalImm
+# called from  /u/home/stud/rbnlux/Documents/FP/riscViO/riscvio_lib/hdl/decoder_behav.vhd 39 Architecture behav
+# 
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.std_logic_arith(body)
+# Loading work.riscvio_tb(struct)#1
+# Loading work.clk_res_gen_var(behav)#1
+# Loading work.isa(body)
+# Loading ieee.numeric_std(body)
+# Loading work.riscvio(struct)#1
+# Loading work.alu(behav)#1
+# Loading work.at_reg(behav)#1
+# Loading work.dc_reg(behav)#1
+# Loading work.decoder(behav)#1
+# Loading work.ex_reg(behav)#1
+# Loading work.if_reg(behav)#1
+# Loading work.imm_mux(behav)#1
+# Loading work.instruction_memory(mixed)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.fpga_compatible_block_ram(cyclonevbehav)#1
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_common_conversion(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.altsyncram(translated)#1
+# Loading work.me_reg(behav)#1
+# Loading work.next_pc_mux(behav)#1
+# Loading work.pc_incrementer(behav)#1
+# Loading work.pc_reg(behav)#1
+# Loading work.register_file(behav)#1
+# Loading /ext/eda/hds/2022_3/resources/downstream/modelsim/ModelSim_64Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_index, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_index.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rd.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rd_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs1.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs1_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs2.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs2.reg_alias.
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/instruction_memory_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/U_1/pc_increment_i
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.std_logic_arith(body)
+# Loading work.riscvio_tb(struct)#1
+# Loading work.clk_res_gen_var(behav)#1
+# Loading work.isa(body)
+# Loading ieee.numeric_std(body)
+# Loading work.riscvio(struct)#1
+# Loading work.alu(behav)#1
+# Loading work.at_reg(behav)#1
+# Loading work.dc_reg(behav)#1
+# Loading work.decoder(behav)#1
+# Loading work.ex_reg(behav)#1
+# Loading work.if_reg(behav)#1
+# Loading work.imm_mux(behav)#1
+# Loading work.instruction_memory(mixed)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.fpga_compatible_block_ram(cyclonevbehav)#1
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_common_conversion(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.altsyncram(translated)#1
+# Loading work.me_reg(behav)#1
+# Loading work.next_pc_mux(behav)#1
+# Loading work.pc_incrementer(behav)#1
+# Loading work.pc_reg(behav)#1
+# Loading work.register_file(behav)#1
+# Loading /ext/eda/hds/2022_3/resources/downstream/modelsim/ModelSim_64Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_index, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_index.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rd.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rd_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs1.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs1_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs2.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs2.reg_alias.
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/instruction_memory_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/U_1/pc_increment_i
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading /ext/eda/hds/2022_3/resources/downstream/modelsim/ModelSim_64Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_index, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_index.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rd.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rd_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs1.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs1_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs2.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs2.reg_alias.
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/instruction_memory_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/U_1/pc_increment_i
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+add wave -position 48  sim:/riscvio_tb/U_1/sbta_valid
+add wave -position 49  sim:/riscvio_tb/U_1/static_branch_pc
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading /ext/eda/hds/2022_3/resources/downstream/modelsim/ModelSim_64Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_index, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_index.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rd.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rd_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs1.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs1_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs2.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs2.reg_alias.
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/instruction_memory_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/U_1/pc_increment_i
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading /ext/eda/hds/2022_3/resources/downstream/modelsim/ModelSim_64Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_index, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_index.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rd.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rd_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs1.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs1_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs2.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs2.reg_alias.
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/instruction_memory_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/U_1/pc_increment_i
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading /ext/eda/hds/2022_3/resources/downstream/modelsim/ModelSim_64Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_index, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_index.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rd.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rd_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs1.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs1_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs2.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs2.reg_alias.
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/instruction_memory_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/U_1/pc_increment_i
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.std_logic_arith(body)
+# Loading work.riscvio_tb(struct)#1
+# Loading work.clk_res_gen_var(behav)#1
+# Loading work.isa(body)
+# Loading ieee.numeric_std(body)
+# Loading work.riscvio(struct)#1
+# Loading work.alu(behav)#1
+# Loading work.at_reg(behav)#1
+# Loading work.dc_reg(behav)#1
+# Loading work.decoder(behav)#1
+# Loading work.ex_reg(behav)#1
+# Loading work.if_reg(behav)#1
+# Loading work.imm_mux(behav)#1
+# Loading work.instruction_memory(mixed)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.fpga_compatible_block_ram(cyclonevbehav)#1
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_common_conversion(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.altsyncram(translated)#1
+# Loading work.me_reg(behav)#1
+# Loading work.next_pc_mux(behav)#1
+# Loading work.pc_incrementer(behav)#1
+# Loading work.pc_reg(behav)#1
+# Loading work.register_file(behav)#1
+# Loading /ext/eda/hds/2022_3/resources/downstream/modelsim/ModelSim_64Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_index, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_index.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rd.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rd_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs1.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs1_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs2.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs2.reg_alias.
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/instruction_memory_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/U_1/decoder_i
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# ** Error: (vsim-86) Argument value -850268 is not in bounds of subtype NATURAL.
+#    Time: 430 ns  Iteration: 2  Instance: /riscvio_tb/U_1/decoder_i
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.std_logic_arith(body)
+# Loading work.riscvio_tb(struct)#1
+# Loading work.clk_res_gen_var(behav)#1
+# Loading work.isa(body)
+# Loading ieee.numeric_std(body)
+# Loading work.riscvio(struct)#1
+# Loading work.alu(behav)#1
+# Loading work.at_reg(behav)#1
+# Loading work.dc_reg(behav)#1
+# Loading work.decoder(behav)#1
+# Loading work.ex_reg(behav)#1
+# Loading work.if_reg(behav)#1
+# Loading work.imm_mux(behav)#1
+# Loading work.instruction_memory(mixed)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.fpga_compatible_block_ram(cyclonevbehav)#1
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_common_conversion(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.altsyncram(translated)#1
+# Loading work.me_reg(behav)#1
+# Loading work.next_pc_mux(behav)#1
+# Loading work.pc_incrementer(behav)#1
+# Loading work.pc_reg(behav)#1
+# Loading work.register_file(behav)#1
+# Loading /ext/eda/hds/2022_3/resources/downstream/modelsim/ModelSim_64Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_index, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_index.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rd.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rd_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs1.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs1_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs2.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs2.reg_alias.
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/instruction_memory_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/U_1/decoder_i
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# ** Error: (vsim-86) Argument value -850268 is not in bounds of subtype NATURAL.
+#    Time: 430 ns  Iteration: 2  Instance: /riscvio_tb/U_1/decoder_i
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=1.
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.std_logic_arith(body)
+# Loading work.riscvio_tb(struct)#1
+# Loading work.clk_res_gen_var(behav)#1
+# Loading work.isa(body)
+# Loading ieee.numeric_std(body)
+# Loading work.riscvio(struct)#1
+# Loading work.alu(behav)#1
+# Loading work.at_reg(behav)#1
+# Loading work.dc_reg(behav)#1
+# Loading work.decoder(behav)#1
+# Loading work.ex_reg(behav)#1
+# Loading work.if_reg(behav)#1
+# Loading work.imm_mux(behav)#1
+# Loading work.instruction_memory(mixed)#1
+# Loading altera_mf.altera_mf_components
+# Loading work.fpga_compatible_block_ram(cyclonevbehav)#1
+# Loading ieee.std_logic_unsigned(body)
+# Loading altera_mf.altera_common_conversion(body)
+# Loading altera_mf.altera_device_families(body)
+# Loading altera_mf.altsyncram(translated)#1
+# Loading work.me_reg(behav)#1
+# Loading work.next_pc_mux(behav)#1
+# Loading work.pc_incrementer(behav)#1
+# Loading work.pc_reg(behav)#1
+# Loading work.register_file(behav)#1
+# Loading /ext/eda/hds/2022_3/resources/downstream/modelsim/ModelSim_64Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.reg_index, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.reg_index.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rd.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rd_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs1.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs1_dc_u.reg_alias.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/reg_rs2.reg_alias, and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/reg_rs2.reg_alias.
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/instruction_memory_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/U_1/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/U_1/pc_increment_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/U_1/decoder_i
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# ** Error: (vsim-86) Argument value -850268 is not in bounds of subtype NATURAL.
+#    Time: 430 ns  Iteration: 2  Instance: /riscvio_tb/U_1/decoder_i
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 
+run
+# 0
+# 

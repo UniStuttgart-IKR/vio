@@ -14,7 +14,7 @@ PACKAGE BODY isa IS
         variable res: ctrl_sig_T;
     begin
         case instruction(OPC_RANGE) is
-            when ALU_R => 
+            when OPC_ALU_R => 
                 res.sel_imm := false;
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
@@ -64,11 +64,11 @@ PACKAGE BODY isa IS
                         res.alu_mode := alu_illegal;
                 end case;
 
-            when ALU_I => 
+            when OPC_ALU_I => 
                 res.sel_imm := true;
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
-                        res.mnemonic := add_i;
+                        res.mnemonic := nop when instruction = NOP_INSTR else add_i;
                         res.alu_mode := alu_add;
                     when F3_SRL_SRA =>
                         case instruction(FUNCT7_RANGE) is 
@@ -104,6 +104,10 @@ PACKAGE BODY isa IS
                         res.mnemonic := illegal;
                         res.alu_mode := alu_illegal;
                 end case;
+            when OPC_JAL =>
+                res.mnemonic := jal;
+                res.alu_mode := alu_illegal;
+                res.sel_imm := false;
             when others =>
                 res.mnemonic := illegal;
                 res.alu_mode := alu_illegal;
@@ -111,4 +115,15 @@ PACKAGE BODY isa IS
         end case;
         return res;
     end function decodeOpc;
+
+    pure function extractJalImm(inst: word_T) return word_T is
+        variable res: word_T;
+    begin
+        res := (0 => '0', others => inst(31));
+        res(19 downto 12) := inst(19 downto 12);
+        res(11) := inst(20);
+        res(10 downto 1) := inst(30 downto 21);
+        return res;
+    end function extractJalImm;
+
 END isa;

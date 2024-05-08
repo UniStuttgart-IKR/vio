@@ -18,8 +18,10 @@ PACKAGE isa IS
 
     subtype word_T is std_logic_vector(WORD_SIZE - 1 downto 0);
     subtype dword_T is std_logic_vector(DWORD_SIZE - 1 downto 0);
-    subtype half_double_word_T is std_logic_vector(HALF_WORD_SIZE - 1 downto 0);
+    subtype half_word_T is std_logic_vector(HALF_WORD_SIZE - 1 downto 0);
     subtype byte_T is std_logic_vector(BYTE_SIZE - 1 downto 0);
+
+    constant NOP_INSTR: word_T := X"00000013";
 
     type reg_tag_T is (DATA, POINTER);
     type reg_mem_T is record
@@ -39,7 +41,7 @@ PACKAGE isa IS
     end record reg_T;
     constant REG_NULL: reg_T := (reg_alias => zero, reg_index => 0, mem => REG_MEM_NULL);
 
-    type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r, illegal);
+    type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r, jal, illegal);
     subtype OPC_RANGE is natural range 6 downto 0;
     subtype FUNCT3_RANGE is natural range 14 downto 12;
     subtype FUNCT7_RANGE is natural range 31 downto 25;
@@ -53,8 +55,9 @@ PACKAGE isa IS
 
     subtype imm_20bit_T is std_logic_vector(IMM20_RANGE'high - 1 downto 0);
 
-    constant ALU_I:    std_logic_vector(OPC_RANGE) := "0010011";
-    constant ALU_R:    std_logic_vector(OPC_RANGE) := "0110011";
+    constant OPC_ALU_I: std_logic_vector(OPC_RANGE) := "0010011";
+    constant OPC_ALU_R: std_logic_vector(OPC_RANGE) := "0110011";
+    constant OPC_JAL:   std_logic_vector(OPC_RANGE) := "1101111";
 
     constant F3_ADD_SUB:   std_logic_vector(FUNCT3_RANGE) := "000";
     constant F3_SLL:       std_logic_vector(FUNCT3_RANGE) := "001";
@@ -84,5 +87,6 @@ PACKAGE isa IS
     end record alu_flags_T;
 
     pure function decodeOpc(instruction: std_logic_vector(31 downto 0)) return ctrl_sig_T;
+    pure function extractJalImm(inst: word_T) return word_T;
     
 END isa;

@@ -35,6 +35,9 @@ BEGIN
 
     end process extend;
 
+    sbta_valid <= ctr_sig.mnemonic = jal;
+    sbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(extractJalImm(instruction))), WORD_SIZE));
+
     imm_as_reg.mem.data <= extended_imm;
     imm_as_reg.mem.tag <= DATA;
 

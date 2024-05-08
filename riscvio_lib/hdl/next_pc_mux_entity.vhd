@@ -15,14 +15,14 @@ use riscvio_lib.isa.all;
 
 ENTITY next_pc_mux IS
   port(
-    incremented_pc: in dword_T;
-    static_branch_pc: in dword_T;
-    dynamic_branch_pc: in dword_T;
+    incremented_pc: in word_T;
+    static_branch_pc: in word_T;
+    dynamic_branch_pc: in word_T;
     dbta_valid: in boolean;
     sbta_valid: in boolean;
     
     
-    next_pc: out dword_T
+    next_pc: out word_T
   );
 END ENTITY next_pc_mux;
 

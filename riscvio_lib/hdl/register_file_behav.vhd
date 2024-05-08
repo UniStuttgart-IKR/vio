@@ -8,24 +8,28 @@
 -- using Mentor Graphics HDL Designer(TM) 2021.1 Built on 14 Jan 2021 at 15:11:42
 --
 ARCHITECTURE behav OF register_file IS
-  type register_file_T is array(31 downto 0) of register_T;
+  type register_file_T is array(reg_ix_T'high downto reg_ix_T'low) of reg_mem_T;
   signal registers: register_file_T;
 BEGIN
     
-    reg_a <= registers(reg_a_index);
-    reg_b <= registers(reg_b_index);
-    reg_c <= registers(reg_c_index);
+    reg_rs1.mem <= registers(reg_rs1_index);
+    reg_rs2.mem <= registers(reg_rs2_index);
+    reg_rd.mem <= registers(reg_rd_index);
+
+    reg_rs1.reg_index <= reg_rs1_index;
+    reg_rs2.reg_index <= reg_rs2_index;
+    reg_rd.reg_index <= reg_rd_index;
     
     write: process(clk, res_n) is
     begin
       if res_n = '0' then
         for i in register_file_T'range(1) loop
-          registers(i) <= (mode => DATA, data => (others => '0'), pi => (others => '0'), delta => (others => '0'));
+          registers(i) <= (tag => DATA, data => (others => '0'), pi => (others => '0'), delta => (others => '0'));
         end loop;
       else
         if clk'event and clk = '1' then
-          if write_reg_en then
-            registers(write_index) <= write_reg;
+          if reg_rd_wb.reg_index /= 0 then
+            registers(reg_rd_wb.reg_index) <= reg_rd_wb.mem;
           end if;
         end if;
       end if;

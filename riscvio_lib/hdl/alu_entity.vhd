@@ -14,10 +14,10 @@ use riscvio_lib.isa.all;
 
 ENTITY alu IS
    PORT( 
-      a       : IN     dword_T;
-      b       : IN     dword_T;
+      a       : IN     word_T;
+      b       : IN     word_T;
       mode    : IN     alu_mode_T;
-      alu_out : OUT    dword_T;
+      alu_out : OUT    word_T;
       flags   : OUT    alu_flags_T
    );
 

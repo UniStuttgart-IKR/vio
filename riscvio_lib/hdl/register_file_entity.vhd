@@ -18,17 +18,15 @@ ENTITY register_file IS
   port(
     clk, res_n: in std_logic;
     
-    reg_a_index: in register_index_T;
-    reg_b_index: in register_index_T;
-    reg_c_index: in register_index_T;
+    reg_rd_index: in reg_ix_T;
+    reg_rs1_index: in reg_ix_T;
+    reg_rs2_index: in reg_ix_T;
     
-    reg_a: out register_T;
-    reg_b: out register_T;
-    reg_c: out register_T;
+    reg_rd: out reg_T;
+    reg_rs1: out reg_T;
+    reg_rs2: out reg_T;
     
-    write_reg_en: in boolean;
-    write_index: register_index_T;
-    write_reg: register_T
+    reg_rd_wb: in reg_T
   );
     
 END ENTITY register_file;

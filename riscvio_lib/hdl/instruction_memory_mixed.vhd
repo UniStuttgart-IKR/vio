@@ -14,6 +14,7 @@ ARCHITECTURE mixed OF instruction_memory IS
     constant LOG_SIZE_WORDS: natural := 8;
     constant SIZE_WORDS: natural := 2 ** LOG_SIZE_WORDS;
     signal bram_addr: std_logic_vector(LOG_SIZE_WORDS - 1 downto 0);
+    signal mem_q: word_T;
 BEGIN
 
   bram_addr <= addr(LOG_SIZE_WORDS + 1 downto 2) when to_integer(unsigned(addr)) < SIZE_WORDS else (others=>'0');
@@ -31,13 +32,16 @@ BEGIN
       ADDRW => LOG_SIZE_WORDS,
       DATAW => word_T'length,
       DATADEPTH => SIZE_WORDS,
-      INITIALCONTENTFILE => "instructions.mif"
+      INITIALCONTENTFILE => "riscViOTest.mif"
     )
     port map(
       clock => clk,
       address => bram_addr,
-      q => instr
+      q => mem_q
       
     );
+
+
+    instr <= mem_q(7 downto 0) & mem_q(15 downto 8) &  mem_q(23 downto 16) & mem_q(31 downto 24);
 END ARCHITECTURE mixed;
 

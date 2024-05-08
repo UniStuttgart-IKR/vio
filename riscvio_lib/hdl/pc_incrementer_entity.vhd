@@ -15,8 +15,8 @@ use riscvio_lib.isa.all;
 
 ENTITY pc_incrementer IS
   port(
-    pc: in dword_T;
-    next_pc: out dword_T
+    pc: in word_T;
+    next_pc: out word_T
   );
 END ENTITY pc_incrementer;
 

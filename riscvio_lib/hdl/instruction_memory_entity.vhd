@@ -16,7 +16,7 @@ USE riscvio_lib.isa.all;
 ENTITY instruction_memory IS
   PORT(
     clk: in std_logic;
-    addr: in dword_T;
+    addr: in word_T;
     instr: out word_T;
     stall: out boolean
   );

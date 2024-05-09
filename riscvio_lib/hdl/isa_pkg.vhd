@@ -46,6 +46,7 @@ PACKAGE isa IS
 
     subtype OPC_RANGE is natural range 6 downto 0;
     subtype FUNCT3_RANGE is natural range 14 downto 12;
+    subtype FUNCT5_RANGE is natural range 24 downto 20;
     subtype FUNCT7_RANGE is natural range 31 downto 25;
 
     subtype IMM12_RANGE is natural range 31 downto 20;
@@ -61,6 +62,7 @@ PACKAGE isa IS
     constant OPC_ALU_R: std_logic_vector(OPC_RANGE) := "0110011";
     constant OPC_JAL:   std_logic_vector(OPC_RANGE) := "1101111";
 
+    -- RV32I
     constant F3_ADD_SUB:   std_logic_vector(FUNCT3_RANGE) := "000";
     constant F3_SLL:       std_logic_vector(FUNCT3_RANGE) := "001";
     constant F3_SLT:       std_logic_vector(FUNCT3_RANGE) := "010";
@@ -72,6 +74,30 @@ PACKAGE isa IS
 
     constant F7_ADD_SRL:       std_logic_vector(FUNCT7_RANGE) := "0000000";
     constant F7_SUB_SRA:       std_logic_vector(FUNCT7_RANGE) := "0100000";
+
+    -- ZBB extension
+    constant F3_ANDN_MAXU:              std_logic_vector(FUNCT3_RANGE) := "111";
+    constant F3_ORN_MAX:                std_logic_vector(FUNCT3_RANGE) := "110";
+    constant F3_XNOR_MIN_ZEXT:          std_logic_vector(FUNCT3_RANGE) := "100";
+    constant F3_MINU_ROR:               std_logic_vector(FUNCT3_RANGE) := "101";
+    constant F3_ROL_CTZ_CPOP_SEXT_ROL:  std_logic_vector(FUNCT3_RANGE) := "001";
+    constant F3_ROR:                    std_logic_vector(FUNCT3_RANGE) := "101";
+    
+    constant F7_ANDN_ORN_XNOR:              std_logic_vector(FUNCT7_RANGE) := "0100000";
+    constant F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR:  std_logic_vector(FUNCT7_RANGE) := "0110000";
+    constant F7_MAX_MAXU_MIN_MINU:          std_logic_vector(FUNCT7_RANGE) := "0000101";
+    constant F7_ZEXT:                       std_logic_vector(FUNCT7_RANGE) := "0000100";
+    constant F7_ORC:                        std_logic_vector(FUNCT7_RANGE) := "0010100";
+    constant F7_REV8:                       std_logic_vector(FUNCT7_RANGE) := "0110100";
+
+    constant F5_CLZ_ZEXT:             std_logic_vector(FUNCT5_RANGE) := "00000";
+    constant F5_CTZ:                  std_logic_vector(FUNCT5_RANGE) := "00001";
+    constant F5_CPOP:                 std_logic_vector(FUNCT5_RANGE) := "00010";
+    constant F5_SEXTB:                std_logic_vector(FUNCT5_RANGE) := "00100";
+    constant F5_SEXTH:                std_logic_vector(FUNCT5_RANGE) := "00101";
+    constant F5_ORC:                  std_logic_vector(FUNCT5_RANGE) := "00111";
+    constant F5_REV8:                 std_logic_vector(FUNCT5_RANGE) := "11000";
+
 
     type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orscb, alu_rev8, alu_illegal);
     type ctrl_sig_T is record 

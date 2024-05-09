@@ -1,3 +1,3 @@
 # RiscViO
-![grafik](https://media.github.tik.uni-stuttgart.de/user/935/files/3b88a83b-f002-4337-8723-beed25d44fc8)
+![grafik](https://media.github.tik.uni-stuttgart.de/user/935/files/6b43ca56-ca6a-48d8-974c-2ca19d3f6d00)
 Risc V inspired Objective architecture

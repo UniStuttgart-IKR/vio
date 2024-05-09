@@ -13,9 +13,10 @@ PACKAGE BODY isa IS
     pure function decodeOpc(instruction: std_logic_vector(31 downto 0)) return ctrl_sig_T is
         variable res: ctrl_sig_T;
     begin
+        res.imm_mode := none;
         case instruction(OPC_RANGE) is
             when OPC_ALU_R => 
-                res.sel_imm := false;
+                res.imm_mode := none;
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
                         case instruction(FUNCT7_RANGE) is 
@@ -65,7 +66,7 @@ PACKAGE BODY isa IS
                 end case;
 
             when OPC_ALU_I => 
-                res.sel_imm := true;
+                res.imm_mode := i_type;
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
                         res.mnemonic := nop when instruction = NOP_INSTR else add_i;
@@ -107,16 +108,16 @@ PACKAGE BODY isa IS
             when OPC_JAL =>
                 res.mnemonic := jal;
                 res.alu_mode := alu_illegal;
-                res.sel_imm := false;
+                res.imm_mode := j_type;
             when others =>
                 res.mnemonic := illegal;
                 res.alu_mode := alu_illegal;
-                res.sel_imm := false;
+                res.imm_mode := none;
         end case;
         return res;
     end function decodeOpc;
 
-    pure function extractJalImm(inst: word_T) return word_T is
+    pure function extractJTypeImm(inst: word_T) return word_T is
         variable res: word_T;
     begin
         res := (0 => '0', others => inst(31));
@@ -124,6 +125,26 @@ PACKAGE BODY isa IS
         res(11) := inst(20);
         res(10 downto 1) := inst(30 downto 21);
         return res;
-    end function extractJalImm;
+    end function extractJTypeImm;
+
+
+    pure function extractBTypeImm(inst: word_T) return word_T is
+        variable res: word_T;
+    begin
+        res := (0 => '0', others => inst(31));
+        res(10 downto 5) := inst(30 downto 25);
+        res(11) := inst(7);
+        res(4 downto 1) := inst(11 downto 8);
+        return res;
+    end function extractBTypeImm;
+
+    pure function extractSTypeImm(inst: word_T) return word_T is
+        variable res: word_T;
+    begin
+        res := (others => inst(31));
+        res(10 downto 5) := inst(30 downto 25);
+        res(4 downto 0) := inst(11 downto 7);
+        return res;
+    end function extractSTypeImm;
 
 END isa;

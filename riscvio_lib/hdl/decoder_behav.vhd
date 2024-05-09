@@ -17,26 +17,35 @@ USE ieee.numeric_std.all;
 ARCHITECTURE behav OF decoder IS
     signal imm_is_12_bit: boolean;
     signal extended_imm: word_T;
+    signal ctrl_sig_int: ctrl_sig_T;
 BEGIN
 
-    ctr_sig <= decodeOpc(instruction);
+    ctrl_sig_int <= decodeOpc(instruction);
+    ctr_sig <= ctrl_sig_int;
     imm_is_12_bit <= true;
 
     extend: process(all) is
         variable high_bit_extended: word_T;
     begin
-        if imm_is_12_bit then
-            extended_imm <= (others => instruction(IMM12_RANGE'high));
-            extended_imm(11 downto 0) <= instruction(IMM12_RANGE);
-        else
-            extended_imm <= (others => instruction(IMM20_RANGE'high));
-            extended_imm(19 downto 0) <= instruction(IMM20_RANGE);
-        end if;
-
+        case ctrl_sig_int.imm_mode is
+            when i_type => 
+                extended_imm <= (others => instruction(IMM12_RANGE'high));
+                extended_imm(11 downto 0) <= instruction(IMM12_RANGE);
+            when s_type => 
+                extended_imm <= extractSTypeImm(instruction);
+            when b_type => 
+                extended_imm <= extractBTypeImm(instruction);
+            when u_type => 
+                extended_imm <= (others => instruction(IMM20_RANGE'high));
+                extended_imm(19 downto 0) <= instruction(IMM20_RANGE);
+            when j_type =>
+                extended_imm <= extractJTypeImm(instruction);
+            when none => null;
+        end case;
     end process extend;
 
     sbta_valid <= ctr_sig.mnemonic = jal;
-    sbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(extractJalImm(instruction))), WORD_SIZE));
+    sbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(extractJTypeImm(instruction))), WORD_SIZE));
 
     imm_as_reg.mem.data <= extended_imm;
     imm_as_reg.mem.tag <= DATA;

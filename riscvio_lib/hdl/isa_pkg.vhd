@@ -42,6 +42,8 @@ PACKAGE isa IS
     constant REG_NULL: reg_T := (reg_alias => zero, reg_index => 0, mem => REG_MEM_NULL);
 
     type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r, jal, beq, bne, blt, bge, bltu, bgeu, illegal);
+    type imm_T is (none, i_type, s_type, b_type, u_type, j_type);
+
     subtype OPC_RANGE is natural range 6 downto 0;
     subtype FUNCT3_RANGE is natural range 14 downto 12;
     subtype FUNCT7_RANGE is natural range 31 downto 25;
@@ -75,9 +77,9 @@ PACKAGE isa IS
     type ctrl_sig_T is record 
         alu_mode:       alu_mode_T;
         mnemonic:       mnemonic_T;
-        sel_imm:        boolean;
+        imm_mode:       imm_T;
     end record ctrl_sig_T;
-    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, mnemonic => illegal, sel_imm => false);
+    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, mnemonic => illegal, imm_mode => none);
     
     
     type alu_flags_T is record
@@ -87,6 +89,8 @@ PACKAGE isa IS
     end record alu_flags_T;
 
     pure function decodeOpc(instruction: std_logic_vector(31 downto 0)) return ctrl_sig_T;
-    pure function extractJalImm(inst: word_T) return word_T;
+    pure function extractJTypeImm(inst: word_T) return word_T;
+    pure function extractSTypeImm(inst: word_T) return word_T;
+    pure function extractBTypeImm(inst: word_T) return word_T;
     
 END isa;

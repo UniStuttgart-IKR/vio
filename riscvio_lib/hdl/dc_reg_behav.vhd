@@ -15,13 +15,16 @@ BEGIN
       reg_rs1_ex <= REG_NULL;
       reg_rs2_ex <= REG_NULL;
       ctrl_ex <= CTRL_NULL;
+      pc_ex <= (others => '0');
     else
       if clk'event and clk = '1' then
-        ctrl_ex <= ctrl_dc_u;
+        ctrl_ex <= CTRL_NULL when dbta_valid else ctrl_dc_u;
 
         reg_rs1_ex <= reg_rs1_dc_u;
         reg_rs2_ex <= reg_rs2_dc_u;
         reg_rd_ex <= reg_rd_dc_u;
+        
+        pc_ex <= pc_dc;
       end if;
     end if;
   end process;

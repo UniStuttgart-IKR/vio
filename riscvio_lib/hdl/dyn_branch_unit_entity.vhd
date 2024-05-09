@@ -9,7 +9,9 @@
 --
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-USE ieee.std_logic_arith.all;
+
+LIBRARY riscvio_lib;
+USE riscvio_lib.isa.all;
 
 ENTITY dyn_branch_unit IS
   PORT(

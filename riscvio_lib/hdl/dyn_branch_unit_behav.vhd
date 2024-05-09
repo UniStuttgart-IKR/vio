@@ -7,6 +7,9 @@
 --
 -- using Mentor Graphics HDL Designer(TM) 2021.1 Built on 14 Jan 2021 at 15:11:42
 --
+LIBRARY ieee;
+USE ieee.numeric_std.all;
+
 ARCHITECTURE behav OF dyn_branch_unit IS
 BEGIN
     -- dbta_valid needs to clear if, dc registers
@@ -30,6 +33,6 @@ BEGIN
         end case;
     end process;
 
-    dbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(imm_as_reg)), WORD_SIZE));
+    dbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(imm_as_reg.mem.data)), WORD_SIZE));
 END ARCHITECTURE behav;
 

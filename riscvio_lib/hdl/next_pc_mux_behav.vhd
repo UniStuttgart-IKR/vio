@@ -9,6 +9,6 @@
 --
 ARCHITECTURE behav OF next_pc_mux IS
 BEGIN
-  next_pc <= static_branch_pc when sbta_valid else dynamic_branch_pc when dbta_valid else incremented_pc;
+  next_pc <= dynamic_branch_pc when dbta_valid else static_branch_pc when sbta_valid else incremented_pc;
 END ARCHITECTURE behav;
 

@@ -2,14 +2,14 @@
 -- VHDL Architecture riscvio_lib.ex_reg.behav
 --
 -- Created:
---          by - rbnlux.ckoehler (pc037)
---          at - 15:59:29 05/08/24
+--          by - surfer.UNKNOWN (SURFER-A0000001)
+--          at - 14:00:34 09.05.2024
 --
--- using Mentor Graphics HDL Designer(TM) 2022.3 Built on 14 Jul 2022 at 13:56:12
+-- using Mentor Graphics HDL Designer(TM) 2021.1 Built on 14 Jan 2021 at 15:11:42
 --
 ARCHITECTURE behav OF ex_reg IS
 BEGIN
-    process(clk, res_n) is
+      process(clk, res_n) is
     begin
         if res_n = '0' then
         reg_rd_me <= REG_NULL;

@@ -41,7 +41,7 @@ PACKAGE isa IS
     end record reg_T;
     constant REG_NULL: reg_T := (reg_alias => zero, reg_index => 0, mem => REG_MEM_NULL);
 
-    type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r, jal, illegal);
+    type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r, jal, beq, bne, blt, bge, bltu, bgeu, illegal);
     subtype OPC_RANGE is natural range 6 downto 0;
     subtype FUNCT3_RANGE is natural range 14 downto 12;
     subtype FUNCT7_RANGE is natural range 31 downto 25;

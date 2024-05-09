@@ -73,7 +73,7 @@ PACKAGE isa IS
     constant F7_ADD_SRL:       std_logic_vector(FUNCT7_RANGE) := "0000000";
     constant F7_SUB_SRA:       std_logic_vector(FUNCT7_RANGE) := "0100000";
 
-    type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, alu_illegal);
+    type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orscb, alu_rev8, alu_illegal);
     type ctrl_sig_T is record 
         alu_mode:       alu_mode_T;
         mnemonic:       mnemonic_T;

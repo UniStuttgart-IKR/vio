@@ -18,6 +18,9 @@ BEGIN
         constant one: word_T := (0 => '1', others => '0');
         variable highest_bit_of_a_as_word: word_T;
         constant zeros: word_T := (others => '0');
+        variable tmp: natural;
+        variable tmp_b: byte_T;
+        constant bytes_in_a: natural := a'length / BYTE_SIZE;
     BEGIN
         for i in highest_bit_of_a_as_word'range loop
             highest_bit_of_a_as_word(i) := a(a'left);
@@ -39,6 +42,54 @@ BEGIN
                 alu_out <= word_T(shift_right(signed(a), to_integer(unsigned(b))));
             when alu_or => alu_out <= a or b;
             when alu_and => alu_out <= a and b;
+            when alu_andn => alu_out <= a and not b;
+            when alu_orn => alu_out <= a or not b;
+            when alu_xnor => alu_out <= a xnor b;
+            when alu_clz => 
+                for i in a'high to a'low loop
+                    if a(i) /= '0' then
+                        alu_out <= word_T(to_unsigned(i, word_T'length));
+                        exit;
+                    end if;
+                end loop;
+            when alu_ctz => 
+                for i in a'low to a'high loop
+                    if a(i) /= '0' then
+                        alu_out <= word_T(to_unsigned(i, word_T'length));
+                        exit;
+                    end if;
+                end loop;
+            when alu_cpop => 
+                tmp := 0;
+                for i in a'high to a'low loop
+                    if a(i) = '1' then
+                        tmp := tmp + 1;
+                    end if;
+                end loop;
+                alu_out <= word_T(to_unsigned(tmp, word_T'length));
+            when alu_max => alu_out <= a when signed(a) > signed(b) else b;
+            when alu_maxu => alu_out <= a when unsigned(a) > unsigned(b) else b;
+            when alu_min => alu_out <= a when signed(a) < signed(b) else b;
+            when alu_minu => alu_out <= a when unsigned(a) < unsigned(b) else b;
+            when alu_sextb => 
+                alu_out <= (others => a(byte_T'high));
+                alu_out(byte_T'high - 1 downto 0) <= a(byte_T'high - 1 downto 0);
+            when alu_sexth => 
+                alu_out <= (others => a(half_word_T'high));
+                alu_out(half_word_T'high - 1 downto 0) <= a(half_word_T'high - 1 downto 0);
+            when alu_zexth => 
+                alu_out <= (half_word_T'range => a(half_word_T'range), others => '0');
+            when alu_rol => alu_out <= word_T(rotate_left(unsigned(a), to_integer(unsigned(b))));
+            when alu_ror => alu_out <= word_T(rotate_right(unsigned(a), to_integer(unsigned(b))));
+            when alu_orscb =>
+                for i in bytes_in_a - 1 downto 0 loop
+                    alu_out((i+1)*BYTE_SIZE - 1 downto i*BYTE_SIZE) <= "00000000" when a((i+1)*BYTE_SIZE - 1 downto i*BYTE_SIZE) = "00000000" else "11111111";
+                end loop;
+                report "please explain what you use that for pls REMOVEME";
+            when alu_rev8 => 
+                for i in bytes_in_a - 1 downto 0 loop
+                    alu_out((i+1)*BYTE_SIZE - 1 downto i*BYTE_SIZE) <= a((bytes_in_a - i + 1)*BYTE_SIZE - 1 downto (bytes_in_a - i)*BYTE_SIZE);
+                end loop;
             when alu_illegal => alu_out <= (others => '0');
         end case;
         

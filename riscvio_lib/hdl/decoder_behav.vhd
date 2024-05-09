@@ -15,17 +15,14 @@ LIBRARY ieee;
 USE ieee.numeric_std.all;
 
 ARCHITECTURE behav OF decoder IS
-    signal imm_is_12_bit: boolean;
     signal extended_imm: word_T;
     signal ctrl_sig_int: ctrl_sig_T;
 BEGIN
 
     ctrl_sig_int <= decodeOpc(instruction);
     ctr_sig <= ctrl_sig_int;
-    imm_is_12_bit <= true;
 
     extend: process(all) is
-        variable high_bit_extended: word_T;
     begin
         case ctrl_sig_int.imm_mode is
             when i_type => 

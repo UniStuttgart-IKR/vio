@@ -33,13 +33,13 @@ PACKAGE isa IS
     constant REG_MEM_NULL: reg_mem_T := (tag => DATA, data => (others => '0'), pi => (others => '0'), delta => (others => '0'));
     
     subtype reg_ix_T is natural range 0 to 31;
-    type reg_alias_T is (zero, rix, frame, rcd, ctxt, cnst, t0, t1, t2, t3, t4, t5, t6, a0, a1, a2, a3, a4, a5, a6, a7, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, imm);
+    type ali_T is (zero, rix, frame, rcd, ctxt, cnst, t0, t1, t2, t3, t4, t5, t6, a0, a1, a2, a3, a4, a5, a6, a7, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, imm);
     type reg_T is record
-        reg_alias: reg_alias_T;
-        reg_index: reg_ix_T;
+        ali: ali_T;
+        index: reg_ix_T;
         mem: reg_mem_T;
     end record reg_T;
-    constant REG_NULL: reg_T := (reg_alias => zero, reg_index => 0, mem => REG_MEM_NULL);
+    constant REG_NULL: reg_T := (ali => zero, index => 0, mem => REG_MEM_NULL);
 
     type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r,
                         jal, beq, bne, blt, bge, bltu, bgeu,

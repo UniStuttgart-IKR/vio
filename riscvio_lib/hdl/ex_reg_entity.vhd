@@ -17,15 +17,15 @@ ENTITY ex_reg IS
       alu_out_ex_u : IN     word_T;
       clk          : IN     std_logic;
       ctrl_ex      : IN     ctrl_sig_T;
-      reg_rd_ex    : IN     reg_T;
-      reg_rs1_ex   : IN     reg_T;
-      reg_rs2_ex   : IN     reg_T;
+      rd_ex    : IN     reg_T;
+      rs1_ex   : IN     reg_T;
+      rs2_ex   : IN     reg_T;
       res_n        : IN     std_logic;
       alu_out_me   : OUT    word_T;
       ctrl_me      : OUT    ctrl_sig_T;
-      reg_rd_me    : OUT    reg_T;
-      reg_rs1_me   : OUT    reg_T;
-      reg_rs2_me   : OUT    reg_T
+      rd_me    : OUT    reg_T;
+      rs1_me   : OUT    reg_T;
+      rs2_me   : OUT    reg_T
    );
 
 -- Declarations

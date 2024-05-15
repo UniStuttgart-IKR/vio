@@ -152,7 +152,7 @@ uid 3266,0
 *21 (LogPort
 port (LogicalPort
 decl (Decl
-n "reg_rd_dc_u"
+n "rd_dc_u"
 t "reg_T"
 o 25
 suid 354,0
@@ -165,7 +165,7 @@ port (LogicalPort
 lang 11
 m 1
 decl (Decl
-n "reg_rd_ex"
+n "rd_ex"
 t "reg_T"
 o 30
 suid 355,0
@@ -178,7 +178,7 @@ port (LogicalPort
 lang 11
 m 1
 decl (Decl
-n "reg_rs1_data"
+n "rs1_data"
 t "word_T"
 o 11
 suid 356,0
@@ -189,7 +189,7 @@ uid 3272,0
 *24 (LogPort
 port (LogicalPort
 decl (Decl
-n "reg_rs1_dc_u"
+n "rs1_dc_u"
 t "reg_T"
 o 17
 suid 357,0
@@ -202,7 +202,7 @@ port (LogicalPort
 lang 11
 m 1
 decl (Decl
-n "reg_rs1_ex"
+n "rs1_ex"
 t "reg_T"
 o 29
 suid 358,0
@@ -214,7 +214,7 @@ uid 3276,0
 port (LogicalPort
 m 1
 decl (Decl
-n "reg_rs2_data"
+n "rs2_data"
 t "word_T"
 o 10
 suid 359,0
@@ -225,7 +225,7 @@ uid 3278,0
 *27 (LogPort
 port (LogicalPort
 decl (Decl
-n "reg_rs2_dc_u"
+n "rs2_dc_u"
 t "reg_T"
 o 16
 suid 360,0
@@ -238,7 +238,7 @@ port (LogicalPort
 lang 11
 m 1
 decl (Decl
-n "reg_rs2_ex"
+n "rs2_ex"
 t "reg_T"
 o 28
 suid 361,0
@@ -1214,7 +1214,7 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "16000,9300,21600,10700"
-st "reg_rd_dc_u"
+st "rd_dc_u"
 blo "16000,10400"
 tm "CptPortNameMgr"
 )
@@ -1225,12 +1225,12 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "44000,8400,55400,9800"
-st "reg_rd_dc_u  : IN     reg_T  ;
+st "rd_dc_u  : IN     reg_T  ;
 "
 )
 thePort (LogicalPort
 decl (Decl
-n "reg_rd_dc_u"
+n "rd_dc_u"
 t "reg_T"
 o 25
 suid 354,0
@@ -1259,7 +1259,7 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "14900,9300,19000,10700"
-st "reg_rd_ex"
+st "rd_ex"
 ju 2
 blo "19000,10400"
 tm "CptPortNameMgr"
@@ -1271,14 +1271,14 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "44000,18200,55500,19600"
-st "reg_rd_ex    : OUT    reg_T  ;
+st "rd_ex    : OUT    reg_T  ;
 "
 )
 thePort (LogicalPort
 lang 11
 m 1
 decl (Decl
-n "reg_rd_ex"
+n "rd_ex"
 t "reg_T"
 o 30
 suid 355,0
@@ -1307,7 +1307,7 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "13200,22300,19000,23700"
-st "reg_rs1_data"
+st "rs1_data"
 ju 2
 blo "19000,23400"
 tm "CptPortNameMgr"
@@ -1319,14 +1319,14 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "44000,19600,56800,21000"
-st "reg_rs1_data : OUT    word_T  ;
+st "rs1_data : OUT    word_T  ;
 "
 )
 thePort (LogicalPort
 lang 11
 m 1
 decl (Decl
-n "reg_rs1_data"
+n "rs1_data"
 t "word_T"
 o 11
 suid 356,0
@@ -1355,7 +1355,7 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "16000,10300,22000,11700"
-st "reg_rs1_dc_u"
+st "rs1_dc_u"
 blo "16000,11400"
 tm "CptPortNameMgr"
 )
@@ -1366,12 +1366,12 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "44000,9800,55600,11200"
-st "reg_rs1_dc_u : IN     reg_T  ;
+st "rs1_dc_u : IN     reg_T  ;
 "
 )
 thePort (LogicalPort
 decl (Decl
-n "reg_rs1_dc_u"
+n "rs1_dc_u"
 t "reg_T"
 o 17
 suid 357,0
@@ -1400,7 +1400,7 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "14000,10300,19000,11700"
-st "reg_rs1_ex"
+st "rs1_ex"
 ju 2
 blo "19000,11400"
 tm "CptPortNameMgr"
@@ -1412,14 +1412,14 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "44000,21000,55700,22400"
-st "reg_rs1_ex   : OUT    reg_T  ;
+st "rs1_ex   : OUT    reg_T  ;
 "
 )
 thePort (LogicalPort
 lang 11
 m 1
 decl (Decl
-n "reg_rs1_ex"
+n "rs1_ex"
 t "reg_T"
 o 29
 suid 358,0
@@ -1448,7 +1448,7 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "13200,30300,19000,31700"
-st "reg_rs2_data"
+st "rs2_data"
 ju 2
 blo "19000,31400"
 tm "CptPortNameMgr"
@@ -1460,13 +1460,13 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "44000,22400,56800,23800"
-st "reg_rs2_data : OUT    word_T  ;
+st "rs2_data : OUT    word_T  ;
 "
 )
 thePort (LogicalPort
 m 1
 decl (Decl
-n "reg_rs2_data"
+n "rs2_data"
 t "word_T"
 o 10
 suid 359,0
@@ -1495,7 +1495,7 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "16000,11300,22000,12700"
-st "reg_rs2_dc_u"
+st "rs2_dc_u"
 blo "16000,12400"
 tm "CptPortNameMgr"
 )
@@ -1506,12 +1506,12 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "44000,11200,55600,12600"
-st "reg_rs2_dc_u : IN     reg_T  ;
+st "rs2_dc_u : IN     reg_T  ;
 "
 )
 thePort (LogicalPort
 decl (Decl
-n "reg_rs2_dc_u"
+n "rs2_dc_u"
 t "reg_T"
 o 16
 suid 360,0
@@ -1540,7 +1540,7 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "14000,11300,19000,12700"
-st "reg_rs2_ex"
+st "rs2_ex"
 ju 2
 blo "19000,12400"
 tm "CptPortNameMgr"
@@ -1552,14 +1552,14 @@ va (VaSet
 font "Ubuntu,8,0"
 )
 xt "44000,23800,55300,25200"
-st "reg_rs2_ex   : OUT    reg_T 
+st "rs2_ex   : OUT    reg_T 
 "
 )
 thePort (LogicalPort
 lang 11
 m 1
 decl (Decl
-n "reg_rs2_ex"
+n "rs2_ex"
 t "reg_T"
 o 28
 suid 361,0

@@ -39,23 +39,23 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL pc_dc            : word_T;
    SIGNAL pc_ex            : word_T;
    SIGNAL rd_ix            : reg_ix_T;
-   SIGNAL reg_rd           : reg_T;
-   SIGNAL reg_rd_at        : reg_T;
-   SIGNAL reg_rd_dc_u      : reg_T;
-   SIGNAL reg_rd_ex        : reg_T;
-   SIGNAL reg_rd_me        : reg_T;
-   SIGNAL reg_rd_wb        : reg_T;
-   SIGNAL reg_rs1_at       : reg_T;
-   SIGNAL reg_rs1_data     : word_T;
-   SIGNAL reg_rs1_dc_u     : reg_T;
-   SIGNAL reg_rs1_ex       : reg_T;
-   SIGNAL reg_rs1_me       : reg_T;
-   SIGNAL reg_rs2          : reg_T;
-   SIGNAL reg_rs2_at       : reg_T;
-   SIGNAL reg_rs2_data     : word_T;
-   SIGNAL reg_rs2_dc_u     : reg_T;
-   SIGNAL reg_rs2_ex       : reg_T;
-   SIGNAL reg_rs2_me       : reg_T;
+   SIGNAL rd           : reg_T;
+   SIGNAL rd_at        : reg_T;
+   SIGNAL rd_dc_u      : reg_T;
+   SIGNAL rd_ex        : reg_T;
+   SIGNAL rd_me        : reg_T;
+   SIGNAL rd_wb        : reg_T;
+   SIGNAL rs1_at       : reg_T;
+   SIGNAL rs1_data     : word_T;
+   SIGNAL rs1_dc_u     : reg_T;
+   SIGNAL rs1_ex       : reg_T;
+   SIGNAL rs1_me       : reg_T;
+   SIGNAL rs2          : reg_T;
+   SIGNAL rs2_at       : reg_T;
+   SIGNAL rs2_data     : word_T;
+   SIGNAL rs2_dc_u     : reg_T;
+   SIGNAL rs2_ex       : reg_T;
+   SIGNAL rs2_me       : reg_T;
    SIGNAL rs1_ix           : reg_ix_T;
    SIGNAL rs2_ix           : reg_ix_T;
    SIGNAL sbta_valid       : boolean;
@@ -77,11 +77,11 @@ ARCHITECTURE struct OF riscvio IS
       alu_out_at : IN     word_T ;
       clk        : IN     std_logic ;
       ctrl_at    : IN     ctrl_sig_T ;
-      reg_rd_at  : IN     reg_T ;
-      reg_rs1_at : IN     reg_T ;
-      reg_rs2_at : IN     reg_T ;
+      rd_at  : IN     reg_T ;
+      rs1_at : IN     reg_T ;
+      rs2_at : IN     reg_T ;
       res_n      : IN     std_logic ;
-      reg_rd_wb  : OUT    reg_T 
+      rd_wb  : OUT    reg_T 
    );
    END COMPONENT;
    COMPONENT dc_reg
@@ -90,18 +90,18 @@ ARCHITECTURE struct OF riscvio IS
       ctrl_dc_u    : IN     ctrl_sig_t ;
       dbta_valid   : IN     boolean ;
       pc_dc        : IN     word_T ;
-      reg_rd_dc_u  : IN     reg_T ;
-      reg_rs1_dc_u : IN     reg_T ;
-      reg_rs2_dc_u : IN     reg_T ;
+      rd_dc_u  : IN     reg_T ;
+      rs1_dc_u : IN     reg_T ;
+      rs2_dc_u : IN     reg_T ;
       res_n        : IN     std_logic ;
       alu_mode_ex  : OUT    alu_mode_T ;
       ctrl_ex      : OUT    ctrl_sig_T ;
       pc_ex        : OUT    word_T ;
-      reg_rd_ex    : OUT    reg_T ;
-      reg_rs1_data : OUT    word_T ;
-      reg_rs1_ex   : OUT    reg_T ;
-      reg_rs2_data : OUT    word_T ;
-      reg_rs2_ex   : OUT    reg_T 
+      rd_ex    : OUT    reg_T ;
+      rs1_data : OUT    word_T ;
+      rs1_ex   : OUT    reg_T ;
+      rs2_data : OUT    word_T ;
+      rs2_ex   : OUT    reg_T 
    );
    END COMPONENT;
    COMPONENT decoder
@@ -132,15 +132,15 @@ ARCHITECTURE struct OF riscvio IS
       alu_out_ex_u : IN     word_T ;
       clk          : IN     std_logic ;
       ctrl_ex      : IN     ctrl_sig_T ;
-      reg_rd_ex    : IN     reg_T ;
-      reg_rs1_ex   : IN     reg_T ;
-      reg_rs2_ex   : IN     reg_T ;
+      rd_ex    : IN     reg_T ;
+      rs1_ex   : IN     reg_T ;
+      rs2_ex   : IN     reg_T ;
       res_n        : IN     std_logic ;
       alu_out_me   : OUT    word_T ;
       ctrl_me      : OUT    ctrl_sig_T ;
-      reg_rd_me    : OUT    reg_T ;
-      reg_rs1_me   : OUT    reg_T ;
-      reg_rs2_me   : OUT    reg_T 
+      rd_me    : OUT    reg_T ;
+      rs1_me   : OUT    reg_T ;
+      rs2_me   : OUT    reg_T 
    );
    END COMPONENT;
    COMPONENT if_reg
@@ -159,10 +159,10 @@ ARCHITECTURE struct OF riscvio IS
    PORT (
       ctrl_dc_u    : IN     ctrl_sig_t ;
       imm_as_reg   : IN     reg_T ;
-      reg_rd       : IN     reg_T ;
-      reg_rs2      : IN     reg_T ;
-      reg_rd_dc_u  : OUT    reg_T ;
-      reg_rs2_dc_u : OUT    reg_T 
+      rd       : IN     reg_T ;
+      rs2      : IN     reg_T ;
+      rd_dc_u  : OUT    reg_T ;
+      rs2_dc_u : OUT    reg_T 
    );
    END COMPONENT;
    COMPONENT instruction_memory
@@ -178,15 +178,15 @@ ARCHITECTURE struct OF riscvio IS
       alu_out_me : IN     word_T ;
       clk        : IN     std_logic ;
       ctrl_me    : IN     ctrl_sig_T ;
-      reg_rd_me  : IN     reg_T ;
-      reg_rs1_me : IN     reg_T ;
-      reg_rs2_me : IN     reg_T ;
+      rd_me  : IN     reg_T ;
+      rs1_me : IN     reg_T ;
+      rs2_me : IN     reg_T ;
       res_n      : IN     std_logic ;
       alu_out_at : OUT    word_T ;
       ctrl_at    : OUT    ctrl_sig_T ;
-      reg_rd_at  : OUT    reg_T ;
-      reg_rs1_at : OUT    reg_T ;
-      reg_rs2_at : OUT    reg_T 
+      rd_at  : OUT    reg_T ;
+      rs1_at : OUT    reg_T ;
+      rs2_at : OUT    reg_T 
    );
    END COMPONENT;
    COMPONENT next_pc_mux
@@ -216,14 +216,14 @@ ARCHITECTURE struct OF riscvio IS
    COMPONENT register_file
    PORT (
       clk           : IN     std_logic;
-      reg_rd_index  : IN     reg_ix_T;
-      reg_rd_wb     : IN     reg_T;
-      reg_rs1_index : IN     reg_ix_T;
-      reg_rs2_index : IN     reg_ix_T;
+      rd_index  : IN     reg_ix_T;
+      rd_wb     : IN     reg_T;
+      rs1_index : IN     reg_ix_T;
+      rs2_index : IN     reg_ix_T;
       res_n         : IN     std_logic;
-      reg_rd        : OUT    reg_T;
-      reg_rs1       : OUT    reg_T;
-      reg_rs2       : OUT    reg_T
+      rd        : OUT    reg_T;
+      rs1       : OUT    reg_T;
+      rs2       : OUT    reg_T
    );
    END COMPONENT;
 
@@ -251,8 +251,8 @@ BEGIN
    -- Instance port mappings.
    alu_i : alu
       PORT MAP (
-         a       => reg_rs1_data,
-         b       => reg_rs2_data,
+         a       => rs1_data,
+         b       => rs2_data,
          mode    => alu_mode_ex,
          alu_out => alu_out_ex_u,
          flags   => flags
@@ -262,11 +262,11 @@ BEGIN
          alu_out_at => alu_out_at,
          clk        => clk,
          ctrl_at    => ctrl_at,
-         reg_rd_at  => reg_rd_at,
-         reg_rs1_at => reg_rs1_at,
-         reg_rs2_at => reg_rs2_at,
+         rd_at  => rd_at,
+         rs1_at => rs1_at,
+         rs2_at => rs2_at,
          res_n      => res_n,
-         reg_rd_wb  => reg_rd_wb
+         rd_wb  => rd_wb
       );
    dc_reg_i : dc_reg
       PORT MAP (
@@ -274,18 +274,18 @@ BEGIN
          ctrl_dc_u    => ctrl_dc_u,
          dbta_valid   => dbta_valid,
          pc_dc        => pc_dc,
-         reg_rd_dc_u  => reg_rd_dc_u,
-         reg_rs1_dc_u => reg_rs1_dc_u,
-         reg_rs2_dc_u => reg_rs2_dc_u,
+         rd_dc_u  => rd_dc_u,
+         rs1_dc_u => rs1_dc_u,
+         rs2_dc_u => rs2_dc_u,
          res_n        => res_n,
          alu_mode_ex  => alu_mode_ex,
          ctrl_ex      => ctrl_ex,
          pc_ex        => pc_ex,
-         reg_rd_ex    => reg_rd_ex,
-         reg_rs1_data => reg_rs1_data,
-         reg_rs1_ex   => reg_rs1_ex,
-         reg_rs2_data => reg_rs2_data,
-         reg_rs2_ex   => reg_rs2_ex
+         rd_ex    => rd_ex,
+         rs1_data => rs1_data,
+         rs1_ex   => rs1_ex,
+         rs2_data => rs2_data,
+         rs2_ex   => rs2_ex
       );
    decoder_i : decoder
       PORT MAP (
@@ -301,7 +301,7 @@ BEGIN
       );
    dbu_i : dyn_branch_unit
       PORT MAP (
-         imm_as_reg => reg_rd_ex,
+         imm_as_reg => rd_ex,
          alu_flags  => flags,
          ctrl_sig   => ctrl_ex,
          pc         => pc_ex,
@@ -313,15 +313,15 @@ BEGIN
          alu_out_ex_u => alu_out_ex_u,
          clk          => clk,
          ctrl_ex      => ctrl_ex,
-         reg_rd_ex    => reg_rd_ex,
-         reg_rs1_ex   => reg_rs1_ex,
-         reg_rs2_ex   => reg_rs2_ex,
+         rd_ex    => rd_ex,
+         rs1_ex   => rs1_ex,
+         rs2_ex   => rs2_ex,
          res_n        => res_n,
          alu_out_me   => alu_out_me,
          ctrl_me      => ctrl_me,
-         reg_rd_me    => reg_rd_me,
-         reg_rs1_me   => reg_rs1_me,
-         reg_rs2_me   => reg_rs2_me
+         rd_me    => rd_me,
+         rs1_me   => rs1_me,
+         rs2_me   => rs2_me
       );
    if_reg_i : if_reg
       PORT MAP (
@@ -338,10 +338,10 @@ BEGIN
       PORT MAP (
          ctrl_dc_u    => ctrl_dc_u,
          imm_as_reg   => imm_as_reg,
-         reg_rd       => reg_rd,
-         reg_rs2      => reg_rs2,
-         reg_rd_dc_u  => reg_rd_dc_u,
-         reg_rs2_dc_u => reg_rs2_dc_u
+         rd       => rd,
+         rs2      => rs2,
+         rd_dc_u  => rd_dc_u,
+         rs2_dc_u => rs2_dc_u
       );
    instruction_memory_i : instruction_memory
       PORT MAP (
@@ -355,15 +355,15 @@ BEGIN
          alu_out_me => alu_out_me,
          clk        => clk,
          ctrl_me    => ctrl_me,
-         reg_rd_me  => reg_rd_me,
-         reg_rs1_me => reg_rs1_me,
-         reg_rs2_me => reg_rs2_me,
+         rd_me  => rd_me,
+         rs1_me => rs1_me,
+         rs2_me => rs2_me,
          res_n      => res_n,
          alu_out_at => alu_out_at,
          ctrl_at    => ctrl_at,
-         reg_rd_at  => reg_rd_at,
-         reg_rs1_at => reg_rs1_at,
-         reg_rs2_at => reg_rs2_at
+         rd_at  => rd_at,
+         rs1_at => rs1_at,
+         rs2_at => rs2_at
       );
    next_pc_mux_i : next_pc_mux
       PORT MAP (
@@ -390,13 +390,13 @@ BEGIN
       PORT MAP (
          clk           => clk,
          res_n         => res_n,
-         reg_rd_index  => rd_ix,
-         reg_rs1_index => rs1_ix,
-         reg_rs2_index => rs2_ix,
-         reg_rd        => reg_rd,
-         reg_rs1       => reg_rs1_dc_u,
-         reg_rs2       => reg_rs2,
-         reg_rd_wb     => reg_rd_wb
+         rd_index  => rd_ix,
+         rs1_index => rs1_ix,
+         rs2_index => rs2_ix,
+         rd        => rd,
+         rs1       => rs1_dc_u,
+         rs2       => rs2,
+         rd_wb     => rd_wb
       );
 
 END struct;

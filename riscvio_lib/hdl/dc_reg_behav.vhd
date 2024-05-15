@@ -11,18 +11,18 @@ BEGIN
   process(clk, res_n) is
   begin
     if res_n = '0' then
-      reg_rd_ex <= REG_NULL;
-      reg_rs1_ex <= REG_NULL;
-      reg_rs2_ex <= REG_NULL;
+      rd_ex <= REG_NULL;
+      rs1_ex <= REG_NULL;
+      rs2_ex <= REG_NULL;
       ctrl_ex <= CTRL_NULL;
       pc_ex <= (others => '0');
     else
       if clk'event and clk = '1' then
         ctrl_ex <= CTRL_NULL when dbta_valid else ctrl_dc_u;
 
-        reg_rs1_ex <= reg_rs1_dc_u;
-        reg_rs2_ex <= reg_rs2_dc_u;
-        reg_rd_ex <= reg_rd_dc_u;
+        rs1_ex <= rs1_dc_u;
+        rs2_ex <= rs2_dc_u;
+        rd_ex <= rd_dc_u;
         
         pc_ex <= pc_dc;
       end if;
@@ -30,8 +30,8 @@ BEGIN
   end process;
 
 
-  reg_rs1_data <= reg_rs1_ex.mem.data;
-  reg_rs2_data <= reg_rs2_ex.mem.data;
+  rs1_data <= rs1_ex.mem.data;
+  rs2_data <= rs2_ex.mem.data;
   alu_mode_ex <= ctrl_ex.alu_mode; 
 
 END ARCHITECTURE behav;

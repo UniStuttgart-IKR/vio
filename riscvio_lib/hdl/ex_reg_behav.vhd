@@ -12,18 +12,18 @@ BEGIN
       process(clk, res_n) is
     begin
         if res_n = '0' then
-        reg_rd_me <= REG_NULL;
-        reg_rs1_me <= REG_NULL;
-        reg_rs2_me <= REG_NULL;
+        rd_me <= REG_NULL;
+        rs1_me <= REG_NULL;
+        rs2_me <= REG_NULL;
         ctrl_me <= CTRL_NULL;
         alu_out_me <= (others => '0');
         else
             if clk'event and clk = '1' then
                 ctrl_me <= ctrl_ex;
 
-                reg_rs1_me <= reg_rs1_ex;
-                reg_rs2_me <= reg_rs2_ex;
-                reg_rd_me <= reg_rd_ex;
+                rs1_me <= rs1_ex;
+                rs2_me <= rs2_ex;
+                rd_me <= rd_ex;
 
                 alu_out_me <= alu_out_ex_u;
             end if;

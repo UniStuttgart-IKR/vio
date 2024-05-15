@@ -18,18 +18,18 @@ ENTITY dc_reg IS
       ctrl_dc_u    : IN     ctrl_sig_t;
       dbta_valid   : IN     boolean;
       pc_dc        : IN     word_T;
-      reg_rd_dc_u  : IN     reg_T;
-      reg_rs1_dc_u : IN     reg_T;
-      reg_rs2_dc_u : IN     reg_T;
+      rd_dc_u  : IN     reg_T;
+      rs1_dc_u : IN     reg_T;
+      rs2_dc_u : IN     reg_T;
       res_n        : IN     std_logic;
       alu_mode_ex  : OUT    alu_mode_T;
       ctrl_ex      : OUT    ctrl_sig_T;
       pc_ex        : OUT    word_T;
-      reg_rd_ex    : OUT    reg_T;
-      reg_rs1_data : OUT    word_T;
-      reg_rs1_ex   : OUT    reg_T;
-      reg_rs2_data : OUT    word_T;
-      reg_rs2_ex   : OUT    reg_T
+      rd_ex    : OUT    reg_T;
+      rs1_data : OUT    word_T;
+      rs1_ex   : OUT    reg_T;
+      rs2_data : OUT    word_T;
+      rs2_ex   : OUT    reg_T
    );
 
 -- Declarations

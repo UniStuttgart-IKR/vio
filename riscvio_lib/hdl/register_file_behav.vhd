@@ -12,15 +12,15 @@ ARCHITECTURE behav OF register_file IS
   signal registers: register_file_T;
 BEGIN
     
-    reg_rs1.mem <= registers(reg_rs1_index);
-    reg_rs2.mem <= registers(reg_rs2_index);
-    reg_rd.mem <= registers(reg_rd_index);
+    rs1.mem <= registers(rs1_index);
+    rs2.mem <= registers(rs2_index);
+    rd.mem <= registers(rd_index);
 
-    reg_rs1.reg_index <= reg_rs1_index;
-    reg_rs2.reg_index <= reg_rs2_index;
-    reg_rd.reg_index <= reg_rd_index;
+    rs1.index <= rs1_index;
+    rs2.index <= rs2_index;
+    rd.index <= rd_index;
 
-    reg_rs1.reg_alias <= 
+    rs1.ali <= 
     
     write: process(clk, res_n) is
     begin
@@ -30,8 +30,8 @@ BEGIN
         end loop;
       else
         if clk'event and clk = '1' then
-          if reg_rd_wb.reg_index /= 0 then
-            registers(reg_rd_wb.reg_index) <= reg_rd_wb.mem;
+          if rd_wb.index /= 0 then
+            registers(rd_wb.index) <= rd_wb.mem;
           end if;
         end if;
       end if;

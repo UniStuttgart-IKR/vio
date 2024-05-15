@@ -9,7 +9,7 @@
 --
 ARCHITECTURE behav OF imm_mux IS
 BEGIN
-  reg_rs2_dc_u <= imm_as_reg when ctrl_dc_u.imm_mode = u_type or ctrl_dc_u.imm_mode = j_type or ctrl_dc_u.imm_mode = i_type else reg_rs2;
-  reg_rd_dc_u <= imm_as_reg when ctrl_dc_u.imm_mode = s_type or ctrl_dc_u.imm_mode = b_type else reg_rd;
+  rs2_dc_u <= imm_as_reg when ctrl_dc_u.imm_mode = u_type or ctrl_dc_u.imm_mode = j_type or ctrl_dc_u.imm_mode = i_type else rs2;
+  rd_dc_u <= imm_as_reg when ctrl_dc_u.imm_mode = s_type or ctrl_dc_u.imm_mode = b_type else rd;
 END ARCHITECTURE behav;
 

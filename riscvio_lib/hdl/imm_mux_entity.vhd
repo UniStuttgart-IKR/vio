@@ -16,10 +16,10 @@ ENTITY imm_mux IS
    PORT( 
       ctrl_dc_u    : IN     ctrl_sig_t;
       imm_as_reg   : IN     reg_T;
-      reg_rd       : IN     reg_T;
-      reg_rs2      : IN     reg_T;
-      reg_rd_dc_u  : OUT    reg_T;
-      reg_rs2_dc_u : OUT    reg_T
+      rd       : IN     reg_T;
+      rs2      : IN     reg_T;
+      rd_dc_u  : OUT    reg_T;
+      rs2_dc_u : OUT    reg_T
    );
 
 -- Declarations

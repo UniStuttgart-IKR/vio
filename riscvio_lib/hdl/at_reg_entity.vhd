@@ -17,11 +17,11 @@ ENTITY at_reg IS
       alu_out_at : IN     word_T;
       clk        : IN     std_logic;
       ctrl_at    : IN     ctrl_sig_T;
-      reg_rd_at  : IN     reg_T;
-      reg_rs1_at : IN     reg_T;
-      reg_rs2_at : IN     reg_T;
+      rd_at  : IN     reg_T;
+      rs1_at : IN     reg_T;
+      rs2_at : IN     reg_T;
       res_n      : IN     std_logic;
-      reg_rd_wb  : OUT    reg_T
+      rd_wb  : OUT    reg_T
    );
 
 -- Declarations

@@ -15,18 +15,23 @@ unitName "std_logic_arith"
 library "riscvio_lib"
 unitName "isa"
 )
+(DmPackageRef
+library "altera_mf"
+unitName "altera_mf_components"
+)
 ]
 libraryRefs [
 "ieee"
 "riscvio_lib"
+"altera_mf"
 ]
 )
 version "27.1"
-appVersion "2021.1 Built on 14 Jan 2021 at 15:11:42"
+appVersion "2022.3 Built on 14 Jul 2022 at 13:56:12"
 model (Symbol
 commonDM (CommonDM
 ldm (LogicalDM
-suid 8,0
+suid 16,0
 usingSuid 1
 emptyRow *1 (LEmptyRow
 )
@@ -72,10 +77,10 @@ decl (Decl
 n "alu_out_at"
 t "word_T"
 o 19
-suid 1,0
+suid 9,0
 )
 )
-uid 91,0
+uid 227,0
 )
 *15 (LogPort
 port (LogicalPort
@@ -84,10 +89,10 @@ decl (Decl
 n "clk"
 t "std_logic"
 o 1
-suid 2,0
+suid 10,0
 )
 )
-uid 93,0
+uid 229,0
 )
 *16 (LogPort
 port (LogicalPort
@@ -96,10 +101,10 @@ decl (Decl
 n "ctrl_at"
 t "ctrl_sig_T"
 o 8
-suid 3,0
+suid 11,0
 )
 )
-uid 95,0
+uid 231,0
 )
 *17 (LogPort
 port (LogicalPort
@@ -108,10 +113,10 @@ decl (Decl
 n "rd_at"
 t "reg_T"
 o 36
-suid 4,0
+suid 12,0
 )
 )
-uid 97,0
+uid 233,0
 )
 *18 (LogPort
 port (LogicalPort
@@ -120,46 +125,46 @@ decl (Decl
 n "rd_wb"
 t "reg_T"
 o 22
-suid 5,0
+suid 13,0
 )
 )
-uid 99,0
+uid 235,0
 )
 *19 (LogPort
-port (LogicalPort
-lang 11
-decl (Decl
-n "rs1_at"
-t "reg_T"
-o 34
-suid 6,0
-)
-)
-uid 101,0
-)
-*20 (LogPort
-port (LogicalPort
-lang 11
-decl (Decl
-n "rs2_at"
-t "reg_T"
-o 35
-suid 7,0
-)
-)
-uid 103,0
-)
-*21 (LogPort
 port (LogicalPort
 lang 11
 decl (Decl
 n "res_n"
 t "std_logic"
 o 2
-suid 8,0
+suid 14,0
 )
 )
-uid 105,0
+uid 237,0
+)
+*20 (LogPort
+port (LogicalPort
+lang 11
+decl (Decl
+n "rs1_at"
+t "reg_T"
+o 34
+suid 15,0
+)
+)
+uid 239,0
+)
+*21 (LogPort
+port (LogicalPort
+lang 11
+decl (Decl
+n "rs2_at"
+t "reg_T"
+o 35
+suid 16,0
+)
+)
+uid 241,0
 )
 ]
 )
@@ -173,17 +178,17 @@ sheetRow (SheetRow
 headerVa (MVa
 cellColor "49152,49152,49152"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 cellVa (MVa
 cellColor "65535,65535,65535"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 groupVa (MVa
 cellColor "39936,56832,65280"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 emptyMRCItem *23 (MRCItem
 litem &1
@@ -215,49 +220,49 @@ uid 127,0
 litem &14
 pos 0
 dimension 20
-uid 92,0
+uid 228,0
 )
 *28 (MRCItem
 litem &15
 pos 1
 dimension 20
-uid 94,0
+uid 230,0
 )
 *29 (MRCItem
 litem &16
 pos 2
 dimension 20
-uid 96,0
+uid 232,0
 )
 *30 (MRCItem
 litem &17
 pos 3
 dimension 20
-uid 98,0
+uid 234,0
 )
 *31 (MRCItem
 litem &18
 pos 4
 dimension 20
-uid 100,0
+uid 236,0
 )
 *32 (MRCItem
 litem &19
 pos 5
 dimension 20
-uid 102,0
+uid 238,0
 )
 *33 (MRCItem
 litem &20
 pos 6
 dimension 20
-uid 104,0
+uid 240,0
 )
 *34 (MRCItem
 litem &21
 pos 7
 dimension 20
-uid 106,0
+uid 242,0
 )
 ]
 )
@@ -265,7 +270,7 @@ sheetCol (SheetCol
 propVa (MVa
 cellColor "0,49152,49152"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 textAngle 90
 )
 uid 128,0
@@ -379,17 +384,17 @@ sheetRow (SheetRow
 headerVa (MVa
 cellColor "49152,49152,49152"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 cellVa (MVa
 cellColor "65535,65535,65535"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 groupVa (MVa
 cellColor "39936,56832,65280"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 emptyMRCItem *56 (MRCItem
 litem &43
@@ -423,7 +428,7 @@ sheetCol (SheetCol
 propVa (MVa
 cellColor "0,49152,49152"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 textAngle 90
 )
 uid 156,0
@@ -488,23 +493,23 @@ VExpander (VariableExpander
 vvMap [
 (vvPair
 variable "HDLDir"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViOmain\\riscvio_lib\\hdl"
+value "/u/home/stud/rbnlux/Documents/FP/RiscViO/riscvio_lib/hdl"
 )
 (vvPair
 variable "HDSDir"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViOmain\\riscvio_lib\\hds"
+value "/u/home/stud/rbnlux/Documents/FP/RiscViO/riscvio_lib/hds"
 )
 (vvPair
 variable "SideDataDesignDir"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViOmain\\riscvio_lib\\hds\\at_reg\\interface.info"
+value "/u/home/stud/rbnlux/Documents/FP/RiscViO/riscvio_lib/hds/at_reg/interface.info"
 )
 (vvPair
 variable "SideDataUserDir"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViOmain\\riscvio_lib\\hds\\at_reg\\interface.user"
+value "/u/home/stud/rbnlux/Documents/FP/RiscViO/riscvio_lib/hds/at_reg/interface.user"
 )
 (vvPair
 variable "SourceDir"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViOmain\\riscvio_lib\\hds"
+value "/u/home/stud/rbnlux/Documents/FP/RiscViO/riscvio_lib/hds"
 )
 (vvPair
 variable "appl"
@@ -520,27 +525,27 @@ value "%(unit)_%(view)_config"
 )
 (vvPair
 variable "d"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViOmain\\riscvio_lib\\hds\\at_reg"
+value "/u/home/stud/rbnlux/Documents/FP/RiscViO/riscvio_lib/hds/at_reg"
 )
 (vvPair
 variable "d_logical"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViOmain\\riscvio_lib\\hds\\at_reg"
+value "/u/home/stud/rbnlux/Documents/FP/RiscViO/riscvio_lib/hds/at_reg"
 )
 (vvPair
 variable "date"
-value "09.05.2024"
+value "05/15/24"
 )
 (vvPair
 variable "day"
-value "Do"
+value "Wed"
 )
 (vvPair
 variable "day_long"
-value "Donnerstag"
+value "Wednesday"
 )
 (vvPair
 variable "dd"
-value "09"
+value "15"
 )
 (vvPair
 variable "entity_name"
@@ -564,31 +569,31 @@ value "interface"
 )
 (vvPair
 variable "graphical_source_author"
-value "surfer"
+value "rbnlux"
 )
 (vvPair
 variable "graphical_source_date"
-value "09.05.2024"
+value "05/15/24"
 )
 (vvPair
 variable "graphical_source_group"
-value "UNKNOWN"
+value "ckoehler"
 )
 (vvPair
 variable "graphical_source_host"
-value "SURFER-A0000001"
+value "pc037"
 )
 (vvPair
 variable "graphical_source_time"
-value "14:01:20"
+value "18:06:52"
 )
 (vvPair
 variable "group"
-value "UNKNOWN"
+value "ckoehler"
 )
 (vvPair
 variable "host"
-value "SURFER-A0000001"
+value "pc037"
 )
 (vvPair
 variable "language"
@@ -601,6 +606,18 @@ value "riscvio_lib"
 (vvPair
 variable "library_downstream_ModelSimCompiler"
 value "$HDS_PROJECT_DIR/riscvio_lib/modelsim"
+)
+(vvPair
+variable "library_downstream_QISDataPrep"
+value "$HDS_PROJECT_DIR/riscvio_lib/qis"
+)
+(vvPair
+variable "library_downstream_QISPARInvoke"
+value "$HDS_PROJECT_DIR/riscvio_lib/qis"
+)
+(vvPair
+variable "library_downstream_QISPGMInvoke"
+value "$HDS_PROJECT_DIR/riscvio_lib/qis"
 )
 (vvPair
 variable "library_downstream_QuestaSimCompiler"
@@ -616,19 +633,19 @@ value "at_reg"
 )
 (vvPair
 variable "month"
-value "Mai"
+value "May"
 )
 (vvPair
 variable "month_long"
-value "Mai"
+value "May"
 )
 (vvPair
 variable "p"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViOmain\\riscvio_lib\\hds\\at_reg\\interface"
+value "/u/home/stud/rbnlux/Documents/FP/RiscViO/riscvio_lib/hds/at_reg/interface"
 )
 (vvPair
 variable "p_logical"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViOmain\\riscvio_lib\\hds\\at_reg\\interface"
+value "/u/home/stud/rbnlux/Documents/FP/RiscViO/riscvio_lib/hds/at_reg/interface"
 )
 (vvPair
 variable "package_name"
@@ -652,7 +669,7 @@ value "<TBD>"
 )
 (vvPair
 variable "task_ModelSimPath"
-value "C:\\intelFPGA/20.1\\modelsim_ase\\win32aloem"
+value "<TBD>"
 )
 (vvPair
 variable "task_NC-SimPath"
@@ -663,8 +680,12 @@ variable "task_PrecisionRTLPath"
 value "<TBD>"
 )
 (vvPair
+variable "task_QuestaCDCFormalPath"
+value "$QHOME/bin"
+)
+(vvPair
 variable "task_QuestaSimPath"
-value "C:\\intelFPGA_lite\\23.1std\\questa_fse\\win64"
+value "$QUESTA_HOME\\bin"
 )
 (vvPair
 variable "task_VCSPath"
@@ -684,7 +705,7 @@ value "interface"
 )
 (vvPair
 variable "time"
-value "14:01:20"
+value "18:06:52"
 )
 (vvPair
 variable "unit"
@@ -692,11 +713,11 @@ value "at_reg"
 )
 (vvPair
 variable "user"
-value "surfer"
+value "rbnlux"
 )
 (vvPair
 variable "version"
-value "2021.1 Built on 14 Jan 2021 at 15:11:42"
+value "2022.3 Built on 14 Jul 2022 at 13:56:12"
 )
 (vvPair
 variable "view"
@@ -719,10 +740,10 @@ optionalChildren [
 uid 8,0
 optionalChildren [
 *68 (CptPort
-uid 51,0
+uid 187,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 52,0
+uid 188,0
 ro 90
 va (VaSet
 vasetType 1
@@ -731,27 +752,28 @@ fg "0,65535,0"
 xt "14250,26625,15000,27375"
 )
 tg (CPTG
-uid 53,0
+uid 189,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 54,0
+uid 190,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "16000,26300,20900,27700"
+xt "16000,26550,21500,27450"
 st "alu_out_at"
-blo "16000,27400"
+blo "16000,27250"
 tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 55,0
+uid 191,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "44000,2800,55200,4200"
-st "alu_out_at : IN     word_T  ;"
+xt "44000,2800,59000,3700"
+st "alu_out_at : IN     word_T  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -759,15 +781,15 @@ decl (Decl
 n "alu_out_at"
 t "word_T"
 o 19
-suid 1,0
+suid 9,0
 )
 )
 )
 *69 (CptPort
-uid 56,0
+uid 192,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 57,0
+uid 193,0
 va (VaSet
 vasetType 1
 fg "0,65535,0"
@@ -775,28 +797,29 @@ fg "0,65535,0"
 xt "16625,77000,17375,77750"
 )
 tg (CPTG
-uid 58,0
+uid 194,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 59,0
+uid 195,0
 ro 270
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "16300,74500,17700,76000"
+xt "16550,74500,17450,76000"
 st "clk"
-blo "17400,76000"
+blo "17250,76000"
 tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 60,0
+uid 196,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "44000,4200,54300,5600"
-st "clk        : IN     std_logic  ;"
+xt "44000,3700,60500,4600"
+st "clk        : IN     std_logic  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -804,15 +827,15 @@ decl (Decl
 n "clk"
 t "std_logic"
 o 1
-suid 2,0
+suid 10,0
 )
 )
 )
 *70 (CptPort
-uid 61,0
+uid 197,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 62,0
+uid 198,0
 ro 90
 va (VaSet
 vasetType 1
@@ -821,27 +844,28 @@ fg "0,65535,0"
 xt "14250,74625,15000,75375"
 )
 tg (CPTG
-uid 63,0
+uid 199,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 64,0
+uid 200,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "16000,74300,18800,75700"
+xt "16000,74550,19500,75450"
 st "ctrl_at"
-blo "16000,75400"
+blo "16000,75250"
 tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 65,0
+uid 201,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "44000,5600,55000,7000"
-st "ctrl_at    : IN     ctrl_sig_T  ;"
+xt "44000,4600,61000,5500"
+st "ctrl_at    : IN     ctrl_sig_T  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -849,15 +873,15 @@ decl (Decl
 n "ctrl_at"
 t "ctrl_sig_T"
 o 8
-suid 3,0
+suid 11,0
 )
 )
 )
 *71 (CptPort
-uid 66,0
+uid 202,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 67,0
+uid 203,0
 ro 90
 va (VaSet
 vasetType 1
@@ -866,27 +890,28 @@ fg "0,65535,0"
 xt "14250,9625,15000,10375"
 )
 tg (CPTG
-uid 68,0
+uid 204,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 69,0
+uid 205,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "16000,9300,20000,10700"
+xt "16000,9550,18500,10450"
 st "rd_at"
-blo "16000,10400"
+blo "16000,10250"
 tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 70,0
+uid 206,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "44000,7000,54300,8400"
-st "rd_at  : IN     reg_T  ;"
+xt "44000,5500,58500,6400"
+st "rd_at      : IN     reg_T  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -894,15 +919,15 @@ decl (Decl
 n "rd_at"
 t "reg_T"
 o 36
-suid 4,0
+suid 12,0
 )
 )
 )
 *72 (CptPort
-uid 71,0
+uid 207,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 72,0
+uid 208,0
 ro 90
 va (VaSet
 vasetType 1
@@ -911,28 +936,29 @@ fg "0,65535,0"
 xt "20000,11625,20750,12375"
 )
 tg (CPTG
-uid 73,0
+uid 209,0
 ps "CptPortTextPlaceStrategy"
 stg "RightVerticalLayoutStrategy"
 f (Text
-uid 74,0
+uid 210,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "14600,11300,19000,12700"
+xt "16500,11550,19000,12450"
 st "rd_wb"
 ju 2
-blo "19000,12400"
+blo "19000,12250"
 tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 75,0
+uid 211,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "44000,12600,55000,14000"
-st "rd_wb  : OUT    reg_T "
+xt "44000,9100,57500,10000"
+st "rd_wb      : OUT    reg_T 
+"
 )
 thePort (LogicalPort
 m 1
@@ -940,15 +966,61 @@ decl (Decl
 n "rd_wb"
 t "reg_T"
 o 22
-suid 5,0
+suid 13,0
 )
 )
 )
 *73 (CptPort
-uid 76,0
+uid 212,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 77,0
+uid 213,0
+va (VaSet
+vasetType 1
+fg "0,65535,0"
+)
+xt "17625,77000,18375,77750"
+)
+tg (CPTG
+uid 214,0
+ps "CptPortTextPlaceStrategy"
+stg "VerticalLayoutStrategy"
+f (Text
+uid 215,0
+ro 270
+va (VaSet
+font "courier,8,0"
+)
+xt "17550,73500,18450,76000"
+st "res_n"
+blo "18250,76000"
+tm "CptPortNameMgr"
+)
+)
+dt (MLText
+uid 216,0
+va (VaSet
+font "courier,8,0"
+)
+xt "44000,6400,60500,7300"
+st "res_n      : IN     std_logic  ;
+"
+)
+thePort (LogicalPort
+lang 11
+decl (Decl
+n "res_n"
+t "std_logic"
+o 2
+suid 14,0
+)
+)
+)
+*74 (CptPort
+uid 217,0
+ps "OnEdgeStrategy"
+shape (Triangle
+uid 218,0
 ro 90
 va (VaSet
 vasetType 1
@@ -957,27 +1029,28 @@ fg "0,65535,0"
 xt "14250,10625,15000,11375"
 )
 tg (CPTG
-uid 78,0
+uid 219,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 79,0
+uid 220,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "16000,10300,20900,11700"
+xt "16000,10550,19000,11450"
 st "rs1_at"
-blo "16000,11400"
+blo "16000,11250"
 tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 80,0
+uid 221,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "44000,8400,54500,9800"
-st "rs1_at : IN     reg_T  ;"
+xt "44000,7300,58500,8200"
+st "rs1_at     : IN     reg_T  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -985,15 +1058,15 @@ decl (Decl
 n "rs1_at"
 t "reg_T"
 o 34
-suid 6,0
+suid 15,0
 )
 )
 )
-*74 (CptPort
-uid 81,0
+*75 (CptPort
+uid 222,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 82,0
+uid 223,0
 ro 90
 va (VaSet
 vasetType 1
@@ -1002,27 +1075,28 @@ fg "0,65535,0"
 xt "14250,11625,15000,12375"
 )
 tg (CPTG
-uid 83,0
+uid 224,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 84,0
+uid 225,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "16000,11300,20900,12700"
+xt "16000,11550,19000,12450"
 st "rs2_at"
-blo "16000,12400"
+blo "16000,12250"
 tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 85,0
+uid 226,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "44000,9800,54500,11200"
-st "rs2_at : IN     reg_T  ;"
+xt "44000,8200,58500,9100"
+st "rs2_at     : IN     reg_T  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -1030,52 +1104,7 @@ decl (Decl
 n "rs2_at"
 t "reg_T"
 o 35
-suid 7,0
-)
-)
-)
-*75 (CptPort
-uid 86,0
-ps "OnEdgeStrategy"
-shape (Triangle
-uid 87,0
-va (VaSet
-vasetType 1
-fg "0,65535,0"
-)
-xt "17625,77000,18375,77750"
-)
-tg (CPTG
-uid 88,0
-ps "CptPortTextPlaceStrategy"
-stg "VerticalLayoutStrategy"
-f (Text
-uid 89,0
-ro 270
-va (VaSet
-font "Ubuntu,8,0"
-)
-xt "17300,73500,18700,76000"
-st "res_n"
-blo "18400,76000"
-tm "CptPortNameMgr"
-)
-)
-dt (MLText
-uid 90,0
-va (VaSet
-font "Ubuntu,8,0"
-)
-xt "44000,11200,54900,12600"
-st "res_n      : IN     std_logic  ;"
-)
-thePort (LogicalPort
-lang 11
-decl (Decl
-n "res_n"
-t "std_logic"
-o 2
-suid 8,0
+suid 16,0
 )
 )
 )
@@ -1097,20 +1126,20 @@ stg "VerticalLayoutStrategy"
 first (Text
 uid 11,0
 va (VaSet
-font "Ubuntu,8,1"
+font "courier,8,1"
 )
-xt "15100,40100,19900,41500"
+xt "14500,40350,20500,41250"
 st "riscvio_lib"
-blo "15100,41200"
+blo "14500,41050"
 )
 second (Text
 uid 12,0
 va (VaSet
-font "Ubuntu,8,1"
+font "courier,8,1"
 )
-xt "15100,41500,18100,42900"
+xt "14500,41250,17500,42150"
 st "at_reg"
-blo "15100,42600"
+blo "14500,41950"
 )
 )
 gi *76 (GenericInterface
@@ -1121,9 +1150,9 @@ uid 14,0
 text (MLText
 uid 15,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "-7500,37500,1500,38900"
+xt "-7500,37500,3000,38400"
 st "Generic Declarations"
 )
 header "Generic Declarations"
@@ -1162,9 +1191,9 @@ uid 20,0
 va (VaSet
 fg "0,0,32768"
 bg "0,0,32768"
-font "Arial,8,0"
+font "courier,8,0"
 )
-xt "-800,50000,8700,51000"
+xt "-800,50050,11700,50950"
 st "
 by %user on %dd %month %year
 "
@@ -1194,9 +1223,9 @@ uid 23,0
 va (VaSet
 fg "0,0,32768"
 bg "0,0,32768"
-font "Arial,8,0"
+font "courier,8,0"
 )
-xt "16200,46000,19200,47000"
+xt "16200,46050,20200,46950"
 st "
 Project:
 "
@@ -1226,9 +1255,9 @@ uid 26,0
 va (VaSet
 fg "0,0,32768"
 bg "0,0,32768"
-font "Arial,8,0"
+font "courier,8,0"
 )
-xt "-800,48000,9200,49000"
+xt "-800,48050,12700,48950"
 st "
 <enter diagram title here>
 "
@@ -1258,9 +1287,9 @@ uid 29,0
 va (VaSet
 fg "0,0,32768"
 bg "0,0,32768"
-font "Arial,8,0"
+font "courier,8,0"
 )
-xt "-4800,48000,-2700,49000"
+xt "-4800,48050,-1800,48950"
 st "
 Title:
 "
@@ -1290,9 +1319,9 @@ uid 32,0
 va (VaSet
 fg "0,0,32768"
 bg "0,0,32768"
-font "Arial,8,0"
+font "courier,8,0"
 )
-xt "16200,47200,25600,48200"
+xt "16200,47200,27200,48100"
 st "
 <enter comments here>
 "
@@ -1321,9 +1350,9 @@ uid 35,0
 va (VaSet
 fg "0,0,32768"
 bg "0,0,32768"
-font "Arial,8,0"
+font "courier,8,0"
 )
-xt "20200,46000,23500,47000"
+xt "20200,46050,23700,46950"
 st "
 %project_name
 "
@@ -1353,7 +1382,7 @@ uid 38,0
 va (VaSet
 fg "32768,0,0"
 )
-xt "800,46250,10200,47750"
+xt "1000,46500,10000,47500"
 st "
 <company name>
 "
@@ -1384,9 +1413,9 @@ uid 41,0
 va (VaSet
 fg "0,0,32768"
 bg "0,0,32768"
-font "Arial,8,0"
+font "courier,8,0"
 )
-xt "-4800,49000,-2700,50000"
+xt "-4800,49050,-2300,49950"
 st "
 Path:
 "
@@ -1416,9 +1445,9 @@ uid 44,0
 va (VaSet
 fg "0,0,32768"
 bg "0,0,32768"
-font "Arial,8,0"
+font "courier,8,0"
 )
-xt "-4800,50000,-2100,51000"
+xt "-4800,50050,-1300,50950"
 st "
 Edited:
 "
@@ -1448,9 +1477,9 @@ uid 47,0
 va (VaSet
 fg "0,0,32768"
 bg "0,0,32768"
-font "Arial,8,0"
+font "courier,8,0"
 )
-xt "-800,49000,9300,50000"
+xt "-800,49050,13700,49950"
 st "
 %library/%unit/%view
 "
@@ -1495,7 +1524,7 @@ textVec [
 *89 (Text
 uid 49,0
 va (VaSet
-font "arial,8,1"
+font "courier,8,1"
 )
 xt "0,0,5400,1000"
 st "Package List"
@@ -1504,14 +1533,16 @@ blo "0,800"
 *90 (MLText
 uid 50,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "0,1000,11800,8000"
+xt "0,1000,20000,7300"
 st "LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_arith.all;
 LIBRARY riscvio_lib;
-USE riscvio_lib.isa.all;"
+USE riscvio_lib.isa.all;
+LIBRARY altera_mf;
+USE altera_mf.altera_mf_components.all;"
 tm "PackageList"
 )
 ]
@@ -1533,9 +1564,9 @@ xt "0,0,15000,5000"
 text (MLText
 va (VaSet
 fg "0,0,32768"
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "200,200,2300,1600"
+xt "200,200,2200,1100"
 st "
 Text
 "
@@ -1561,9 +1592,9 @@ autoResize 1
 text (MLText
 va (VaSet
 fg "0,0,32768"
-font "arial,8,0"
+font "courier,8,0"
 )
-xt "500,2150,1400,3150"
+xt "450,2150,1450,3050"
 st "
 Text
 "
@@ -1587,7 +1618,7 @@ title (TextAssociate
 ps "TopLeftStrategy"
 text (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "courier,8,1"
 )
 xt "1000,1000,4200,2400"
 st "Panel0"
@@ -1616,7 +1647,7 @@ ps "CenterOffsetStrategy"
 stg "VerticalLayoutStrategy"
 first (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "courier,8,1"
 )
 xt "23050,14600,26950,16000"
 st "<library>"
@@ -1624,7 +1655,7 @@ blo "23050,15700"
 )
 second (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "courier,8,1"
 )
 xt "23050,16000,26050,17400"
 st "<cell>"
@@ -1636,9 +1667,9 @@ ps "CenterOffsetStrategy"
 matrix (Matrix
 text (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "0,12000,9000,13400"
+xt "0,12000,10500,12900"
 st "Generic Declarations"
 )
 header "Generic Declarations"
@@ -1670,7 +1701,7 @@ ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
 xt "0,750,1700,2150"
 st "In0"
@@ -1680,7 +1711,7 @@ tm "CptPortNameMgr"
 )
 dt (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
 )
 thePort (LogicalPort
@@ -1708,7 +1739,7 @@ ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
 xt "0,750,3300,2150"
 st "Buffer0"
@@ -1718,7 +1749,7 @@ tm "CptPortNameMgr"
 )
 dt (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
 )
 thePort (LogicalPort
@@ -1738,7 +1769,7 @@ stg "SymDeclLayoutStrategy"
 declLabel (Text
 uid 2,0
 va (VaSet
-font "Ubuntu,8,1"
+font "courier,8,1"
 )
 xt "42000,0,47900,1400"
 st "Declarations"
@@ -1747,7 +1778,7 @@ blo "42000,1100"
 portLabel (Text
 uid 3,0
 va (VaSet
-font "Ubuntu,8,1"
+font "courier,8,1"
 )
 xt "42000,1400,44800,2800"
 st "Ports:"
@@ -1756,17 +1787,17 @@ blo "42000,2500"
 externalLabel (Text
 uid 4,0
 va (VaSet
-font "Ubuntu,8,1"
+font "courier,8,1"
 )
-xt "42000,14000,44500,15400"
+xt "42000,10000,44500,11400"
 st "User:"
-blo "42000,15100"
+blo "42000,11100"
 )
 internalLabel (Text
 uid 6,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,1"
+font "courier,8,1"
 )
 xt "42000,0,48400,1400"
 st "Internal User:"
@@ -1775,21 +1806,21 @@ blo "42000,1100"
 externalText (MLText
 uid 5,0
 va (VaSet
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
-xt "44000,15400,44000,15400"
+xt "44000,11400,44000,11400"
 tm "SyDeclarativeTextMgr"
 )
 internalText (MLText
 uid 7,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,0"
+font "courier,8,0"
 )
 xt "42000,0,42000,0"
 tm "SyDeclarativeTextMgr"
 )
 )
-lastUid 163,0
+lastUid 242,0
 activeModelName "Symbol:CDM"
 )

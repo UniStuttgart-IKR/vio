@@ -81,14 +81,14 @@ BEGIN
                 alu_out <= (half_word_T'range => a(half_word_T'range), others => '0');
             when alu_rol => alu_out <= word_T(rotate_left(unsigned(a), to_integer(unsigned(b))));
             when alu_ror => alu_out <= word_T(rotate_right(unsigned(a), to_integer(unsigned(b))));
-            when alu_orscb =>
+            when alu_orcb =>
                 for i in bytes_in_a - 1 downto 0 loop
                     alu_out((i+1)*BYTE_SIZE - 1 downto i*BYTE_SIZE) <= "00000000" when a((i+1)*BYTE_SIZE - 1 downto i*BYTE_SIZE) = "00000000" else "11111111";
                 end loop;
                 report "please explain what you use that for pls REMOVEME";
             when alu_rev8 => 
                 for i in bytes_in_a - 1 downto 0 loop
-                    alu_out((i+1)*BYTE_SIZE - 1 downto i*BYTE_SIZE) <= a((bytes_in_a - i + 1)*BYTE_SIZE - 1 downto (bytes_in_a - i)*BYTE_SIZE);
+                    alu_out((i+1)*BYTE_SIZE - 1 downto i*BYTE_SIZE) <= a((bytes_in_a - i)*BYTE_SIZE - 1 downto (bytes_in_a - i - 1)*BYTE_SIZE);
                 end loop;
             when alu_illegal => alu_out <= (others => '0');
         end case;

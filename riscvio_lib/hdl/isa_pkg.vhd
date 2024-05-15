@@ -33,7 +33,7 @@ PACKAGE isa IS
     constant REG_MEM_NULL: reg_mem_T := (tag => DATA, data => (others => '0'), pi => (others => '0'), delta => (others => '0'));
     
     subtype reg_ix_T is natural range 0 to 31;
-    type ali_T is (zero, rix, frame, rcd, ctxt, cnst, t0, t1, t2, t3, t4, t5, t6, a0, a1, a2, a3, a4, a5, a6, a7, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, imm);
+    type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, t3, t4, t5, t6, a0, a1, a2, a3, a4, a5, a6, a7, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, cnst, imm);
     type reg_T is record
         ali: ali_T;
         index: reg_ix_T;
@@ -105,9 +105,8 @@ PACKAGE isa IS
     constant F3_ANDN_MAXU:              std_logic_vector(FUNCT3_RANGE) := "111";
     constant F3_ORN_MAX:                std_logic_vector(FUNCT3_RANGE) := "110";
     constant F3_XNOR_MIN_ZEXT:          std_logic_vector(FUNCT3_RANGE) := "100";
-    constant F3_MINU_ROR:               std_logic_vector(FUNCT3_RANGE) := "101";
+    constant F3_MINU_ROR_RORI_ORC_REV:  std_logic_vector(FUNCT3_RANGE) := "101";
     constant F3_ROL_CTZ_CPOP_SEXT:      std_logic_vector(FUNCT3_RANGE) := "001";
-    constant F3_ROR:                    std_logic_vector(FUNCT3_RANGE) := "101";
     
     constant F7_ANDN_ORN_XNOR:              std_logic_vector(FUNCT7_RANGE) := "0100000";
     constant F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR:  std_logic_vector(FUNCT7_RANGE) := "0110000";
@@ -126,7 +125,7 @@ PACKAGE isa IS
 
 
     type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, 
-                        alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orscb, alu_rev8,
+                        alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orcb, alu_rev8,
                         alu_illegal);
     type mem_mode_T is (load, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, load_attr, holiday);
     type ctrl_sig_T is record 

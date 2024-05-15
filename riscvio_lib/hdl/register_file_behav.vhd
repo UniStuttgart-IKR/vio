@@ -10,6 +10,8 @@
 ARCHITECTURE behav OF register_file IS
   type register_file_T is array(reg_ix_T'high downto reg_ix_T'low) of reg_mem_T;
   signal registers: register_file_T;
+
+
 BEGIN
     
     rs1.mem <= registers(rs1_index);
@@ -20,7 +22,9 @@ BEGIN
     rs2.index <= rs2_index;
     rd.index <= rd_index;
 
-    rs1.ali <= 
+    rs1.ali <= ali_T'val(rs1_index);
+    rs2.ali <= ali_T'val(rs2_index);
+    rd.ali <= ali_T'val(rd_index);
     
     write: process(clk, res_n) is
     begin

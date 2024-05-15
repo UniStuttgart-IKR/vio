@@ -41,7 +41,11 @@ PACKAGE isa IS
     end record reg_T;
     constant REG_NULL: reg_T := (reg_alias => zero, reg_index => 0, mem => REG_MEM_NULL);
 
-    type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r, jal, beq, bne, blt, bge, bltu, bgeu, illegal);
+    type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r,
+                        jal, beq, bne, blt, bge, bltu, bgeu,
+                        lb_i, lh_i, lw_i, lbu_i, lhu_i, sb_i, sh_i, sw_i, lb_r, lh_r, lw_r, lbu_r, lhu_r, sb_r, sh_r, sw_r,
+                        andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, min, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
+                        illegal);
     type imm_T is (none, i_type, s_type, b_type, u_type, j_type);
 
     subtype OPC_RANGE is natural range 6 downto 0;
@@ -61,6 +65,9 @@ PACKAGE isa IS
     constant OPC_ALU_I: std_logic_vector(OPC_RANGE) := "0010011";
     constant OPC_ALU_R: std_logic_vector(OPC_RANGE) := "0110011";
     constant OPC_JAL:   std_logic_vector(OPC_RANGE) := "1101111";
+    constant OPC_BRANCH:std_logic_vector(OPC_RANGE) := "1100011";
+    constant OPC_LOAD:  std_logic_vector(OPC_RANGE) := "0000011";
+    constant OPC_STORE: std_logic_vector(OPC_RANGE) := "0100011";
 
     -- RV32I
     constant F3_ADD_SUB:   std_logic_vector(FUNCT3_RANGE) := "000";
@@ -72,15 +79,34 @@ PACKAGE isa IS
     constant F3_OR:        std_logic_vector(FUNCT3_RANGE) := "110";
     constant F3_AND:       std_logic_vector(FUNCT3_RANGE) := "111";
 
-    constant F7_ADD_SRL:       std_logic_vector(FUNCT7_RANGE) := "0000000";
-    constant F7_SUB_SRA:       std_logic_vector(FUNCT7_RANGE) := "0100000";
+    constant F3_BEQ:       std_logic_vector(FUNCT3_RANGE) := "000";
+    constant F3_BNE:       std_logic_vector(FUNCT3_RANGE) := "001";
+    constant F3_BLT:       std_logic_vector(FUNCT3_RANGE) := "100";
+    constant F3_BGE:       std_logic_vector(FUNCT3_RANGE) := "101";
+    constant F3_BLTU:      std_logic_vector(FUNCT3_RANGE) := "110";
+    constant F3_BGEU:      std_logic_vector(FUNCT3_RANGE) := "111";
+
+    constant F3_BYTE:      std_logic_vector(FUNCT3_RANGE) := "000";
+    constant F3_HALF:      std_logic_vector(FUNCT3_RANGE) := "001";
+    constant F3_WORD:      std_logic_vector(FUNCT3_RANGE) := "010";
+    constant F3_BYTEU:     std_logic_vector(FUNCT3_RANGE) := "100";
+    constant F3_HALFU:     std_logic_vector(FUNCT3_RANGE) := "101";
+    constant F3_REG:       std_logic_vector(FUNCT3_RANGE) := "111";
+    constant F7_BYTE:      std_logic_vector(FUNCT7_RANGE) := "0000000";
+    constant F7_HALF:      std_logic_vector(FUNCT7_RANGE) := "0100000";
+    constant F7_WORD:      std_logic_vector(FUNCT7_RANGE) := "0000000";
+    constant F7_BYTEU:     std_logic_vector(FUNCT7_RANGE) := "0100000";
+    constant F7_HALFU:     std_logic_vector(FUNCT7_RANGE) := "0100000";
+
+    constant F7_ADD_SRL:   std_logic_vector(FUNCT7_RANGE) := "0000000";
+    constant F7_SUB_SRA:   std_logic_vector(FUNCT7_RANGE) := "0100000";
 
     -- ZBB extension
     constant F3_ANDN_MAXU:              std_logic_vector(FUNCT3_RANGE) := "111";
     constant F3_ORN_MAX:                std_logic_vector(FUNCT3_RANGE) := "110";
     constant F3_XNOR_MIN_ZEXT:          std_logic_vector(FUNCT3_RANGE) := "100";
     constant F3_MINU_ROR:               std_logic_vector(FUNCT3_RANGE) := "101";
-    constant F3_ROL_CTZ_CPOP_SEXT_ROL:  std_logic_vector(FUNCT3_RANGE) := "001";
+    constant F3_ROL_CTZ_CPOP_SEXT:      std_logic_vector(FUNCT3_RANGE) := "001";
     constant F3_ROR:                    std_logic_vector(FUNCT3_RANGE) := "101";
     
     constant F7_ANDN_ORN_XNOR:              std_logic_vector(FUNCT7_RANGE) := "0100000";
@@ -99,13 +125,18 @@ PACKAGE isa IS
     constant F5_REV8:                 std_logic_vector(FUNCT5_RANGE) := "11000";
 
 
-    type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orscb, alu_rev8, alu_illegal);
+    type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, 
+                        alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orscb, alu_rev8,
+                        alu_illegal);
+    type mem_mode_T is (load, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, load_attr, holiday)
     type ctrl_sig_T is record 
         alu_mode:       alu_mode_T;
         mnemonic:       mnemonic_T;
         imm_mode:       imm_T;
+        me_mode:        mem_mode_T;
+        at_mode:        mem_mode_T
     end record ctrl_sig_T;
-    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, mnemonic => illegal, imm_mode => none);
+    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, mnemonic => illegal, imm_mode => none, me_mode => holiday, at_mode => holiday);
     
     
     type alu_flags_T is record

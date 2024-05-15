@@ -19,6 +19,8 @@ BEGIN
     reg_rs1.reg_index <= reg_rs1_index;
     reg_rs2.reg_index <= reg_rs2_index;
     reg_rd.reg_index <= reg_rd_index;
+
+    reg_rs1.reg_alias <= 
     
     write: process(clk, res_n) is
     begin

@@ -98,7 +98,7 @@ PACKAGE isa IS
     constant F7_BYTEU:     std_logic_vector(FUNCT7_RANGE) := "0100000";
     constant F7_HALFU:     std_logic_vector(FUNCT7_RANGE) := "0100000";
 
-    constant F7_ADD_SRL:   std_logic_vector(FUNCT7_RANGE) := "0000000";
+    constant F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU:   std_logic_vector(FUNCT7_RANGE) := "0000000";
     constant F7_SUB_SRA:   std_logic_vector(FUNCT7_RANGE) := "0100000";
 
     -- ZBB extension
@@ -128,13 +128,13 @@ PACKAGE isa IS
     type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, 
                         alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orscb, alu_rev8,
                         alu_illegal);
-    type mem_mode_T is (load, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, load_attr, holiday)
+    type mem_mode_T is (load, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, load_attr, holiday);
     type ctrl_sig_T is record 
         alu_mode:       alu_mode_T;
         mnemonic:       mnemonic_T;
         imm_mode:       imm_T;
         me_mode:        mem_mode_T;
-        at_mode:        mem_mode_T
+        at_mode:        mem_mode_T;
     end record ctrl_sig_T;
     constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, mnemonic => illegal, imm_mode => none, me_mode => holiday, at_mode => holiday);
     

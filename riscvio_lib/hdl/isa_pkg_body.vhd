@@ -22,7 +22,7 @@ PACKAGE BODY isa IS
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
                         case instruction(FUNCT7_RANGE) is 
-                            when F7_ADD_SRL =>
+                            when F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU =>
                                 res.mnemonic := add_r;
                                 res.alu_mode := alu_add;
                             when F7_SUB_SRA =>
@@ -33,50 +33,54 @@ PACKAGE BODY isa IS
                                 res.alu_mode := alu_illegal;
                         end case;
                     when F3_SRL_SRA =>
-                        case instruction(FUNCT7_RANGE) is 
-                            when F7_ADD_SRL =>
-                                res.mnemonic := srl_r;
-                                res.alu_mode := alu_srl;
-                            when F7_SUB_SRA =>
-                                res.mnemonic := sra_r;
-                                res.alu_mode := alu_sra;
-                            when others =>
-                                res.mnemonic := illegal;
-                                res.alu_mode := alu_illegal;
-                        end case;
-                    when F3_SLL =>
-                        res.mnemonic := sll_r;
-                        res.alu_mode := alu_sll;
+                        res.mnemonic := srl_r when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
+                                        sra_i when instruction(FUNCT7_RANGE) = F7_SUB_SRA else 
+                                        minu when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else 
+                                        ror_r when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else
+                                        illegal;
+                        res.alu_mode := alu_srl when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
+                                        alu_sra when instruction(FUNCT7_RANGE) = F7_SUB_SRA else 
+                                        alu_minu when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else 
+                                        alu_ror when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else
+                                        alu_illegal;
+                    when (F3_SLL or F3_ROL_CTZ_CPOP_SEXT) =>
+                        res.mnemonic := rol_r when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else sll_r;
+                        res.alu_mode := alu_rol when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else alu_sll;
                     when F3_SLT =>
                         res.mnemonic := slt_r;
                         res.alu_mode := alu_slt;
                     when F3_SLTU =>
                         res.mnemonic := sltu_r;
                         res.alu_mode := alu_sltu;
-                    when F3_XOR =>
-                        res.mnemonic := xor_r;
-                        res.alu_mode := alu_xor;
-                    when F3_OR =>
-                        res.mnemonic := or_r;
-                        res.alu_mode := alu_or;
+                    when (F3_XOR or F3_XNOR_MIN_ZEXT) =>
+                        res.mnemonic := xor_r when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
+                                        xnor_r when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
+                                        min when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
+                                        zext_h when instruction(RS2_RANGE) = F5_CLZ_ZEXT else 
+                                        illegal;
+                        res.alu_mode := alu_xor when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
+                                        alu_xnor when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
+                                        alu_min when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
+                                        alu_zexth when instruction(RS2_RANGE) = F5_CLZ_ZEXT else 
+                                        alu_illegal;
+                    when (F3_OR or F3_ORN_MAX) =>
+                        res.mnemonic := or_r when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
+                                        orn_r when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
+                                        max when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
+                                        illegal;
+                        res.alu_mode := alu_or when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
+                                        alu_orn when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
+                                        alu_max when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
+                                        alu_illegal;
                     when F3_AND =>
-                        res.mnemonic := and_r;
-                        res.alu_mode := alu_and;
-                    when F3_ANDN_MAXU =>
-                        res.mnemonic := andn_r when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else maxu;
-                        res.alu_mode := alu_andn when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else alu_maxu;
-                    when F3_ORN_MAX =>
-                        res.mnemonic := orn_r when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else max;
-                        res.alu_mode := alu_orn when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else alu_max;
-                    when F3_XNOR_MIN_ZEXT =>
-                        res.mnemonic := xnor_r when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else zext_h when instruction(RS2_RANGE) = F5_CLZ_ZEXT else min;
-                        res.alu_mode := alu_xnor when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else alu_zexth when instruction(RS2_RANGE) = F5_CLZ_ZEXT else alu_min;
-                    when F3_MINU_ROR =>
-                        res.mnemonic := minu when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else ror_r;
-                        res.alu_mode := alu_minu when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else alu_ror;
-                    when F3_ROL_CTZ_CPOP_SEXT =>
-                        res.mnemonic := rol_r;
-                        res.alu_mode := alu_rol;
+                        res.mnemonic := and_r when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else
+                                        andn_r when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
+                                        maxu when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
+                                        illegal;
+                        res.alu_mode := alu_and when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else
+                                        alu_andn when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
+                                        alu_maxu when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
+                                        alu_illegal;
                     when others =>
                         res.mnemonic := illegal;
                         res.alu_mode := alu_illegal;
@@ -92,7 +96,7 @@ PACKAGE BODY isa IS
                         res.alu_mode := alu_add;
                     when F3_SRL_SRA =>
                         case instruction(FUNCT7_RANGE) is 
-                            when F7_ADD_SRL =>
+                            when F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU =>
                                 res.mnemonic := srl_i;
                                 res.alu_mode := alu_srl;
                             when F7_SUB_SRA =>
@@ -102,9 +106,6 @@ PACKAGE BODY isa IS
                                 res.mnemonic := illegal;
                                 res.alu_mode := alu_illegal;
                         end case;
-                    when F3_SLL =>
-                        res.mnemonic := sll_i;
-                        res.alu_mode := alu_sll;
                     when F3_SLT =>
                         res.mnemonic := slt_i;
                         res.alu_mode := alu_slt;
@@ -120,8 +121,11 @@ PACKAGE BODY isa IS
                     when F3_AND =>
                         res.mnemonic := and_i;
                         res.alu_mode := alu_and;
-                    when F3_ROL_CTZ_CPOP_SEXT =>
-                        if instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR then
+                    when (F3_SLL or F3_ROL_CTZ_CPOP_SEXT) =>
+                        if instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU then
+                            res.mnemonic := sll_i;
+                            res.alu_mode := alu_sll;
+                        elsif instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR then
                             case instruction(RS2_RANGE) is
                                 when F5_CLZ_ZEXT => res.mnemonic := clz;
                                                     res.alu_mode := alu_clz;
@@ -133,6 +137,8 @@ PACKAGE BODY isa IS
                                                     res.alu_mode := alu_sextb;
                                 when F5_SEXTH =>    res.mnemonic := sext_h;
                                                     res.alu_mode := alu_sexth;
+                                when others =>      res.mnemonic := illegal;
+                                                    res.alu_mode := alu_illegal;
                             end case;
                         elsif instruction(FUNCT7_RANGE) = F7_ORC and instruction(RS2_RANGE) = F5_ORC then
                             res.mnemonic := orcv_b;
@@ -159,6 +165,7 @@ PACKAGE BODY isa IS
                     when F3_BGE  => res.mnemonic := bge;
                     when F3_BLTU => res.mnemonic := bltu;
                     when F3_BGEU => res.mnemonic := bgeu;
+                    when others =>  res.mnemonic := illegal;
                 end case;
                 res.alu_mode := alu_add;
                 res.imm_mode := b_type;
@@ -172,6 +179,7 @@ PACKAGE BODY isa IS
                     when F3_BYTEU => res.mnemonic := lbu_i;
                     when F3_HALFU => res.mnemonic := lhu_i;
                     when F3_REG   => res.mnemonic := illegal;
+                    when others =>  res.mnemonic := illegal;
                 end case;
                 res.alu_mode := alu_add;
                 res.imm_mode := i_type;
@@ -183,6 +191,7 @@ PACKAGE BODY isa IS
                     when F3_HALF  => res.mnemonic := sh_i;
                     when F3_WORD  => res.mnemonic := sw_i;
                     when F3_REG   => res.mnemonic := illegal;
+                    when others =>  res.mnemonic := illegal;
                 end case;
                 res.alu_mode := alu_add;
                 res.imm_mode := s_type;

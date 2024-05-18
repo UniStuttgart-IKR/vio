@@ -2,9 +2,9 @@
 from argparse import ArgumentParser
 import math
 
-parser = ArgumentParser(description='A script to convert a .dat file to a .mif file, provided by LeyLux group')
+parser = ArgumentParser(description='A script to convert a .dat/.bin file to a .mif file, provided by LeyLux group')
 
-parser.add_argument('infile', help='Input .dat file', metavar='INFILE')
+parser.add_argument('infile', help='Input .dat/.bin file', metavar='INFILE')
 parser.add_argument('outfile', help='Output .mif file', metavar='OUTFILE')
 
 parser.add_argument('-d', '--depth', help="depth of .mif file", type=int, default=1024)
@@ -50,7 +50,7 @@ def __main__(args) -> None:
                 parsed_content = bin(int(bin_content.read().hex(), base=16))[2:]
 
     with open(args.outfile, 'w') as mif_file:
-        mif_file.write('-- converted from {} using dat2mif by LeyLux group\n'.format(args.infile))
+        mif_file.write('-- converted from {} using dat/bin2mif by LeyLux group\n'.format(args.infile))
         mif_file.write('DEPTH = {};\n'.format(args.depth))
         mif_file.write('WIDTH = {};\n'.format(args.width))
         mif_file.write('ADDRESS_RADIX = {};\n'.format(args.addrradix))
@@ -60,9 +60,12 @@ def __main__(args) -> None:
 
         words_num = int(math.ceil((len(parsed_content)) / args.width))
 
+        required_digits = len(toBase(2**args.width - 1, radixStrToInt(args.outradix)))
         for word_index in range(0, words_num):
             word = int(parsed_content[(word_index*args.width):((word_index+1)*args.width)], base=2)
-            mif_file.write('{0}: {1};\n'.format(toBase(word_index, radixStrToInt(args.addrradix)), toBase(word, radixStrToInt(args.outradix))))
+            word_str = toBase(word, radixStrToInt(args.outradix))
+            word_str = word_str + '0' * (required_digits - len(word_str))
+            mif_file.write('{0}: {1};\n'.format(toBase(word_index, radixStrToInt(args.addrradix)), word_str))
 
         if args.pad != "":
             try:
@@ -70,9 +73,15 @@ def __main__(args) -> None:
             except ValueError:
                 print("WARNING: pad data '{0}' does not match radix ’{1}’".format(args.pad, args.outradix))
 
-            mif_file.write('[{0}..{1}] : {2};\n'.format(toBase(words_num, radixStrToInt(args.addrradix)), toBase(args.depth, radixStrToInt(args.addrradix)), args.pad))
+            if len(args.pad) != required_digits:
+                print("WARNING: pad data did not reach word width and got padded!")
+
+            pad_word = args.pad + "0" * (required_digits - len(args.pad))
+            mif_file.write('[{0}..{1}] : {2};\n'.format(toBase(words_num, radixStrToInt(args.addrradix)), toBase(args.depth, radixStrToInt(args.addrradix)), pad_word))
 
         mif_file.write("END;")
+
+        print("converted a total of {} bits".format(len(parsed_content)))
 
 
 if __name__ == "__main__":

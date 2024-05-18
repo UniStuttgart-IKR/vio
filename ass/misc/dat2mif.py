@@ -70,7 +70,7 @@ def __main__(args) -> None:
             except ValueError:
                 print("WARNING: pad data '{0}' does not match radix ’{1}’".format(args.pad, args.outradix))
 
-            mif_file.write('[{0}..{1}] : {2};\n'.format(toBase(words_num+1, radixStrToInt(args.addrradix)), toBase(args.depth, radixStrToInt(args.addrradix)), args.pad))
+            mif_file.write('[{0}..{1}] : {2};\n'.format(toBase(words_num, radixStrToInt(args.addrradix)), toBase(args.depth, radixStrToInt(args.addrradix)), args.pad))
 
         mif_file.write("END;")
 

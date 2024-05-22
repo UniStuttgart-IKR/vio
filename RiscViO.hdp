@@ -5,16 +5,20 @@ riscvio_lib = $HDS_PROJECT_DIR/riscvio_lib/qis
 [QuestaSim]
 riscvio_lib = $HDS_PROJECT_DIR/riscvio_lib/questasim
 [hdl]
+altera_mf = C:\intelFPGA_lite\23.1std\quartus\libraries\vhdl\altera_mf\altera_mf\hdl
 riscvio_lib = $HDS_PROJECT_DIR/riscvio_lib/hdl
 [hds]
+altera_mf = C:\intelFPGA_lite\23.1std\quartus\libraries\vhdl\altera_mf\altera_mf\hds
 riscvio_lib = $HDS_PROJECT_DIR/riscvio_lib/hds
 [hds_settings]
-default_library = riscvio_lib
+default_library = altera_mf
 design_root = riscvio_lib.riscvio_tb(struct)riscvio_tb/struct.bd
 version = 3
 [library_files_inclusion]
+altera_mf = all
 riscvio_lib = specify
 [library_type]
+altera_mf = regular
 riscvio_lib = regular
 [shared]
 others = /ext/eda/vendor_libs/quartus21_1_1/shared.hdp

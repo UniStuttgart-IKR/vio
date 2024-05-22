@@ -32,6 +32,16 @@ PACKAGE isa IS
     end record reg_mem_T;
     constant REG_MEM_NULL: reg_mem_T := (tag => DATA, data => (others => '0'), pi => (others => '0'), delta => (others => '0'));
     
+
+    type pc_T is record
+       ptr: word_T;
+       ix: word_T;
+       pi: word_T;
+       delta: word_T;
+    end record pc_T;
+
+    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM);
+
     subtype reg_ix_T is natural range 0 to 31;
     type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, t3, t4, t5, t6, a0, a1, a2, a3, a4, a5, a6, a7, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, cnst, imm);
     type reg_T is record
@@ -39,11 +49,13 @@ PACKAGE isa IS
         index: reg_ix_T;
         mem: reg_mem_T;
     end record reg_T;
+
     type rdat_T is record
         ali: ali_T;
         ix: reg_ix_T;
         val: word_T;
     end record rdat_T;
+    CONSTANT RDAT_NULL := (ali => zero, ix => 0, val => (others => '0'));
     type rptr_T is record
         ali: ali_T;
         ix: reg_ix_T;
@@ -51,12 +63,14 @@ PACKAGE isa IS
         pi: word_T;
         dt: word_T;
     end record rptr_T;
+    CONSTANT RPTR_NULL := (ali => zero, ix => 0, val => (others => '0'), pi => (others => '0'), dt => (others => '0'));
     type raux_T is record
         ali: ali_T;
         ix: reg_ix_T;
         tag: reg_tag_T;
         val: word_T;
     end record raux_T;
+    CONSTANT RAUX_NULL := (ali => zero, ix => 0, val => (others => '0'), tag => DATA);
     constant REG_NULL: reg_T := (ali => zero, index => 0, mem => REG_MEM_NULL);
 
     type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r,
@@ -147,11 +161,13 @@ PACKAGE isa IS
                         alu_illegal);
     type mem_mode_T is (load, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, load_attr, holiday);
     type ctrl_sig_T is record 
-        alu_mode:       alu_mode_T;
-        mnemonic:       mnemonic_T;
-        imm_mode:       imm_T;
-        me_mode:        mem_mode_T;
-        at_mode:        mem_mode_T;
+        alu_mode        : alu_mode_T;
+        mnemonic        : mnemonic_T;
+        imm_mode        : imm_T;
+        me_mode         : mem_mode_T;
+        at_mode         : mem_mode_T;
+        alu_a_sel       : alu_in_sel_T;
+        alu_b_sel       : alu_in_sel_T;
     end record ctrl_sig_T;
     constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, mnemonic => illegal, imm_mode => none, me_mode => holiday, at_mode => holiday);
     

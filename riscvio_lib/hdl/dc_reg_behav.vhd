@@ -16,6 +16,7 @@ BEGIN
       rs2_ex <= REG_NULL;
       ctrl_ex <= CTRL_NULL;
       pc_ex <= (others => '0');
+      
     else
       if clk'event and clk = '1' then
         ctrl_ex <= CTRL_NULL when dbta_valid else ctrl_dc_u;
@@ -33,5 +34,7 @@ BEGIN
   rs1_data <= rs1_ex.mem.data;
   rs2_data <= rs2_ex.mem.data;
   alu_mode_ex <= ctrl_ex.alu_mode; 
+  alu_a_in_sel <= ctrl_ex.alu_a_sel;
+  alu_b_in_sel <= ctrl_ex.alu_b_sel;
 
 END ARCHITECTURE behav;

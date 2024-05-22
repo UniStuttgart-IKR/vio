@@ -38,8 +38,9 @@ PACKAGE isa IS
        ptr: word_T;
        ix: word_T;
        pi: word_T;
-       delta: word_T;
+       dt: word_T;
     end record pc_T;
+    constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '0'));
 
     subtype reg_ix_T is natural range 0 to 31;
     type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, t3, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t4, t5, t6, imm);

@@ -20,8 +20,8 @@ ENTITY dyn_branch_unit IS
     ctrl_sig   : IN ctrl_sig_T;
     pc         : IN word_T;
 
-    dbta_valid : OUT boolean;
-    dbta       : OUT word_T
+    dbt_valid  : OUT boolean;
+    dbt        : OUT word_T
   ); 
 END ENTITY dyn_branch_unit;
 

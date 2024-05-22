@@ -25,8 +25,8 @@ ENTITY decoder IS
       imm         : OUT    word_T;
 
       ctr_sig     : OUT    ctrl_sig_t;
-      sbta_valid  : OUT    boolean;
-      sbta        : OUT    word_T
+      sbt_valid   : OUT    boolean;
+      sbt         : OUT    word_T
    );
 
 -- Declarations

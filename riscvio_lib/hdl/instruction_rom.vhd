@@ -56,10 +56,12 @@ END instruction_rom;
 ARCHITECTURE SYN OF instruction_rom IS
 
 	SIGNAL sub_wire0	: STD_LOGIC_VECTOR (31 DOWNTO 0);
+	SIGNAL instr_addr: word_T;
 
 BEGIN
 	q    <= sub_wire0(7 DOWNTO 0) & sub_wire0(15 DOWNTO 8) & sub_wire0(23 DOWNTO 16) & sub_wire0(31 DOWNTO 24);
-
+  instr_addr <= std_logic_vector(unsigned(pc.ix) + unsigned(pc.ptr) + unsigned(8)); 
+  
 	altsyncram_component : altsyncram
 	GENERIC MAP (
 		address_aclr_a => "NONE",
@@ -78,7 +80,7 @@ BEGIN
 		width_byteena_a => 1
 	)
 	PORT MAP (
-		address_a => address(11 downto 2),
+		address_a => instr_addr(11 downto 2),
 		clock0 => clock,
 		q_a => sub_wire0
 	);

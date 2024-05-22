@@ -12,7 +12,7 @@ BEGIN
   process(clk, res_n) is
   begin
     if res_n = '0' then
-      pc_current_pc <= (0 | 1  => '0', others => '1');
+      pc_current_pc <= (ptr => X"FFFFFFF8", ix => X"FFFFFFFD", pi => (others => '0'), dt => (others => '0'));
     else
       if clk'event and clk = '1' then
         pc_current_pc <= current_pc_d;

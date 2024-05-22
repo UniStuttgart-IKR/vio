@@ -17,11 +17,11 @@ BEGIN
       raux_dc <= RAUX_NULL;
       imm_dc  <= (others => '0');
       ctrl_dc <= CTRL_NULL;
-      pc_dc <= (others => '0');
+      pc_dc <= PC_NULL;
       
     else
       if clk'event and clk = '1' then
-        ctrl_dc <= CTRL_NULL when dbta_valid else ctrl_dc_u;
+        ctrl_dc <= CTRL_NULL when dbt_valid else ctrl_dc_u;
 
         rdst_ix_dc <= rdst_ix_dc_u;
         rdat_dc <= rdat_dc_u;

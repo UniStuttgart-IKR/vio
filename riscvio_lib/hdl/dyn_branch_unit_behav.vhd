@@ -33,6 +33,9 @@ BEGIN
         end case;
     end process;
 
-    dbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(imm)), WORD_SIZE));
+    dbt.ix <= std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(imm)), WORD_SIZE));
+    dbt.ptr <= pc.ptr;
+    dbt.pi <= pc.pi;
+    dbt.dt <= pc.dt;
 END ARCHITECTURE behav;
 

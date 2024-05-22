@@ -45,8 +45,11 @@ BEGIN
         end case;
     end process extend;
 
-    sbta_valid <= decoded_inst.mnemonic = jal;
-    sbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(extractJTypeImm(instruction))), WORD_SIZE));
+    sbt_valid <= decoded_inst.mnemonic = jal;
+    sbt.ix <= std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(extractJTypeImm(instruction))), WORD_SIZE));
+    sbt.ptr <= pc.ptr;
+    sbt.pi <= pc.pi;
+    sbt.dt <= pc.dt;
 
 
     rdst_ix <= decoded_inst.rdst;

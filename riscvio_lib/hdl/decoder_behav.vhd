@@ -15,15 +15,18 @@ LIBRARY ieee;
 USE ieee.numeric_std.all;
 
 ARCHITECTURE behav OF decoder IS
-    signal ctrl_sig_int: ctrl_sig_T;
+    signal decoded_inst: decode_T;
 BEGIN
 
-    ctrl_sig_int <= decodeOpc(instruction);
-    ctr_sig <= ctrl_sig_int;
+    decoded_inst <= decodeOpc(instruction);
+    ctr_sig.mnemonic <= decoded_inst.mnemonic;
+    ctr_sig.alu_mode <= decoded_inst.alu_mode;
+    ctr_sig.me_mode  <= decoded_inst.me_mode;
+    ctr_sig.at_mode  <= decoded_inst.at_mode;
 
     extend: process(all) is
     begin
-        case ctrl_sig_int.imm_mode is
+        case decoded_inst.imm_mode is
             when i_type => 
                 imm <= (others => instruction(IMM12_RANGE'high));
                 imm(11 downto 0) <= instruction(IMM12_RANGE);
@@ -40,14 +43,14 @@ BEGIN
         end case;
     end process extend;
 
-    sbta_valid <= ctr_sig.mnemonic = jal;
+    sbta_valid <= decoded_inst.mnemonic = jal;
     sbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(extractJTypeImm(instruction))), WORD_SIZE));
 
 
-    rdst_ix <= to_integer(unsigned(instruction(RD_RANGE)));
-    rdat_ix <= to_integer(unsigned(instruction(RS1_RANGE)));
-    rptr_ix <= to_integer(unsigned(instruction(RS2_RANGE)));
-    raux_ix <= to_integer(unsigned(instruction(RS2_RANGE)));
+    rdst_ix <= decoded_inst.rdst;
+    rdat_ix <= decoded_inst.rdat;
+    rptr_ix <= decoded_inst.rptr;
+    raux_ix <= decoded_inst.raux;
 
 END ARCHITECTURE behav;
 

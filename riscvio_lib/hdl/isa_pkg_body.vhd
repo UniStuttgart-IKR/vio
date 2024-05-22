@@ -10,8 +10,8 @@
 PACKAGE BODY isa IS
 
 
-    pure function decodeOpc(instruction: std_logic_vector(31 downto 0)) return ctrl_sig_T is
-        variable res: ctrl_sig_T;
+    pure function decodeOpc(instruction: std_logic_vector(31 downto 0)) return decode_T is
+        variable res: decode_T;
     begin
         res.imm_mode := none;
         case instruction(OPC_RANGE) is
@@ -19,6 +19,10 @@ PACKAGE BODY isa IS
                 res.imm_mode := none;
                 res.me_mode  := holiday;
                 res.at_mode  := holiday;
+                res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
+                res.rptr     := 0;
+                res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
                         case instruction(FUNCT7_RANGE) is 
@@ -63,7 +67,6 @@ PACKAGE BODY isa IS
                                         alu_min when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
                                         alu_zexth when (instruction(FUNCT7_RANGE) = F7_ZEXT and instruction(RS2_RANGE) = F5_CLZ_ZEXT) else 
                                         alu_illegal;
-                        report "F3 war zumindest richtig";
                     when (F3_OR or F3_ORN_MAX) =>
                         res.mnemonic := or_r when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
                                         orn_r when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
@@ -91,6 +94,10 @@ PACKAGE BODY isa IS
                 res.imm_mode := i_type;
                 res.me_mode  := holiday;
                 res.at_mode  := holiday;
+                res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
+                res.rptr     := 0;
+                res.raux     := 0;
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
                         res.mnemonic := nop when instruction = NOP_INSTR else add_i;
@@ -153,7 +160,19 @@ PACKAGE BODY isa IS
                 res.imm_mode := j_type;
                 res.me_mode  := holiday;
                 res.at_mode  := holiday;
+                res.rdst     := 1 when to_integer(unsigned(instruction(RD_RANGE))) = 1 else 0; --only rix or zero are allowed!
+                res.rdat     := 0; 
+                res.rptr     := 2; --frame
+                res.raux     := 0;
             when OPC_BRANCH =>
+                res.alu_mode := alu_add;
+                res.imm_mode := b_type;
+                res.me_mode  := holiday;
+                res.at_mode  := holiday;
+                res.rdst     := 0;
+                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
+                res.rptr     := 0;
+                res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
                 case instruction(FUNCT3_RANGE) is
                     when F3_BEQ  => res.mnemonic := beq;
                     when F3_BNE  => res.mnemonic := bne;
@@ -163,11 +182,15 @@ PACKAGE BODY isa IS
                     when F3_BGEU => res.mnemonic := bgeu;
                     when others =>  res.mnemonic := illegal;
                 end case;
-                res.alu_mode := alu_add;
-                res.imm_mode := b_type;
-                res.me_mode  := holiday;
-                res.at_mode  := holiday;
             when OPC_LOAD =>
+                res.alu_mode := alu_add;
+                res.imm_mode := i_type when instruction(FUNCT3_RANGE) /= "111" else none;
+                res.me_mode  := load;
+                res.at_mode  := holiday;
+                res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                res.rdat     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
+                res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                res.raux     := 0;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := lb_i;
                     when F3_HALF  => res.mnemonic := lh_i;
@@ -177,11 +200,15 @@ PACKAGE BODY isa IS
                     when F3_REG   => res.mnemonic := illegal;
                     when others =>  res.mnemonic := illegal;
                 end case;
-                res.alu_mode := alu_add;
-                res.imm_mode := i_type;
-                res.me_mode  := load;
-                res.at_mode  := holiday;
             when OPC_STORE =>
+                res.alu_mode := alu_add;
+                res.imm_mode := s_type when instruction(FUNCT3_RANGE) /= "111" else none;
+                res.me_mode  := store;
+                res.at_mode  := holiday;
+                res.rdst     := 0;
+                res.rdat     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
+                res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := sb_i;
                     when F3_HALF  => res.mnemonic := sh_i;
@@ -189,16 +216,16 @@ PACKAGE BODY isa IS
                     when F3_REG   => res.mnemonic := illegal;
                     when others =>  res.mnemonic := illegal;
                 end case;
-                res.alu_mode := alu_add;
-                res.imm_mode := s_type;
-                res.me_mode  := store;
-                res.at_mode  := holiday;
             when others =>
                 res.mnemonic := illegal;
                 res.alu_mode := alu_illegal;
                 res.imm_mode := none;
                 res.me_mode  := holiday;
                 res.at_mode  := holiday;
+                res.rdst     := 0;
+                res.rdat     := 0;
+                res.rptr     := 0;
+                res.raux     := 0;
         end case;
         return res;
     end function decodeOpc;

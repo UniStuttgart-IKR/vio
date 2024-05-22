@@ -57,6 +57,7 @@ PACKAGE isa IS
         tag: reg_tag_T;
         val: word_T;
     end record raux_T;
+
     constant REG_NULL: reg_T := (ali => zero, index => 0, mem => REG_MEM_NULL);
 
     type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r,
@@ -149,12 +150,22 @@ PACKAGE isa IS
     type ctrl_sig_T is record 
         alu_mode:       alu_mode_T;
         mnemonic:       mnemonic_T;
-        imm_mode:       imm_T;
         me_mode:        mem_mode_T;
         at_mode:        mem_mode_T;
     end record ctrl_sig_T;
-    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, mnemonic => illegal, imm_mode => none, me_mode => holiday, at_mode => holiday);
+    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, mnemonic => illegal, me_mode => holiday, at_mode => holiday);
     
+    type decode_T is record 
+        mnemonic:       mnemonic_T;
+        alu_mode:       alu_mode_T;
+        me_mode:        mem_mode_T;
+        at_mode:        mem_mode_T;
+        rdst:           reg_ix_T;
+        rdat:           reg_ix_T;
+        rptr:           reg_ix_T;
+        raux:           reg_ix_T;
+        imm_mode:       imm_T;
+    end record decode_T;
     
     type alu_flags_T is record
       eq: boolean;
@@ -162,7 +173,7 @@ PACKAGE isa IS
       altbu: boolean;
     end record alu_flags_T;
 
-    pure function decodeOpc(instruction: std_logic_vector(31 downto 0)) return ctrl_sig_T;
+    pure function decodeOpc(instruction: std_logic_vector(31 downto 0)) return decode_T;
     pure function extractJTypeImm(inst: word_T) return word_T;
     pure function extractSTypeImm(inst: word_T) return word_T;
     pure function extractBTypeImm(inst: word_T) return word_T;

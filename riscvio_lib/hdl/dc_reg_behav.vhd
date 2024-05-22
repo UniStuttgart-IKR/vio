@@ -11,30 +11,31 @@ BEGIN
   process(clk, res_n) is
   begin
     if res_n = '0' then
-      rd_ex <= REG_NULL;
-      rs1_ex <= REG_NULL;
-      rs2_ex <= REG_NULL;
-      ctrl_ex <= CTRL_NULL;
-      pc_ex <= (others => '0');
+      rdst_ix_dc <= 0;
+      rdat_dc <= RDAT_NULL;
+      rptr_dc <= RPTR_NULL;
+      raux_dc <= RAUX_NULL;
+      imm_dc  <= (others => '0');
+      ctrl_dc <= CTRL_NULL;
+      pc_dc <= (others => '0');
       
     else
       if clk'event and clk = '1' then
-        ctrl_ex <= CTRL_NULL when dbta_valid else ctrl_dc_u;
+        ctrl_dc <= CTRL_NULL when dbta_valid else ctrl_dc_u;
 
-        rs1_ex <= rs1_dc_u;
-        rs2_ex <= rs2_dc_u;
-        rd_ex <= rd_dc_u;
+        rdst_ix_dc <= rdst_ix_dc_u;
+        rdat_dc <= rdat_dc_u;
+        rptr_dc <= rptr_dc_u;
+        raux_dc <= raux_dc_u;
+        imm_dc  <= imm_dc_u;
         
-        pc_ex <= pc_dc;
+        pc_dc <= pc_if;
       end if;
     end if;
   end process;
 
-
-  rs1_data <= rs1_ex.mem.data;
-  rs2_data <= rs2_ex.mem.data;
-  alu_mode_ex <= ctrl_ex.alu_mode; 
-  alu_a_in_sel <= ctrl_ex.alu_a_sel;
-  alu_b_in_sel <= ctrl_ex.alu_b_sel;
+  alu_mode_dc <= ctrl_dc.alu_mode; 
+  alu_a_in_sel <= ctrl_dc.alu_a_sel;
+  alu_b_in_sel <= ctrl_dc.alu_b_sel;
 
 END ARCHITECTURE behav;

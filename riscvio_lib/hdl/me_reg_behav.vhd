@@ -12,20 +12,24 @@ BEGIN
   process(clk, res_n) is
     begin
         if res_n = '0' then
-            rd_at <= REG_NULL;
-            rs1_at <= REG_NULL;
-            rs2_at <= REG_NULL;
-            ctrl_at <= CTRL_NULL;
-            alu_out_at <= (others => '0');
+            rdst_ix_me <= 0;
+            rdat_me <= RDAT_NULL;
+            rptr_me <= RPTR_NULL;
+            raux_me <= RAUX_NULL;
+            imm_me  <= (others => '0');
+            ctrl_me <= CTRL_NULL;
+            alu_out_me <= (others => '0');
         else
             if clk'event and clk = '1' then
-                ctrl_at <= ctrl_me;
+                ctrl_me <= ctrl_ex;
 
-                rs1_at <= rs1_me;
-                rs2_at <= rs2_me;
-                rd_at <= rd_me;
+                rdst_ix_me <= rdst_ix_ex;
+                rdat_me <= rdat_ex;
+                rptr_me <= rptr_ex;
+                raux_me <= raux_ex;
+                imm_me  <= imm_ex;
 
-                alu_out_at <= alu_out_me;
+                alu_out_me <= alu_out_ex;
             end if;
         end if;
     end process;

@@ -14,6 +14,6 @@ BEGIN
          rptr_dc.pi  when alu_b_in_sel = PTRPI else
          rptr_dc.dt  when alu_b_in_sel = PTRDT else
          raux_dc.val  when alu_b_in_sel = AUX else
-         imm_dc;´
+         imm_dc;
 END ARCHITECTURE behav;
 

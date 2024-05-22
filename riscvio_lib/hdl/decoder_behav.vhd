@@ -19,10 +19,12 @@ ARCHITECTURE behav OF decoder IS
 BEGIN
 
     decoded_inst <= decodeOpc(instruction);
-    ctr_sig.mnemonic <= decoded_inst.mnemonic;
-    ctr_sig.alu_mode <= decoded_inst.alu_mode;
-    ctr_sig.me_mode  <= decoded_inst.me_mode;
-    ctr_sig.at_mode  <= decoded_inst.at_mode;
+    ctr_sig.mnemonic    <= decoded_inst.mnemonic;
+    ctr_sig.alu_mode    <= decoded_inst.alu_mode;
+    ctr_sig.me_mode     <= decoded_inst.me_mode;
+    ctr_sig.at_mode     <= decoded_inst.at_mode;
+    ctr_sig.alu_a_sel   <= decoded_inst.alu_a_sel;
+    ctr_sig.alu_b_sel   <= decoded_inst.alu_b_sel;
 
     extend: process(all) is
     begin

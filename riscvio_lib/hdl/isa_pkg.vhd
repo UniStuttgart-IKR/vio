@@ -9,6 +9,7 @@
 --
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 PACKAGE isa IS
     constant DWORD_SIZE: natural := 64;
     constant WORD_SIZE: natural := 32; 
@@ -40,10 +41,8 @@ PACKAGE isa IS
        delta: word_T;
     end record pc_T;
 
-    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM);
-
     subtype reg_ix_T is natural range 0 to 31;
-    type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, t3, t4, t5, t6, a0, a1, a2, a3, a4, a5, a6, a7, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, cnst, imm);
+    type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, t3, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t4, t5, t6, imm);
     type reg_T is record
         ali: ali_T;
         index: reg_ix_T;
@@ -55,7 +54,7 @@ PACKAGE isa IS
         ix: reg_ix_T;
         val: word_T;
     end record rdat_T;
-    CONSTANT RDAT_NULL := (ali => zero, ix => 0, val => (others => '0'));
+    CONSTANT RDAT_NULL: rdat_T := (ali => zero, ix => 0, val => (others => '0'));
     type rptr_T is record
         ali: ali_T;
         ix: reg_ix_T;
@@ -63,13 +62,14 @@ PACKAGE isa IS
         pi: word_T;
         dt: word_T;
     end record rptr_T;
-    CONSTANT RPTR_NULL := (ali => zero, ix => 0, val => (others => '0'), pi => (others => '0'), dt => (others => '0'));
+    CONSTANT RPTR_NULL: rptr_T := (ali => zero, ix => 0, val => (others => '0'), pi => (others => '0'), dt => (others => '0'));
     type raux_T is record
         ali: ali_T;
         ix: reg_ix_T;
         tag: reg_tag_T;
         val: word_T;
     end record raux_T;
+    CONSTANT RAUX_NULL: raux_T := (ali => zero, ix => 0, val => (others => '0'), tag => DATA);
 
     constant REG_NULL: reg_T := (ali => zero, index => 0, mem => REG_MEM_NULL);
 
@@ -159,18 +159,23 @@ PACKAGE isa IS
     type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, 
                         alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orcb, alu_rev8,
                         alu_illegal);
+    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM);
     type mem_mode_T is (load, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, load_attr, holiday);
     type ctrl_sig_T is record 
         alu_mode:       alu_mode_T;
+        alu_a_sel:      alu_in_sel_T;
+        alu_b_sel:      alu_in_sel_T;
         mnemonic:       mnemonic_T;
         me_mode:        mem_mode_T;
         at_mode:        mem_mode_T;
     end record ctrl_sig_T;
-    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, mnemonic => illegal, me_mode => holiday, at_mode => holiday);
+    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, alu_a_sel => DAT, alu_b_sel => DAT, mnemonic => illegal, me_mode => holiday, at_mode => holiday);
     
     type decode_T is record 
         mnemonic:       mnemonic_T;
         alu_mode:       alu_mode_T;
+        alu_a_sel:      alu_in_sel_T;
+        alu_b_sel:      alu_in_sel_T;
         me_mode:        mem_mode_T;
         at_mode:        mem_mode_T;
         rdst:           reg_ix_T;

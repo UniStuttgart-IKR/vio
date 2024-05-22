@@ -15,7 +15,7 @@ USE riscvio_lib.isa.all;
 
 ENTITY dyn_branch_unit IS
   PORT(
-    imm_as_reg : IN reg_T;
+    imm        : IN word_T;
     alu_flags  : IN alu_flags_T;
     ctrl_sig   : IN ctrl_sig_T;
     pc         : IN word_T;

@@ -15,8 +15,8 @@ BEGIN
             rd_wb <= REG_NULL;
         else
             if clk'event and clk = '1' then
-                rd_wb <= rd_at;
-                rd_wb.mem.data <= alu_out_at;
+                rd_wb.index <= rdst_ix_me;
+                rd_wb.mem.data <= alu_out_me;
             end if;
         end if;
     end process;

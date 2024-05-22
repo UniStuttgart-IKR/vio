@@ -33,6 +33,6 @@ BEGIN
         end case;
     end process;
 
-    dbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(imm_as_reg.mem.data)), WORD_SIZE));
+    dbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(imm)), WORD_SIZE));
 END ARCHITECTURE behav;
 

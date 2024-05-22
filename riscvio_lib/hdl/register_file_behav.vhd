@@ -22,7 +22,7 @@ BEGIN
     rptr.ali  <= ali_T'val(rptr_ix);
     rptr.val  <= registers(rptr_ix).data;
     rptr.pi   <= registers(rptr_ix).pi;
-    rptr.dt   <= registers(rptr_ix).dt;
+    rptr.dt   <= registers(rptr_ix).delta;
 
     raux.ix   <= rptr_ix;
     raux.ali  <= ali_T'val(rptr_ix);

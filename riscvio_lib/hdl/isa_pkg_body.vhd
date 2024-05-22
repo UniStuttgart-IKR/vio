@@ -23,6 +23,8 @@ PACKAGE BODY isa IS
                 res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.rptr     := 0;
                 res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
+                res.alu_a_sel:= DAT;
+                res.alu_b_sel:= AUX;
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
                         case instruction(FUNCT7_RANGE) is 
@@ -98,6 +100,8 @@ PACKAGE BODY isa IS
                 res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.rptr     := 0;
                 res.raux     := 0;
+                res.alu_a_sel:= DAT;
+                res.alu_b_sel:= IMM;
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
                         res.mnemonic := nop when instruction = NOP_INSTR else add_i;
@@ -164,6 +168,8 @@ PACKAGE BODY isa IS
                 res.rdat     := 0; 
                 res.rptr     := 2; --frame
                 res.raux     := 0;
+                res.alu_a_sel:= DAT;
+                res.alu_b_sel:= IMM;
             when OPC_BRANCH =>
                 res.alu_mode := alu_add;
                 res.imm_mode := b_type;
@@ -173,6 +179,8 @@ PACKAGE BODY isa IS
                 res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.rptr     := 0;
                 res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
+                res.alu_a_sel:= DAT;
+                res.alu_b_sel:= AUX;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BEQ  => res.mnemonic := beq;
                     when F3_BNE  => res.mnemonic := bne;
@@ -191,6 +199,8 @@ PACKAGE BODY isa IS
                 res.rdat     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.raux     := 0;
+                res.alu_a_sel:= DAT;
+                res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := lb_i;
                     when F3_HALF  => res.mnemonic := lh_i;
@@ -209,6 +219,8 @@ PACKAGE BODY isa IS
                 res.rdat     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
+                res.alu_a_sel:= DAT;
+                res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := sb_i;
                     when F3_HALF  => res.mnemonic := sh_i;
@@ -226,6 +238,8 @@ PACKAGE BODY isa IS
                 res.rdat     := 0;
                 res.rptr     := 0;
                 res.raux     := 0;
+                res.alu_a_sel:= DAT;
+                res.alu_b_sel:= AUX;
         end case;
         return res;
     end function decodeOpc;

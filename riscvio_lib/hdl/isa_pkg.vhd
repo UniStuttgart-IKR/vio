@@ -39,6 +39,24 @@ PACKAGE isa IS
         index: reg_ix_T;
         mem: reg_mem_T;
     end record reg_T;
+    type rdat_T is record
+        ali: ali_T;
+        ix: reg_ix_T;
+        val: word_T;
+    end record rdat_T;
+    type rptr_T is record
+        ali: ali_T;
+        ix: reg_ix_T;
+        val: word_T;
+        pi: word_T;
+        dt: word_T;
+    end record rptr_T;
+    type raux_T is record
+        ali: ali_T;
+        ix: reg_ix_T;
+        tag: reg_tag_T;
+        val: word_T;
+    end record raux_T;
     constant REG_NULL: reg_T := (ali => zero, index => 0, mem => REG_MEM_NULL);
 
     type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r,

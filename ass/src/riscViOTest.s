@@ -54,4 +54,80 @@ _start:
             orc.b   s6, t0
             rev8    s8, t0
 
+            jal     t0, usb.a
+
 doom:       jal     t0, doom
+
+
+.section usb
+.word usb.trampEnd - usb
+.word usb.end - usb
+.equ usb.a, usb.a__-usb
+
+.globl  usb.a
+usb.a__:    j       usb.a_
+usb.b:      j       usb.b_
+usb.c:      j       usb.c_
+usb.trampEnd:
+
+usb.a_:
+
+            andn    t3, t0,t1
+            orn     t4, t0,t1
+            xnor    t5, t0,t1
+            clz     t6, t0
+            ctz     a0, t0
+            cpop    a1, t0
+            max     a2, t0,t1
+            maxu    a3, t0,t1
+            min     a4, t0,t1
+            minu    a5, t0,t1
+            sext.b  s0, t0
+            sext.h  s1, t1
+            zext.h  s2, t0
+            rol     s3, t0,t1
+            ror     s4, t0,t1
+            rori    s5, t0,16
+            orc.b   s6, t0
+            rev8    s8, t0
+usb.b_:
+
+            andn    t3, t0,t1
+            orn     t4, t0,t1
+            xnor    t5, t0,t1
+            clz     t6, t0
+            ctz     a0, t0
+            cpop    a1, t0
+            max     a2, t0,t1
+            maxu    a3, t0,t1
+            min     a4, t0,t1
+            minu    a5, t0,t1
+            sext.b  s0, t0
+            sext.h  s1, t1
+            zext.h  s2, t0
+            rol     s3, t0,t1
+            ror     s4, t0,t1
+            rori    s5, t0,16
+            orc.b   s6, t0
+            rev8    s8, t0
+usb.c_:
+
+            andn    t3, t0,t1
+            orn     t4, t0,t1
+            xnor    t5, t0,t1
+            clz     t6, t0
+            ctz     a0, t0
+            cpop    a1, t0
+            max     a2, t0,t1
+            maxu    a3, t0,t1
+            min     a4, t0,t1
+            minu    a5, t0,t1
+            sext.b  s0, t0
+            sext.h  s1, t1
+            zext.h  s2, t0
+            rol     s3, t0,t1
+            ror     s4, t0,t1
+            rori    s5, t0,16
+            orc.b   s6, t0
+            rev8    s8, t0
+usb.end:

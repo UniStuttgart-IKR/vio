@@ -14,17 +14,20 @@ ARCHITECTURE behav OF register_file IS
 
 BEGIN
     
-    rs1.mem <= registers(rs1_index);
-    rs2.mem <= registers(rs2_index);
-    rd.mem <= registers(rd_index);
+    rdat.ix   <= rdat_ix;
+    rdat.ali  <= ali_T'val(rdat_ix);
+    rdat.val  <= registers(rdat_ix).data;
 
-    rs1.index <= rs1_index;
-    rs2.index <= rs2_index;
-    rd.index <= rd_index;
+    rptr.ix   <= rptr_ix;
+    rptr.ali  <= ali_T'val(rptr_ix);
+    rptr.val  <= registers(rptr_ix).data;
+    rptr.pi   <= registers(rptr_ix).pi;
+    rptr.dt   <= registers(rptr_ix).dt;
 
-    rs1.ali <= ali_T'val(rs1_index);
-    rs2.ali <= ali_T'val(rs2_index);
-    rd.ali <= ali_T'val(rd_index);
+    raux.ix   <= rptr_ix;
+    raux.ali  <= ali_T'val(rptr_ix);
+    raux.val  <= registers(rptr_ix).data;
+    raux.tag  <= registers(rptr_ix).tag;
     
     write: process(clk, res_n) is
     begin

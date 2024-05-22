@@ -15,7 +15,6 @@ LIBRARY ieee;
 USE ieee.numeric_std.all;
 
 ARCHITECTURE behav OF decoder IS
-    signal extended_imm: word_T;
     signal ctrl_sig_int: ctrl_sig_T;
 BEGIN
 
@@ -26,17 +25,17 @@ BEGIN
     begin
         case ctrl_sig_int.imm_mode is
             when i_type => 
-                extended_imm <= (others => instruction(IMM12_RANGE'high));
-                extended_imm(11 downto 0) <= instruction(IMM12_RANGE);
+                imm <= (others => instruction(IMM12_RANGE'high));
+                imm(11 downto 0) <= instruction(IMM12_RANGE);
             when s_type => 
-                extended_imm <= extractSTypeImm(instruction);
+                imm <= extractSTypeImm(instruction);
             when b_type => 
-                extended_imm <= extractBTypeImm(instruction);
+                imm <= extractBTypeImm(instruction);
             when u_type => 
-                extended_imm <= (others => instruction(IMM20_RANGE'high));
-                extended_imm(19 downto 0) <= instruction(IMM20_RANGE);
+                imm <= (others => instruction(IMM20_RANGE'high));
+                imm(19 downto 0) <= instruction(IMM20_RANGE);
             when j_type =>
-                extended_imm <= extractJTypeImm(instruction);
+                imm <= extractJTypeImm(instruction);
             when none => null;
         end case;
     end process extend;
@@ -44,12 +43,11 @@ BEGIN
     sbta_valid <= ctr_sig.mnemonic = jal;
     sbta <= std_logic_vector(to_unsigned(to_integer(unsigned(pc)) + to_integer(signed(extractJTypeImm(instruction))), WORD_SIZE));
 
-    imm_as_reg.mem.data <= extended_imm;
-    imm_as_reg.mem.tag <= DATA;
 
-    rd_ix <= to_integer(unsigned(instruction(RD_RANGE)));
-    rs1_ix <= to_integer(unsigned(instruction(RS1_RANGE)));
-    rs2_ix <= to_integer(unsigned(instruction(RS2_RANGE)));
+    rdst_ix <= to_integer(unsigned(instruction(RD_RANGE)));
+    rdat_ix <= to_integer(unsigned(instruction(RS1_RANGE)));
+    rptr_ix <= to_integer(unsigned(instruction(RS2_RANGE)));
+    raux_ix <= to_integer(unsigned(instruction(RS2_RANGE)));
 
 END ARCHITECTURE behav;
 

@@ -16,14 +16,17 @@ ENTITY decoder IS
    PORT( 
       pc          : IN     word_T;
       instruction : IN     word_T;
-      ctr_sig     : OUT    ctrl_sig_t;
-      rs1_ix      : OUT    reg_ix_T;
-      rs2_ix      : OUT    reg_ix_T;
-      rd_ix       : OUT    reg_ix_T;
 
-      imm_as_reg  : OUT    reg_T;
-      sbta_valid  : OUT boolean;
-      sbta        : OUT word_T
+      rdat_ix     : OUT    reg_ix_T;
+      rptr_ix     : OUT    reg_ix_T;
+      raux_ix     : OUT    reg_ix_T;
+
+      rdst_ix     : OUT    reg_ix_T;
+      imm         : OUT    word_T;
+
+      ctr_sig     : OUT    ctrl_sig_t;
+      sbta_valid  : OUT    boolean;
+      sbta        : OUT    word_T
    );
 
 -- Declarations

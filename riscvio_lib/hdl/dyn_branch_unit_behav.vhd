@@ -17,19 +17,19 @@ BEGIN
     begin
         case ctrl_sig.mnemonic is
             when beq => 
-                dbta_valid <= alu_flags.eq;
+                dbt_valid <= alu_flags.eq;
             when bne =>
-                dbta_valid <= NOT alu_flags.eq;
+                dbt_valid <= NOT alu_flags.eq;
             when blt => 
-                dbta_valid <= alu_flags.altb;
+                dbt_valid <= alu_flags.altb;
             when bge => 
-                dbta_valid <= not alu_flags.altb or alu_flags.eq;
+                dbt_valid <= not alu_flags.altb or alu_flags.eq;
             when bltu => 
-                dbta_valid <= alu_flags.altbu;
+                dbt_valid <= alu_flags.altbu;
             when bgeu => 
-                dbta_valid <= not alu_flags.altbu or alu_flags.eq;
+                dbt_valid <= not alu_flags.altbu or alu_flags.eq;
             when others => 
-                dbta_valid <= false;
+                dbt_valid <= false;
         end case;
     end process;
 

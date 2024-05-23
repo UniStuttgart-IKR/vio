@@ -14,7 +14,7 @@ USE riscvio_lib.isa.all;
 
 ENTITY decoder IS
    PORT( 
-      pc          : IN     word_T;
+      pc          : IN     pc_T;
       instruction : IN     word_T;
 
       rdat_ix     : OUT    reg_ix_T;
@@ -26,7 +26,7 @@ ENTITY decoder IS
 
       ctr_sig     : OUT    ctrl_sig_t;
       sbt_valid   : OUT    boolean;
-      sbt         : OUT    word_T
+      sbt         : OUT    pc_T
    );
 
 -- Declarations

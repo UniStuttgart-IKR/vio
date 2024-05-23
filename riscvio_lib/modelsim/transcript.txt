@@ -1,29 +1,27 @@
 # vsim -f hds_args.tmp -no_autoacc -foreign "hdsInit C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll" -pli ""C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll"" 
-# Start time: 17:32:19 on May 09,2024
+# Start time: 23:12:22 on May 23,2024
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
 # Loading ieee.std_logic_arith(body)
 # Loading riscvio_lib.riscvio_tb(struct)
 # Loading riscvio_lib.clk_res_gen_var(behav)
-# Loading riscvio_lib.isa(body)
 # Loading ieee.numeric_std(body)
+# Loading riscvio_lib.isa(body)
+# Loading altera_mf.altera_mf_components
 # Loading riscvio_lib.riscvio(struct)
 # Loading riscvio_lib.alu(behav)
+# Loading riscvio_lib.alu_a_mux(behav)
+# Loading riscvio_lib.alu_b_mux(behav)
 # Loading riscvio_lib.at_reg(behav)
 # Loading riscvio_lib.dc_reg(behav)
 # Loading riscvio_lib.decoder(behav)
 # Loading riscvio_lib.dyn_branch_unit(behav)
 # Loading riscvio_lib.ex_reg(behav)
 # Loading riscvio_lib.if_reg(behav)
-# Loading riscvio_lib.imm_mux(behav)
-# Loading riscvio_lib.instruction_memory(mixed)
-# Loading altera_mf.altera_mf_components
-# Loading riscvio_lib.fpga_compatible_block_ram(cyclonevbehav)
-# Loading ieee.std_logic_unsigned(body)
-# Loading altera_mf.altera_common_conversion(body)
-# Loading altera_mf.altera_device_families(body)
-# Loading altera_mf.altsyncram(translated)
+# Loading riscvio_lib.instruction_rom(syn)
+# ** Warning: (vsim-3473) Component instance "altsyncram_component : altsyncram" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/irom_i File: Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/hdl/instruction_rom.vhd
 # Loading riscvio_lib.me_reg(behav)
 # Loading riscvio_lib.next_pc_mux(behav)
 # Loading riscvio_lib.pc_incrementer(behav)
@@ -120,26 +118,1618 @@
 # SymGetModuleInfo64: Modul nicht gefunden.
 # 
 # 
-# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.ali, and its initial value is not used.
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.ptr(31 downto 0), and its initial value is not used.
 # Therefore, simulation behavior may occur that is not in compliance with
-# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.ali.
-# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.index, and its initial value is not used.
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.ptr(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.pi(31 downto 0), and its initial value is not used.
 # Therefore, simulation behavior may occur that is not in compliance with
-# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.index.
-# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.pi(31 downto 0), and its initial value is not used.
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.dt(31 downto 0), and its initial value is not used.
 # Therefore, simulation behavior may occur that is not in compliance with
-# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.pi(31 downto 0).
-# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/decoder_i/imm_as_reg.mem.delta(31 downto 0), and its initial value is not used.
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.dt(31 downto 0).
+# do Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/wave_templ.do
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Error: (vsim-86) Argument value -3 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Error: (vsim-86) Argument value -3 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# Loading riscvio_lib.riscvio_tb(struct)
+# Loading riscvio_lib.clk_res_gen_var(behav)
+# Loading riscvio_lib.isa(body)
+# Loading altera_mf.altera_mf_components
+# Loading riscvio_lib.riscvio(struct)
+# Loading riscvio_lib.alu(behav)
+# Loading riscvio_lib.alu_a_mux(behav)
+# Loading riscvio_lib.alu_b_mux(behav)
+# Loading riscvio_lib.at_reg(behav)
+# Loading riscvio_lib.dc_reg(behav)
+# Loading riscvio_lib.decoder(behav)
+# Loading riscvio_lib.dyn_branch_unit(behav)
+# Loading riscvio_lib.ex_reg(behav)
+# Loading riscvio_lib.if_reg(behav)
+# Loading riscvio_lib.instruction_rom(syn)
+# ** Warning: (vsim-3473) Component instance "altsyncram_component : altsyncram" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/irom_i File: Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/hdl/instruction_rom.vhd
+# Loading riscvio_lib.me_reg(behav)
+# Loading riscvio_lib.next_pc_mux(behav)
+# Loading riscvio_lib.pc_incrementer(behav)
+# Loading riscvio_lib.pc_reg(behav)
+# Loading riscvio_lib.register_file(behav)
+# Loading C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.ptr(31 downto 0), and its initial value is not used.
 # Therefore, simulation behavior may occur that is not in compliance with
-# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/imm_as_reg.mem.delta(31 downto 0).
-# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/rd.ali, and its initial value is not used.
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.ptr(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.pi(31 downto 0), and its initial value is not used.
 # Therefore, simulation behavior may occur that is not in compliance with
-# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/rd.ali.
-# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/rs1.ali, and its initial value is not used.
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.dt(31 downto 0), and its initial value is not used.
 # Therefore, simulation behavior may occur that is not in compliance with
-# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/rs1_dc_u.ali.
-# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/U_1/register_file_i/rs2.ali, and its initial value is not used.
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.dt(31 downto 0).
+run
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Error: (vsim-86) Argument value -2 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Error: (vsim-86) Argument value -2 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+add wave -position 2  sim:/riscvio_tb/riscvio_i/irom_i/instr_addr
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3473) Component instance "altsyncram_component : altsyncram" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/irom_i File: Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/hdl/instruction_rom.vhd
+# Loading C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.ptr(31 downto 0), and its initial value is not used.
 # Therefore, simulation behavior may occur that is not in compliance with
-# the VHDL standard as the initial values come from the base signal /riscvio_tb/U_1/rs2.ali.
-# End time: 17:32:26 on May 09,2024, Elapsed time: 0:00:07
-# Errors: 0, Warnings: 7
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.ptr(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.dt(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.dt(31 downto 0).
+run
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Error: (vsim-86) Argument value -2 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Error: (vsim-86) Argument value -2 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+add wave -position 3  sim:/riscvio_tb/riscvio_i/irom_i/instr_addr
+add wave -position 3  sim:/riscvio_tb/riscvio_i/irom_i/pc
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3473) Component instance "altsyncram_component : altsyncram" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/irom_i File: Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/hdl/instruction_rom.vhd
+# Loading C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.ptr(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.ptr(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.pi(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.pi(31 downto 0).
+# ** Warning: (vsim-8684) No drivers exist on out port /riscvio_tb/riscvio_i/pc_increment_i/next_pc.dt(31 downto 0), and its initial value is not used.
+# Therefore, simulation behavior may occur that is not in compliance with
+# the VHDL standard as the initial values come from the base signal /riscvio_tb/riscvio_i/incremented_pc.dt(31 downto 0).
+run
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Error: (vsim-86) Argument value -2 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Error: (vsim-86) Argument value -2 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# Loading riscvio_lib.riscvio_tb(struct)
+# Loading riscvio_lib.clk_res_gen_var(behav)
+# Loading riscvio_lib.isa(body)
+# Loading altera_mf.altera_mf_components
+# Loading riscvio_lib.riscvio(struct)
+# Loading riscvio_lib.alu(behav)
+# Loading riscvio_lib.alu_a_mux(behav)
+# Loading riscvio_lib.alu_b_mux(behav)
+# Loading riscvio_lib.at_reg(behav)
+# Loading riscvio_lib.dc_reg(behav)
+# Loading riscvio_lib.decoder(behav)
+# Loading riscvio_lib.dyn_branch_unit(behav)
+# Loading riscvio_lib.ex_reg(behav)
+# Loading riscvio_lib.if_reg(behav)
+# Loading riscvio_lib.instruction_rom(syn)
+# ** Warning: (vsim-3473) Component instance "altsyncram_component : altsyncram" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/irom_i File: Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/hdl/instruction_rom.vhd
+# Loading riscvio_lib.me_reg(behav)
+# Loading riscvio_lib.next_pc_mux(behav)
+# Loading riscvio_lib.pc_incrementer(behav)
+# Loading riscvio_lib.pc_reg(behav)
+# Loading riscvio_lib.register_file(behav)
+# Loading C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll
+run
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Error: (vsim-86) Argument value -2 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -2 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Error: (vsim-86) Argument value -2 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# Loading riscvio_lib.riscvio_tb(struct)
+# Loading riscvio_lib.clk_res_gen_var(behav)
+# Loading riscvio_lib.isa(body)
+# Loading altera_mf.altera_mf_components
+# Loading riscvio_lib.riscvio(struct)
+# Loading riscvio_lib.alu(behav)
+# Loading riscvio_lib.alu_a_mux(behav)
+# Loading riscvio_lib.alu_b_mux(behav)
+# Loading riscvio_lib.at_reg(behav)
+# Loading riscvio_lib.dc_reg(behav)
+# Loading riscvio_lib.decoder(behav)
+# Loading riscvio_lib.dyn_branch_unit(behav)
+# Loading riscvio_lib.ex_reg(behav)
+# Loading riscvio_lib.if_reg(behav)
+# Loading riscvio_lib.instruction_rom(syn)
+# ** Warning: (vsim-3473) Component instance "altsyncram_component : altsyncram" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/irom_i File: Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/hdl/instruction_rom.vhd
+# Loading riscvio_lib.me_reg(behav)
+# Loading riscvio_lib.next_pc_mux(behav)
+# Loading riscvio_lib.pc_incrementer(behav)
+# Loading riscvio_lib.pc_reg(behav)
+# Loading riscvio_lib.register_file(behav)
+# Loading C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll
+run
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Error: (vsim-86) Argument value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Error: (vsim-86) Argument value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 210 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 210 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 230 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 230 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 250 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 250 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 270 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 270 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 290 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 290 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/wave_templ.do
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3473) Component instance "altsyncram_component : altsyncram" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/irom_i File: Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/hdl/instruction_rom.vhd
+# Loading C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll
+run
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Error: (vsim-86) Argument value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Error: (vsim-86) Argument value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 210 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 210 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 230 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 230 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 250 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 250 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 270 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 270 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 290 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 290 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+add wave -position 7  sim:/riscvio_tb/riscvio_i/irom_i/instr_addr
+add wave -position 8  sim:/riscvio_tb/riscvio_i/sbt_valid
+add wave -position 9  sim:/riscvio_tb/riscvio_i/dbt_valid
+add wave -position 9  sim:/riscvio_tb/riscvio_i/dbt
+add wave -position 8  sim:/riscvio_tb/riscvio_i/static_branch_pc
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3473) Component instance "altsyncram_component : altsyncram" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/irom_i File: Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/hdl/instruction_rom.vhd
+# Loading C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll
+run
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Error: (vsim-86) Argument value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Error: (vsim-86) Argument value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3473) Component instance "altsyncram_component : altsyncram" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/irom_i File: Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/hdl/instruction_rom.vhd
+# Loading C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll
+run
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Error: (vsim-86) Argument value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Error: (vsim-86) Argument value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 210 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 210 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 230 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 230 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 250 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 250 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 270 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 270 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 290 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 290 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+# hds_restart
+restart -force
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# Loading riscvio_lib.riscvio_tb(struct)
+# Loading riscvio_lib.clk_res_gen_var(behav)
+# Loading riscvio_lib.isa(body)
+# Loading altera_mf.altera_mf_components
+# Loading riscvio_lib.riscvio(struct)
+# Loading riscvio_lib.alu(behav)
+# Loading riscvio_lib.alu_a_mux(behav)
+# Loading riscvio_lib.alu_b_mux(behav)
+# Loading riscvio_lib.at_reg(behav)
+# Loading riscvio_lib.dc_reg(behav)
+# Loading riscvio_lib.decoder(behav)
+# Loading riscvio_lib.dyn_branch_unit(behav)
+# Loading riscvio_lib.ex_reg(behav)
+# Loading riscvio_lib.if_reg(behav)
+# Loading riscvio_lib.instruction_rom(syn)
+# ** Warning: (vsim-3473) Component instance "altsyncram_component : altsyncram" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/irom_i File: Z:/media/surfer/Volume/Dateien/vhdl/RiscViO/riscvio_lib/hdl/instruction_rom.vhd
+# Loading riscvio_lib.me_reg(behav)
+# Loading riscvio_lib.next_pc_mux(behav)
+# Loading riscvio_lib.pc_incrementer(behav)
+# Loading riscvio_lib.pc_reg(behav)
+# Loading riscvio_lib.register_file(behav)
+# Loading C:/MentorGraphics/HDS_2021.1/resources/downstream/modelsim/ModelSim_32Bit.dll
+# Warning in wave window restart: (vish-4014) No objects found matching '/riscvio_tb/riscvio_i/static_branch_pc'. 
+add wave -position 8  sim:/riscvio_tb/riscvio_i/sbt
+run
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# SymGetModuleInfo64: Modul nicht gefunden.
+# 
+# 
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
+#    Time: 0 ns  Iteration: 0  Instance: /riscvio_tb/riscvio_i/alu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 0 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/pc_increment_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Error: (vsim-86) Argument value -4 is not in bounds of subtype NATURAL.
+#    Time: 50 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: (vsim-151) NUMERIC_STD.TO_INTEGER: Value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Error: (vsim-86) Argument value -4 is not in bounds of subtype NATURAL.
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 70 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 110 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 130 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 150 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 190 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 210 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 210 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 230 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 230 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 250 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 250 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 270 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 270 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 290 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/dbu_i
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 290 ns  Iteration: 2  Instance: /riscvio_tb/riscvio_i/decoder_i
+# 0
+# 
+# The connection to HDS has been closed

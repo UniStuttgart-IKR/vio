@@ -10,5 +10,9 @@
 ARCHITECTURE behav OF pc_incrementer IS
 BEGIN
   next_pc.ix <= std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + 4, next_pc.ix'length)); 
+  next_pc.ptr <= pc.ptr;
+  next_pc.pi <= pc.pi;
+  next_pc.dt <= pc.dt;
+
 END ARCHITECTURE behav;
 

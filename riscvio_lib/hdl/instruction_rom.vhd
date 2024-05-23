@@ -36,6 +36,7 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
+USE ieee.numeric_std.all;
 
 LIBRARY riscvio_lib;
 USE riscvio_lib.isa.all;
@@ -46,7 +47,7 @@ USE altera_mf.altera_mf_components.all;
 ENTITY instruction_rom IS
 	PORT
 	(
-		address		: IN word_T;
+		pc		: IN pc_T;
 		clock		: IN STD_LOGIC  := '1';
 		q		: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
 	);
@@ -60,7 +61,7 @@ ARCHITECTURE SYN OF instruction_rom IS
 
 BEGIN
 	q    <= sub_wire0(7 DOWNTO 0) & sub_wire0(15 DOWNTO 8) & sub_wire0(23 DOWNTO 16) & sub_wire0(31 DOWNTO 24);
-  instr_addr <= std_logic_vector(unsigned(pc.ix) + unsigned(pc.ptr) + unsigned(8)); 
+  instr_addr <= std_logic_vector(unsigned(pc.ix) + unsigned(pc.ptr) + to_unsigned(8, instr_addr'length)); 
   
 	altsyncram_component : altsyncram
 	GENERIC MAP (

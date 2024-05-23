@@ -18,10 +18,10 @@ ENTITY dyn_branch_unit IS
     imm        : IN word_T;
     alu_flags  : IN alu_flags_T;
     ctrl_sig   : IN ctrl_sig_T;
-    pc         : IN word_T;
+    pc         : IN pc_T;
 
     dbt_valid  : OUT boolean;
-    dbt        : OUT word_T
+    dbt        : OUT pc_T
   ); 
 END ENTITY dyn_branch_unit;
 

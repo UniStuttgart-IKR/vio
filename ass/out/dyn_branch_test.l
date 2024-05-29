@@ -1,5 +1,5 @@
 
-out/dyn_branch_test.elf:     Dateiformat elf32-littleriscv
+out/dyn_branch_test.elf:     file format elf32-littleriscv
 
 
 Disassembly of section .text:
@@ -20,15 +20,15 @@ Disassembly of section .text:
   30:	00000013          	addi	zero,zero,0
   34:	00000013          	addi	zero,zero,0
   38:	00628463          	beq	t0,t1,40 <ok1>
-  3c:	1280006f          	jal	zero,164 <failure>
+  3c:	1240006f          	jal	zero,160 <failure>
 
 00000040 <ok1>:
   40:	00601463          	bne	zero,t1,48 <ok2>
-  44:	1200006f          	jal	zero,164 <failure>
+  44:	11c0006f          	jal	zero,160 <failure>
 
 00000048 <ok2>:
   48:	00601463          	bne	zero,t1,50 <ok3>
-  4c:	1180006f          	jal	zero,164 <failure>
+  4c:	1140006f          	jal	zero,160 <failure>
 
 00000050 <ok3>:
   50:	00200313          	addi	t1,zero,2
@@ -37,25 +37,25 @@ Disassembly of section .text:
   5c:	00000013          	addi	zero,zero,0
   60:	00000013          	addi	zero,zero,0
   64:	0062c463          	blt	t0,t1,6c <ok4>
-  68:	0fc0006f          	jal	zero,164 <failure>
+  68:	0f80006f          	jal	zero,160 <failure>
 
 0000006c <ok4>:
   6c:	00200313          	addi	t1,zero,2
   70:	0062c463          	blt	t0,t1,78 <ok5>
-  74:	0f00006f          	jal	zero,164 <failure>
+  74:	0ec0006f          	jal	zero,160 <failure>
 
 00000078 <ok5>:
   78:	00200313          	addi	t1,zero,2
   7c:	0062c463          	blt	t0,t1,84 <ok6>
-  80:	0e40006f          	jal	zero,164 <failure>
+  80:	0e00006f          	jal	zero,160 <failure>
 
 00000084 <ok6>:
   84:	00535463          	bge	t1,t0,8c <ok7>
-  88:	0dc0006f          	jal	zero,164 <failure>
+  88:	0d80006f          	jal	zero,160 <failure>
 
 0000008c <ok7>:
   8c:	00535463          	bge	t1,t0,94 <ok8>
-  90:	0d40006f          	jal	zero,164 <failure>
+  90:	0d00006f          	jal	zero,160 <failure>
 
 00000094 <ok8>:
   94:	00200293          	addi	t0,zero,2
@@ -64,15 +64,15 @@ Disassembly of section .text:
   a0:	00000013          	addi	zero,zero,0
   a4:	00000013          	addi	zero,zero,0
   a8:	00535463          	bge	t1,t0,b0 <ok9>
-  ac:	0b80006f          	jal	zero,164 <failure>
+  ac:	0b40006f          	jal	zero,160 <failure>
 
 000000b0 <ok9>:
   b0:	00535463          	bge	t1,t0,b8 <ok10>
-  b4:	0b00006f          	jal	zero,164 <failure>
+  b4:	0ac0006f          	jal	zero,160 <failure>
 
 000000b8 <ok10>:
   b8:	11100513          	addi	a0,zero,273
-  bc:	0b00006f          	jal	zero,16c <doom>
+  bc:	0ac0006f          	jal	zero,168 <doom>
   c0:	00628e33          	add	t3,t0,t1
   c4:	40628eb3          	sub	t4,t0,t1
   c8:	00629f33          	sll	t5,t0,t1
@@ -111,16 +111,15 @@ Disassembly of section .text:
  14c:	6102da93          	rori	s5,t0,0x10
  150:	2872db13          	orc.b	s6,t0
  154:	6982dc13          	rev8	s8,t0
- 158:	eb1ff00b          	.insn	4, 0xeb1ff00b
- 15c:	eadff2ef          	jal	t0,8 <usb.a__>
- 160:	0025100b          	sp	frame,0(a0)
+ 158:	eb1ff2ef          	jal	t0,8 <usb.a__>
+ 15c:	0025100b          	sp	frame,0(a0)
 
-00000164 <failure>:
- 164:	55500513          	addi	a0,zero,1365
- 168:	0040006f          	jal	zero,16c <doom>
+00000160 <failure>:
+ 160:	55500513          	addi	a0,zero,1365
+ 164:	0040006f          	jal	zero,168 <doom>
 
-0000016c <doom>:
- 16c:	000002ef          	jal	t0,16c <doom>
+00000168 <doom>:
+ 168:	000002ef          	jal	t0,168 <doom>
 
 Disassembly of section usb:
 

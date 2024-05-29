@@ -21,6 +21,8 @@ ENTITY decoder IS
       rptr_ix     : OUT    reg_ix_T;
       raux_ix     : OUT    reg_ix_T;
 
+      csr_ix      : OUT    csr_ix_T;
+
       rdst_ix     : OUT    reg_ix_T;
       imm         : OUT    word_T;
 

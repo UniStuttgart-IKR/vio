@@ -34,8 +34,9 @@ BEGIN
     end if;
   end process;
 
-  alu_mode_dc <= ctrl_dc.alu_mode; 
-  alu_a_in_sel <= ctrl_dc.alu_a_sel;
-  alu_b_in_sel <= ctrl_dc.alu_b_sel;
+  alu_mode_dc     <= ctrl_dc.alu_mode; 
+  alu_a_in_sel_dc <= ctrl_dc.alu_a_sel;
+  alu_b_in_sel_dc <= ctrl_dc.alu_b_sel;
+  pgu_mode_dc     <= ctrl_dc.pgu_mode;
 
 END ARCHITECTURE behav;

@@ -41,6 +41,9 @@ BEGIN
                 imm(19 downto 0) <= instruction(IMM20_RANGE);
             when j_type =>
                 imm <= extractJTypeImm(instruction);
+            when shamt_type => 
+                imm <= (others => '0');
+                imm(4 downto 0) <= instruction(RS2_RANGE);
             when none => null;
         end case;
     end process extend;

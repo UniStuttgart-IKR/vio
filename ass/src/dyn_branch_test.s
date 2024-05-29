@@ -108,7 +108,6 @@ ok10:       li      a0, 0x111
             orc.b   s6, t0
             rev8    s8, t0
 
-            jlib    t0, usb.a
             jal     t0, usb.a
 
             sp      frame, 0(a0)

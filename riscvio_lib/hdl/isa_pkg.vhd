@@ -42,8 +42,10 @@ PACKAGE isa IS
     end record pc_T;
     constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '0'));
 
-    subtype reg_ix_T is natural range 0 to 31;
-    type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, t3, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t4, t5, t6, imm);
+
+    type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, t3, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t4, t5, t6, imm, alc_lim, alc_addr, frame_lim, core, root);
+    subtype csr_ix_T is natural range ali_T'pos(imm) to ali_T'pos(root);
+    subtype reg_ix_T is natural range 0 to ali_T'pos(t6);
     type reg_T is record
         ali: ali_T;
         index: reg_ix_T;
@@ -78,8 +80,9 @@ PACKAGE isa IS
                         jal, beq, bne, blt, bge, bltu, bgeu,
                         lb_i, lh_i, lw_i, lbu_i, lhu_i, sb_i, sh_i, sw_i, lb_r, lh_r, lw_r, lbu_r, lhu_r, sb_r, sh_r, sw_r,
                         andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, min, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
+                        alc, alci_p, alci_d, alci, pushg, pusht,
                         illegal);
-    type imm_T is (none, i_type, s_type, b_type, u_type, j_type);
+    type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);
 
     subtype OPC_RANGE is natural range 6 downto 0;
     subtype FUNCT3_RANGE is natural range 14 downto 12;
@@ -101,6 +104,7 @@ PACKAGE isa IS
     constant OPC_BRANCH:std_logic_vector(OPC_RANGE) := "1100011";
     constant OPC_LOAD:  std_logic_vector(OPC_RANGE) := "0000011";
     constant OPC_STORE: std_logic_vector(OPC_RANGE) := "0100011";
+    constant OPC_OR:    std_logic_vector(OPC_RANGE) := "0001011";
 
     -- RV32I
     constant F3_ADD_SUB:   std_logic_vector(FUNCT3_RANGE) := "000";
@@ -157,16 +161,30 @@ PACKAGE isa IS
     constant F5_REV8:                 std_logic_vector(FUNCT5_RANGE) := "11000";
 
 
+    --ZOR extension
+    constant F3_ALC:        std_logic_vector(FUNCT3_RANGE) := "100";
+    constant F3_ALCID:      std_logic_vector(FUNCT3_RANGE) := "101";
+    constant F3_ALCIP:      std_logic_vector(FUNCT3_RANGE) := "110";
+    constant F3_ALCI_PUSH:  std_logic_vector(FUNCT3_RANGE) := "111";
+
+    constant F5_ALCI:       std_logic_vector(FUNCT5_RANGE) := "00000";
+    constant F5_PUSHG:      std_logic_vector(FUNCT5_RANGE) := "00010";
+    constant F5_PUSHT:      std_logic_vector(FUNCT5_RANGE) := "00011";
+
+
     type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, 
                         alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orcb, alu_rev8,
                         alu_illegal);
-    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM);
+    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU);
+    type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_nop);
     type mem_mode_T is (load, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, load_attr, holiday);
+
     type ctrl_sig_T is record 
         alu_mode:       alu_mode_T;
         alu_a_sel:      alu_in_sel_T;
         alu_b_sel:      alu_in_sel_T;
         mnemonic:       mnemonic_T;
+        pgu_mode:       pgu_mode_T;
         me_mode:        mem_mode_T;
         at_mode:        mem_mode_T;
     end record ctrl_sig_T;
@@ -177,6 +195,7 @@ PACKAGE isa IS
         alu_mode:       alu_mode_T;
         alu_a_sel:      alu_in_sel_T;
         alu_b_sel:      alu_in_sel_T;
+        pgu_mode:       pgu_mode_T;
         me_mode:        mem_mode_T;
         at_mode:        mem_mode_T;
         rdst:           reg_ix_T;

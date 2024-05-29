@@ -29,7 +29,7 @@ BEGIN
                 raux_ex <= raux_dc;
                 imm_ex  <= imm_dc;
 
-                alu_out_ex <= alu_out_ex_u;
+                alu_out_ex <= alu_out_ex_u when ctrl_dc.pgu_mode = pgu_nop else alc_addr_ex_u;
             end if;
         end if;
     end process;

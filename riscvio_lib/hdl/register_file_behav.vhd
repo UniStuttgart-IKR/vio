@@ -23,10 +23,10 @@ BEGIN
     rptr.pi   <= registers(rptr_ix).pi;
     rptr.dt   <= registers(rptr_ix).delta;
 
-    raux.ix   <= rptr_ix;
-    raux.ali  <= ali_T'val(rptr_ix);
-    raux.val  <= registers(rptr_ix).data;
-    raux.tag  <= registers(rptr_ix).tag;
+    raux.ix   <= raux_ix;
+    raux.ali  <= ali_T'val(raux_ix);
+    raux.val  <= registers(raux_ix).data;
+    raux.tag  <= registers(raux_ix).tag;
     
     write: process(clk, res_n) is
     begin

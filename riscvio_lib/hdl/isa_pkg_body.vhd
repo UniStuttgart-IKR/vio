@@ -263,10 +263,10 @@ PACKAGE BODY isa IS
                                             res.pgu_mode := pgu_alc;
                                             res.imm_mode := none;
                     when F3_ALCIP  =>       res.mnemonic := alci_p;
-                                            res.pgu_mode := pgu_alcip;
+                                            res.pgu_mode := pgu_alcp;
                                             res.imm_mode := i_type;
                     when F3_ALCID  =>       res.mnemonic := alci_d;
-                                            res.pgu_mode := pgu_alcid;
+                                            res.pgu_mode := pgu_alcd;
                                             res.imm_mode := i_type;
                     when F3_ALCI_PUSH =>    res.mnemonic := alci when instruction(RS2_RANGE) = F5_ALCI else
                                                             pushg when instruction(RS2_RANGE) = F5_PUSHG else
@@ -278,7 +278,7 @@ PACKAGE BODY isa IS
                                                             pgu_nop;
                                             res.imm_mode := s_type;
                     when others =>          res.mnemonic := illegal;
-                                            res.imm_mode := pgu_nop;
+                                            res.pgu_mode := pgu_nop;
                                             res.imm_mode := none;
                 end case;
             when others =>

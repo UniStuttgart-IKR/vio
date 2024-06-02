@@ -8,7 +8,7 @@
 -- using Mentor Graphics HDL Designer(TM) 2022.3 Built on 14 Jul 2022 at 13:56:12
 --
 ARCHITECTURE behav OF pgu IS
-    pure function calcLen(pi: word_T, dt: word_T, offs: natural, alc_addr: word_T) return word_T is
+    pure function calcLen(pi: word_T; dt: word_T; offs: natural; alc_addr: word_T) return word_T is
     begin
         return std_logic_vector(unsigned(alc_addr) - unsigned(pi(word_T'high-2 downto 0)&"00") - unsigned(dt) - unsigned(offs, word_T'length) - 8) and X"FFFFFFF8";
     end function calcLen;

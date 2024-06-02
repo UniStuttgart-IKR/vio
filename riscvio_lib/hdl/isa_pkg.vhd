@@ -188,7 +188,7 @@ PACKAGE isa IS
         me_mode:        mem_mode_T;
         at_mode:        mem_mode_T;
     end record ctrl_sig_T;
-    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, alu_a_sel => DAT, alu_b_sel => DAT, mnemonic => illegal, me_mode => holiday, at_mode => holiday);
+    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, alu_a_sel => DAT, alu_b_sel => DAT, mnemonic => illegal, me_mode => holiday, at_mode => holiday, pgu_mode => pgu_nop);
     
     type decode_T is record 
         mnemonic:       mnemonic_T;

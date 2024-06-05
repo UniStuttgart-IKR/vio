@@ -46,10 +46,10 @@ BEGIN
                         end if;
 
                     when CLEARING => 
-                        if clr_addr = last_rptr_ex.val then
+                        if clr_addr_int = last_rptr_ex.val then
                             current_state <= IDLE;
                         else
-                            clr_addr_int <= std_logic_vector(unsigned(clr_addr) + 4);
+                            clr_addr_int <= std_logic_vector(unsigned(clr_addr_int) + 4);
                         end if;
                 end case;
             end if;

@@ -7,20 +7,24 @@
 --
 -- using Mentor Graphics HDL Designer(TM) 2022.3 Built on 14 Jul 2022 at 13:56:12
 --
+library ieee;
+use ieee.numeric_std.all;
 ARCHITECTURE behav OF pgu IS
     pure function calcLen(pi: word_T; dt: word_T; offs: natural; alc_addr: word_T) return word_T is
+        variable pi_aligned: word_T;
     begin
-        return std_logic_vector(unsigned(alc_addr) - unsigned(pi(word_T'high-2 downto 0)&"00") - unsigned(dt) - unsigned(offs, word_T'length) - 8) and X"FFFFFFF8";
+        pi_aligned := pi(word_T'high-2 downto 0)&"00";
+        return std_logic_vector(unsigned(alc_addr) - unsigned(pi_aligned) - unsigned(dt) - to_unsigned(offs, word_T'length) - X"8") and X"FFFFFFF8";
     end function calcLen;
 BEGIN
 
-    alc_len <=  calcLen(rdat.val, raux.val, 0, rptr.val) when pgu_mode = pgu_alc else
+    addr    <=  calcLen(rdat.val, raux.val, 0, rptr.val) when pgu_mode = pgu_alc else
                 calcLen(imm, rdat.val, 0, rptr.val) when pgu_mode = pgu_alcp else
                 calcLen(rdat.val, imm, 0, rptr.val) when pgu_mode = pgu_alcd else
-                calcLen(imm(RD_RANGE), imm(FUNCT7_RANGE), 0, rptr.val) when pgu_mode = pgu_alci else
-                calcLen(imm(RD_RANGE), imm(FUNCT7_RANGE), 4, rptr.val) when pgu_mode = pgu_push else
-                calcLen(imm(RD_RANGE), imm(FUNCT7_RANGE), 0, rptr.val) when pgu_mode = pgu_pusht else
-                calcLen(imm(RD_RANGE), imm(FUNCT7_RANGE), 8, rptr.val) when pgu_mode = pgu_pushg else
+                calcLen((4 downto 0 => imm(RD_RANGE), others => '0'), (6 downto 0 => imm(FUNCT7_RANGE), others => '0') , 0, rptr.val) when pgu_mode = pgu_alci else
+                calcLen((4 downto 0 => imm(RD_RANGE), others => '0'), (6 downto 0 => imm(FUNCT7_RANGE), others => '0'), 4, rptr.val) when pgu_mode = pgu_push else
+                calcLen((4 downto 0 => imm(RD_RANGE), others => '0'), (6 downto 0 => imm(FUNCT7_RANGE), others => '0'), 0, rptr.val) when pgu_mode = pgu_pusht else
+                calcLen((4 downto 0 => imm(RD_RANGE), others => '0'), (6 downto 0 => imm(FUNCT7_RANGE), others => '0'), 8, rptr.val) when pgu_mode = pgu_pushg else
                 (others => '0');
 
 END ARCHITECTURE behav;

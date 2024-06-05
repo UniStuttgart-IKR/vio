@@ -21,15 +21,17 @@ BEGIN
             alu_out_me <= (others => '0');
         else
             if clk'event and clk = '1' then
-                ctrl_me <= ctrl_ex;
+                if not clr_stall then
+                    ctrl_me <= ctrl_ex;
 
-                rdst_ix_me <= rdst_ix_ex;
-                rdat_me <= rdat_ex;
-                rptr_me <= rptr_ex;
-                raux_me <= raux_ex;
-                imm_me  <= imm_ex;
+                    rdst_ix_me <= rdst_ix_ex;
+                    rdat_me <= rdat_ex;
+                    rptr_me <= rptr_ex;
+                    raux_me <= raux_ex;
+                    imm_me  <= imm_ex;
 
-                alu_out_me <= alu_out_ex;
+                    alu_out_me <= alu_out_ex;
+                end if;
             end if;
         end if;
     end process;

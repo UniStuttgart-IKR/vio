@@ -21,15 +21,17 @@ BEGIN
       
     else
       if clk'event and clk = '1' then
-        ctrl_dc <= CTRL_NULL when dbt_valid else ctrl_dc_u;
+        if not clr_stall then
+          ctrl_dc <= CTRL_NULL when dbt_valid else ctrl_dc_u;
 
-        rdst_ix_dc <= rdst_ix_dc_u;
-        rdat_dc <= rdat_dc_u;
-        rptr_dc <= rptr_dc_u;
-        raux_dc <= raux_dc_u;
-        imm_dc  <= imm_dc_u;
-        
-        pc_dc <= pc_if;
+          rdst_ix_dc <= rdst_ix_dc_u;
+          rdat_dc <= rdat_dc_u;
+          rptr_dc <= rptr_dc_u;
+          raux_dc <= raux_dc_u;
+          imm_dc  <= imm_dc_u;
+          
+          pc_dc <= pc_if;
+        end if;
       end if;
     end if;
   end process;

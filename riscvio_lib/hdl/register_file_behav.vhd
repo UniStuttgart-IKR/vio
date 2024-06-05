@@ -36,8 +36,8 @@ BEGIN
         end loop;
       else
         if clk'event and clk = '1' then
-          if rd_wb.index /= 0 then
-            registers(rd_wb.index) <= rd_wb.mem;
+          if rd_wb.rf_index /= 0 then
+            registers(rd_wb.rf_index) <= rd_wb.mem;
           end if;
         end if;
       end if;

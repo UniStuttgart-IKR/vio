@@ -26,7 +26,7 @@ ENTITY register_file IS
     rptr:  out rptr_T;
     raux:  out raux_T;
     
-    rd_wb: in reg_T
+    rd_wb: in reg_wb_T
   );
     
 END ENTITY register_file;

@@ -14,6 +14,7 @@ PACKAGE BODY isa IS
         variable res: decode_T;
     begin
         res.imm_mode := none;
+        res.pgu_mode := pgu_nop;
         case instruction(OPC_RANGE) is
             when OPC_ALU_R => 
                 res.imm_mode := none;

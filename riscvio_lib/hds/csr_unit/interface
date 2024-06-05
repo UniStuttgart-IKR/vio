@@ -8,10 +8,6 @@ library "ieee"
 unitName "std_logic_1164"
 )
 (DmPackageRef
-library "ieee"
-unitName "std_logic_arith"
-)
-(DmPackageRef
 library "riscvio_lib"
 unitName "isa"
 )
@@ -31,7 +27,7 @@ appVersion "2022.3 Built on 14 Jul 2022 at 13:56:12"
 model (Symbol
 commonDM (CommonDM
 ldm (LogicalDM
-suid 10,0
+suid 20,0
 usingSuid 1
 emptyRow *1 (LEmptyRow
 )
@@ -77,10 +73,10 @@ decl (Decl
 n "clk"
 t "std_logic"
 o 1
-suid 6,0
+suid 16,0
 )
 )
-uid 191,0
+uid 307,0
 )
 *15 (LogPort
 port (LogicalPort
@@ -89,10 +85,10 @@ decl (Decl
 n "csr_ix"
 t "csr_ix_T"
 o 55
-suid 7,0
+suid 17,0
 )
 )
-uid 193,0
+uid 309,0
 )
 *16 (LogPort
 port (LogicalPort
@@ -102,21 +98,21 @@ decl (Decl
 n "csr_val"
 t "word_T"
 o 54
-suid 8,0
+suid 18,0
 )
 )
-uid 195,0
+uid 311,0
 )
 *17 (LogPort
 port (LogicalPort
 decl (Decl
 n "rd_wb"
-t "reg_T"
+t "reg_wb_T"
 o 22
-suid 9,0
+suid 19,0
 )
 )
-uid 197,0
+uid 313,0
 )
 *18 (LogPort
 port (LogicalPort
@@ -125,10 +121,10 @@ decl (Decl
 n "res_n"
 t "std_logic"
 o 2
-suid 10,0
+suid 20,0
 )
 )
-uid 199,0
+uid 315,0
 )
 ]
 )
@@ -184,31 +180,31 @@ uid 106,0
 litem &14
 pos 0
 dimension 20
-uid 192,0
+uid 308,0
 )
 *25 (MRCItem
 litem &15
 pos 1
 dimension 20
-uid 194,0
+uid 310,0
 )
 *26 (MRCItem
 litem &16
 pos 2
 dimension 20
-uid 196,0
+uid 312,0
 )
 *27 (MRCItem
 litem &17
 pos 3
 dimension 20
-uid 198,0
+uid 314,0
 )
 *28 (MRCItem
 litem &18
 pos 4
 dimension 20
-uid 200,0
+uid 316,0
 )
 ]
 )
@@ -479,7 +475,7 @@ value "/u/home/stud/rbnlux/Documents/FP/RiscViO/riscvio_lib/hds/csr_unit"
 )
 (vvPair
 variable "date"
-value "05/29/24"
+value "06/05/24"
 )
 (vvPair
 variable "day"
@@ -491,7 +487,7 @@ value "Wednesday"
 )
 (vvPair
 variable "dd"
-value "29"
+value "05"
 )
 (vvPair
 variable "entity_name"
@@ -519,7 +515,7 @@ value "rbnlux"
 )
 (vvPair
 variable "graphical_source_date"
-value "05/29/24"
+value "06/05/24"
 )
 (vvPair
 variable "graphical_source_group"
@@ -527,11 +523,11 @@ value "ckoehler"
 )
 (vvPair
 variable "graphical_source_host"
-value "pc037"
+value "pc038"
 )
 (vvPair
 variable "graphical_source_time"
-value "16:58:33"
+value "17:53:10"
 )
 (vvPair
 variable "group"
@@ -539,7 +535,7 @@ value "ckoehler"
 )
 (vvPair
 variable "host"
-value "pc037"
+value "pc038"
 )
 (vvPair
 variable "language"
@@ -571,7 +567,7 @@ value "$HDS_PROJECT_DIR/riscvio_lib/questasim"
 )
 (vvPair
 variable "mm"
-value "05"
+value "06"
 )
 (vvPair
 variable "module_name"
@@ -579,11 +575,11 @@ value "csr_unit"
 )
 (vvPair
 variable "month"
-value "May"
+value "Jun"
 )
 (vvPair
 variable "month_long"
-value "May"
+value "June"
 )
 (vvPair
 variable "p"
@@ -651,7 +647,7 @@ value "interface"
 )
 (vvPair
 variable "time"
-value "16:58:33"
+value "17:53:10"
 )
 (vvPair
 variable "unit"
@@ -686,10 +682,10 @@ optionalChildren [
 uid 8,0
 optionalChildren [
 *62 (CptPort
-uid 166,0
+uid 282,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 167,0
+uid 283,0
 ro 90
 va (VaSet
 vasetType 1
@@ -698,11 +694,11 @@ fg "0,65535,0"
 xt "14250,6625,15000,7375"
 )
 tg (CPTG
-uid 168,0
+uid 284,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 169,0
+uid 285,0
 va (VaSet
 font "courier,8,0"
 )
@@ -713,7 +709,7 @@ tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 170,0
+uid 286,0
 va (VaSet
 font "courier,8,0"
 )
@@ -727,15 +723,15 @@ decl (Decl
 n "clk"
 t "std_logic"
 o 1
-suid 6,0
+suid 16,0
 )
 )
 )
 *63 (CptPort
-uid 171,0
+uid 287,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 172,0
+uid 288,0
 ro 90
 va (VaSet
 vasetType 1
@@ -744,11 +740,11 @@ fg "0,65535,0"
 xt "14250,10625,15000,11375"
 )
 tg (CPTG
-uid 173,0
+uid 289,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 174,0
+uid 290,0
 va (VaSet
 font "courier,8,0"
 )
@@ -759,7 +755,7 @@ tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 175,0
+uid 291,0
 va (VaSet
 font "courier,8,0"
 )
@@ -773,15 +769,15 @@ decl (Decl
 n "csr_ix"
 t "csr_ix_T"
 o 55
-suid 7,0
+suid 17,0
 )
 )
 )
 *64 (CptPort
-uid 176,0
+uid 292,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 177,0
+uid 293,0
 ro 90
 va (VaSet
 vasetType 1
@@ -790,11 +786,11 @@ fg "0,65535,0"
 xt "29000,10625,29750,11375"
 )
 tg (CPTG
-uid 178,0
+uid 294,0
 ps "CptPortTextPlaceStrategy"
 stg "RightVerticalLayoutStrategy"
 f (Text
-uid 179,0
+uid 295,0
 va (VaSet
 font "courier,8,0"
 )
@@ -806,7 +802,7 @@ tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 180,0
+uid 296,0
 va (VaSet
 font "courier,8,0"
 )
@@ -821,15 +817,15 @@ decl (Decl
 n "csr_val"
 t "word_T"
 o 54
-suid 8,0
+suid 18,0
 )
 )
 )
 *65 (CptPort
-uid 181,0
+uid 297,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 182,0
+uid 298,0
 ro 90
 va (VaSet
 vasetType 1
@@ -838,11 +834,11 @@ fg "0,65535,0"
 xt "14250,9625,15000,10375"
 )
 tg (CPTG
-uid 183,0
+uid 299,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 184,0
+uid 300,0
 va (VaSet
 font "courier,8,0"
 )
@@ -853,28 +849,28 @@ tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 185,0
+uid 301,0
 va (VaSet
 font "courier,8,0"
 )
-xt "44000,3600,57000,4500"
-st "rd_wb   : IN     reg_T  ;
+xt "44000,3600,58500,4500"
+st "rd_wb   : IN     reg_wb_T  ;
 "
 )
 thePort (LogicalPort
 decl (Decl
 n "rd_wb"
-t "reg_T"
+t "reg_wb_T"
 o 22
-suid 9,0
+suid 19,0
 )
 )
 )
 *66 (CptPort
-uid 186,0
+uid 302,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 187,0
+uid 303,0
 ro 90
 va (VaSet
 vasetType 1
@@ -883,11 +879,11 @@ fg "0,65535,0"
 xt "14250,7625,15000,8375"
 )
 tg (CPTG
-uid 188,0
+uid 304,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 189,0
+uid 305,0
 va (VaSet
 font "courier,8,0"
 )
@@ -898,7 +894,7 @@ tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 190,0
+uid 306,0
 va (VaSet
 font "courier,8,0"
 )
@@ -912,7 +908,7 @@ decl (Decl
 n "res_n"
 t "std_logic"
 o 2
-suid 10,0
+suid 20,0
 )
 )
 )
@@ -1343,10 +1339,9 @@ uid 50,0
 va (VaSet
 font "courier,8,0"
 )
-xt "0,900,20000,7200"
+xt "0,900,20000,6300"
 st "LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-USE ieee.std_logic_arith.all;
 LIBRARY riscvio_lib;
 USE riscvio_lib.isa.all;
 LIBRARY altera_mf;
@@ -1629,6 +1624,6 @@ xt "42000,0,42000,0"
 tm "SyDeclarativeTextMgr"
 )
 )
-lastUid 200,0
+lastUid 316,0
 activeModelName "Symbol:CDM"
 )

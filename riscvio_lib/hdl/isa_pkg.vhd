@@ -43,14 +43,23 @@ PACKAGE isa IS
     constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '0'));
 
 
-    type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, t3, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t4, t5, t6, imm, alc_lim, alc_addr, frame_lim, core, root);
-    subtype csr_ix_T is natural range ali_T'pos(imm) to ali_T'pos(root);
-    subtype reg_ix_T is natural range 0 to ali_T'pos(t6);
+    type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, t3, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t4, t5, t6, imm, alc_lim, alc_addr, frame_lim, core, root, no_csr);
+    subtype csr_ix_T is natural range ali_T'pos(alc_lim) to ali_T'pos(no_csr);
+    subtype reg_ix_T is natural range 0 to ali_T'pos(root);
     type reg_T is record
         ali: ali_T;
         index: reg_ix_T;
         mem: reg_mem_T;
     end record reg_T;
+
+
+    type reg_wb_T is record
+        ali: ali_T;
+        rf_index: reg_ix_T;
+        csr_index: csr_ix_T;
+        mem: reg_mem_T;
+    end record reg_wb_T;
+    constant REG_WB_NULL: reg_wb_T := (ali => zero, rf_index => 0, csr_index => ali_T'pos(no_csr), mem => REG_MEM_NULL);
 
     type rdat_T is record
         ali: ali_T;

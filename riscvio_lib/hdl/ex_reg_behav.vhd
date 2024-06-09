@@ -12,7 +12,6 @@ ARCHITECTURE behav OF ex_reg IS
     
 BEGIN
     process(clk, res_n) is
-      variable tmp_ctrl: ctrl_sig_T;
     begin
         if res_n = '0' then
             rdst_ix_ex <= 0;
@@ -24,12 +23,8 @@ BEGIN
             alu_out_ex <= (others => '0');
         else
             if clk'event and clk = '1' then
-                if clr_pgu_mode_me then
-                    tmp_ctrl := ctrl_dc;
-                    tmp_ctrl.pgu_mode := pgu_nop;
-                    ctrl_ex <= tmp_ctrl;
 
-                elsif not clr_stall then
+                if not clr_stall then
                     ctrl_ex <= ctrl_dc;
 
                     rdst_ix_ex <= rdst_ix_dc;
@@ -37,11 +32,16 @@ BEGIN
                     rptr_ex <= rptr_dc;
                     raux_ex <= raux_dc;
                     imm_ex  <= imm_dc;
-                    alu_out_ex <= alu_out_ex_u when ctrl_dc.pgu_mode = pgu_nop else alc_addr_ex_u;
+
+                    alu_out_ex <= alu_out_ex_u when ctrl_dc.pgu_mode = pgu_nop else ptr_addr_ex_u;
                 end if;
             end if;
         end if;
     end process;
 
+  ctrl_dc_uq <= ctrl_dc;
+  alu_out_dc_uq <= alu_out_ex_u when ctrl_dc.pgu_mode = pgu_nop else ptr_addr_ex_u;
+  raux_dc_uq <= raux_dc;
+  rptr_dc_uq <= rptr_dc;
 END ARCHITECTURE behav;
 

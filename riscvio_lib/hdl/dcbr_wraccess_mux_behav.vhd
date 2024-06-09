@@ -10,9 +10,9 @@
 ARCHITECTURE behav OF dcbr_wraccess_mux IS
 BEGIN
     data_ram_byteena_a <= (others => '1') when clr_wr else dram_byteena_a;
-    data_ram_address_a <= clr_addr(data_ram_address_a'high + 2 downto 2) when clr_wr else dram_address_a;
+    data_ram_address_a <= clr_addr(data_ram_address_a'high + 2 downto 2) when clr_wr else dram_address_a(data_ram_address_a'high + 2 downto 2);
     data_ram_wren_a <= '1' when clr_wr else dram_wren_a;
-    data_ram_data_a <= X"00000000" when clr_wr else data_ram_data_a;
+    data_ram_data_a <= X"11111111" when clr_wr else dram_data_a;
 
 END ARCHITECTURE behav;
 

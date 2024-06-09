@@ -10,7 +10,7 @@
 library ieee;
 use ieee.numeric_std.all;
 ARCHITECTURE behav OF clr_ptrs_fsm IS
-    type state_T is (IDLE, CLEARING);
+    type state_T is (IDLE, CLEARING, NEXT_INSTR);
     signal current_state: state_T;
 
     signal clr_addr_int: word_T;
@@ -18,18 +18,8 @@ ARCHITECTURE behav OF clr_ptrs_fsm IS
     signal start_clearing: boolean;
     signal last_rptr_ex: rptr_T;
 BEGIN
-    start_clearing <= ctrl_ex.pgu_mode /= pgu_nop and rdst_ix_ex /= ali_T'pos(frame);
-    
-    rptr_delay: process(clk, res_n) is
-    begin
-        if res_n = '0' then
-            last_rptr_ex <= RPTR_NULL;
-        else
-            if clk'event and clk = '1' then
-                last_rptr_ex <= rptr_ex;
-            end if;
-        end if;
-    end process;
+    start_clearing <= ctrl_ex.pgu_mode = pgu_alc or ctrl_ex.pgu_mode = pgu_alcp or ctrl_ex.pgu_mode = pgu_alcd or ctrl_ex.pgu_mode = pgu_alci or ctrl_ex.pgu_mode = pgu_push or ctrl_ex.pgu_mode = pgu_pusht or ctrl_ex.pgu_mode = pgu_pushg;
+
 
     fsm_transistions: process(clk, res_n) is
     begin
@@ -46,20 +36,24 @@ BEGIN
                         end if;
 
                     when CLEARING => 
-                        if clr_addr_int = last_rptr_ex.val then
-                            current_state <= IDLE;
+                        if clr_addr_int = end_addr then
+                            current_state <= NEXT_INSTR;
                         else
                             clr_addr_int <= std_logic_vector(unsigned(clr_addr_int) + 4);
                         end if;
+                    when NEXT_INSTR => 
+                        current_state <= IDLE;
                 end case;
             end if;
         end if;
     end process fsm_transistions;
-
-    clr_wr_int <= (current_state = CLEARING and not clr_addr_int = last_rptr_ex.val) or start_clearing;
-    clr_stall <= clr_wr_int;
-    clr_wr <= clr_wr_int;
-    clr_addr <= clr_addr_int when current_state = CLEARING else word_T(unsigned(alu_out_ex) + 8);
-    clr_pgu_mode_me <= current_state = CLEARING and clr_addr_int = last_rptr_ex.val;
+    
+    process(all) is
+    begin
+        clr_wr_int <= (current_state = CLEARING and clr_addr_int /= end_addr) or (start_clearing and current_state = IDLE);
+        clr_stall <= clr_wr_int;
+        clr_wr <= clr_wr_int;
+        clr_addr <= clr_addr_int when current_state = CLEARING else word_T(unsigned(alu_out_ex) + 8);
+    end process;
 END ARCHITECTURE behav;
 

@@ -22,6 +22,15 @@ PACKAGE isa IS
     subtype half_word_T is std_logic_vector(HALF_WORD_SIZE - 1 downto 0);
     subtype byte_T is std_logic_vector(BYTE_SIZE - 1 downto 0);
 
+
+    subtype HWORD0_RANGE is natural range 15 downto 0;
+    subtype HWORD1_RANGE is natural range 31 downto 16; 
+
+    subtype BYTE0_RANGE is natural range 7 downto 0;
+    subtype BYTE1_RANGE is natural range 15 downto 8;
+    subtype BYTE2_RANGE is natural range 23 downto 16;
+    subtype BYTE3_RANGE is natural range 31 downto 24;
+
     constant NOP_INSTR: word_T := X"00000013";
 
     type reg_tag_T is (DATA, POINTER);
@@ -43,7 +52,7 @@ PACKAGE isa IS
     constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '0'));
 
 
-    type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, t3, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t4, t5, t6, imm, alc_lim, alc_addr, frame_lim, core, root, no_csr);
+    type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t3, t4, t5, t6, imm, alc_lim, alc_addr, frame_lim, core, root, no_csr);
     subtype csr_ix_T is natural range ali_T'pos(alc_lim) to ali_T'pos(no_csr);
     subtype reg_ix_T is natural range 0 to ali_T'pos(root);
     type reg_T is record
@@ -92,6 +101,7 @@ PACKAGE isa IS
                         alc, alci_p, alci_d, alci, pushg, pusht,
                         illegal);
     type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);
+
 
     subtype OPC_RANGE is natural range 6 downto 0;
     subtype FUNCT3_RANGE is natural range 14 downto 12;
@@ -185,7 +195,7 @@ PACKAGE isa IS
                         alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orcb, alu_rev8,
                         alu_illegal);
     type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU);
-    type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_nop);
+    type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_nop);
     type mem_mode_T is (load, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, load_attr, holiday);
 
     type ctrl_sig_T is record 

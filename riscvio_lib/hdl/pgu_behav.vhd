@@ -16,16 +16,33 @@ ARCHITECTURE behav OF pgu IS
         pi_aligned := pi(word_T'high-2 downto 0)&"00";
         return std_logic_vector(unsigned(alc_addr) - unsigned(pi_aligned) - unsigned(dt) - to_unsigned(offs, word_T'length) - X"8") and X"FFFFFFF8";
     end function calcLen;
+
+    pure function calcAddr(pi: word_T; offs: word_T; base: word_T; ptr_access: boolean := false) return word_T is
+        variable pi_aligned: word_T;
+    begin
+        pi_aligned := pi(word_T'high-2 downto 0) & "00";
+        if ptr_access then
+            return std_logic_vector(unsigned(base) + unsigned(offs) * 4 + 8);
+        else
+            return std_logic_vector(unsigned(base) + unsigned(pi_aligned) + unsigned(offs) + 8);
+        end if;
+    end function calcAddr;
 BEGIN
 
     addr    <=  calcLen(rdat.val, raux.val, 0, rptr.val) when pgu_mode = pgu_alc else
-                calcLen(imm, rdat.val, 0, rptr.val) when pgu_mode = pgu_alcp else
-                calcLen(rdat.val, imm, 0, rptr.val) when pgu_mode = pgu_alcd else
-                calcLen((4 downto 0 => imm(RD_RANGE), others => '0'), (6 downto 0 => imm(FUNCT7_RANGE), others => '0') , 0, rptr.val) when pgu_mode = pgu_alci else
-                calcLen((4 downto 0 => imm(RD_RANGE), others => '0'), (6 downto 0 => imm(FUNCT7_RANGE), others => '0'), 4, rptr.val) when pgu_mode = pgu_push else
-                calcLen((4 downto 0 => imm(RD_RANGE), others => '0'), (6 downto 0 => imm(FUNCT7_RANGE), others => '0'), 0, rptr.val) when pgu_mode = pgu_pusht else
-                calcLen((4 downto 0 => imm(RD_RANGE), others => '0'), (6 downto 0 => imm(FUNCT7_RANGE), others => '0'), 8, rptr.val) when pgu_mode = pgu_pushg else
-                (others => '0');
+                   calcLen(imm, rdat.val, 0, rptr.val) when pgu_mode = pgu_alcp else
+                   calcLen(rdat.val, imm, 0, rptr.val) when pgu_mode = pgu_alcd else
+
+                   calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0') , 0, rptr.val) when pgu_mode = pgu_alci else
+                   calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 4, raux.val) when pgu_mode = pgu_push else
+                   calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 0, raux.val) when pgu_mode = pgu_pusht else
+                   calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 8, raux.val) when pgu_mode = pgu_pushg else
+
+                   calcAddr(rptr.pi, imm, rptr.val) when pgu_mode = pgu_dat_i else
+                   calcAddr(rptr.pi, imm, rptr.val, true) when pgu_mode = pgu_ptr_i else
+                   calcAddr(rptr.pi, raux.val, rptr.val) when pgu_mode = pgu_dat_r else
+                   calcAddr(rptr.pi, raux.val, rptr.val, true) when pgu_mode = pgu_ptr_r else 
+                   (others => '0');
 
 END ARCHITECTURE behav;
 

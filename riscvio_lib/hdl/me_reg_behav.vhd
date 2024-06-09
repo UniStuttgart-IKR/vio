@@ -19,6 +19,7 @@ BEGIN
             imm_me  <= (others => '0');
             ctrl_me <= CTRL_NULL;
             alu_out_me <= (others => '0');
+            mem_out_me <= (others => '0');
         else
             if clk'event and clk = '1' then
                 if not clr_stall then
@@ -29,7 +30,7 @@ BEGIN
                     rptr_me <= rptr_ex;
                     raux_me <= raux_ex;
                     imm_me  <= imm_ex;
-
+                    mem_out_me <= mem_out_me_u;
                     alu_out_me <= alu_out_ex;
                 end if;
             end if;

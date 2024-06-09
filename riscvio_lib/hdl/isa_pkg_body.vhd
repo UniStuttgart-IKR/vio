@@ -220,7 +220,7 @@ PACKAGE BODY isa IS
                 res.raux     := 0;
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
-                res.pgu_mode := pgu_nop;
+                res.pgu_mode := pgu_dat_i;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := lb_i;
                     when F3_HALF  => res.mnemonic := lh_i;
@@ -241,22 +241,25 @@ PACKAGE BODY isa IS
                 res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
-                res.pgu_mode := pgu_nop;
+                res.pgu_mode := pgu_dat_i;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := sb_i;
                     when F3_HALF  => res.mnemonic := sh_i;
                     when F3_WORD  => res.mnemonic := sw_i;
-                    when F3_REG   => res.mnemonic := illegal;
+                    when F3_REG   => report "not implemented yet!" severity failure; res.mnemonic := illegal;
                     when others =>  res.mnemonic := illegal;
                 end case;
             when OPC_OR =>
                 res.alu_mode := alu_add;
-                res.me_mode  := store;
+                res.me_mode  := holiday;
                 res.at_mode  := holiday;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
-                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALCI_PUSH else ali_T'pos(rix);
+                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALCI_PUSH or instruction(FUNCT3_RANGE) = F3_ALC else 
+                                ali_T'pos(rix);
                 res.rptr     := ali_T'pos(frame) when res.rdst = ali_T'pos(frame) else ali_T'pos(alc_addr);
-                res.raux     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALC else 0;
+                res.raux     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALC else 
+                                to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALCI_PUSH else   
+                                0;
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
                 case instruction(FUNCT3_RANGE) is
@@ -278,6 +281,7 @@ PACKAGE BODY isa IS
                                                             pgu_pusht when instruction(RS2_RANGE) = F5_PUSHT else
                                                             pgu_nop;
                                             res.imm_mode := s_type;
+                                            res.rdst     := to_integer(unsigned(instruction(RS1_RANGE)));
                     when others =>          res.mnemonic := illegal;
                                             res.pgu_mode := pgu_nop;
                                             res.imm_mode := none;

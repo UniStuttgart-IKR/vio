@@ -60,8 +60,11 @@ ARCHITECTURE SYN OF instruction_rom IS
 	SIGNAL instr_addr: word_T;
 
 BEGIN
-	q    <= sub_wire0(7 DOWNTO 0) & sub_wire0(15 DOWNTO 8) & sub_wire0(23 DOWNTO 16) & sub_wire0(31 DOWNTO 24);
-  instr_addr <= std_logic_vector(unsigned(pc.ix) + unsigned(pc.ptr) + to_unsigned(8, instr_addr'length)); 
+	process(all) is
+	begin
+		q    <= sub_wire0(7 DOWNTO 0) & sub_wire0(15 DOWNTO 8) & sub_wire0(23 DOWNTO 16) & sub_wire0(31 DOWNTO 24);
+  		instr_addr <= std_logic_vector(unsigned(pc.ix) + unsigned(pc.ptr) + to_unsigned(8, instr_addr'length)); 
+	end process;
   
 	altsyncram_component : altsyncram
 	GENERIC MAP (

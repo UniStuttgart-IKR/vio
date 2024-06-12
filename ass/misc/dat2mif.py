@@ -67,15 +67,16 @@ def reverseBits(inword) -> str:
 
 def __main__(args) -> None:
     parsed_content = ''
-    if args.infile.split(".")[:1] == "dat":
+    if args.infile.split(".")[:1] == "bin":
         with open(args.infile, 'r') as dat_content:
             for line in dat_content:
                 parsed_content += bin(int(line, radixStrToInt(args.inradix)))[2:]
     else:
         with open(args.infile, 'rb') as bin_content:
-            parsed_content = bin(int(bin_content.read().hex(), base=16))[2:]
-            fsize = os.path.getsize(args.infile)
-            parsed_content = "0" * (fsize * 8 - len(parsed_content)) + parsed_content
+                parsed_content = bin(int(bin_content.read().hex(), base=16))[2:]
+                fsize = os.path.getsize(args.infile)
+                parsed_content = "0" * (fsize * 8 - len(parsed_content)) + parsed_content
+
 
     assert len(parsed_content) <= args.depth * args.width, "ERROR: input size does not fit given depth!"
 
@@ -97,7 +98,14 @@ def __main__(args) -> None:
                 bits = reverseBits(bits)[:]
 
             word = int(bits, base=2)
-            word_str = toBase(word, radixStrToInt(args.outradix), required_digits)
+            if word_index != words_num - 1:
+                word_str = toBase(word, radixStrToInt(args.outradix), required_digits)
+            else:
+                missing_bits = len(parsed_content) - args.width * word_index
+                missing_digits = len(toBase(2**missing_bits - 1, base=radixStrToInt(args.outradix)))
+                word_str = toBase(word, radixStrToInt(args.outradix), missing_digits)
+
+                word_str = word_str + "0" * (required_digits - missing_digits)
 
             mif_file.write('{0}: {1};\n'.format(toBase(word_index, radixStrToInt(args.addrradix)), word_str))
 
@@ -113,7 +121,7 @@ def __main__(args) -> None:
             pad_word = args.pad + "0" * (required_digits - len(args.pad))
             if args.reverse:
                 pad_word = reverseBits(pad_word)
-            mif_file.write('[{0}..{1}] : {2};\n'.format(toBase(words_num, radixStrToInt(args.addrradix)), toBase(args.depth, radixStrToInt(args.addrradix)), pad_word))
+            mif_file.write('[{0}..{1}] : {2};\n'.format(toBase(words_num, radixStrToInt(args.addrradix)), toBase(args.depth - 1, radixStrToInt(args.addrradix)), pad_word))
 
         mif_file.write("END;")
 

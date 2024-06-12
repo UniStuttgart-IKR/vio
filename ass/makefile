@@ -46,12 +46,17 @@ MISCDIR	= misc
 %.dat: $(OUTDIR)/%.elf
 	@hexdump -C -v $(basename $^).elf | cut -c 10-58  | tr -d "\n\r" | tr -d ' ' | sed 's/.\{2\}/& ,0x/g' | head -n 64 > $(basename $^).dat
 
+%.mif: $(SRCDIR)/%.s
+	@$(MISCDIR)/bin/riscv32-unknown-elf-as $^ -march=rv32i_zbb_zor_zri -o $(BINDIR)/$(basename $@).o
+	@$(MISCDIR)/bin/riscv32-unknown-elf-ld -e _start -T $(MISCDIR)/riscv_model.ld -o $(OUTDIR)/$@ $(BINDIR)/$(basename $@).o
+	@$(MISCDIR)/bin/riscv32-unknown-elf-objcopy -O binary --remove-section .riscv.attributes $(OUTDIR)/$@ $(OUTDIR)/$(basename $@).bint
+	@python3 misc/dat2mif.py -d 256 -w 32 -p 00000000  $(OUTDIR)/$(basename $@).bint $(OUTDIR)/$(basename $@).mif
+	@rm $(OUTDIR)/*.bint
+
 %.mif: $(BINDIR)/%.o
 	@$(MISCDIR)/bin/riscv32-unknown-elf-ld -e _start -T $(MISCDIR)/riscv_model.ld -o $(OUTDIR)/$@ $^
 	@$(MISCDIR)/bin/riscv32-unknown-elf-objcopy -O binary --remove-section .riscv.attributes $(OUTDIR)/$@ $(OUTDIR)/$(basename $@).bint
-#   @hexdump -C -v $(OUTDIR)/$(basename $@).bint | cut -c 11-58  | tr -d ' ' | paste -d '' - - > $(OUTDIR)/$(basename $@).datt
 	@python3 misc/dat2mif.py -d 256 -w 32 -p 00000000  $(OUTDIR)/$(basename $@).bint $(OUTDIR)/$(basename $@).mif
-#   @rm $(OUTDIR)/*.bint $(OUTDIR)/*.datt
 
 lauflicht: $(BINDIR)/lauflicht.o
 

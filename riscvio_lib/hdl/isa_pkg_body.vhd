@@ -19,7 +19,7 @@ PACKAGE BODY isa IS
             when OPC_ALU_R => 
                 res.imm_mode := none;
                 res.me_mode  := holiday;
-                res.at_mode  := holiday;
+                res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                 res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.rptr     := 0;
@@ -96,7 +96,7 @@ PACKAGE BODY isa IS
 
             when OPC_ALU_I => 
                 res.me_mode  := holiday;
-                res.at_mode  := holiday;
+                res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                 res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.rptr     := 0;
@@ -180,7 +180,7 @@ PACKAGE BODY isa IS
                 res.alu_mode := alu_illegal;
                 res.imm_mode := j_type;
                 res.me_mode  := holiday;
-                res.at_mode  := holiday;
+                res.at_mode  := no;
                 res.rdst     := 1 when to_integer(unsigned(instruction(RD_RANGE))) = 1 else 0; --only rix or zero are allowed!
                 res.rdat     := 0; 
                 res.rptr     := 2; --frame
@@ -192,7 +192,7 @@ PACKAGE BODY isa IS
                 res.alu_mode := alu_add;
                 res.imm_mode := b_type;
                 res.me_mode  := holiday;
-                res.at_mode  := holiday;
+                res.at_mode  := no;
                 res.rdst     := 0;
                 res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.rptr     := 0;
@@ -213,48 +213,56 @@ PACKAGE BODY isa IS
                 res.alu_mode := alu_add;
                 res.imm_mode := i_type when instruction(FUNCT3_RANGE) /= "111" else none;
                 res.me_mode  := load;
-                res.at_mode  := holiday;
+                res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                 res.rdat     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.raux     := 0;
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
-                res.pgu_mode := pgu_dat_i;
+                res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_dat_i;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := lb_i;
                     when F3_HALF  => res.mnemonic := lh_i;
                     when F3_WORD  => res.mnemonic := lw_i;
                     when F3_BYTEU => res.mnemonic := lbu_i;
                     when F3_HALFU => res.mnemonic := lhu_i;
-                    when F3_REG   => res.mnemonic := illegal;
+                    when F3_REG   => res.mnemonic :=    lb_r when instruction(FUNCT7_RANGE) = F7_BYTE else
+                                                        lh_r when instruction(FUNCT7_RANGE) = F7_HALF else
+                                                        lw_r when instruction(FUNCT7_RANGE) = F7_WORD else
+                                                        lbu_r when instruction(FUNCT7_RANGE) = F7_BYTEU else
+                                                        lhu_r when instruction(FUNCT7_RANGE) = F7_HALFU else
+                                                        illegal;
                     when others =>  res.mnemonic := illegal;
                 end case;
             when OPC_STORE =>
                 res.alu_mode := alu_add;
                 res.imm_mode := s_type when instruction(FUNCT3_RANGE) /= "111" else none;
                 res.me_mode  := store;
-                res.at_mode  := holiday;
+                res.at_mode  := no;
                 res.rdst     := 0;
-                res.rdat     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
+                res.raux     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
+                res.rdat     := to_integer(unsigned(instruction(RS2_RANGE)));
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
-                res.pgu_mode := pgu_dat_i;
+                res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_dat_i;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := sb_i;
                     when F3_HALF  => res.mnemonic := sh_i;
                     when F3_WORD  => res.mnemonic := sw_i;
-                    when F3_REG   => report "not implemented yet!" severity failure; res.mnemonic := illegal;
+                    when F3_REG   => res.mnemonic :=    sb_r when instruction(FUNCT7_RANGE) = F7_BYTE else
+                                                        sh_r when instruction(FUNCT7_RANGE) = F7_HALF else
+                                                        sw_r when instruction(FUNCT7_RANGE) = F7_WORD else
+                                                        illegal;
                     when others =>  res.mnemonic := illegal;
                 end case;
             when OPC_OR =>
                 res.alu_mode := alu_add;
                 res.me_mode  := holiday;
-                res.at_mode  := holiday;
+                res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
-                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALCI_PUSH or instruction(FUNCT3_RANGE) = F3_ALC else 
+                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALCI_PUSH or instruction(FUNCT3_RANGE) = F3_ALC or instruction(FUNCT3_RANGE) = F3_ALCID or instruction(FUNCT3_RANGE) = F3_ALCIP else 
                                 ali_T'pos(rix);
                 res.rptr     := ali_T'pos(frame) when res.rdst = ali_T'pos(frame) else ali_T'pos(alc_addr);
                 res.raux     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALC else 
@@ -282,16 +290,62 @@ PACKAGE BODY isa IS
                                                             pgu_nop;
                                             res.imm_mode := s_type;
                                             res.rdst     := to_integer(unsigned(instruction(RS1_RANGE)));
+                    when F3_SP =>           res.mnemonic := sp_i;
+                                            res.imm_mode := s_type;
+                                            --res.me_mode  := store; TODO
+                                            res.at_mode  := no;
+                                            res.rdst     := 0;
+                                            res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
+                                            res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            --res.rdat     := to_integer(unsigned(instruction(RS2_RANGE)));
+                                            res.pgu_mode := pgu_ptr_i;
+                    when F3_LP =>           res.mnemonic := lp_i;
+                                            res.imm_mode := i_type;
+                                            --res.me_mode  := store; TODO
+                                            res.at_mode  := yes;
+                                            res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                            res.raux     := 0;
+                                            res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            --res.rdat     := to_integer(unsigned(instruction(RS2_RANGE)));
+                                            res.pgu_mode := pgu_ptr_i;
+                    when F3_ZEROS =>
+                        case instruction(FUNCT7_RANGE) is
+                            when F7_SPR =>  res.mnemonic := sp_r;
+                                            res.imm_mode := none;
+                                            --res.me_mode  := store; TODO
+                                            res.at_mode  := no;
+                                            res.rdst     := 0;
+                                            res.raux     := to_integer(unsigned(instruction(RD_RANGE)));
+                                            res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.rdat     := to_integer(unsigned(instruction(RS2_RANGE)));
+                                            res.pgu_mode := pgu_ptr_r;
+                            when F7_LPR =>  res.mnemonic := lp_r;
+                                            res.imm_mode := none;
+                                            --res.me_mode  := store; TODO
+                                            res.at_mode  := yes;
+                                            res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                            res.raux     := 0;
+                                            res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.rdat     := to_integer(unsigned(instruction(RS2_RANGE)));
+                                            res.pgu_mode := pgu_ptr_r;
+                            when others =>  res.mnemonic := illegal;
+                                            res.pgu_mode := pgu_nop;
+                                            res.imm_mode := none;
+                        end case;
                     when others =>          res.mnemonic := illegal;
                                             res.pgu_mode := pgu_nop;
                                             res.imm_mode := none;
                 end case;
+            when OPC_SYSTEM => 
+                report "test done" severity failure;
+
+
             when others =>
                 res.mnemonic := illegal;
                 res.alu_mode := alu_illegal;
                 res.imm_mode := none;
                 res.me_mode  := holiday;
-                res.at_mode  := holiday;
+                res.at_mode  := no;
                 res.rdst     := 0;
                 res.rdat     := 0;
                 res.rptr     := 0;

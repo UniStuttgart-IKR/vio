@@ -94,7 +94,10 @@ BEGIN
   
         when lw_i | lw_r =>
             mem_out <= dram_q_a;
-          
+
+        when lp_i | lp_r =>
+            mem_out <= dram_q_a;
+
         when others =>
           null;
       end case;
@@ -132,6 +135,12 @@ BEGIN
             dram_wren_a  <= '1';
             dram_byteena_a <= (others => '1');
             dram_data_a <= raux.val;
+
+        when sp_i | sp_r =>
+            dram_wren_a  <= '1';
+            dram_byteena_a <= (others => '1');
+            dram_data_a <= raux.val;
+          
   
         when others =>
           null;

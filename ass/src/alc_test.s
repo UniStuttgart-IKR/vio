@@ -35,6 +35,9 @@ _start:
             nop
             nop
             nop
+            nop
+            nop
+            #ebreak
             alci s1, 8, 12
             nop
             nop
@@ -63,10 +66,43 @@ _start:
             nop
 
             sw t3, 0(s0)
-            nop
-            nop
-            nop
-            nop
             lw t5, 0(s0)
+
+            li  t1, 8
+            li  t6, 0xFE
+            nop
+            nop
+            nop
+            nop
+            sw.r t1, t6(s0)
+            lw.r t2, t1(s0)
+            nop
+            nop
+            nop
+            nop
+            sp s0, 0(s0)
+            lp t1, 0(s0)
+
+            li t0, 1
+            nop
+            nop
+            nop
+            nop
+            sp.r s0, t0(s0)
+            lp.r t2, t0(s0)
+
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
+            ebreak
+
+
 
 doom: jal t0, doom

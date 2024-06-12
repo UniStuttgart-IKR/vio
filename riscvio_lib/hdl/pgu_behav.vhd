@@ -18,13 +18,16 @@ ARCHITECTURE behav OF pgu IS
     end function calcLen;
 
     pure function calcAddr(pi: word_T; offs: word_T; base: word_T; ptr_access: boolean := false) return word_T is
-        variable pi_aligned: word_T;
+        variable pi_scaled: word_T;
+        variable offset_scaled: word_T;
     begin
-        pi_aligned := pi(word_T'high-2 downto 0) & "00";
+        pi_scaled := pi(word_T'high-2 downto 0) & "00";
+        offset_scaled := offs(word_T'high-2 downto 0) & "00";
+
         if ptr_access then
-            return std_logic_vector(unsigned(base) + unsigned(offs) * 4 + 8);
+            return std_logic_vector(unsigned(base) + unsigned(offset_scaled) + 8);
         else
-            return std_logic_vector(unsigned(base) + unsigned(pi_aligned) + unsigned(offs) + 8);
+            return std_logic_vector(unsigned(base) + unsigned(pi_scaled) + unsigned(offs) + 8);
         end if;
     end function calcAddr;
 BEGIN
@@ -40,8 +43,8 @@ BEGIN
 
                    calcAddr(rptr.pi, imm, rptr.val) when pgu_mode = pgu_dat_i else
                    calcAddr(rptr.pi, imm, rptr.val, true) when pgu_mode = pgu_ptr_i else
-                   calcAddr(rptr.pi, raux.val, rptr.val) when pgu_mode = pgu_dat_r else
-                   calcAddr(rptr.pi, raux.val, rptr.val, true) when pgu_mode = pgu_ptr_r else 
+                   calcAddr(rptr.pi, rdat.val, rptr.val) when pgu_mode = pgu_dat_r else
+                   calcAddr(rptr.pi, rdat.val, rptr.val, true) when pgu_mode = pgu_ptr_r else 
                    (others => '0');
 
 END ARCHITECTURE behav;

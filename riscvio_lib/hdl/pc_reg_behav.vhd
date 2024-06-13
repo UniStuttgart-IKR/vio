@@ -15,7 +15,7 @@ BEGIN
       pc_current_pc <= (ptr => X"FFFFFFF8", ix => X"FFFFFFFC", pi => (others => '0'), dt => (others => '0'));
     else
       if clk'event and clk = '1' then
-        if not clr_stall then
+        if not obj_init_stall then
           pc_current_pc <= current_pc_d;
         end if;
       end if;

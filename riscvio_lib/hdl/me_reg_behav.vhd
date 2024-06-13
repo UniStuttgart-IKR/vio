@@ -22,7 +22,7 @@ BEGIN
             mem_out_me <= (others => '0');
         else
             if clk'event and clk = '1' then
-                if not clr_stall then
+                if not obj_init_stall then
                     ctrl_me <= ctrl_ex;
                     at_mode_me <= ctrl_ex.at_mode;
 

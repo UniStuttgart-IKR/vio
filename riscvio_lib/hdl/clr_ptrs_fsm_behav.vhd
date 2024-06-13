@@ -9,12 +9,12 @@
 --
 library ieee;
 use ieee.numeric_std.all;
-ARCHITECTURE behav OF clr_ptrs_fsm IS
+ARCHITECTURE behav OF obj_init_fsm IS
     type state_T is (IDLE, WRITING, NEXT_INSTR);
     signal current_state: state_T;
 
     signal clr_addr_int: word_T;
-    signal clr_wr_int: boolean;
+    signal obj_init_wr_int: boolean;
     signal unit_active: boolean;
     signal last_rptr_ex: rptr_T;
 
@@ -63,13 +63,13 @@ BEGIN
     
     process(all) is
     begin
-        clr_wr_int <= (current_state = WRITING and clr_addr_int /= end_addr) or (unit_active and current_state = IDLE);
-        clr_stall <= clr_wr_int;
-        clr_wr <= clr_wr_int;
-        clr_addr <= clr_addr_int when current_state = WRITING else word_T(unsigned(alu_out_ex));
-        clr_data <= dt when clr_addr_int = word_T(unsigned(alu_out_ex) + 4) and current_state = WRITING else
-                    (others => '0') when current_state = WRITING else 
-                    pi;
+        obj_init_wr_int <= (current_state = WRITING and clr_addr_int /= end_addr) or (unit_active and current_state = IDLE);
+        obj_init_stall <= obj_init_wr_int;
+        obj_init_wr <= obj_init_wr_int;
+        obj_init_addr <= clr_addr_int when current_state = WRITING else word_T(unsigned(alu_out_ex));
+        obj_init_data <= dt when clr_addr_int = word_T(unsigned(alu_out_ex) + 4) and current_state = WRITING else
+                        (others => '0') when current_state = WRITING else 
+                         pi;
                     
                     
 

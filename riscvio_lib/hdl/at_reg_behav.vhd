@@ -15,7 +15,7 @@ BEGIN
             rd_wb <= REG_WB_NULL;
         else
             if clk'event and clk = '1' then
-                if not clr_stall then
+                if not obj_init_stall then
                     rd_wb.rf_index <= rdst_ix_me;
                     rd_wb.csr_index <= ali_T'pos(alc_addr) when (ctrl_me.pgu_mode = pgu_alc 
                                                             or ctrl_me.pgu_mode = pgu_alcp 

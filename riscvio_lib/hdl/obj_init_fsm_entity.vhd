@@ -1,4 +1,4 @@
--- VHDL Entity riscvio_lib.me_reg.interface
+-- VHDL Entity riscvio_lib.obj_init_fsm.interface
 --
 -- Created:
 --          by - rbnlux.ckoehler (pc023)
@@ -13,32 +13,24 @@ USE riscvio_lib.isa.all;
 LIBRARY altera_mf;
 USE altera_mf.altera_mf_components.all;
 
-ENTITY me_reg IS
+ENTITY obj_init_fsm IS
    PORT( 
       alu_out_ex     : IN     word_T;
       clk            : IN     std_logic;
       ctrl_ex        : IN     ctrl_sig_T;
+      end_addr       : IN     word_T;
       imm_ex         : IN     word_T;
-      mem_out_me_u   : IN     word_T;
-      obj_init_stall : IN     boolean;
       raux_ex        : IN     raux_T;
       rdat_ex        : IN     rdat_T;
-      rdst_ix_ex     : IN     reg_ix_T;
       res_n          : IN     std_logic;
       rptr_ex        : IN     rptr_T;
-      alu_out_me     : OUT    word_T;
-      at_mode_me     : OUT    at_mode_T;
-      ctrl_me        : OUT    ctrl_sig_T;
-      imm_me         : OUT    word_T;
-      mem_out_me     : OUT    word_T;
-      mem_out_me_uq  : OUT    word_T;
-      raux_me        : OUT    raux_T;
-      rdat_me        : OUT    rdat_T;
-      rdst_ix_me     : OUT    reg_ix_T;
-      rptr_me        : OUT    rptr_T
+      obj_init_addr  : OUT    word_T;
+      obj_init_data  : OUT    word_T;
+      obj_init_stall : OUT    boolean;
+      obj_init_wr    : OUT    boolean
    );
 
 -- Declarations
 
-END me_reg ;
+END obj_init_fsm ;
 

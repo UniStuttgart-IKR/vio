@@ -356,6 +356,7 @@ PACKAGE BODY isa IS
                 end case;
             when OPC_SYSTEM => 
                 report "test done" severity failure;
+                res.mnemonic := ebreak;
 
 
             when OPC_LUI => 

@@ -38,8 +38,8 @@ BEGIN
             when b_type => 
                 imm <= extractBTypeImm(instruction);
             when u_type => 
-                imm <= (others => instruction(IMM20_RANGE'high));
-                imm(19 downto 0) <= instruction(IMM20_RANGE);
+                imm <= (others => '0');
+                imm(31 downto 12) <= instruction(IMM20_RANGE);
             when j_type =>
                 imm <= extractJTypeImm(instruction);
             when shamt_type => 

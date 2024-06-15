@@ -212,7 +212,6 @@ PACKAGE BODY isa IS
             when OPC_LOAD =>
                 res.alu_mode := alu_add;
                 res.imm_mode := i_type when instruction(FUNCT3_RANGE) /= "111" else none;
-                res.me_mode  := load;
                 res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                 res.rdat     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
@@ -223,22 +222,33 @@ PACKAGE BODY isa IS
                 res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_dat_i;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := lb_i;
+                                     res.me_mode  := lb;
                     when F3_HALF  => res.mnemonic := lh_i;
+                                     res.me_mode  := lh;
                     when F3_WORD  => res.mnemonic := lw_i;
+                                     res.me_mode  := lw;
                     when F3_BYTEU => res.mnemonic := lbu_i;
+                                     res.me_mode  := lbu;
                     when F3_HALFU => res.mnemonic := lhu_i;
-                    when F3_REG   => res.mnemonic :=    lb_r when instruction(FUNCT7_RANGE) = F7_BYTE else
-                                                        lh_r when instruction(FUNCT7_RANGE) = F7_HALF else
-                                                        lw_r when instruction(FUNCT7_RANGE) = F7_WORD else
-                                                        lbu_r when instruction(FUNCT7_RANGE) = F7_BYTEU else
-                                                        lhu_r when instruction(FUNCT7_RANGE) = F7_HALFU else
-                                                        illegal;
+                                     res.me_mode  := lhu;
+                    when F3_REG   => res.mnemonic := lb_r when instruction(FUNCT7_RANGE) = F7_BYTE else
+                                                     lh_r when instruction(FUNCT7_RANGE) = F7_HALF else
+                                                     lw_r when instruction(FUNCT7_RANGE) = F7_WORD else
+                                                     lbu_r when instruction(FUNCT7_RANGE) = F7_BYTEU else
+                                                     lhu_r when instruction(FUNCT7_RANGE) = F7_HALFU else
+                                                     illegal;
+                                     res.me_mode :=  lb when instruction(FUNCT7_RANGE) = F7_BYTE else
+                                                     lh when instruction(FUNCT7_RANGE) = F7_HALF else
+                                                     lw when instruction(FUNCT7_RANGE) = F7_WORD else
+                                                     lbu when instruction(FUNCT7_RANGE) = F7_BYTEU else
+                                                     lhu when instruction(FUNCT7_RANGE) = F7_HALFU else
+                                                     holiday;
                     when others =>  res.mnemonic := illegal;
+                                    res.me_mode  := holiday;
                 end case;
             when OPC_STORE =>
                 res.alu_mode := alu_add;
                 res.imm_mode := s_type when instruction(FUNCT3_RANGE) /= "111" else none;
-                res.me_mode  := store;
                 res.at_mode  := no;
                 res.rdst     := 0;
                 res.raux     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
@@ -249,13 +259,21 @@ PACKAGE BODY isa IS
                 res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_dat_i;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := sb_i;
+                                     res.me_mode  := sb;
                     when F3_HALF  => res.mnemonic := sh_i;
+                                     res.me_mode  := sh;
                     when F3_WORD  => res.mnemonic := sw_i;
-                    when F3_REG   => res.mnemonic :=    sb_r when instruction(FUNCT7_RANGE) = F7_BYTE else
-                                                        sh_r when instruction(FUNCT7_RANGE) = F7_HALF else
-                                                        sw_r when instruction(FUNCT7_RANGE) = F7_WORD else
-                                                        illegal;
+                                     res.me_mode  := sw;
+                    when F3_REG   => res.mnemonic := sb_r when instruction(FUNCT7_RANGE) = F7_BYTE else
+                                                     sh_r when instruction(FUNCT7_RANGE) = F7_HALF else
+                                                     sw_r when instruction(FUNCT7_RANGE) = F7_WORD else
+                                                     illegal;
+                                     res.me_mode :=  sb when instruction(FUNCT7_RANGE) = F7_BYTE else
+                                                     sh when instruction(FUNCT7_RANGE) = F7_HALF else
+                                                     sw when instruction(FUNCT7_RANGE) = F7_WORD else
+                                                     holiday;
                     when others =>  res.mnemonic := illegal;
+                                    res.me_mode  := holiday;
                 end case;
             when OPC_OR =>
                 res.alu_mode := alu_add;
@@ -292,7 +310,7 @@ PACKAGE BODY isa IS
                                             res.rdst     := to_integer(unsigned(instruction(RS1_RANGE)));
                     when F3_SP =>           res.mnemonic := sp_i;
                                             res.imm_mode := s_type;
-                                            --res.me_mode  := store; TODO
+                                            res.me_mode  := sp;
                                             res.at_mode  := no;
                                             res.rdst     := 0;
                                             res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
@@ -301,7 +319,7 @@ PACKAGE BODY isa IS
                                             res.pgu_mode := pgu_ptr_i;
                     when F3_LP =>           res.mnemonic := lp_i;
                                             res.imm_mode := i_type;
-                                            --res.me_mode  := store; TODO
+                                            res.me_mode  := lp;
                                             res.at_mode  := yes;
                                             res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                                             res.raux     := 0;
@@ -312,7 +330,7 @@ PACKAGE BODY isa IS
                         case instruction(FUNCT7_RANGE) is
                             when F7_SPR =>  res.mnemonic := sp_r;
                                             res.imm_mode := none;
-                                            --res.me_mode  := store; TODO
+                                            res.me_mode  := sp;
                                             res.at_mode  := no;
                                             res.rdst     := 0;
                                             res.raux     := to_integer(unsigned(instruction(RD_RANGE)));
@@ -321,7 +339,7 @@ PACKAGE BODY isa IS
                                             res.pgu_mode := pgu_ptr_r;
                             when F7_LPR =>  res.mnemonic := lp_r;
                                             res.imm_mode := none;
-                                            --res.me_mode  := store; TODO
+                                            res.me_mode  := lp;
                                             res.at_mode  := yes;
                                             res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                                             res.raux     := 0;
@@ -339,6 +357,20 @@ PACKAGE BODY isa IS
             when OPC_SYSTEM => 
                 report "test done" severity failure;
 
+
+            when OPC_LUI => 
+                res.mnemonic := lui;
+                res.alu_mode := alu_add;
+                res.imm_mode := u_type;
+                res.me_mode  := holiday;
+                res.at_mode  := no;
+                res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                res.rdat     := 0;
+                res.rptr     := 0;
+                res.raux     := 0;
+                res.alu_a_sel:= DAT;
+                res.alu_b_sel:= IMM;
+                res.pgu_mode := pgu_nop;
 
             when others =>
                 res.mnemonic := illegal;

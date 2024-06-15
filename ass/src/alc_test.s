@@ -74,7 +74,7 @@ _start:
             nop
             nop
             nop
-            sw.r t1, t6(s0)
+            sw.r t6, t1(s0)
             lw.r t2, t1(s0)
             nop
             nop
@@ -94,6 +94,13 @@ _start:
             nop
             nop
             nop
+            nop
+            lui  t0, 0x55555
+            nop
+            nop
+            nop
+            nop
+            ori  t0, t0, 0x555
             nop
             nop
             nop

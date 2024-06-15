@@ -99,6 +99,7 @@ PACKAGE isa IS
                         lb_i, lh_i, lw_i, lbu_i, lhu_i, sb_i, sh_i, sw_i, lb_r, lh_r, lw_r, lbu_r, lhu_r, sb_r, sh_r, sw_r,
                         andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, min, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
                         sp_r, lp_r, sv, rst, qdtb, qdth, qdtw, qdtd, qpi, gcp, pop, rtlib, cpfc, check, sp_i, lp_i, jlib, alc, alci_p, alci_d, alci, pushg, pusht, 
+                        lui,
                         illegal);
     type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);
 
@@ -119,6 +120,7 @@ PACKAGE isa IS
 
     constant OPC_ALU_I:     std_logic_vector(OPC_RANGE) := "0010011";
     constant OPC_ALU_R:     std_logic_vector(OPC_RANGE) := "0110011";
+    constant OPC_LUI:       std_logic_vector(OPC_RANGE) := "0110111";
     constant OPC_JAL:       std_logic_vector(OPC_RANGE) := "1101111";
     constant OPC_BRANCH:    std_logic_vector(OPC_RANGE) := "1100011";
     constant OPC_LOAD:      std_logic_vector(OPC_RANGE) := "0000011";
@@ -218,7 +220,7 @@ PACKAGE isa IS
                         alu_illegal);
     type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU);
     type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_nop);
-    type mem_mode_T is (load, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, load_attr, holiday);
+    type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, holiday);
     type at_mode_T is (yes, no);
 
     type ctrl_sig_T is record 

@@ -26,7 +26,9 @@ BEGIN
 
                 if not obj_init_stall then
                     ctrl_ex <= ctrl_dc;
-
+                    me_mode_ex <= ctrl_dc.me_mode;
+                    
+                    
                     rdst_ix_ex <= rdst_ix_dc;
                     rdat_ex <= rdat_dc;
                     rptr_ex <= rptr_dc;
@@ -39,7 +41,7 @@ BEGIN
         end if;
     end process;
 
-  ctrl_dc_uq <= ctrl_dc;
+  me_mode_dc_uq <= ctrl_dc.me_mode;
   alu_out_dc_uq <= alu_out_ex_u when ctrl_dc.pgu_mode = pgu_nop else ptr_addr_ex_u;
   raux_dc_uq <= raux_dc;
   rptr_dc_uq <= rptr_dc;

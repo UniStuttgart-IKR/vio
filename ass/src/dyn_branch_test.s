@@ -116,7 +116,14 @@ ok10:       li      a0, 0x111
 failure:    li      a0, 0x555
             j       doom
 
-doom:       jal     t0, doom
+doom:       nop
+            nop
+            nop
+            nop
+            nop
+            nop
+            ebreak
+            jal     t0, doom
 
 
 .section usb

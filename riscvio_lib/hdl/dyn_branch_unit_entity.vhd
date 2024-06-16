@@ -15,13 +15,14 @@ USE riscvio_lib.isa.all;
 
 ENTITY dyn_branch_unit IS
   PORT(
-    imm        : IN word_T;
-    alu_flags  : IN alu_flags_T;
-    ctrl_sig   : IN ctrl_sig_T;
-    pc         : IN pc_T;
+    imm            : IN word_T;
+    alu_flags      : IN alu_flags_T;
+    branch_mode    : IN branch_mode_T;
+    pc             : IN pc_T;
+    dyn_branch_tgt : IN word_T;
 
-    dbt_valid  : OUT boolean;
-    dbt        : OUT pc_T
+    dbt_valid      : OUT boolean;
+    dbt            : OUT pc_T
   ); 
 END ENTITY dyn_branch_unit;
 

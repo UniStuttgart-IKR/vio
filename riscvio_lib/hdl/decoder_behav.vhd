@@ -26,6 +26,7 @@ BEGIN
     ctr_sig.alu_a_sel   <= decoded_inst.alu_a_sel;
     ctr_sig.alu_b_sel   <= decoded_inst.alu_b_sel;
     ctr_sig.pgu_mode    <= decoded_inst.pgu_mode;
+    ctr_sig.branch_mode <= decoded_inst.branch_mode;
 
     extend: process(all) is
     begin
@@ -49,7 +50,7 @@ BEGIN
         end case;
     end process extend;
 
-    sbt_valid <= decoded_inst.mnemonic = jal;
+    sbt_valid <= decoded_inst.branch_mode = jal;
     sbt.ix <= std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(extractJTypeImm(instruction))), WORD_SIZE));
     sbt.ptr <= pc.ptr;
     sbt.pi <= pc.pi;

@@ -18,11 +18,13 @@ BEGIN
       imm_dc  <= (others => '0');
       ctrl_dc <= CTRL_NULL;
       pc_dc <= PC_NULL;
+      branch_mode_dc <= no_branch;
       
     else
       if clk'event and clk = '1' then
         if not obj_init_stall then
           ctrl_dc <= CTRL_NULL when dbt_valid else ctrl_dc_u;
+          branch_mode_dc <= no_branch when dbt_valid else ctrl_dc_u.branch_mode;
 
           rdst_ix_dc <= rdst_ix_dc_u;
           rdat_dc <= rdat_dc_u;

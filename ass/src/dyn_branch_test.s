@@ -43,7 +43,7 @@ ok4:        li      t1, 2
             j       failure  
 
 ok5:        li      t1, 2
-            bgt     t1, t0, ok6
+            bgtu    t1, t0, ok6
             j       failure  
 
 ok6:        ble     t0, t1, ok7
@@ -66,7 +66,19 @@ ok9:        bge     t1, t0, ok10
 
 ok10:       li      a0, 0x111
             j       doom
+            nop
+            nop
+            nop
+            nop
+            nop
+            jalr    zero, t0, 0
+            j       failure
 
+
+            
+
+ok11:       li      a0, 0x111
+            j       doom
             add     t3, t0,t1
             sub     t4, t0,t1
             sll     t5, t0,t1

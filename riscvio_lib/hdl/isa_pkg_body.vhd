@@ -15,6 +15,7 @@ PACKAGE BODY isa IS
     begin
         res.imm_mode := none;
         res.pgu_mode := pgu_nop;
+        res.branch_mode := no_branch;
         case instruction(OPC_RANGE) is
             when OPC_ALU_R => 
                 res.imm_mode := none;
@@ -188,6 +189,38 @@ PACKAGE BODY isa IS
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= IMM;
                 res.pgu_mode := pgu_nop;
+                res.branch_mode := jal;
+
+
+            when OPC_JALR =>
+                res.mnemonic := jal;
+                res.alu_mode := alu_add;
+                res.imm_mode := i_type;
+                res.me_mode  := holiday;
+                res.at_mode  := no;
+                res.rdst     := 1 when to_integer(unsigned(instruction(RD_RANGE))) = 1 else 0; --only rix or zero are allowed!
+                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE))); 
+                res.rptr     := 2; --frame
+                res.raux     := 0;
+                res.alu_a_sel:= DAT;
+                res.alu_b_sel:= IMM;
+                res.pgu_mode := pgu_nop;
+                res.branch_mode := jalr;
+
+            when OPC_AUIPC => 
+                res.mnemonic := auipc;
+                res.alu_mode := alu_add;
+                res.imm_mode := u_type;
+                res.me_mode  := holiday;
+                res.at_mode  := no;
+                res.rdst     := 1 when to_integer(unsigned(instruction(RD_RANGE))) = 1 else 0; --only rix or zero are allowed!
+                res.rdat     := 0; 
+                res.rptr     := 0;
+                res.raux     := 0;
+                res.alu_a_sel:= PC;
+                res.alu_b_sel:= IMM;
+                res.pgu_mode := pgu_nop;
+                res.branch_mode := no_branch;
             when OPC_BRANCH =>
                 res.alu_mode := alu_add;
                 res.imm_mode := b_type;
@@ -202,11 +235,17 @@ PACKAGE BODY isa IS
                 res.pgu_mode := pgu_nop;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BEQ  => res.mnemonic := beq;
+                                    res.branch_mode := beq;
                     when F3_BNE  => res.mnemonic := bne;
+                                    res.branch_mode := bne;
                     when F3_BLT  => res.mnemonic := blt;
+                                    res.branch_mode := blt;
                     when F3_BGE  => res.mnemonic := bge;
+                                    res.branch_mode := bge;
                     when F3_BLTU => res.mnemonic := bltu;
+                                    res.branch_mode := bltu;
                     when F3_BGEU => res.mnemonic := bgeu;
+                                    res.branch_mode := bgeu;
                     when others =>  res.mnemonic := illegal;
                 end case;
             when OPC_LOAD =>

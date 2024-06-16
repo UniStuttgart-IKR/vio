@@ -15,7 +15,7 @@ BEGIN
     -- dbta_valid needs to clear if, dc registers
     process(all) is
     begin
-        case ctrl_sig.mnemonic is
+        case branch_mode is
             when beq => 
                 dbt_valid <= alu_flags.eq;
             when bne =>
@@ -28,12 +28,14 @@ BEGIN
                 dbt_valid <= alu_flags.altbu;
             when bgeu => 
                 dbt_valid <= not alu_flags.altbu or alu_flags.eq;
+            when jalr => 
+                dbt_valid <= true;
             when others => 
                 dbt_valid <= false;
         end case;
     end process;
 
-    dbt.ix <= std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(imm)), WORD_SIZE));
+    dbt.ix <= std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(imm)), WORD_SIZE)) when branch_mode /= jalr else dyn_branch_tgt;
     dbt.ptr <= pc.ptr;
     dbt.pi <= pc.pi;
     dbt.dt <= pc.dt;

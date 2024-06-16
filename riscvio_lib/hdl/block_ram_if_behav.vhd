@@ -13,7 +13,7 @@ use ieee.numeric_std.all;
 ARCHITECTURE behav OF block_ram_if IS
 
 BEGIN
-  dram_address_a <= addr(dram_address_a'high downto 0);
+  dram_address_a <= addr.data(dram_address_a'high downto 0);
   read_p: process (all) is
   begin  
     -- assign default values
@@ -22,7 +22,7 @@ BEGIN
     case mode is
       when lb =>
         
-        case addr(1 downto 0) is
+        case addr.data(1 downto 0) is
           when "00" =>
               mem_out              <= (others => dram_q_a(BYTE0_RANGE'high));
               mem_out(BYTE0_RANGE) <= dram_q_a(BYTE0_RANGE);
@@ -45,7 +45,7 @@ BEGIN
         end case;
         
       when lbu =>
-        case addr(1 downto 0) is
+        case addr.data(1 downto 0) is
           when "00" =>
               mem_out(BYTE0_RANGE) <= dram_q_a(BYTE0_RANGE); 
                   
@@ -64,7 +64,7 @@ BEGIN
         end case;
         
       when lh =>
-        case addr(1) is
+        case addr.data(1) is
           when '0' =>
               mem_out               <= (others => dram_q_a(HWORD0_RANGE'high));
               mem_out(HWORD0_RANGE) <= dram_q_a(HWORD0_RANGE);
@@ -79,7 +79,7 @@ BEGIN
         end case;
         
       when lhu =>
-        case addr(1) is
+        case addr.data(1) is
           when '0' =>
               mem_out(HWORD0_RANGE) <= dram_q_a(HWORD0_RANGE);
                           
@@ -115,7 +115,7 @@ BEGIN
     case mode_u is
       when sb =>
           dram_wren_a  <= '1';
-          dram_byteena_a(to_integer(unsigned(addr(1 downto 0)))) <= '1';
+          dram_byteena_a(to_integer(unsigned(addr.data(1 downto 0)))) <= '1';
           dram_data_a(BYTE0_RANGE) <= raux.val(BYTE0_RANGE);
           dram_data_a(BYTE1_RANGE) <= raux.val(BYTE0_RANGE);
           dram_data_a(BYTE2_RANGE) <= raux.val(BYTE0_RANGE);
@@ -124,7 +124,7 @@ BEGIN
           
       when sh =>
           dram_wren_a  <= '1';
-          dram_byteena_a <= "1100" when addr(1) = '1' else "0011";
+          dram_byteena_a <= "1100" when addr.data(1) = '1' else "0011";
           dram_data_a <= raux.val(HWORD0_RANGE) 
                             & raux.val(HWORD0_RANGE);
               

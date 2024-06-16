@@ -20,14 +20,12 @@ BEGIN
             raux_ex <= RAUX_NULL;
             imm_ex  <= (others => '0');
             ctrl_ex <= CTRL_NULL;
-            alu_out_ex <= (others => '0');
+            res_ex <= REG_MEM_NULL;
         else
             if clk'event and clk = '1' then
 
                 if not obj_init_stall then
                     ctrl_ex <= ctrl_dc;
-                    me_mode_ex <= ctrl_dc.me_mode;
-                    
                     
                     rdst_ix_ex <= rdst_ix_dc;
                     rdat_ex <= rdat_dc;
@@ -35,15 +33,19 @@ BEGIN
                     raux_ex <= raux_dc;
                     imm_ex  <= imm_dc;
 
-                    alu_out_ex <= alu_out_ex_u when ctrl_dc.pgu_mode = pgu_nop else ptr_addr_ex_u;
+                    res_ex <= res_ex_u;
                 end if;
             end if;
         end if;
     end process;
 
-  me_mode_dc_uq <= ctrl_dc.me_mode;
-  alu_out_dc_uq <= alu_out_ex_u when ctrl_dc.pgu_mode = pgu_nop else ptr_addr_ex_u;
-  raux_dc_uq <= raux_dc;
-  rptr_dc_uq <= rptr_dc;
+    me_mode_ex <= ctrl_ex.me_mode;
+    me_mode_dc_uq <= ctrl_dc.me_mode;
+    pgu_mode_ex <= ctrl_ex.pgu_mode;
+
+
+    res_ex_uq <= res_ex_u;
+    raux_dc_uq <= raux_dc;
+    rptr_dc_uq <= rptr_dc;
 END ARCHITECTURE behav;
 

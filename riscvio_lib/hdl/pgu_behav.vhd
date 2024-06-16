@@ -32,7 +32,7 @@ ARCHITECTURE behav OF pgu IS
     end function calcAddr;
 BEGIN
 
-    addr    <=  calcLen(rdat.val, raux.val, 0, rptr.val) when pgu_mode = pgu_alc else
+    ptr.data   <=  calcLen(rdat.val, raux.val, 0, rptr.val) when pgu_mode = pgu_alc else
                    calcLen(imm, rdat.val, 0, rptr.val) when pgu_mode = pgu_alcp else
                    calcLen(rdat.val, imm, 0, rptr.val) when pgu_mode = pgu_alcd else
 
@@ -45,6 +45,28 @@ BEGIN
                    calcAddr(rptr.pi, imm, rptr.val, true) when pgu_mode = pgu_ptr_i else
                    calcAddr(rptr.pi, rdat.val, rptr.val) when pgu_mode = pgu_dat_r else
                    calcAddr(rptr.pi, rdat.val, rptr.val, true) when pgu_mode = pgu_ptr_r else 
+                   (others => '0');
+
+    ptr.tag <= POINTER;
+
+    ptr.pi     <=  rdat.val when pgu_mode = pgu_alc else
+                   imm when pgu_mode = pgu_alcp else
+                   rdat.val when pgu_mode = pgu_alcd else
+
+                   (4 downto 0 => imm(4 downto 0), others => '0') when pgu_mode = pgu_alci else
+                   (4 downto 0 => imm(4 downto 0), others => '0') when pgu_mode = pgu_push else
+                   (4 downto 0 => imm(4 downto 0), others => '0') when pgu_mode = pgu_pusht else
+                   (4 downto 0 => imm(4 downto 0), others => '0') when pgu_mode = pgu_pushg else
+                   (others => '0');
+
+    ptr.delta  <=  raux.val when pgu_mode = pgu_alc else
+                   rdat.val when pgu_mode = pgu_alcp else
+                   imm when pgu_mode = pgu_alcd else
+                  
+                   (6 downto 0 => imm(11 downto 5), others => '0') when pgu_mode = pgu_alci else
+                   (6 downto 0 => imm(11 downto 5), others => '0') when pgu_mode = pgu_push else
+                   (6 downto 0 => imm(11 downto 5), others => '0') when pgu_mode = pgu_pusht else
+                   (6 downto 0 => imm(11 downto 5), others => '0') when pgu_mode = pgu_pushg else
                    (others => '0');
 
 END ARCHITECTURE behav;

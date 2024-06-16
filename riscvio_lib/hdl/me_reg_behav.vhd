@@ -18,8 +18,7 @@ BEGIN
             raux_me <= RAUX_NULL;
             imm_me  <= (others => '0');
             ctrl_me <= CTRL_NULL;
-            alu_out_me <= (others => '0');
-            mem_out_me <= (others => '0');
+            res_me <= REG_MEM_NULL;
         else
             if clk'event and clk = '1' then
                 if not obj_init_stall then
@@ -31,14 +30,13 @@ BEGIN
                     rptr_me <= rptr_ex;
                     raux_me <= raux_ex;
                     imm_me  <= imm_ex;
-                    mem_out_me <= mem_out_me_u;
-                    alu_out_me <= alu_out_ex;
+                    res_me <= res_me_u;
                 end if;
             end if;
         end if;
     end process;
 
     
-    mem_out_me_uq <= mem_out_me_u;
+    res_me_uq <= res_me_u;
 END ARCHITECTURE behav;
 

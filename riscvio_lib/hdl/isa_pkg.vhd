@@ -99,7 +99,7 @@ PACKAGE isa IS
                         lb_i, lh_i, lw_i, lbu_i, lhu_i, sb_i, sh_i, sw_i, lb_r, lh_r, lw_r, lbu_r, lhu_r, sb_r, sh_r, sw_r,
                         andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, min, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
                         sp_r, lp_r, sv, rst, qdtb, qdth, qdtw, qdtd, qpi, gcp, pop, rtlib, cpfc, check, sp_i, lp_i, jlib, alc, alci_p, alci_d, alci, pushg, pusht, 
-                        lui, ebreak,
+                        lui, ebreak, auipc,
                         illegal);
     type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);
 
@@ -122,6 +122,8 @@ PACKAGE isa IS
     constant OPC_ALU_R:     std_logic_vector(OPC_RANGE) := "0110011";
     constant OPC_LUI:       std_logic_vector(OPC_RANGE) := "0110111";
     constant OPC_JAL:       std_logic_vector(OPC_RANGE) := "1101111";
+    constant OPC_JALR:      std_logic_vector(OPC_RANGE) := "1100111";
+    constant OPC_AUIPC:     std_logic_vector(OPC_RANGE) := "0010111";
     constant OPC_BRANCH:    std_logic_vector(OPC_RANGE) := "1100011";
     constant OPC_LOAD:      std_logic_vector(OPC_RANGE) := "0000011";
     constant OPC_STORE:     std_logic_vector(OPC_RANGE) := "0100011";
@@ -218,10 +220,11 @@ PACKAGE isa IS
     type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, 
                         alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orcb, alu_rev8,
                         alu_illegal);
-    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU);
+    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU, PC);
     type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_nop);
     type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, holiday);
     type at_mode_T is (yes, no);
+    type branch_mode_T is (jal, jalr, beq, bne, blt, bge, bltu, bgeu, no_branch);
 
     type ctrl_sig_T is record 
         alu_mode:       alu_mode_T;
@@ -231,8 +234,9 @@ PACKAGE isa IS
         pgu_mode:       pgu_mode_T;
         me_mode:        mem_mode_T;
         at_mode:        at_mode_T;
+        branch_mode:    branch_mode_T;
     end record ctrl_sig_T;
-    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, alu_a_sel => DAT, alu_b_sel => DAT, mnemonic => illegal, me_mode => holiday, at_mode => no, pgu_mode => pgu_nop);
+    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, branch_mode => no_branch, alu_a_sel => DAT, alu_b_sel => DAT, mnemonic => nop, me_mode => holiday, at_mode => no, pgu_mode => pgu_nop);
     
     type decode_T is record 
         mnemonic:       mnemonic_T;
@@ -247,6 +251,7 @@ PACKAGE isa IS
         rptr:           reg_ix_T;
         raux:           reg_ix_T;
         imm_mode:       imm_T;
+        branch_mode:    branch_mode_T;
     end record decode_T;
     
     type alu_flags_T is record

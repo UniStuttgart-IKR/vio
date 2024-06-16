@@ -22,18 +22,8 @@ ARCHITECTURE behav OF obj_init_fsm IS
     signal pi: word_T;
     signal dt: word_T;
 BEGIN
-    unit_active <= ctrl_ex.pgu_mode = pgu_alc or ctrl_ex.pgu_mode = pgu_alcp or ctrl_ex.pgu_mode = pgu_alcd or ctrl_ex.pgu_mode = pgu_alci or ctrl_ex.pgu_mode = pgu_push or ctrl_ex.pgu_mode = pgu_pusht or ctrl_ex.pgu_mode = pgu_pushg;
+    unit_active <= pgu_mode_ex = pgu_alc or pgu_mode_ex = pgu_alcp or pgu_mode_ex = pgu_alcd or pgu_mode_ex = pgu_alci or pgu_mode_ex = pgu_push or pgu_mode_ex = pgu_pusht or pgu_mode_ex = pgu_pushg;
 
-
-    pi <= (4 downto 0 => imm_ex(4 downto 0), others => '0') when ctrl_ex.pgu_mode = pgu_alci or ctrl_ex.pgu_mode = pgu_push or ctrl_ex.pgu_mode = pgu_pusht or ctrl_ex.pgu_mode = pgu_pushg  else 
-          rdat_ex.val when ctrl_ex.pgu_mode = pgu_alc or ctrl_ex.pgu_mode = pgu_alcd else
-          imm_ex when ctrl_ex.pgu_mode = pgu_alcp else
-          (others => '0');
-    dt <= (6 downto 0 => imm_ex(11 downto 5), others => '0') when ctrl_ex.pgu_mode = pgu_alci or ctrl_ex.pgu_mode = pgu_push or ctrl_ex.pgu_mode = pgu_pusht or ctrl_ex.pgu_mode = pgu_pushg  else 
-          raux_ex.val when ctrl_ex.pgu_mode = pgu_alc else
-          rdat_ex.val when ctrl_ex.pgu_mode = pgu_alcp else
-          imm_ex when ctrl_ex.pgu_mode = pgu_alcd else
-          (others => '0');
 
     fsm_transistions: process(clk, res_n) is
     begin
@@ -46,7 +36,7 @@ BEGIN
                     when IDLE => 
                         if unit_active then
                             current_state <= WRITING;
-                            clr_addr_int <= word_T(unsigned(alu_out_ex) + 4);
+                            clr_addr_int <= word_T(unsigned(res_ex.data) + 4);
                         end if;
 
                     when WRITING => 
@@ -67,10 +57,10 @@ BEGIN
         obj_init_wr_int <= (current_state = WRITING and clr_addr_int /= end_addr) or (unit_active and current_state = IDLE);
         obj_init_stall <= obj_init_wr_int;
         obj_init_wr <= obj_init_wr_int;
-        obj_init_addr <= clr_addr_int when current_state = WRITING else word_T(unsigned(alu_out_ex));
-        obj_init_data <= dt when clr_addr_int = word_T(unsigned(alu_out_ex) + 4) and current_state = WRITING else
+        obj_init_addr <= clr_addr_int when current_state = WRITING else word_T(unsigned(res_ex.data));
+        obj_init_data <= res_ex.delta when clr_addr_int = word_T(unsigned(res_ex.data) + 4) and current_state = WRITING else
                         (others => '0') when current_state = WRITING else 
-                         pi;
+                         res_ex.pi;
                     
                     
 

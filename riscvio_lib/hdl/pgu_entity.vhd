@@ -20,7 +20,11 @@ ENTITY pgu IS
       raux     : IN     raux_T;
       rdat     : IN     rdat_T;
       rptr     : IN     rptr_T;
-      ptr      : OUT    reg_mem_T
+      rdst_ix  : IN     reg_ix_T;
+      ptr      : OUT    reg_mem_T;
+      frame_type_exception: OUT boolean;
+      state_error_exception: OUT boolean;
+      index_out_of_bounds_exception: OUT boolean;
    );
 
 -- Declarations

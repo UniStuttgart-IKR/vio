@@ -1,1 +1,11 @@
 Have a look at https://pcotret.gitlab.io/riscv-custom/sw_toolchain.html
+binutils:
+* fix pi, delta fields for alci, push, pgu_pushg
+* swap push, pusht
+
+pipeline:
+* move obj init pi&dt write to AT
+* add check of data size to index out bounds
+* add frame flag to generated pointers by push
+* add alc fowarding unit
+

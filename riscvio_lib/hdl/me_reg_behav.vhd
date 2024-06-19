@@ -38,5 +38,6 @@ BEGIN
 
     
     res_me_uq <= res_me_u;
+    allocating_at <= ali_T'val(rptr_me.ix) = alc_addr;
 END ARCHITECTURE behav;
 

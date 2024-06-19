@@ -49,14 +49,16 @@ BEGIN
     state_error_exception <= false when pgu_mode = pgu_nop or (pgu_mode /= pgu_dat_i and pgu_mode /= pgu_dat_r and pgu_mode /= pgu_ptr_i and pgu_mode /= pgu_ptr_r) else                                                     --default
                              true  when rptr.ali = frame and (pgu_mode = pgu_dat_r or pgu_mode = pgu_ptr_r) else    --try executing index load/store on stack frame
                              true  when rptr.ali = frame and rdat.ali /= rix else                                   --(should not happen but just to be sure)
-                             true  when rptr.val(1 downto 0) = rdat.val(30 downto 29) else                          --shape and color of frame do not match shape and color of rix
+                             true  when rptr.ali = frame and rptr.val(1 downto 0) /= rdat.val(30 downto 29) else     --shape and color of frame do not match shape and color of rix
                              false;
 
     index_out_of_bounds_exception <= false when pgu_mode = pgu_nop else
-                                     true  when pgu_mode = pgu_dat_i and unsigned(imm) > unsigned(rptr.dt) else
-                                     true  when pgu_mode = pgu_dat_r and unsigned(rdat.val) > unsigned(rptr.dt) else
-                                     true  when pgu_mode = pgu_ptr_i and unsigned(imm) > unsigned(rptr.pi) else
-                                     true  when pgu_mode = pgu_ptr_r and unsigned(rdat.val) > unsigned(rptr.pi) else
+                                     true  when pgu_mode = pgu_dat_i and unsigned(imm(28 downto 0)) > unsigned(rptr.dt) and rptr.ali = frame else
+                                     true  when pgu_mode = pgu_dat_i and unsigned(imm(30 downto 0)) > unsigned(rptr.dt) else
+                                     true  when pgu_mode = pgu_dat_r and unsigned(rdat.val(28 downto 0)) > unsigned(rptr.dt) and rptr.ali = frame else
+                                     true  when pgu_mode = pgu_dat_r and unsigned(rdat.val(30 downto 0)) > unsigned(rptr.dt) else
+                                     true  when pgu_mode = pgu_ptr_i and unsigned(imm(30 downto 2)) > unsigned(rptr.pi) else
+                                     true  when pgu_mode = pgu_ptr_r and unsigned(rdat.val(30 downto 2)) > unsigned(rptr.pi) else
                                      false;
 
     ptr.data   <=  calcLen(rdat.val,                                        raux.val,                                       0, rptr.val) when pgu_mode = pgu_alc  else
@@ -68,7 +70,9 @@ BEGIN
                    calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 8, raux.val) when pgu_mode = pgu_pushg else
 
                    std_logic_vector(unsigned(rptr.val) + 8)  when ali_T'val(rdst_ix) = rix else
+                   std_logic_vector(unsigned(rptr.val) + 8)  when raux.ali = rix else
                    std_logic_vector(unsigned(rptr.val) + 12) when ali_T'val(rdst_ix) = rcd else
+                   std_logic_vector(unsigned(rptr.val) + 12) when raux.ali = rcd else
 
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(30), rptr.dt(29))          when pgu_mode = pgu_dat_i else
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(30), rptr.dt(29), true)    when pgu_mode = pgu_ptr_i else

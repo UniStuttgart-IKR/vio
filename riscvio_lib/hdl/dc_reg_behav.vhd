@@ -11,11 +11,11 @@ BEGIN
   process(clk, res_n) is
   begin
     if res_n = '0' then
-      rdst_ix_dc <= 0;
-      rdat_dc <= RDAT_NULL;
-      rptr_dc <= RPTR_NULL;
-      raux_dc <= RAUX_NULL;
-      imm_dc  <= (others => '0');
+      rdst_ix_dc_reg <= 0;
+      rdat_dc_reg <= RDAT_NULL;
+      rptr_dc_reg <= RPTR_NULL;
+      raux_dc_reg <= RAUX_NULL;
+      imm_dc_reg  <= (others => '0');
       ctrl_dc <= CTRL_NULL;
       pc_dc <= PC_NULL;
       branch_mode_dc <= no_branch;
@@ -26,11 +26,11 @@ BEGIN
           ctrl_dc <= CTRL_NULL when dbt_valid else ctrl_dc_u;
           branch_mode_dc <= no_branch when dbt_valid else ctrl_dc_u.branch_mode;
 
-          rdst_ix_dc <= rdst_ix_dc_u;
-          rdat_dc <= rdat_dc_u;
-          rptr_dc <= rptr_dc_u;
-          raux_dc <= raux_dc_u;
-          imm_dc  <= imm_dc_u;
+          rdst_ix_dc_reg <= rdst_ix_dc_u;
+          rdat_dc_reg <= rdat_dc_u;
+          rptr_dc_reg <= rptr_dc_u;
+          raux_dc_reg <= raux_dc_u;
+          imm_dc_reg  <= imm_dc_u;
           
           pc_dc <= pc_if;
         end if;

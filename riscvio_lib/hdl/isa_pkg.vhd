@@ -98,7 +98,7 @@ PACKAGE isa IS
                         jal, beq, bne, blt, bge, bltu, bgeu,
                         lb_i, lh_i, lw_i, lbu_i, lhu_i, sb_i, sh_i, sw_i, lb_r, lh_r, lw_r, lbu_r, lhu_r, sb_r, sh_r, sw_r,
                         andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, min, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
-                        sp_r, lp_r, sv, rst, qdtb, qdth, qdtw, qdtd, qpi, gcp, pop, rtlib, cpfc, check, sp_i, lp_i, jlib, alc, alci_p, alci_d, alci, pushg, pusht, 
+                        sp_r, lp_r, sv, rst, qdtb, qdth, qdtw, qdtd, qpi, gcp, pop, rtlib, cpfc, check, sp_i, lp_i, jlib, alc, alci_p, alci_d, alci, pushg, pusht, push, 
                         lui, ebreak, auipc,
                         illegal);
     type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);
@@ -192,7 +192,7 @@ PACKAGE isa IS
 
     constant F5_ALCI:       std_logic_vector(FUNCT5_RANGE) := "00000";
     constant F5_PUSHG:      std_logic_vector(FUNCT5_RANGE) := "00010";
-    constant F5_PUSHT:      std_logic_vector(FUNCT5_RANGE) := "00011";
+    constant F5_PUSH:       std_logic_vector(FUNCT5_RANGE) := "00011";
 
     constant F7_SPR:        std_logic_vector(FUNCT7_RANGE) := "0000000";
     constant F7_LPR:        std_logic_vector(FUNCT7_RANGE) := "0000001";

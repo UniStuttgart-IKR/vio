@@ -21,5 +21,7 @@ BEGIN
       end if;
     end if;
   end process;
+
+  current_pc_uq <= pc_current_pc when obj_init_stall else current_pc_d;
 END ARCHITECTURE behav;
 

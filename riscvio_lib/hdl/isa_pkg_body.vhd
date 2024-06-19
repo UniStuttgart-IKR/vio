@@ -253,7 +253,7 @@ PACKAGE BODY isa IS
                 res.imm_mode := i_type when instruction(FUNCT3_RANGE) /= "111" else none;
                 res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
-                res.rdat     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
+                res.rdat     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = F3_REG else ali_T'pos(rix);
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.raux     := 0;
                 res.alu_a_sel:= DAT;
@@ -290,9 +290,9 @@ PACKAGE BODY isa IS
                 res.imm_mode := s_type when instruction(FUNCT3_RANGE) /= "111" else none;
                 res.at_mode  := no;
                 res.rdst     := 0;
-                res.raux     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT3_RANGE) = "111" else 0;
+                res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                res.rdat     := to_integer(unsigned(instruction(RS2_RANGE)));
+                res.rdat     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT3_RANGE) = F3_REG else ali_T'pos(rix);
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
                 res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_dat_i;
@@ -337,13 +337,15 @@ PACKAGE BODY isa IS
                     when F3_ALCID  =>       res.mnemonic := alci_d;
                                             res.pgu_mode := pgu_alcd;
                                             res.imm_mode := i_type;
-                    when F3_ALCI_PUSH =>    res.mnemonic := alci when instruction(RS2_RANGE) = F5_ALCI else
+                    when F3_ALCI_PUSH =>    res.mnemonic := alci when instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) /= frame else
+                                                            pusht when instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else
                                                             pushg when instruction(RS2_RANGE) = F5_PUSHG else
-                                                            pusht when instruction(RS2_RANGE) = F5_PUSHT else
+                                                            push when instruction(RS2_RANGE) = F5_PUSH else
                                                             illegal;
-                                            res.pgu_mode := pgu_alci when instruction(RS2_RANGE) = F5_ALCI else
+                                            res.pgu_mode := pgu_alci when instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) /= frame else
+                                                            pgu_pusht when instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else
                                                             pgu_pushg when instruction(RS2_RANGE) = F5_PUSHG else
-                                                            pgu_pusht when instruction(RS2_RANGE) = F5_PUSHT else
+                                                            pgu_push when instruction(RS2_RANGE) = F5_PUSH else
                                                             pgu_nop;
                                             res.imm_mode := s_type;
                                             res.rdst     := to_integer(unsigned(instruction(RS1_RANGE)));

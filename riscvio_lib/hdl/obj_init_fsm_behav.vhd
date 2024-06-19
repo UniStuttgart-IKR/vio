@@ -11,7 +11,7 @@ library ieee;
 use ieee.numeric_std.all;
 
 ARCHITECTURE behav OF obj_init_fsm IS
-    type state_T is (IDLE, WRITING, NEXT_INSTR);
+    type state_T is (IDLE, WRITING);
     signal current_state: state_T;
 
     signal clr_addr_int: word_T;
@@ -41,12 +41,10 @@ BEGIN
 
                     when WRITING => 
                         if clr_addr_int = end_addr then
-                            current_state <= NEXT_INSTR;
+                            current_state <= IDLE;
                         else
                             clr_addr_int <= std_logic_vector(unsigned(clr_addr_int) + 4);
                         end if;
-                    when NEXT_INSTR => 
-                        current_state <= IDLE;
                 end case;
             end if;
         end if;

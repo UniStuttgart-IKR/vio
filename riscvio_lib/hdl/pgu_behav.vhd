@@ -18,7 +18,7 @@ ARCHITECTURE behav OF pgu IS
         return std_logic_vector(unsigned(alc_addr) - unsigned(pi_aligned) - unsigned(dt) - to_unsigned(offs, word_T'length) - X"8") and X"FFFFFFF8";
     end function calcLen;
 
-    pure function calcAddr(pi: word_T; offs: word_T; base: word_T; rc: std_logic, ri: std_logic, ptr_access: boolean := false) return word_T is
+    pure function calcAddr(pi: word_T; offs: word_T; base: word_T; rc: std_logic; ri: std_logic; ptr_access: boolean := false) return word_T is
         variable pi_scaled: word_T;
         variable offset_scaled: word_T;
         variable reserved_space: natural range 8 to 16;
@@ -46,7 +46,7 @@ BEGIN
                             true  when raux.ali = rcd           and rptr.dt(30) /= '1' else     --try storing rcd to non gate frame
                             false;
 
-    state_error_exception <= false when pgu_mode = pgu_nop else                                                     --default
+    state_error_exception <= false when pgu_mode = pgu_nop or (pgu_mode /= pgu_dat_i and pgu_mode /= pgu_dat_r and pgu_mode /= pgu_ptr_i and pgu_mode /= pgu_ptr_r) else                                                     --default
                              true  when rptr.ali = frame and (pgu_mode = pgu_dat_r or pgu_mode = pgu_ptr_r) else    --try executing index load/store on stack frame
                              true  when rptr.ali = frame and rdat.ali /= rix else                                   --(should not happen but just to be sure)
                              true  when rptr.val(1 downto 0) = rdat.val(30 downto 29) else                          --shape and color of frame do not match shape and color of rix
@@ -67,8 +67,8 @@ BEGIN
                    calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 4, raux.val) when pgu_mode = pgu_push  else
                    calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 8, raux.val) when pgu_mode = pgu_pushg else
 
-                   std_logic_vector(unsigned(alc_addr) + 8)  when ali_T'val(rdst_ix) = rix else
-                   std_logic_vector(unsigned(alc_addr) + 12) when ali_T'val(rdst_ix) = rcd else
+                   std_logic_vector(unsigned(rptr.val) + 8)  when ali_T'val(rdst_ix) = rix else
+                   std_logic_vector(unsigned(rptr.val) + 12) when ali_T'val(rdst_ix) = rcd else
 
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(30), rptr.dt(29))          when pgu_mode = pgu_dat_i else
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(30), rptr.dt(29), true)    when pgu_mode = pgu_ptr_i else

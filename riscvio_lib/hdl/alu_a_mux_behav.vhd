@@ -9,11 +9,11 @@
 --
 ARCHITECTURE behav OF alu_a_mux IS
 BEGIN
-    b <= rdat_dc.val when alu_a_in_sel = DAT else
+    a <= rdat_dc.val when alu_a_in_sel = DAT else
          rptr_dc.val when alu_a_in_sel = PTRVAL else
          rptr_dc.pi  when alu_a_in_sel = PTRPI else
          rptr_dc.dt  when alu_a_in_sel = PTRDT else
-         pc.ix       when alu_b_in_sel = AUX else
+         pc.ix       when alu_a_in_sel = PC_IX else
          raux_dc.val;
 END ARCHITECTURE behav;
 

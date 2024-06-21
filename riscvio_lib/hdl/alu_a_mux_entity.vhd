@@ -5,8 +5,6 @@ USE ieee.std_logic_1164.all;
 USE ieee.std_logic_arith.all;
 LIBRARY riscvio_lib;
 USE riscvio_lib.isa.all;
-LIBRARY altera_mf;
-USE altera_mf.altera_mf_components.all;
 
 ENTITY alu_a_mux IS
    PORT( 

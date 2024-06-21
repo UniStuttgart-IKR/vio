@@ -9,7 +9,10 @@
 
 .text
 
-_start:     
+_start:     li      frame, 0x300
+            jal     entry
+
+entry:
             nop
             nop
             nop
@@ -18,18 +21,37 @@ _start:
             nop
             nop
             nop
-            li t0, 12
-            li t1, 24
-            add t2, t1, t0
-            nop
-            nop
-            nop
-            nop
-            alci    s0, 1, 4
-            alci    s1, 3, 18
-            alci    s2, 1, 4
-            alci    s3, 3, 18
-            alci    s4, 3, 18
+            li      t0, 12
+            li      t1, 24
+            add     t2, t1,t0
+
+            pushg   1,3
+            sp      ra, 55(frame)
+            sw      ra, 55(frame)
+            sw      t2, 0(frame)
+            lw      t3, 0(frame)
+            lp      ra, 3(frame)
+            lw      ra, 3(frame)
+            pop
+
+            alci    frame, 4,9
+            sp      ra, 55(frame)
+            sw      ra, 55(frame)
+            sw      t2, 0(frame)
+            lw      t3, 0(frame)
+            lp      ra, 3(frame)
+            lw      ra, 3(frame)
+            pop
+
+            pusht   4,9
+            sp      ra, 55(frame)
+            sw      ra, 55(frame)
+            sw      t2, 0(frame)
+            lw      t3, 0(frame)
+            lp      ra, 3(frame)
+            lw      ra, 3(frame)
+            pop
+
             nop
             nop
             nop
@@ -66,20 +88,6 @@ _start:
             lw      t1, 0(frame)
             lw      rix, 34(frame)
             lp      rix, 3(frame)
-
-            pushg   1, 3
-            #nop
-            #nop
-            #nop
-            #nop
-            #nop
-            sw      rix, 55(frame)
-            sp      rcd, 33(frame)
-            sw      t0, 0(frame)
-            lw      t1, 0(frame)
-            lw      rix, 34(frame)
-            lp      rix, 3(frame)
-            lp      rcd, 3(frame)
 
             nop
             nop

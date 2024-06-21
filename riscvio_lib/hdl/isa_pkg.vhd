@@ -52,7 +52,7 @@ PACKAGE isa IS
     constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '0'));
 
 
-    type ali_T is (zero, rix, frame, rcd, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t3, t4, t5, t6, imm, alc_lim, alc_addr, frame_lim, core, root, no_csr);
+    type ali_T is (zero, ra, frame, bm, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, s10, cnst, t3, t4, t5, t6, imm, rix, rcd, alc_lim, alc_addr, frame_lim, core, root, no_csr);
     subtype csr_ix_T is natural range ali_T'pos(alc_lim) to ali_T'pos(no_csr);
     subtype reg_ix_T is natural range 0 to ali_T'pos(root);
     type reg_T is record
@@ -190,10 +190,6 @@ PACKAGE isa IS
     constant F3_ALCID:      std_logic_vector(FUNCT3_RANGE) := "110";
     constant F3_ALCI_PUSH:  std_logic_vector(FUNCT3_RANGE) := "111";
 
-    constant F5_ALCI:       std_logic_vector(FUNCT5_RANGE) := "00000";
-    constant F5_PUSHG:      std_logic_vector(FUNCT5_RANGE) := "00010";
-    constant F5_PUSH:       std_logic_vector(FUNCT5_RANGE) := "00011";
-
     constant F7_SPR:        std_logic_vector(FUNCT7_RANGE) := "0000000";
     constant F7_LPR:        std_logic_vector(FUNCT7_RANGE) := "0000001";
     constant F7_SV:         std_logic_vector(FUNCT7_RANGE) := "0000010";
@@ -209,6 +205,10 @@ PACKAGE isa IS
     constant F7_CPFC:       std_logic_vector(FUNCT7_RANGE) := "0010010";
     constant F7_CHECK:      std_logic_vector(FUNCT7_RANGE) := "0010011";
 
+    constant F5_ALCI:       std_logic_vector(FUNCT5_RANGE) := "00000";
+    constant F5_PUSHG:      std_logic_vector(FUNCT5_RANGE) := "00010";
+    constant F5_PUSH:       std_logic_vector(FUNCT5_RANGE) := "00011";
+
     --ZRI extension
     constant F7_BYTE:                       std_logic_vector(FUNCT7_RANGE) := "0000000";
     constant F7_HALF:                       std_logic_vector(FUNCT7_RANGE) := "0000001";
@@ -220,11 +220,11 @@ PACKAGE isa IS
     type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, 
                         alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orcb, alu_rev8,
                         alu_illegal);
-    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU, PC);
-    type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_nop);
+    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU, PC_IX);
+    type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_pop, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_nop);
     type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, holiday);
-    type at_mode_T is (yes, no);
-    type branch_mode_T is (jal, jalr, beq, bne, blt, bge, bltu, bgeu, no_branch);
+    type at_mode_T is (yes, no, rix);
+    type branch_mode_T is (jlib, rtlib, jal, jalr, beq, bne, blt, bge, bltu, bgeu, no_branch);
 
     type ctrl_sig_T is record 
         alu_mode:       alu_mode_T;

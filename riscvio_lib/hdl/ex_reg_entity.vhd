@@ -21,7 +21,8 @@ ENTITY ex_reg IS
       res_ex_u                      : IN     reg_mem_T;
       res_n                         : IN     std_logic;
       rptr_dc                       : IN     rptr_T;
-      state_error_exception         : IN     boolean;
+      state_error_dbu               : IN     boolean;
+      state_error_pgu               : IN     boolean;
       allocating_me                 : OUT    boolean;
       ctrl_ex                       : OUT    ctrl_sig_T;
       imm_ex_reg                    : OUT    word_T;

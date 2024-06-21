@@ -16,9 +16,11 @@ ENTITY me_reg IS
       raux_ex        : IN     raux_T;
       rdat_ex        : IN     rdat_T;
       rdst_ix_ex     : IN     reg_ix_T;
+      res_ex         : IN     reg_mem_T;
       res_me_u       : IN     reg_mem_T;
       res_n          : IN     std_logic;
       rptr_ex        : IN     rptr_T;
+      addr_me_uq     : OUT    reg_mem_T;
       allocating_at  : OUT    boolean;
       at_mode_me     : OUT    at_mode_T;
       ctrl_me        : OUT    ctrl_sig_T;
@@ -27,7 +29,6 @@ ENTITY me_reg IS
       rdat_me        : OUT    rdat_T;
       rdst_ix_me     : OUT    reg_ix_T;
       res_me         : OUT    reg_mem_T;
-      res_me_uq      : OUT    reg_mem_T;
       rptr_me        : OUT    rptr_T
    );
 

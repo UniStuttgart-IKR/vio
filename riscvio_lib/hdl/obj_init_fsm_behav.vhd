@@ -21,9 +21,12 @@ ARCHITECTURE behav OF obj_init_fsm IS
 
     signal pi: word_T;
     signal dt: word_T;
+
+    signal end_addr_aligned, start_addr_aligned: word_T;
 BEGIN
     unit_active <= pgu_mode_ex = pgu_alc or pgu_mode_ex = pgu_alcp or pgu_mode_ex = pgu_alcd or pgu_mode_ex = pgu_alci or pgu_mode_ex = pgu_push or pgu_mode_ex = pgu_pusht or pgu_mode_ex = pgu_pushg;
-
+    end_addr_aligned <= end_addr(word_T'high downto 3) & "000";
+    start_addr_aligned <= res_ex.data(word_T'high downto 3) & "000";
 
     fsm_transistions: process(clk, res_n) is
     begin
@@ -36,11 +39,11 @@ BEGIN
                     when IDLE => 
                         if unit_active then
                             current_state <= WRITING;
-                            clr_addr_int <= word_T(unsigned(res_ex.data) + 4);
+                            clr_addr_int <= word_T(unsigned(start_addr_aligned) + 4);
                         end if;
 
                     when WRITING => 
-                        if clr_addr_int = end_addr then
+                        if clr_addr_int = end_addr_aligned then
                             current_state <= IDLE;
                         else
                             clr_addr_int <= std_logic_vector(unsigned(clr_addr_int) + 4);
@@ -52,11 +55,11 @@ BEGIN
     
     process(all) is
     begin
-        obj_init_wr_int <= (current_state = WRITING and clr_addr_int /= end_addr) or (unit_active and current_state = IDLE);
+        obj_init_wr_int <= (current_state = WRITING and clr_addr_int /= end_addr_aligned) or (unit_active and current_state = IDLE);
         obj_init_stall <= obj_init_wr_int;
         obj_init_wr <= obj_init_wr_int;
-        obj_init_addr <= clr_addr_int when current_state = WRITING else word_T(unsigned(res_ex.data));
-        obj_init_data <= res_ex.delta when clr_addr_int = word_T(unsigned(res_ex.data) + 4) and current_state = WRITING else
+        obj_init_addr <= clr_addr_int when current_state = WRITING else word_T(unsigned(start_addr_aligned));
+        obj_init_data <= res_ex.delta when clr_addr_int = word_T(unsigned(start_addr_aligned) + 4) and current_state = WRITING else
                         (others => '0') when current_state = WRITING else 
                          res_ex.pi;
                     

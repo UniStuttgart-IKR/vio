@@ -14,8 +14,10 @@ ARCHITECTURE behav OF register_file IS
 BEGIN
     
     rdat.ix   <= rdat_ix;
-    rdat.ali  <= ali_T'val(rdat_ix) when rdat_ix <= ali_T'pos(t6) else zero;
-    rdat.val  <= registers(ali_T'val(rdat_ix)).data when rdat_ix <= ali_T'pos(t6) else (others => '0');
+    rdat.ali  <= ali_T'val(rdat_ix) when rdat_ix <= ali_T'pos(t6) or rdat_ix = ali_T'pos(rix) else zero;
+    rdat.val  <= registers(ali_T'val(rdat_ix)).data when rdat_ix <= ali_T'pos(t6) else
+                 registers(ra).pi when rdat_ix = ali_T'pos(rix) else
+                 (others => '0');
 
     rptr.ix   <= rptr_ix;
     rptr.ali  <= ali_T'val(rptr_ix) when rptr_ix <= ali_T'pos(t6) else zero;
@@ -24,9 +26,14 @@ BEGIN
     rptr.dt   <= registers(ali_T'val(rptr_ix)).delta when rptr_ix <= ali_T'pos(t6) else (others => '0');
 
     raux.ix   <= raux_ix;
-    raux.ali  <= ali_T'val(raux_ix) when raux_ix <= ali_T'pos(t6) else zero;
-    raux.val  <= registers(ali_T'val(raux_ix)).data when raux_ix <= ali_T'pos(t6) else (others => '0');
-    raux.tag  <= registers(ali_T'val(raux_ix)).tag when raux_ix <= ali_T'pos(t6) else DATA;
+    raux.ali  <= ali_T'val(raux_ix) when raux_ix <= ali_T'pos(t6) or raux_ix = ali_T'pos(rix) or raux_ix <= ali_T'pos(rcd) else zero;
+    raux.val  <= registers(ali_T'val(raux_ix)).data when raux_ix <= ali_T'pos(t6) else
+                 registers(ra).pi when raux_ix = ali_T'pos(rix) else
+                 registers(ra).data when raux_ix = ali_T'pos(rcd) else
+                 (others => '0');
+    raux.tag  <= registers(ali_T'val(raux_ix)).tag when raux_ix <= ali_T'pos(t6) else
+                 POINTER when raux_ix = ali_T'pos(rcd) else
+                 DATA;
     
     write: process(clk, res_n) is
     begin
@@ -38,6 +45,10 @@ BEGIN
         if clk'event and clk = '1' then
           if rd_wb.rf_index /= 0 and rd_wb.rf_index <= ali_T'pos(t6) then
             registers(ali_T'val(rd_wb.rf_index)) <= rd_wb.mem;
+          elsif rd_wb.rf_index = ali_T'pos(rcd) then
+            registers(ra).data <= rd_wb.mem.data;
+          elsif rd_wb.rf_index = ali_T'pos(rix) then
+            registers(ra).pi <= rd_wb.mem.data;
           end if;
         end if;
       end if;

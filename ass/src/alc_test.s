@@ -29,6 +29,7 @@ _start:
             alci    s1, 3, 18
             alci    s2, 1, 4
             alci    s3, 3, 18
+            alci    s4, 3, 18
             nop
             nop
             nop

@@ -16,7 +16,7 @@ BEGIN
       pc_if <= PC_NULL;
     else
       if clk'event and clk = '1' then
-        if not obj_init_stall then
+        if not (obj_init_stall or insert_nop) then
           if_instr <= NOP_INSTR when (sbt_valid or dbt_valid) else if_instr_d;
           pc_if <= pc_current_pc;
         end if;

@@ -129,7 +129,7 @@ PACKAGE isa IS
     constant OPC_LOAD:      std_logic_vector(OPC_RANGE) := "0000011";
     constant OPC_STORE:     std_logic_vector(OPC_RANGE) := "0100011";
     constant OPC_OR:        std_logic_vector(OPC_RANGE) := "0001011";
-    constant OPC_SYSTEM:    std_logic_vector(OPC_RANGE) := "1111011"; --TODO: change when gcc generates systems correctly
+    constant OPC_SYSTEM:    std_logic_vector(OPC_RANGE) := "1110011";
 
     -- RV32I
     constant F3_ADD_SUB:   std_logic_vector(FUNCT3_RANGE) := "000";

@@ -15,6 +15,25 @@ def convertComments(contents) -> []:
         newconts.append(re.sub("//(.*)\n", "#\\1\n", cont))
 
     return newconts
+    
+    
+def applyMacros(contents) -> []:
+    MACROS = [
+        ["lcp\s*([0-7a-zA-Z]*)\s*,\s*([0-7a-zA-Z]*)\(([0-7a-zA-Z]*)\)", "lp\t\\1, \\2(\\3)\nsp\tzero, \\2(\\3)"],
+        ["lcp.r\s*([0-7a-zA-Z]*)\s*,\s*([0-7a-zA-Z]*)\(([0-7a-zA-Z]*)\)", "lp.r\t\\1, \\2(\\3)\nsp.r\tzero, \\2(\\3)"],
+        ["scp\s*([0-7a-zA-Z]*)\s*,\s*([0-7a-zA-Z]*)\(([0-7a-zA-Z]*)\)", "sp\t\\1, \\2(\\3)\naddi\t\\1, zero, 0"],
+        ["scp.r\s*([0-7a-zA-Z]*)\s*,\s*([0-7a-zA-Z]*)\(([0-7a-zA-Z]*)\)", "sp.r\t\\1, \\2(\\3)\naddi\t\\1, zero, 0"],
+        ["pusht\s*([0-7a-zA-Z]*)\s*,\s*([0-7a-zA-Z]*)", "alci\tframe, \\1, \\2"],
+    ]
+    newcontents = []
+
+    for content in contents:
+        for macro in MACROS:
+            content = re.sub(macro[0], macro[1], content)
+
+        newcontents.append(content)
+
+    return newcontents
 
 def markChar(i):
     print(" "* i + "^")
@@ -97,11 +116,11 @@ def replaceCOHeaders(contents, codeobjects) -> [str]:
     hdrReplacements = []
     for codeobject in codeobjects:
         if codeobject["super"]:
-            srcexpr = "@" + codeobject["name"] + ">[\S\n\t\v]*private\n"
-            dstexpr = ".section {0}\n.word {0}.trampEnd - {0}.trampStart\n.word ({0}.end - {0}.trampEnd) | 0b11\n\n{0}.trampStart:\n".format(codeobject["name"])
+            srcexpr = "@{}>[\S\n\t\v]*private\n".format(codeobject["name"])
+            dstexpr = '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word ({0}.end - {0}.trampEnd) | 0b11\n\n{0}.trampStart:\n'.format(codeobject["name"])
         else:
-            srcexpr = "@" + codeobject["name"] + ":[\S\n\t\v]*private\n"
-            dstexpr = ".section {0}\n.word {0}.trampEnd - {0}.trampStart\n.word {0}.end - {0}.trampEnd\n\n{0}.trampStart:\n".format(codeobject["name"])
+            srcexpr = "@{}:[\S\n\t\v]*private\n".format(codeobject["name"])
+            dstexpr = '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word {0}.end - {0}.trampEnd\n\n{0}.trampStart:\n'.format(codeobject["name"])
 
 
 
@@ -179,6 +198,8 @@ def __main__() -> None:
         newContents = replaceCOHeaders(newContents, codeObjects)
 
         newContents = convertComments(newContents)
+
+        newContents = applyMacros(newContents)
 
         newContents = replaceCOFctReferences(newContents, codeObjects)
 

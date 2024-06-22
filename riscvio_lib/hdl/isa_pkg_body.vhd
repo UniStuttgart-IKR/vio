@@ -405,8 +405,48 @@ PACKAGE BODY isa IS
                                             res.imm_mode := none;
                 end case;
             when OPC_SYSTEM => 
-                report "test done" severity failure;
-                res.mnemonic := ebreak;
+                case instruction(FUNCT7_RANGE) is
+                    when F7_ENV =>
+                        if instruction(FUNCT5_RANGE) = F5_EBREAK then
+                            report "EBREAK" severity failure;
+                            res.mnemonic := ebreak;
+                        elsif instruction(FUNCT5_RANGE) = F5_ECALL then
+
+                        end if;
+
+                    when F7_OR =>
+                        res.mnemonic := ccp when instruction(FUNCT5_RANGE) = F5_CCP else
+                                        illegal;
+                        res.pgu_mode := pgu_nop when instruction(FUNCT5_RANGE) = F5_CCP else
+                                        pgu_nop;
+                        res.imm_mode := none;
+                        res.alu_a_sel:= DAT;
+                        res.alu_b_sel:= AUX;
+                        res.alu_mode := alu_add when instruction(FUNCT5_RANGE) = F5_CCP else
+                                        alu_illegal;
+                        res.at_mode  := yes;
+                        res.me_mode  := holiday;
+                        res.rptr     := 0;
+                        res.rdat     := 0;
+                        res.raux     := to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT5_RANGE) = F5_CCP else
+                                        0;
+                        res.rdst     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT5_RANGE) = F5_CCP else
+                                        0;
+                        
+                    when others =>
+                        res.mnemonic := illegal;
+                        res.alu_mode := alu_illegal;
+                        res.imm_mode := none;
+                        res.me_mode  := holiday;
+                        res.at_mode  := no;
+                        res.rdst     := 0;
+                        res.rdat     := 0;
+                        res.rptr     := 0;
+                        res.raux     := 0;
+                        res.alu_a_sel:= DAT;
+                        res.alu_b_sel:= AUX;
+                        res.pgu_mode := pgu_nop;
+                end case;
 
 
             when OPC_LUI => 

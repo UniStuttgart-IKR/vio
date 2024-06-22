@@ -52,7 +52,7 @@ PACKAGE isa IS
     constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '0'));
 
 
-    type ali_T is (zero, ra, frame, bm, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, s10, cnst, t3, t4, t5, t6, imm, rix, rcd, alc_lim, alc_addr, frame_lim, core, root, no_csr);
+    type ali_T is (zero, ra, frame, core, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t3, t4, t5, t6, imm, rix, rcd, alc_lim, alc_addr, frame_lim, root, no_csr);
     subtype csr_ix_T is natural range ali_T'pos(alc_lim) to ali_T'pos(no_csr);
     subtype reg_ix_T is natural range 0 to ali_T'pos(root);
     type reg_T is record
@@ -96,10 +96,11 @@ PACKAGE isa IS
 
     type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r,
                         jal, beq, bne, blt, bge, bltu, bgeu,
+                        lui, auipc,
                         lb_i, lh_i, lw_i, lbu_i, lhu_i, sb_i, sh_i, sw_i, lb_r, lh_r, lw_r, lbu_r, lhu_r, sb_r, sh_r, sw_r,
                         andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, min, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
                         sp_r, lp_r, sv, rst, qdtb, qdth, qdtw, qdtd, qpi, gcp, pop, rtlib, cpfc, check, sp_i, lp_i, jlib, alc, alci_p, alci_d, alci, pushg, pusht, push, 
-                        lui, ebreak, auipc,
+                        ebreak, ecall, alcb, ciop, ccp, rpr, qpir, qdtr, qptr, seal, unsl,
                         illegal);
     type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);
 
@@ -128,7 +129,7 @@ PACKAGE isa IS
     constant OPC_LOAD:      std_logic_vector(OPC_RANGE) := "0000011";
     constant OPC_STORE:     std_logic_vector(OPC_RANGE) := "0100011";
     constant OPC_OR:        std_logic_vector(OPC_RANGE) := "0001011";
-    constant OPC_SYSTEM:    std_logic_vector(OPC_RANGE) := "1110011";
+    constant OPC_SYSTEM:    std_logic_vector(OPC_RANGE) := "1111011"; --TODO: change when gcc generates systems correctly
 
     -- RV32I
     constant F3_ADD_SUB:   std_logic_vector(FUNCT3_RANGE) := "000";
@@ -156,6 +157,21 @@ PACKAGE isa IS
 
     constant F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU:   std_logic_vector(FUNCT7_RANGE) := "0000000";
     constant F7_SUB_SRA:   std_logic_vector(FUNCT7_RANGE) := "0100000";
+
+    -- SYSTEM
+    constant F7_ENV:        std_logic_vector(FUNCT7_RANGE) := "0000000";
+    constant F5_ECALL:      std_logic_vector(FUNCT5_RANGE) := "00000";
+    constant F5_EBREAK:     std_logic_vector(FUNCT5_RANGE) := "00001";
+
+    constant F7_OR:         std_logic_vector(FUNCT7_RANGE) := "1111110";
+    constant F7_OR_CIOP:    std_logic_vector(FUNCT7_RANGE) := "1111111";
+    constant F5_ALCB:       std_logic_vector(FUNCT5_RANGE) := "00000";
+    constant F5_CCP:        std_logic_vector(FUNCT5_RANGE) := "10000";
+    constant F5_RPR:        std_logic_vector(FUNCT5_RANGE) := "10001";
+    constant F5_QPIR:       std_logic_vector(FUNCT5_RANGE) := "10100";
+    constant F5_QDTR:       std_logic_vector(FUNCT5_RANGE) := "10101";
+    constant F5_QPTR:       std_logic_vector(FUNCT5_RANGE) := "10110";
+    constant F5_SUS:        std_logic_vector(FUNCT5_RANGE) := "00000";
 
     -- ZBB extension
     constant F3_ANDN_MAXU:              std_logic_vector(FUNCT3_RANGE) := "111";

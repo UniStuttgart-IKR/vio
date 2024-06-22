@@ -41,6 +41,8 @@ BEGIN
         for i in register_file_T'range(1) loop
           registers(i) <= (tag => DATA, data => (others => '0'), pi => (others => '0'), delta => (others => '0'));
         end loop;
+        registers(core).data <= X"FFFFFFF8";
+        registers(core).tag <= POINTER;
       else
         if clk'event and clk = '1' then
           if rd_wb.rf_index /= 0 and rd_wb.rf_index <= ali_T'pos(t6) then

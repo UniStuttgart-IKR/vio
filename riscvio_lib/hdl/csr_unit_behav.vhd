@@ -12,7 +12,6 @@ BEGIN
             csrs(alc_lim) <= X"00000100";
             csrs(alc_addr) <= X"00000200";
             csrs(frame_lim) <= X"00000200";
-            csrs(core) <= X"FFFFFFF8";
             csrs(root) <= X"00000000";
             stack_overflow <= false;
         else

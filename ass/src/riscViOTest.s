@@ -1,137 +1,114 @@
-# 0 "src/riscViOTest.S"
-# 0 "<built-in>"
-# 0 "<command-line>"
-# 1 "/usr/include/stdc-predef.h" 1 3 4
-# 0 "<command-line>" 2
-# 1 "src/riscViOTest.S"
-# generated from src/riscViOTest.s by riscvio-preproc.py by LeyLux Group
-.globl _start
+.globl core.start
 
-.text
 
-_start:
-            li t0, 69
-            li t1, 2
+@core>
+start
+private
+core.start: li      frame, 0x305
+            pusht   4,8
+            jal     core.entry
+            nop
+            nop
 
+core.entry:
             nop
             nop
             nop
             nop
             nop
             nop
+            nop
+            nop
+            li      t0, 12
+            li      t1, 24
+            add     t2, t1,t0
 
-            add t3, t0,t1
-            sub t4, t0,t1
-            sll t5, t0,t1
-            slt t6, t0,t1
-            sltu a0, t0,t1
-            xor a1, t0,t1
-            srl a2, t0,t1
-            sra a3, t0,t1
-            or a4, t0,t1
-            and a5, t0,t1
+            pushg   1, 0
+            sp      ra, 0(frame)
+            sw      ra, 0(frame)
 
-            addi s0, t0,420
-            addi s1, t1,-420
-            slti s2, t0,420
-            sltiu s3, t0,420
-            xori s4, t0,420
-            ori s5, t0,420
-            andi s6, t0,420
-            slli s8, t0,2
-            srli s9, t0,2
-            srai s10, t0,2
+            la      s0, usb
+            ccp     s0, s0
+            sp      s0, 0(frame)
 
-            andn t3, t0,t1
-            orn t4, t0,t1
-            xnor t5, t0,t1
-            clz t6, t0
-            ctz a0, t0
-            cpop a1, t0
-            max a2, t0,t1
-            maxu a3, t0,t1
-            min a4, t0,t1
-            minu a5, t0,t1
-            sext.b s0, t0
-            sext.h s1, t1
-            zext.h s2, t0
-            rol s3, t0,t1
-            ror s4, t0,t1
-            rori s5, t0,16
-            orc.b s6, t0
-            rev8 s8, t0
+            jlib    s0, @usb.af
 
+            lp      s0, 0(frame)
+            jlib    s0, @usb.b
 
-            ccp     t0, usb
-            jlib t0, @usb.af
+            li      t0, 12
+            li      t1, 24
+            add     t2, t1,t0
 
-doom: jal t0, doom
+doom:       jal     t0, doom
 
 
 @usb>
 af
 b
-c
 private
 
 
-usb.af:
+usb.af:     andn    t3, t0,t1
+            orn     t4, t0,t1
+            xnor    t5, t0,t1
+            clz     t6, t0
+            ctz     a0, t0
+            cpop    a1, t0
+            max     a2, t0,t1
+            maxu    a3, t0,t1
+            min     a4, t0,t1
+            minu    a5, t0,t1
+            sext.b  s0, t0
+            sext.h  s1, t1
+            zext.h  s2, t0
+            rol     s3, t0,t1
+            ror     s4, t0,t1
+            rori    s5, t0,16
+            orc.b   s6, t0
+            rev8    s8, t0
+            rtlib
 
-            andn t3, t0,t1
-            orn t4, t0,t1
-            xnor t5, t0,t1
-            clz t6, t0
-            ctz a0, t0
-            cpop a1, t0
-            max a2, t0,t1
-            maxu a3, t0,t1
-            min a4, t0,t1
-            minu a5, t0,t1
-            sext.b s0, t0
-            sext.h s1, t1
-            zext.h s2, t0
-            rol s3, t0,t1
-            ror s4, t0,t1
-            rori s5, t0,16
-            orc.b s6, t0
-            rev8 s8, t0
-usb.b:
+usb.b:      pusht   0,0
+            sw      ra, 0(frame)
+            andn    t3, t0,t1
+            orn     t4, t0,t1
+            xnor    t5, t0,t1
+            clz     t6, t0
+            ctz     a0, t0
+            cpop    a1, t0
+            max     a2, t0,t1
+            maxu    a3, t0,t1
+            min     a4, t0,t1
+            minu    a5, t0,t1
+            sext.b  s0, t0
+            sext.h  s1, t1
+            zext.h  s2, t0
+            rol     s3, t0,t1
+            ror     s4, t0,t1
+            rori    s5, t0,16
+            orc.b   s6, t0
+            rev8    s8, t0
+            jal     usb.c
+            lw      ra, 0(frame)
+            rtlib
 
-            andn t3, t0,t1
-            orn t4, t0,t1
-            xnor t5, t0,t1
-            clz t6, t0
-            ctz a0, t0
-            cpop a1, t0
-            max a2, t0,t1
-            maxu a3, t0,t1
-            min a4, t0,t1
-            minu a5, t0,t1
-            sext.b s0, t0
-            sext.h s1, t1
-            zext.h s2, t0
-            rol s3, t0,t1
-            ror s4, t0,t1
-            rori s5, t0,16
-            orc.b s6, t0
-            rev8 s8, t0
-usb.c:
-
-            andn t3, t0,t1
-            orn t4, t0,t1
-            xnor t5, t0,t1
-            clz t6, t0
-            ctz a0, t0
-            cpop a1, t0
-            max a2, t0,t1
-            maxu a3, t0,t1
-            min a4, t0,t1
-            minu a5, t0,t1
-            sext.b s0, t0
-            sext.h s1, t1
-            zext.h s2, t0
-            rol s3, t0,t1
-            ror s4, t0,t1
-            rori s5, t0,16
-            orc.b s6, t0
-            rev8 s8, t0
+usb.c:      andn    t3, t0,t1
+            orn     t4, t0,t1
+            xnor    t5, t0,t1
+            clz     t6, t0
+            ctz     a0, t0
+            cpop    a1, t0
+            max     a2, t0,t1
+            maxu    a3, t0,t1
+            min     a4, t0,t1
+            minu    a5, t0,t1
+            sext.b  s0, t0
+            sext.h  s1, t1
+            zext.h  s2, t0
+            rol     s3, t0,t1
+            ror     s4, t0,t1
+            rori    s5, t0,16
+            orc.b   s6, t0
+            rev8    s8, t0
+            ret

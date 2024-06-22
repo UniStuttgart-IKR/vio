@@ -37,7 +37,7 @@ BEGIN
     end process;
 
     
-    addr_me_uq <= res_ex;
+    addr_me_uq <= res_me_u when not obj_init_stall else res_me;
     allocating_at <= ali_T'val(rptr_me.ix) = alc_addr;
 END ARCHITECTURE behav;
 

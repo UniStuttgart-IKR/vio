@@ -1,4 +1,3 @@
-# generated from src/riscViOTest.S by riscvio-preproc.py by LeyLux Group
 # 0 "src/riscViOTest.S"
 # 0 "<built-in>"
 # 0 "<command-line>"
@@ -64,21 +63,16 @@ _start:
 
 
             ccp     t0, usb
-            jlib t0,  0
+            jlib t0, @usb.af
 
 doom: jal t0, doom
 
 
-.section usb
-.word usb.trampEnd - usb.trampStart
-.word (usb.end - usb.trampEnd) | 0b11
-
-usb.trampStart:
-usb.af_: j usb.af
-usb.b_: j usb.b
-usb.c_: j usb.c
-usb.trampEnd:
-
+@usb>
+af
+b
+c
+private
 
 
 usb.af:
@@ -141,7 +135,3 @@ usb.c:
             rori s5, t0,16
             orc.b s6, t0
             rev8 s8, t0
-usb.end:
-
-
-

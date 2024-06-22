@@ -432,7 +432,6 @@ ARCHITECTURE struct OF riscvio IS
       raux_ex        : IN     raux_T ;
       rdat_ex        : IN     rdat_T ;
       rdst_ix_ex     : IN     reg_ix_T ;
-      res_ex         : IN     reg_mem_T ;
       res_me_u       : IN     reg_mem_T ;
       res_n          : IN     std_logic ;
       rptr_ex        : IN     rptr_T ;
@@ -872,7 +871,6 @@ BEGIN
          raux_ex        => raux_ex,
          rdat_ex        => rdat_ex,
          rdst_ix_ex     => rdst_ix_ex,
-         res_ex         => res_ex,
          res_me_u       => res_me_u,
          res_n          => res_n,
          rptr_ex        => rptr_ex,

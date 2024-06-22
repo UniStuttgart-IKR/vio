@@ -390,7 +390,7 @@ PACKAGE BODY isa IS
                             when F7_POP =>  res.mnemonic := pop;
                                             res.imm_mode := none;
                                             res.me_mode  := holiday;
-                                            res.at_mode  := no;
+                                            res.at_mode  := yes;
                                             res.rdst     := ali_T'pos(frame);
                                             res.raux     := 0;
                                             res.rptr     := ali_T'pos(frame);

@@ -505,7 +505,7 @@ PACKAGE BODY isa IS
         variable res: word_T;
     begin
         res := (others => inst(31));
-        res(10 downto 5) := inst(30 downto 25);
+        res(11 downto 5) := inst(31 downto 25);
         res(4 downto 0) := inst(11 downto 7);
         return res;
     end function extractSTypeImm;

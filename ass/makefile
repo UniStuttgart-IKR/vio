@@ -10,13 +10,15 @@ MISCDIR	= misc
 # 	@riscv64-unknown-elf-objcopy -O binary --only-section=.text $(BINDIR)/$@ $(BINDIR)/$@_comp
 # 	@riscv64-unknown-elf-objdump -d -M no-aliases $(BINDIR)/$@.o > $(OUTDIR)/$@.txt
 
-%.s: $(SRCDIR)/%.S
-	@python3 $(MISCDIR)/riscvio-preproc.py $^
-	@sleep 0.1
+
 
 %.o: $(SRCDIR)/%.s
 	@$(MISCDIR)/bin/riscv32-unknown-elf-as $^ -march=rv32i_zbb_zor_zri -o $(BINDIR)/$@
 	
+%.s: $(SRCDIR)/%.S
+	python3 $(MISCDIR)/riscvio-preproc.py $^
+	@sleep 0.1
+
 %.bin: $(BINDIR)/%.o
 	@$(MISCDIR)/bin/riscv32-unknown-elf-ld -e _start -T $(MISCDIR)/riscv_model.ld -o $(OUTDIR)/$@ $^
 	@$(MISCDIR)/bin/riscv32-unknown-elf-objcopy -O binary --remove-section .riscv.attributes $(OUTDIR)/$@ $(OUTDIR)/$(basename $@).bin

@@ -220,6 +220,7 @@ def __main__() -> None:
             outFile.write(HEADERMSG.format(sourceFileNames[i]))
             outFile.write(newContent)
 
-
+    print("Preprocessed {} LOC".format(sum([x.count("\n") for x in sourceFileContents])))
+    
 if __name__ == "__main__":
     __main__()

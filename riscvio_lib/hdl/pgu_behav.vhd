@@ -97,6 +97,7 @@ BEGIN
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(31), rptr.dt(30), true)    when pgu_mode = pgu_ptr_i else
                    calcAddr(rptr.pi, rdat.val, rptr.val, rptr.dt(31), rptr.dt(30))          when pgu_mode = pgu_dat_r else
                    calcAddr(rptr.pi, rdat.val, rptr.val, rptr.dt(31), rptr.dt(30), true)    when pgu_mode = pgu_ptr_r else 
+                   std_logic_vector(unsigned(pc.ptr) + unsigned(pc.ix) + unsigned(imm))     when pgu_mode = pgu_auipc else 
                    (others => '0');
 
     ptr.tag <= POINTER;

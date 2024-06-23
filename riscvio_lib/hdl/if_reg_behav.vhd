@@ -12,7 +12,7 @@ BEGIN
   process(clk, res_n) is
   begin
     if res_n = '0' then
-      if_instr <= (others => '0');
+      if_instr <= X"00000013";
       pc_if <= PC_NULL;
     else
       if clk'event and clk = '1' then

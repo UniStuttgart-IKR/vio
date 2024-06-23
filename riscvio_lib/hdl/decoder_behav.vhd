@@ -50,7 +50,7 @@ BEGIN
                 when none => null;
             end case;
         else
-            imm <= X"00000004";
+            imm <= X"FFFFFFFF";
         end if;
     end process extend;
 

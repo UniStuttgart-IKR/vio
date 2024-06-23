@@ -26,11 +26,11 @@ BEGIN
           ctrl_dc <= CTRL_NULL when dbt_valid else ctrl_dc_u;
           branch_mode_dc <= no_branch when dbt_valid else ctrl_dc_u.branch_mode;
 
-          rdst_ix_dc_reg <= rdst_ix_dc_u;
-          rdat_dc_reg <= rdat_dc_u;
-          rptr_dc_reg <= rptr_dc_u;
-          raux_dc_reg <= raux_dc_u;
-          imm_dc_reg  <= imm_dc_u;
+          rdst_ix_dc_reg <= 0 when dbt_valid else rdst_ix_dc_u;
+          rdat_dc_reg <= RDAT_NULL when dbt_valid else rdat_dc_u;
+          rptr_dc_reg <= RPTR_NULL when dbt_valid else rptr_dc_u;
+          raux_dc_reg <= RAUX_NULL when dbt_valid else raux_dc_u;
+          imm_dc_reg  <= (others => '0') when dbt_valid else imm_dc_u;
           
           pc_dc <= pc_if;
         end if;

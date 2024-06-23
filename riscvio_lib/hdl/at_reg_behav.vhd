@@ -35,6 +35,8 @@ BEGIN
 
                     res_at <= res_at_u;
                     rdst_ix_at <= rdst_ix_me;
+                    
+                    assert ctrl_me.mnemonic /= ebreak report "EBREAK" severity failure;
                 end if;
             end if;
         end if;

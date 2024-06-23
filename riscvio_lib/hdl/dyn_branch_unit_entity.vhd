@@ -16,8 +16,8 @@ USE riscvio_lib.isa.all;
 ENTITY dyn_branch_unit IS
   PORT(
     rdat           : IN rdat_T;
-    frame          : IN raux_T;
-    ra_in          : IN rptr_T;
+    raux           : IN raux_T;
+    rptr           : IN rptr_T;
     imm            : IN word_T;
     rdst_ix        : IN reg_ix_T;
     alu_flags      : IN alu_flags_T;

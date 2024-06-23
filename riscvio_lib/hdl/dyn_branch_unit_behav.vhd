@@ -11,15 +11,16 @@ LIBRARY ieee;
 USE ieee.numeric_std.all;
 
 ARCHITECTURE behav OF dyn_branch_unit IS
-    signal rix_int: word_T;
-    subtype rix_raw_T is std_logic_vector(word_T'high downto 1);
 BEGIN
-    rix_int <= rix_raw_T(unsigned(pc.ix) + 4) & '1' when pc.ix(0) = '0' else
-               rix_raw_T(unsigned(pc.ix) + 4) & '1' when pc.ix(0) = '1';
 
     -- dbta_valid needs to clear if, dc registers
     process(all) is
+        variable new_rix, rix_int, pc_raw: word_T;
     begin
+        pc_raw := (word_T'high-1 downto 1 => pc.ix(word_T'high-1 downto 1), others => '0');
+        new_rix := std_logic_vector(unsigned(pc_raw) + 4);
+        rix_int :=  (word_T'high-1 downto 1 => new_rix(word_T'high-1 downto 1), 0 => '1', others => '0') when pc.ix(0) = '0' else
+                    (word_T'high-1 downto 1 => new_rix(word_T'high-1 downto 1), others => '0') when pc.ix(0) = '1';
         state_error <= false;
         ra_out <= REG_MEM_NULL;
         case branch_mode is
@@ -31,26 +32,35 @@ BEGIN
                 dbt_valid <= alu_flags.altb;
             when bge => 
                 dbt_valid <= not alu_flags.altb or alu_flags.eq;
-            when bltu => 
+            when bltu =>
                 dbt_valid <= alu_flags.altbu;
             when bgeu => 
                 dbt_valid <= not alu_flags.altbu or alu_flags.eq;
-            when jalr => 
+            when jalr =>
                 dbt_valid <= true;
-                ra_out <= (tag => POINTER, data => ra_in.val, pi => rix_int, delta => ra_in.dt);
-                state_error <= (frame.val(0) = ra_in.pi(0) and rdst_ix = ali_T'pos(ra)) or (frame.val(0) /= ra_in.pi(0) and rdat.ali = rix);
-            when jal => 
+                ra_out <=   (tag => POINTER, data => rptr.val, pi => rix_int, delta => rptr.dt) when rdst_ix = ali_T'pos(ra) else
+                            (tag => DATA, data => rix_int, pi => (others => '0'), delta => (others => '0'));
+                state_error <=  (raux.val(0) = rptr.pi(0) and rdst_ix = ali_T'pos(ra)) or (raux.val(0) /= rptr.pi(0) and rdat.ali = ra);
+            when jal =>
                 dbt_valid <= false;
-                ra_out <= (tag => POINTER, data => ra_in.val, pi => rix_int, delta => ra_in.dt);
-                state_error <= frame.val(0) = ra_in.pi(0) and rdst_ix = ali_T'pos(ra);
+                ra_out <= (tag => POINTER, data => rptr.val, pi => rix_int, delta => rptr.dt);
+                state_error <= raux.val(0) = rdat.val(0) and rdst_ix = ali_T'pos(ra);
+            when jlib =>
+                dbt_valid <= true;
+                rix_int(31) := '1';
+                ra_out <= (tag => POINTER, data => pc.ptr, pi => rix_int, delta => pc.dt);
+                state_error <= raux.val(0) = rdat.val(0);
             when others => 
                 dbt_valid <= false;
         end case;
     end process;
 
-    dbt.ix <= std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(imm)), WORD_SIZE)) when branch_mode /= jalr else rdat.val(word_T'high downto 1) & '0';
-    dbt.ptr <= pc.ptr;
-    dbt.pi <= pc.pi;
-    dbt.dt <= pc.dt;
+    dbt.ix <=   '0' & rptr.pi(word_T'high-1 downto 1) & '0' when rdat.ali = ra and branch_mode = jalr  else
+                rdat.val(word_T'high downto 1) & '0' when branch_mode = jalr else
+                std_logic_vector(unsigned(imm) + 8) when branch_mode = jlib else
+                std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(imm)), WORD_SIZE));
+    dbt.ptr <=  rptr.val when (branch_mode = jalr and rdat.ali = ra and rptr.pi(31) = '1') or branch_mode = jlib else pc.ptr;
+    dbt.pi <=   pc.pi;
+    dbt.dt <=   pc.dt;
 END ARCHITECTURE behav;
 

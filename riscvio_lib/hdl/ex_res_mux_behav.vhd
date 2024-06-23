@@ -10,7 +10,6 @@
 ARCHITECTURE behav OF ex_res_mux IS
 BEGIN
     res_ex_u <= pgu_ptr_ex_u when pgu_mode_dc /= pgu_nop else
-                ra_ex_u when branch_mode_dc = jal or branch_mode_dc = jalr else
-                (data => alu_out_ex_u, tag => DATA, pi => (others => '0'), delta => (others => '0'));
+                dbu_out_ex_u when branch_mode_dc = jal or branch_mode_dc = jalr or branch_mode_dc = jlib else
+                (data => alu_out_ex_u, tag => raux_dc.tag, pi => (others => '0'), delta => (others => '0'));
 END ARCHITECTURE behav;
-

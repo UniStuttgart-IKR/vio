@@ -12,16 +12,16 @@ BEGIN
   process(clk, res_n) is
   begin
     if res_n = '0' then
-      pc_current_pc <= (ptr => X"00000000", ix => X"00000004", pi => (others => '0'), dt => (others => '0'));
+      pc_current_pc <= (ptr => X"FFFFFFF8", ix => X"00000000", pi => (others => '0'), dt => (others => '0'));
     else
       if clk'event and clk = '1' then
-        if not (obj_init_stall or insert_nop) then
+        if not (stall or insert_nop) or sbt_valid or dbt_valid then
           pc_current_pc <= current_pc_d;
         end if;
       end if;
     end if;
   end process;
 
-  current_pc_uq <= pc_current_pc when obj_init_stall else current_pc_d;
+  current_pc_uq <= pc_current_pc when stall else current_pc_d;
 END ARCHITECTURE behav;
 

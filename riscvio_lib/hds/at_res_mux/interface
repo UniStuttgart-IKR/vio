@@ -12,8 +12,16 @@ library "riscvio_lib"
 unitName "isa"
 )
 (DmPackageRef
+library "riscvio_lib"
+unitName "caches"
+)
+(DmPackageRef
 library "altera_mf"
 unitName "altera_mf_components"
+)
+(DmPackageRef
+library "riscvio_lib"
+unitName "caches"
 )
 ]
 libraryRefs [
@@ -27,7 +35,7 @@ appVersion "2021.1 Built on 14 Jan 2021 at 15:11:42"
 model (Symbol
 commonDM (CommonDM
 ldm (LogicalDM
-suid 15,0
+suid 25,0
 usingSuid 1
 emptyRow *1 (LEmptyRow
 )
@@ -73,10 +81,10 @@ decl (Decl
 n "ctrl_me"
 t "ctrl_sig_T"
 o 8
-suid 11,0
+suid 21,0
 )
 )
-uid 250,0
+uid 366,0
 )
 *15 (LogPort
 port (LogicalPort
@@ -85,10 +93,10 @@ decl (Decl
 n "dt_at_u"
 t "word_T"
 o 84
-suid 12,0
+suid 22,0
 )
 )
-uid 252,0
+uid 368,0
 )
 *16 (LogPort
 port (LogicalPort
@@ -97,10 +105,10 @@ decl (Decl
 n "pi_at_u"
 t "word_T"
 o 83
-suid 13,0
+suid 23,0
 )
 )
-uid 254,0
+uid 370,0
 )
 *17 (LogPort
 port (LogicalPort
@@ -110,10 +118,10 @@ decl (Decl
 n "res_at_u"
 t "reg_mem_T"
 o 91
-suid 14,0
+suid 24,0
 )
 )
-uid 256,0
+uid 372,0
 )
 *18 (LogPort
 port (LogicalPort
@@ -122,10 +130,10 @@ decl (Decl
 n "res_me"
 t "reg_mem_T"
 o 19
-suid 15,0
+suid 25,0
 )
 )
-uid 258,0
+uid 374,0
 )
 ]
 )
@@ -181,31 +189,31 @@ uid 106,0
 litem &14
 pos 0
 dimension 20
-uid 251,0
+uid 367,0
 )
 *25 (MRCItem
 litem &15
 pos 1
 dimension 20
-uid 253,0
+uid 369,0
 )
 *26 (MRCItem
 litem &16
 pos 2
 dimension 20
-uid 255,0
+uid 371,0
 )
 *27 (MRCItem
 litem &17
 pos 3
 dimension 20
-uid 257,0
+uid 373,0
 )
 *28 (MRCItem
 litem &18
 pos 4
 dimension 20
-uid 259,0
+uid 375,0
 )
 ]
 )
@@ -476,7 +484,7 @@ value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViO\\riscvio_lib\\hds\\at_r
 )
 (vvPair
 variable "date"
-value "16.06.2024"
+value "23.06.2024"
 )
 (vvPair
 variable "day"
@@ -488,7 +496,7 @@ value "Sonntag"
 )
 (vvPair
 variable "dd"
-value "16"
+value "23"
 )
 (vvPair
 variable "entity_name"
@@ -516,7 +524,7 @@ value "surfer"
 )
 (vvPair
 variable "graphical_source_date"
-value "16.06.2024"
+value "23.06.2024"
 )
 (vvPair
 variable "graphical_source_group"
@@ -528,7 +536,7 @@ value "SURFER-A0000001"
 )
 (vvPair
 variable "graphical_source_time"
-value "17:11:30"
+value "21:40:08"
 )
 (vvPair
 variable "group"
@@ -644,7 +652,7 @@ value "interface"
 )
 (vvPair
 variable "time"
-value "17:11:30"
+value "21:40:08"
 )
 (vvPair
 variable "unit"
@@ -679,10 +687,10 @@ optionalChildren [
 uid 8,0
 optionalChildren [
 *62 (CptPort
-uid 225,0
+uid 341,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 226,0
+uid 342,0
 va (VaSet
 vasetType 1
 fg "0,65535,0"
@@ -690,11 +698,11 @@ fg "0,65535,0"
 xt "10625,7400,11375,8150"
 )
 tg (CPTG
-uid 227,0
+uid 343,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 228,0
+uid 344,0
 ro 270
 va (VaSet
 font "Ubuntu,8,0"
@@ -706,7 +714,7 @@ tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 229,0
+uid 345,0
 va (VaSet
 font "Ubuntu,8,0"
 )
@@ -720,15 +728,15 @@ decl (Decl
 n "ctrl_me"
 t "ctrl_sig_T"
 o 8
-suid 11,0
+suid 21,0
 )
 )
 )
 *63 (CptPort
-uid 230,0
+uid 346,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 231,0
+uid 347,0
 ro 90
 va (VaSet
 vasetType 1
@@ -737,11 +745,11 @@ fg "0,65535,0"
 xt "7250,8625,8000,9375"
 )
 tg (CPTG
-uid 232,0
+uid 348,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 233,0
+uid 349,0
 va (VaSet
 font "Ubuntu,8,0"
 )
@@ -752,7 +760,7 @@ tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 234,0
+uid 350,0
 va (VaSet
 font "Ubuntu,8,0"
 )
@@ -766,15 +774,15 @@ decl (Decl
 n "dt_at_u"
 t "word_T"
 o 84
-suid 12,0
+suid 22,0
 )
 )
 )
 *64 (CptPort
-uid 235,0
+uid 351,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 236,0
+uid 352,0
 ro 90
 va (VaSet
 vasetType 1
@@ -783,11 +791,11 @@ fg "0,65535,0"
 xt "7250,6625,8000,7375"
 )
 tg (CPTG
-uid 237,0
+uid 353,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 238,0
+uid 354,0
 va (VaSet
 font "Ubuntu,8,0"
 )
@@ -798,7 +806,7 @@ tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 239,0
+uid 355,0
 va (VaSet
 font "Ubuntu,8,0"
 )
@@ -812,15 +820,15 @@ decl (Decl
 n "pi_at_u"
 t "word_T"
 o 83
-suid 13,0
+suid 23,0
 )
 )
 )
 *65 (CptPort
-uid 240,0
+uid 356,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 241,0
+uid 357,0
 ro 90
 va (VaSet
 vasetType 1
@@ -829,11 +837,11 @@ fg "0,65535,0"
 xt "13000,2625,13750,3375"
 )
 tg (CPTG
-uid 242,0
+uid 358,0
 ps "CptPortTextPlaceStrategy"
 stg "RightVerticalLayoutStrategy"
 f (Text
-uid 243,0
+uid 359,0
 va (VaSet
 font "Ubuntu,8,0"
 )
@@ -845,7 +853,7 @@ tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 244,0
+uid 360,0
 va (VaSet
 font "Ubuntu,8,0"
 )
@@ -860,15 +868,15 @@ decl (Decl
 n "res_at_u"
 t "reg_mem_T"
 o 91
-suid 14,0
+suid 24,0
 )
 )
 )
 *66 (CptPort
-uid 245,0
+uid 361,0
 ps "OnEdgeStrategy"
 shape (Triangle
-uid 246,0
+uid 362,0
 ro 90
 va (VaSet
 vasetType 1
@@ -877,11 +885,11 @@ fg "0,65535,0"
 xt "7250,-2375,8000,-1625"
 )
 tg (CPTG
-uid 247,0
+uid 363,0
 ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
-uid 248,0
+uid 364,0
 va (VaSet
 font "Ubuntu,8,0"
 )
@@ -892,7 +900,7 @@ tm "CptPortNameMgr"
 )
 )
 dt (MLText
-uid 249,0
+uid 365,0
 va (VaSet
 font "Ubuntu,8,0"
 )
@@ -906,7 +914,7 @@ decl (Decl
 n "res_me"
 t "reg_mem_T"
 o 19
-suid 15,0
+suid 25,0
 )
 )
 )
@@ -1337,13 +1345,15 @@ uid 50,0
 va (VaSet
 font "Ubuntu,8,0"
 )
-xt "0,1000,16500,9400"
+xt "0,1000,16500,12200"
 st "LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 LIBRARY riscvio_lib;
 USE riscvio_lib.isa.all;
+USE riscvio_lib.caches.all;
 LIBRARY altera_mf;
-USE altera_mf.altera_mf_components.all;"
+USE altera_mf.altera_mf_components.all;
+USE riscvio_lib.caches.all;"
 tm "PackageList"
 )
 ]
@@ -1622,6 +1632,6 @@ xt "42000,0,42000,0"
 tm "SyDeclarativeTextMgr"
 )
 )
-lastUid 259,0
+lastUid 375,0
 activeModelName "Symbol:CDM"
 )

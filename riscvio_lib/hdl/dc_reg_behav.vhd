@@ -22,7 +22,7 @@ BEGIN
       
     else
       if clk'event and clk = '1' then
-        if not obj_init_stall then
+        if not stall then
           ctrl_dc <= CTRL_NULL when dbt_valid else ctrl_dc_u;
           branch_mode_dc <= no_branch when dbt_valid else ctrl_dc_u.branch_mode;
 

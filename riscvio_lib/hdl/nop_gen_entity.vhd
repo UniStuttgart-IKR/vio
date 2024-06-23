@@ -1,5 +1,3 @@
--- VHDL Entity riscvio_lib.nop_gen.generatedInstance
---
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 LIBRARY riscvio_lib;

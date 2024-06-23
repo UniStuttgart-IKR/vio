@@ -1,9 +1,15 @@
+# generated from src/riscViOTest.s3 by riscvio-preproc.py by LeyLux Group
 .globl core.start
 
 
-@core>
-start
-private
+.section core, "xa"
+.word core.trampEnd - core.trampStart
+.word (core.end - core.trampEnd) | 0b11
+
+core.trampStart:
+core.start_: j core.start
+core.trampEnd:
+
 core.start: li      frame, 0x305
             push    4,8
             jal     core.entry
@@ -31,10 +37,10 @@ core.entry:
             mv      s1, s0
             sp      s1, 0(frame)
 
-            jlib    s0, @usb.af
+            jlib    s0,  0
 
             lp      s0, 0(frame)
-            jlib    s0, @usb.b
+            jlib    s0,  4
 
             li      t0, 12
             li      t1, 24
@@ -45,10 +51,19 @@ core.entry:
 doom:       jal     t0, doom
 
 
-@usb>
-af
-b
-private
+
+core.end:
+
+
+.section usb, "xa"
+.word usb.trampEnd - usb.trampStart
+.word (usb.end - usb.trampEnd) | 0b11
+
+usb.trampStart:
+usb.af_: j usb.af
+usb.b_: j usb.b
+usb.trampEnd:
+
 
 
 usb.af:     andn    t3, t0,t1
@@ -114,3 +129,7 @@ usb.c:      andn    t3, t0,t1
             orc.b   s6, t0
             rev8    s8, t0
             ret
+usb.end:
+
+
+

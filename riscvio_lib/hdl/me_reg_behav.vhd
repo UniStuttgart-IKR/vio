@@ -21,7 +21,7 @@ BEGIN
             res_me <= REG_MEM_NULL;
         else
             if clk'event and clk = '1' then
-                if not obj_init_stall then
+                if not stall then
                     ctrl_me <= ctrl_ex;
                     at_mode_me <= ctrl_ex.at_mode;
 
@@ -37,7 +37,7 @@ BEGIN
     end process;
 
     
-    addr_me_uq <= res_me_u when not obj_init_stall else res_me;
+    addr_me_uq <= res_me_u when not stall else res_me;
     allocating_at <= ali_T'val(rptr_me.ix) = alc_addr;
 END ARCHITECTURE behav;
 

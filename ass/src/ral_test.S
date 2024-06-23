@@ -90,7 +90,7 @@ no_ptr_reg_load:
             lw      t1, 0(frame)
 
             
-            pusht   3, 1
+            #pusht   3, 1
             #nop
             #nop
             #nop
@@ -171,7 +171,7 @@ no_ptr_reg_load:
             #nop
             #nop
             #nop
-            pusht 4, 9
+            #pusht 4, 9
             li t3, 0x555
             li t4, 1
             #nop

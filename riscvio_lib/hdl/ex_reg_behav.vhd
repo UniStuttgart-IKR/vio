@@ -24,7 +24,7 @@ BEGIN
         else
             if clk'event and clk = '1' then
 
-                if not obj_init_stall then
+                if not stall then
                     ctrl_ex <= ctrl_dc;
                     
                     rdst_ix_ex_reg <= rdst_ix_dc;

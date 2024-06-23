@@ -162,7 +162,7 @@ def replaceCOFctReferences(contents, codeobjects) ->  []:
     replacements = []
     for codeobject in codeobjects:
         for func in codeobject["publicfns"]:
-            replacements.append(["(jlib.*)" + "@{0}.{1}".format(codeobject["name"], func[0]), "\\1 " + str(func[1])])
+            replacements.append(["(jlib.*)" + "@{0}.{1}".format(codeobject["name"], func[0]), "\\1 " + str(func[1] * 4 + 8)])
 
     for content in contents:
         for replacement in replacements:

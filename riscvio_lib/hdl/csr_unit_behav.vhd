@@ -1,6 +1,10 @@
 --
 -- VHDL Architecture riscvio_lib.csr_unit.behav
 --
+
+LIBRARY ieee;
+USE ieee.numeric_std.all;
+
 ARCHITECTURE behav OF csr_unit IS
     type csrs_T is array(alc_lim to root) of word_T;
     signal csrs: csrs_T;

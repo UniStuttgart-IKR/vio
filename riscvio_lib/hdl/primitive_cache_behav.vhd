@@ -25,13 +25,14 @@ ARCHITECTURE behav OF primitive_cache IS
     constant BUS_PER_WORD_LOG: natural := integer(ceil(log2(real(BUS_PER_WORD))));
 
     constant zero_byte_addr: std_logic_vector(ADDR_WIDTH_WORD - 1 downto 0) := (others => '0');
-    
+    constant zero_bus_addr: std_logic_vector(BUS_PER_WORD_LOG - 1 downto 0)  := (others => '0');
 
     subtype word_T is std_logic_vector(DATA_WIDTH - 1 downto 0);
     
     type fill_state_T is (IDLE, PREPARING, LOADING, ALMOST_DONE, WAITING);
     signal fill_state: fill_state_T;
     signal line_fill_ctr: natural range 0 to N + 1;
+    signal last_line_fill_ctr: natural range 0 to N + 1;
 
     type writeback_state_T is (IDLE, WAITING);
     signal writeback_state: writeback_state_T;
@@ -122,7 +123,7 @@ BEGIN
         words_to_write <= (others => (others => '0'));
 
         for i in BUS_PER_WORD - 1 downto 0 loop
-            words_to_write((line_fill_ctr) * BUS_PER_WORD + i) <= rdata((i + 1)*DATA_WIDTH - 1 downto i*DATA_WIDTH);
+            words_to_write((last_line_fill_ctr) * BUS_PER_WORD + i) <= rdata((i + 1)*DATA_WIDTH - 1 downto i*DATA_WIDTH);
         end loop;
 
         if we then
@@ -137,13 +138,17 @@ BEGIN
     end process;
 
 
+
     fill_unit_state_p: process(clk, res_n) is
     begin
         if res_n = '0' then
             fill_state <= IDLE;
             line_fill_ctr <= 0;
+            last_line_fill_ctr <= 0;
         else
             if clk'event and clk = '1' then
+                last_line_fill_ctr <= line_fill_ctr;
+
                 case fill_state is
                     when IDLE => 
                         if not line_hit and (rd or we) and invalidation_state = IDLE then
@@ -193,17 +198,27 @@ BEGIN
         case fill_state is
             when IDLE =>
                 null;
-            when PREPARING | LOADING | WAITING =>
+            when PREPARING =>
                 rreq <= true;
-                raddr <= addr(TAG_IN_ADDR) & addr(LINE_IN_ADDR) & std_logic_vector(to_unsigned(line_fill_ctr, WORDS_IN_LINE_LOG)) & zero_byte_addr;
+                raddr <= addr(TAG_IN_ADDR) & addr(LINE_IN_ADDR) & std_logic_vector(to_unsigned(line_fill_ctr, WORDS_IN_LINE_LOG - BUS_PER_WORD_LOG)) & zero_byte_addr & zero_bus_addr;
+            when LOADING | WAITING =>
+                rreq <= true;
+                raddr <= addr(TAG_IN_ADDR) & addr(LINE_IN_ADDR) & std_logic_vector(to_unsigned(line_fill_ctr, WORDS_IN_LINE_LOG - BUS_PER_WORD_LOG)) & zero_byte_addr & zero_bus_addr;
 
                 for i in BUS_PER_WORD - 1 downto 0 loop
-                    words_we((line_fill_ctr) * BUS_PER_WORD + i) <= '1' when rack else '0';
+                    words_we((last_line_fill_ctr) * BUS_PER_WORD + i) <= '1' when rack else '0';
                 end loop;
+
             when ALMOST_DONE => 
                 set_line_tag <= '1';
+
                 rreq <= true;
-                raddr <= addr(TAG_IN_ADDR) & addr(LINE_IN_ADDR)  & std_logic_vector(to_unsigned(line_fill_ctr, WORDS_IN_LINE_LOG)) & zero_byte_addr;
+                raddr <= addr(TAG_IN_ADDR) & addr(LINE_IN_ADDR) & std_logic_vector(to_unsigned(line_fill_ctr, WORDS_IN_LINE_LOG - BUS_PER_WORD_LOG)) & zero_byte_addr & zero_bus_addr;
+
+                for i in BUS_PER_WORD - 1 downto 0 loop
+                    words_we((last_line_fill_ctr) * BUS_PER_WORD + i) <= '1' when rack else '0';
+                end loop;
+
         end case;
     end process;
 

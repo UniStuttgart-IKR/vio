@@ -15,7 +15,7 @@ PACKAGE caches IS
     constant BUS_WIDTH: natural := 64;
 
     constant IC_LINES:      natural := 4;
-    constant IC_LINE_WIDTH: natural := 32;
+    constant IC_LINE_WIDTH: natural := 16;
     constant ADDR_WIDTH:    natural := 32;
 
     type cache_rrq_T is record

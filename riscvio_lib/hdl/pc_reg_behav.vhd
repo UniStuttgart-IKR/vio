@@ -12,7 +12,7 @@ BEGIN
   process(clk, res_n) is
   begin
     if res_n = '0' then
-      pc_current_pc <= (ptr => X"FFFFFFF8", ix => X"00000000", pi => (others => '0'), dt => (others => '0'));
+      pc_current_pc <= (ptr => X"00000000", ix => X"00000000", pi => (others => '0'), dt => (others => '0'));
     else
       if clk'event and clk = '1' then
         if not (stall or insert_nop) or sbt_valid or dbt_valid then

@@ -2,136 +2,133 @@
 out/riscViOTest.elf:     file format elf32-littleriscv
 
 
-Disassembly of section .text:
+Disassembly of section core:
 
-00000000 <_start>:
-   0:	04500293          	addi	t0,zero,69
-   4:	00200313          	addi	t1,zero,2
-   8:	00000013          	addi	zero,zero,0
-   c:	00000013          	addi	zero,zero,0
-  10:	00000013          	addi	zero,zero,0
-  14:	00000013          	addi	zero,zero,0
+00000000 <core.start_-0x8>:
+   0:	0004                	.insn	2, 0x0004
+   2:	0000                	.insn	2, 0x
+   4:	007f 0000   	.insn	10, 0x01130040006f0000007f
+   c:	 
+
+00000008 <core.start_>:
+   8:	0040006f          	jal	zero,c <core.start>
+
+0000000c <core.start>:
+   c:	30500113          	addi	frame,zero,773
+  10:	1031720b          	push	4,8
+  14:	00c000ef          	jal	rix,20 <core.entry>
   18:	00000013          	addi	zero,zero,0
   1c:	00000013          	addi	zero,zero,0
-  20:	00628e33          	add	t3,t0,t1
-  24:	40628eb3          	sub	t4,t0,t1
-  28:	00629f33          	sll	t5,t0,t1
-  2c:	0062afb3          	slt	t6,t0,t1
-  30:	0062b533          	sltu	a0,t0,t1
-  34:	0062c5b3          	xor	a1,t0,t1
-  38:	0062d633          	srl	a2,t0,t1
-  3c:	4062d6b3          	sra	a3,t0,t1
-  40:	0062e733          	or	a4,t0,t1
-  44:	0062f7b3          	and	a5,t0,t1
-  48:	1a428413          	addi	s0,t0,420
-  4c:	e5c30493          	addi	s1,t1,-420
-  50:	1a42a913          	slti	s2,t0,420
-  54:	1a42b993          	sltiu	s3,t0,420
-  58:	1a42ca13          	xori	s4,t0,420
-  5c:	1a42ea93          	ori	s5,t0,420
-  60:	1a42fb13          	andi	s6,t0,420
-  64:	00229c13          	slli	s8,t0,0x2
-  68:	0022dc93          	srli	s9,t0,0x2
-  6c:	4022dd13          	srai	s10,t0,0x2
-  70:	4062fe33          	andn	t3,t0,t1
-  74:	4062eeb3          	orn	t4,t0,t1
-  78:	4062cf33          	xnor	t5,t0,t1
-  7c:	60029f93          	clz	t6,t0
-  80:	60129513          	ctz	a0,t0
-  84:	60229593          	cpop	a1,t0
-  88:	0a62e633          	max	a2,t0,t1
-  8c:	0a62f6b3          	maxu	a3,t0,t1
-  90:	0a62c733          	min	a4,t0,t1
-  94:	0a62d7b3          	minu	a5,t0,t1
-  98:	60429413          	sext.b	s0,t0
-  9c:	60531493          	sext.h	s1,t1
-  a0:	0802c933          	zext.h	s2,t0
-  a4:	606299b3          	rol	s3,t0,t1
-  a8:	6062da33          	ror	s4,t0,t1
-  ac:	6102da93          	rori	s5,t0,0x10
-  b0:	2872db13          	orc.b	s6,t0
-  b4:	6982dc13          	rev8	s8,t0
-  b8:	f51ff2ef          	jal	t0,8 <usb.a__>
 
-000000bc <doom>:
-  bc:	000002ef          	jal	t0,bc <doom>
+00000020 <core.entry>:
+  20:	00000013          	addi	zero,zero,0
+  24:	00000013          	addi	zero,zero,0
+  28:	00000013          	addi	zero,zero,0
+  2c:	00000013          	addi	zero,zero,0
+  30:	00000013          	addi	zero,zero,0
+  34:	00000013          	addi	zero,zero,0
+  38:	00000013          	addi	zero,zero,0
+  3c:	00000013          	addi	zero,zero,0
+  40:	00c00293          	addi	t0,zero,12
+  44:	01800313          	addi	t1,zero,24
+  48:	005303b3          	add	t2,t1,t0
+  4c:	0021708b          	pushg	1,0
+  50:	0011100b          	sp	rix,0(frame)
+  54:	00112023          	sw	rix,0(frame)
+  58:	00000417          	auipc	s0,0x0
+  5c:	03040413          	addi	s0,s0,48 # 88 <core.end>
+  60:	00040493          	addi	s1,s0,0
+  64:	0091100b          	sp	s1,0(frame)
+  68:	0004300b          	jlib	s0,0
+  6c:	0001240b          	lp	s0,0(frame)
+  70:	0044300b          	jlib	s0,4
+  74:	00c00293          	addi	t0,zero,12
+  78:	01800313          	addi	t1,zero,24
+  7c:	005303b3          	add	t2,t1,t0
+  80:	00100073          	ebreak
+
+00000084 <doom>:
+  84:	000002ef          	jal	t0,84 <doom>
 
 Disassembly of section usb:
 
-00000000 <usb.a__-0x8>:
-   0:	0014                	.insn	2, 0x0014
-   2:	0000                	.insn	2, 0x
-   4:	00ec                	.insn	2, 0x00ec
-	...
+00000088 <usb.af_-0x8>:
+  88:	0008                	.insn	2, 0x0008
+  8a:	0000                	.insn	2, 0x
+  8c:	000000f7          	.insn	4, 0x00f7
 
-00000008 <usb.a__>:
-   8:	00c0006f          	jal	zero,14 <usb.a_>
+00000090 <usb.af_>:
+  90:	0080006f          	jal	zero,98 <usb.af>
 
-0000000c <usb.b>:
-   c:	0500006f          	jal	zero,5c <usb.b_>
+00000094 <usb.b_>:
+  94:	0500006f          	jal	zero,e4 <usb.b>
 
-00000010 <usb.c>:
-  10:	0940006f          	jal	zero,a4 <usb.c_>
+00000098 <usb.af>:
+  98:	4062fe33          	andn	t3,t0,t1
+  9c:	4062eeb3          	orn	t4,t0,t1
+  a0:	4062cf33          	xnor	t5,t0,t1
+  a4:	60029f93          	clz	t6,t0
+  a8:	60129513          	ctz	a0,t0
+  ac:	60229593          	cpop	a1,t0
+  b0:	0a62e633          	max	a2,t0,t1
+  b4:	0a62f6b3          	maxu	a3,t0,t1
+  b8:	0a62c733          	min	a4,t0,t1
+  bc:	0a62d7b3          	minu	a5,t0,t1
+  c0:	60429413          	sext.b	s0,t0
+  c4:	60531493          	sext.h	s1,t1
+  c8:	0802c933          	zext.h	s2,t0
+  cc:	606299b3          	rol	s3,t0,t1
+  d0:	6062da33          	ror	s4,t0,t1
+  d4:	6102da93          	rori	s5,t0,0x10
+  d8:	2872db13          	orc.b	s6,t0
+  dc:	6982dc13          	rev8	s8,t0
+  e0:	00008067          	jalr	zero,0(rix)
 
-00000014 <usb.a_>:
-  14:	4062fe33          	andn	t3,t0,t1
-  18:	4062eeb3          	orn	t4,t0,t1
-  1c:	4062cf33          	xnor	t5,t0,t1
-  20:	60029f93          	clz	t6,t0
-  24:	60129513          	ctz	a0,t0
-  28:	60229593          	cpop	a1,t0
-  2c:	0a62e633          	max	a2,t0,t1
-  30:	0a62f6b3          	maxu	a3,t0,t1
-  34:	0a62c733          	min	a4,t0,t1
-  38:	0a62d7b3          	minu	a5,t0,t1
-  3c:	60429413          	sext.b	s0,t0
-  40:	60531493          	sext.h	s1,t1
-  44:	0802c933          	zext.h	s2,t0
-  48:	606299b3          	rol	s3,t0,t1
-  4c:	6062da33          	ror	s4,t0,t1
-  50:	6102da93          	rori	s5,t0,0x10
-  54:	2872db13          	orc.b	s6,t0
-  58:	6982dc13          	rev8	s8,t0
+000000e4 <usb.b>:
+  e4:	0031700b          	push	0,0
+  e8:	00112023          	sw	rix,0(frame)
+  ec:	4062fe33          	andn	t3,t0,t1
+  f0:	4062eeb3          	orn	t4,t0,t1
+  f4:	4062cf33          	xnor	t5,t0,t1
+  f8:	60029f93          	clz	t6,t0
+  fc:	60129513          	ctz	a0,t0
+ 100:	60229593          	cpop	a1,t0
+ 104:	0a62e633          	max	a2,t0,t1
+ 108:	0a62f6b3          	maxu	a3,t0,t1
+ 10c:	0a62c733          	min	a4,t0,t1
+ 110:	0a62d7b3          	minu	a5,t0,t1
+ 114:	60429413          	sext.b	s0,t0
+ 118:	60531493          	sext.h	s1,t1
+ 11c:	0802c933          	zext.h	s2,t0
+ 120:	606299b3          	rol	s3,t0,t1
+ 124:	6062da33          	ror	s4,t0,t1
+ 128:	6102da93          	rori	s5,t0,0x10
+ 12c:	2872db13          	orc.b	s6,t0
+ 130:	6982dc13          	rev8	s8,t0
+ 134:	00c000ef          	jal	rix,140 <usb.c>
+ 138:	00012083          	lw	rix,0(frame)
+ 13c:	00008067          	jalr	zero,0(rix)
 
-0000005c <usb.b_>:
-  5c:	4062fe33          	andn	t3,t0,t1
-  60:	4062eeb3          	orn	t4,t0,t1
-  64:	4062cf33          	xnor	t5,t0,t1
-  68:	60029f93          	clz	t6,t0
-  6c:	60129513          	ctz	a0,t0
-  70:	60229593          	cpop	a1,t0
-  74:	0a62e633          	max	a2,t0,t1
-  78:	0a62f6b3          	maxu	a3,t0,t1
-  7c:	0a62c733          	min	a4,t0,t1
-  80:	0a62d7b3          	minu	a5,t0,t1
-  84:	60429413          	sext.b	s0,t0
-  88:	60531493          	sext.h	s1,t1
-  8c:	0802c933          	zext.h	s2,t0
-  90:	606299b3          	rol	s3,t0,t1
-  94:	6062da33          	ror	s4,t0,t1
-  98:	6102da93          	rori	s5,t0,0x10
-  9c:	2872db13          	orc.b	s6,t0
-  a0:	6982dc13          	rev8	s8,t0
-
-000000a4 <usb.c_>:
-  a4:	4062fe33          	andn	t3,t0,t1
-  a8:	4062eeb3          	orn	t4,t0,t1
-  ac:	4062cf33          	xnor	t5,t0,t1
-  b0:	60029f93          	clz	t6,t0
-  b4:	60129513          	ctz	a0,t0
-  b8:	60229593          	cpop	a1,t0
-  bc:	0a62e633          	max	a2,t0,t1
-  c0:	0a62f6b3          	maxu	a3,t0,t1
-  c4:	0a62c733          	min	a4,t0,t1
-  c8:	0a62d7b3          	minu	a5,t0,t1
-  cc:	60429413          	sext.b	s0,t0
-  d0:	60531493          	sext.h	s1,t1
-  d4:	0802c933          	zext.h	s2,t0
-  d8:	606299b3          	rol	s3,t0,t1
-  dc:	6062da33          	ror	s4,t0,t1
-  e0:	6102da93          	rori	s5,t0,0x10
-  e4:	2872db13          	orc.b	s6,t0
-  e8:	6982dc13          	rev8	s8,t0
+00000140 <usb.c>:
+ 140:	4062fe33          	andn	t3,t0,t1
+ 144:	4062eeb3          	orn	t4,t0,t1
+ 148:	4062cf33          	xnor	t5,t0,t1
+ 14c:	60029f93          	clz	t6,t0
+ 150:	60129513          	ctz	a0,t0
+ 154:	60229593          	cpop	a1,t0
+ 158:	0a62e633          	max	a2,t0,t1
+ 15c:	0a62f6b3          	maxu	a3,t0,t1
+ 160:	0a62c733          	min	a4,t0,t1
+ 164:	0a62d7b3          	minu	a5,t0,t1
+ 168:	60429413          	sext.b	s0,t0
+ 16c:	60531493          	sext.h	s1,t1
+ 170:	0802c933          	zext.h	s2,t0
+ 174:	606299b3          	rol	s3,t0,t1
+ 178:	6062da33          	ror	s4,t0,t1
+ 17c:	6102da93          	rori	s5,t0,0x10
+ 180:	2872db13          	orc.b	s6,t0
+ 184:	6982dc13          	rev8	s8,t0
+ 188:	00008067          	jalr	zero,0(rix)
 
 Disassembly of section .riscv.attributes:
 
@@ -140,7 +137,7 @@ Disassembly of section .riscv.attributes:
    2:	0000                	.insn	2, 0x
    4:	7200                	.insn	2, 0x7200
    6:	7369                	.insn	2, 0x7369
-   8:	01007663          	bgeu	zero,a6,14 <usb.a_>
+   8:	01007663          	bgeu	zero,a6,14 <core.start+0x8>
    c:	0024                	.insn	2, 0x0024
    e:	0000                	.insn	2, 0x
   10:	7205                	.insn	2, 0x7205

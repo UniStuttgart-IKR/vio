@@ -11,7 +11,19 @@ ARCHITECTURE struct OF riscvio_tb IS
    -- Architecture declarations
 
    -- Internal signal declarations
+   SIGNAL ac_rack  : boolean;
+   SIGNAL ac_raddr : std_logic_vector(ADDR_WIDTH - 1 DOWNTO 0) := (others => '0');
+   SIGNAL ac_rdata : std_logic_vector(BUS_WIDTH - 1 DOWNTO 0);
+   SIGNAL ac_rreq  : boolean                                   := false;
    SIGNAL clk      : std_logic;
+   SIGNAL dc_rack  : boolean;
+   SIGNAL dc_raddr : std_logic_vector(ADDR_WIDTH - 1 DOWNTO 0) := (others => '0');
+   SIGNAL dc_rdata : std_logic_vector(BUS_WIDTH - 1 DOWNTO 0);
+   SIGNAL dc_rreq  : boolean                                   := false;
+   SIGNAL dc_wack  : boolean;
+   SIGNAL dc_waddr : std_logic_vector(ADDR_WIDTH - 1 DOWNTO 0) := (others => '0');
+   SIGNAL dc_wdata : std_logic_vector(BUS_WIDTH - 1 DOWNTO 0)  := (others => '0');
+   SIGNAL dc_wreq  : boolean                                   := false;
    SIGNAL ic_rack  : boolean;
    SIGNAL ic_raddr : std_logic_vector(ADDR_WIDTH - 1 DOWNTO 0) := (others => '0');
    SIGNAL ic_rdata : std_logic_vector(BUS_WIDTH - 1 DOWNTO 0);
@@ -55,10 +67,22 @@ ARCHITECTURE struct OF riscvio_tb IS
    END COMPONENT;
    COMPONENT riscvio
    PORT (
+      ac_rack  : IN     boolean ;
+      ac_rdata : IN     buzz_word_T ;
       clk      : IN     std_logic ;
+      dc_rack  : IN     boolean ;
+      dc_rdata : IN     buzz_word_T ;
+      dc_wack  : IN     boolean ;
       ic_rack  : IN     boolean ;
       ic_rdata : IN     std_logic_vector (BUS_WIDTH - 1 DOWNTO 0);
       res_n    : IN     std_logic ;
+      ac_raddr : OUT    std_logic_vector (31 DOWNTO 0);
+      ac_rreq  : OUT    boolean ;
+      dc_raddr : OUT    std_logic_vector (31 DOWNTO 0);
+      dc_rreq  : OUT    boolean ;
+      dc_waddr : OUT    std_logic_vector (31 DOWNTO 0);
+      dc_wdata : OUT    buzz_word_T ;
+      dc_wreq  : OUT    boolean ;
       ic_raddr : OUT    std_logic_vector (ADDR_WIDTH - 1 DOWNTO 0);
       ic_rreq  : OUT    boolean 
    );
@@ -89,29 +113,41 @@ BEGIN
       PORT MAP (
          clk      => clk,
          res_n    => res_n,
-         dc_rreq  => OPEN,
-         dc_rack  => OPEN,
-         dc_raddr => OPEN,
-         dc_rdata => OPEN,
-         ac_rreq  => OPEN,
-         ac_rack  => OPEN,
-         ac_raddr => OPEN,
-         ac_rdata => OPEN,
+         dc_rreq  => dc_rreq,
+         dc_rack  => dc_rack,
+         dc_raddr => dc_raddr,
+         dc_rdata => dc_rdata,
+         ac_rreq  => ac_rreq,
+         ac_rack  => ac_rack,
+         ac_raddr => ac_raddr,
+         ac_rdata => ac_rdata,
          ic_rreq  => ic_rreq,
          ic_rack  => ic_rack,
          ic_raddr => ic_raddr,
          ic_rdata => ic_rdata,
-         dc_wreq  => OPEN,
-         dc_wack  => OPEN,
-         dc_waddr => OPEN,
-         dc_wdata => OPEN
+         dc_wreq  => dc_wreq,
+         dc_wack  => dc_wack,
+         dc_waddr => dc_waddr,
+         dc_wdata => dc_wdata
       );
    riscvio_i : riscvio
       PORT MAP (
+         ac_rack  => ac_rack,
+         ac_rdata => ac_rdata,
          clk      => clk,
+         dc_rack  => dc_rack,
+         dc_rdata => dc_rdata,
+         dc_wack  => dc_wack,
          ic_rack  => ic_rack,
          ic_rdata => ic_rdata,
          res_n    => res_n,
+         ac_raddr => ac_raddr,
+         ac_rreq  => ac_rreq,
+         dc_raddr => dc_raddr,
+         dc_rreq  => dc_rreq,
+         dc_waddr => dc_waddr,
+         dc_wdata => dc_wdata,
+         dc_wreq  => dc_wreq,
          ic_raddr => ic_raddr,
          ic_rreq  => ic_rreq
       );

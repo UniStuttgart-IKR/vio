@@ -14,15 +14,17 @@ ARCHITECTURE behav OF block_ram_if IS
 
 BEGIN
   dram_address_a <= addr.data(dram_address_a'high downto 0);
+  next_dram_address_a <= next_addr.data(dram_address_a'high downto 0);
   read_p: process (all) is
   begin  
     -- assign default values
     mem_out        <= (others => '0');
+    dram_rena_a           <= '1';
     
     case mode is
       when lb =>
         
-        case addr.data(1 downto 0) is
+        case next_addr.data(1 downto 0) is
           when "00" =>
               mem_out              <= (others => dram_q_a(BYTE0_RANGE'high));
               mem_out(BYTE0_RANGE) <= dram_q_a(BYTE0_RANGE);
@@ -45,7 +47,7 @@ BEGIN
         end case;
         
       when lbu =>
-        case addr.data(1 downto 0) is
+        case next_addr.data(1 downto 0) is
           when "00" =>
               mem_out(BYTE0_RANGE) <= dram_q_a(BYTE0_RANGE); 
                   
@@ -64,7 +66,7 @@ BEGIN
         end case;
         
       when lh =>
-        case addr.data(1) is
+        case next_addr.data(1) is
           when '0' =>
               mem_out               <= (others => dram_q_a(HWORD0_RANGE'high));
               mem_out(HWORD0_RANGE) <= dram_q_a(HWORD0_RANGE);
@@ -79,7 +81,7 @@ BEGIN
         end case;
         
       when lhu =>
-        case addr.data(1) is
+        case next_addr.data(1) is
           when '0' =>
               mem_out(HWORD0_RANGE) <= dram_q_a(HWORD0_RANGE);
                           
@@ -98,7 +100,7 @@ BEGIN
           mem_out <= dram_q_a;
 
       when others =>
-        null;
+        dram_rena_a <= '0';
     end case;
   end process read_p;
 
@@ -124,7 +126,7 @@ BEGIN
           
       when sh =>
           dram_wren_a  <= '1';
-          dram_byteena_a <= "1100" when addr.data(1) = '1' else "0011";
+          dram_byteena_a <= "1100" when next_addr.data(1) = '1' else "0011";
           dram_data_a <= raux.val(HWORD0_RANGE) 
                             & raux.val(HWORD0_RANGE);
               

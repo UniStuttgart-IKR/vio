@@ -13,9 +13,9 @@ BEGIN
     begin
         if res_n = '0' then
             csrs <= (others => (others => '0'));
-            csrs(alc_lim) <= X"00000100";
-            csrs(alc_addr) <= X"00000200";
-            csrs(frame_lim) <= X"00000200";
+            csrs(alc_lim) <= X"00000500";
+            csrs(alc_addr) <= X"00000700";
+            csrs(frame_lim) <= X"00000700";
             csrs(root) <= X"00000000";
             stack_overflow <= false;
         else

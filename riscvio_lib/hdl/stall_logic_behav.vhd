@@ -9,6 +9,6 @@
 --
 ARCHITECTURE behav OF stall_logic IS
 BEGIN
-  stall <= ic_stall or obj_init_stall;
+  stall <= ic_stall or dc_stall or ac_stall or obj_init_stall;
 END ARCHITECTURE behav;
 

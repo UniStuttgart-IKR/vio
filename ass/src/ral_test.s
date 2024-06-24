@@ -1,3 +1,4 @@
+# generated from src/ral_test.s3 by riscvio-preproc.py by LeyLux Group
 # 0 "src/alc_test.S"
 # 0 "<built-in>"
 # 0 "<command-line>"
@@ -5,11 +6,19 @@
 # 0 "<command-line>" 2
 # 1 "src/alc_test.S"
 # generated from src/alc_test.s by riscvio-preproc.py by LeyLux Group
-.globl _start
+.globl core.start
 
 .text
 
-_start:     
+.section core, "xa"
+.word core.trampEnd - core.trampStart
+.word (core.end - core.trampEnd) | 0b11
+
+core.trampStart:
+core.start_: j core.start
+core.trampEnd:
+
+core.start: 
             nop
             nop
             nop
@@ -90,7 +99,7 @@ no_ptr_reg_load:
             lw      t1, 0(frame)
 
             
-            #pusht   3, 1
+            #alci	frame, 3, 1
             #nop
             #nop
             #nop
@@ -171,7 +180,7 @@ no_ptr_reg_load:
             #nop
             #nop
             #nop
-            #pusht 4, 9
+            #alci	frame, 4, 9
             li t3, 0x555
             li t4, 1
             #nop
@@ -226,3 +235,7 @@ no_ptr_reg_load:
 
 
 doom: jal t0, doom
+core.end:
+
+
+

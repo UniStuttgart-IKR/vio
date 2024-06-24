@@ -1,5 +1,5 @@
 
-out/ral_test.elf:     Dateiformat elf32-littleriscv
+out/ral_test.elf:     file format elf32-littleriscv
 
 
 Disassembly of section .text:

@@ -39,9 +39,9 @@ Disassembly of section core:
   5c:	03040413          	addi	s0,s0,48 # 88 <core.end>
   60:	00040493          	addi	s1,s0,0
   64:	0091100b          	sp	s1,0(frame)
-  68:	0004300b          	jlib	s0,0
+  68:	0084300b          	jlib	s0,8
   6c:	0001240b          	lp	s0,0(frame)
-  70:	0044300b          	jlib	s0,4
+  70:	00c4300b          	jlib	s0,12
   74:	00c00293          	addi	t0,zero,12
   78:	01800313          	addi	t1,zero,24
   7c:	005303b3          	add	t2,t1,t0

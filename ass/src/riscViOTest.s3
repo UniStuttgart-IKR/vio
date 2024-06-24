@@ -27,7 +27,7 @@ core.entry:
             sp      ra, 0(frame)
             sw      ra, 0(frame)
 
-            la      s0, usb
+            la      s0, @usb
             mv      s1, s0
             sp      s1, 0(frame)
 
@@ -71,8 +71,9 @@ usb.af:     andn    t3, t0,t1
             rev8    s8, t0
             ret
 
-usb.b:      push    0,0
+usb.b:      pushg   0,0
             sw      ra, 0(frame)
+            sp      ra, 0(frame)
             andn    t3, t0,t1
             orn     t4, t0,t1
             xnor    t5, t0,t1
@@ -93,7 +94,8 @@ usb.b:      push    0,0
             rev8    s8, t0
             jal     usb.c
             lw      ra, 0(frame)
-            ret
+            lp      ra, 0(frame)
+            jr      zero, 0(ra)
 
 usb.c:      andn    t3, t0,t1
             orn     t4, t0,t1

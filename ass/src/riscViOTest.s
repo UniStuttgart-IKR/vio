@@ -37,10 +37,10 @@ core.entry:
             mv      s1, s0
             sp      s1, 0(frame)
 
-            jlib    s0,  0
+            jlib    s0,  8
 
             lp      s0, 0(frame)
-            jlib    s0,  4
+            jlib    s0,  12
 
             li      t0, 12
             li      t1, 24

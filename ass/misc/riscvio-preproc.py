@@ -163,6 +163,7 @@ def replaceCOFctReferences(contents, codeobjects) ->  []:
     for codeobject in codeobjects:
         for func in codeobject["publicfns"]:
             replacements.append(["(jlib.*)" + "@{0}.{1}".format(codeobject["name"], func[0]), "\\1 " + str(func[1] * 4 + 8)])
+            replacements.append(["(la.*)@({0})".format(codeobject["name"]), "\\1\\2"])
 
     for content in contents:
         for replacement in replacements:
@@ -180,7 +181,7 @@ def __main__() -> None:
 
     for fileName in fileNames:
         extension = "".join(fileName.split(".")[-1:])
-        if extension == "S":
+        if extension == "s3":
             with open(fileName) as sourceFile:
                 sourceFileContents.append("".join(sourceFile.readlines()))
 

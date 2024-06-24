@@ -18,6 +18,8 @@ PACKAGE caches IS
     constant IC_LINE_WIDTH: natural := 16;
     constant ADDR_WIDTH:    natural := 32;
 
+    subtype buzz_word_T is std_logic_vector(BUS_WIDTH - 1 downto 0);
+
     type cache_rrq_T is record
         rreq           : boolean;
         rack           : boolean;

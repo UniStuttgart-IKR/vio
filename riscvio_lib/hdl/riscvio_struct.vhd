@@ -520,6 +520,7 @@ ARCHITECTURE struct OF riscvio IS
    PORT (
       ctrl_ex      : IN     ctrl_sig_T ;
       mem_out_me_u : IN     word_T ;
+      raux_ex      : IN     raux_T ;
       res_ex       : IN     reg_mem_T ;
       res_me_u     : OUT    reg_mem_T 
    );
@@ -1040,6 +1041,7 @@ BEGIN
       PORT MAP (
          ctrl_ex      => ctrl_ex,
          mem_out_me_u => mem_out_me_u,
+         raux_ex      => raux_ex,
          res_ex       => res_ex,
          res_me_u     => res_me_u
       );

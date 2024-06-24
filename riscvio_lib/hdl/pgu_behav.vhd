@@ -44,25 +44,25 @@ ARCHITECTURE behav OF pgu IS
 BEGIN
 
     frame_type_exception <= false when pgu_mode = pgu_nop else                                  --default
-                            true  when ali_T'val(rdst_ix) = rix and pgu_mode /= pgu_dat_i else  --try loading rix from non stack frame object (should be own exception type)
-                            true  when ali_T'val(rdst_ix) = rcd and pgu_mode /= pgu_ptr_i else  --try loading rcd from non stack frame object (should be own exception type)
-                            true  when ali_T'val(rdst_ix) = rix and rptr.val(2) /= '1' else     --try loading rix from non stack frame object (should be own exception type)
-                            true  when ali_T'val(rdst_ix) = rcd and rptr.val(2) /= '1' else     --try loading rcd from non stack frame object (should be own exception type)
-                            true  when ali_T'val(rdst_ix) = rix and rptr.dt(30) /= '1' else     --try loading rix from terminal frame
-                            true  when ali_T'val(rdst_ix) = rcd and rptr.dt(31) /= '1' else     --try loading rcd from non gate frame
-                            true  when raux.ali = rix           and rptr.dt(30) /= '1' else     --try storing rix to terminal frame
-                            true  when raux.ali = rcd           and rptr.dt(31) /= '1' else     --try storing rcd to non gate frame
+                            true  when ali_T'val(rdst_ix) = ra and pgu_mode /= pgu_dat_i and pgu_mode /= pgu_ptr_i else  --try loading rix from non stack frame object (should be own exception type)
+  --try loading rcd from non stack frame object (should be own exception type)
+                            true  when ali_T'val(rdst_ix) = ra and rptr.val(2) /= '1' else     --try loading rix from non stack frame object (should be own exception type)
+     --try loading rcd from non stack frame object (should be own exception type)
+                            true  when ali_T'val(rdst_ix) = ra and pgu_mode = pgu_rix and rptr.dt(30) /= '1' else     --try loading rix from terminal frame
+                            true  when ali_T'val(rdst_ix) = ra and pgu_mode = pgu_rcd and rptr.dt(31) /= '1' else     --try loading rcd from non gate frame
+                            true  when pgu_mode = pgu_rix      and rptr.dt(30) /= '1' else     --try storing rix to terminal frame
+                            true  when pgu_mode = pgu_rcd      and rptr.dt(31) /= '1' else     --try storing rcd to non gate frame
                             false;
 
     state_error_exception <= false when pgu_mode = pgu_nop or (pgu_mode /= pgu_dat_i and pgu_mode /= pgu_dat_r and pgu_mode /= pgu_ptr_i and pgu_mode /= pgu_ptr_r) else                                                     --default
                              true  when rptr.ali = frame and (pgu_mode = pgu_dat_r or pgu_mode = pgu_ptr_r) else    --try executing index load/store on stack frame
-                             true  when raux.ali = frame and rdat.ali /= rix else                                   --(should not happen but just to be sure)
+                             true  when raux.ali = frame and rdat.ali /= ra else                                    --(should not happen but just to be sure)
                              true  when raux.ali = frame and raux.val(0) /= rdat.val(0) else                        --color of frame does not match color of rix
                              false;
 
     index_out_of_bounds_exception <= false when pgu_mode = pgu_nop else
-                                     false when ali_T'val(rdst_ix) = rix or ali_T'val(rdst_ix) = rcd else
-                                     false when raux.ali = rix or raux.ali = rcd else
+                                     false when ali_T'val(rdst_ix) = ra else
+                                     false when raux.ali = ra else
                                      true  when pgu_mode = pgu_dat_i and unsigned(imm(28 downto 0)) > unsigned(rptr.dt) and rptr.ali = frame else
                                      true  when pgu_mode = pgu_dat_i and unsigned(imm(30 downto 0)) > unsigned(rptr.dt) else
                                      true  when pgu_mode = pgu_dat_r and unsigned(rdat.val(28 downto 0)) > unsigned(rptr.dt) and rptr.ali = frame else
@@ -88,10 +88,8 @@ BEGIN
                    calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 8, raux.val) & tag when pgu_mode = pgu_pushg else
                    calcLen(rptr.pi, rptr.dt, 8, rptr.val(word_T'high downto 3) & "000", true) & tag when pgu_mode = pgu_pop else
 
-                   std_logic_vector(unsigned(rptr.val) + 8)  when ali_T'val(rdst_ix) = rix else
-                   std_logic_vector(unsigned(rptr.val) + 8)  when raux.ali = rix else
-                   std_logic_vector(unsigned(rptr.val) + 12) when ali_T'val(rdst_ix) = rcd else
-                   std_logic_vector(unsigned(rptr.val) + 12) when raux.ali = rcd else
+                   std_logic_vector(unsigned(rptr.val) + 8)  when pgu_mode = pgu_rix else
+                   std_logic_vector(unsigned(rptr.val) + 12) when pgu_mode = pgu_rcd else
 
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(31), rptr.dt(30))          when pgu_mode = pgu_dat_i else
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(31), rptr.dt(30), true)    when pgu_mode = pgu_ptr_i else
@@ -109,6 +107,8 @@ BEGIN
                    ( 4 downto 0 =>      imm( 4 downto 0), others => '0') when pgu_mode = pgu_push else
                    ( 4 downto 0 =>      imm( 4 downto 0), others => '0') when pgu_mode = pgu_pusht else
                    ( 4 downto 0 =>      imm( 4 downto 0), others => '0') when pgu_mode = pgu_pushg else
+
+                   rdat.val                                             when pgu_mode = pgu_rcd else
                    (others => '0');
 
 --                  read only

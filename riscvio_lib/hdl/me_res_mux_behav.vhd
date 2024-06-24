@@ -9,8 +9,9 @@
 --
 ARCHITECTURE behav OF me_res_mux IS
 BEGIN
-    res_me_u <= (data => mem_out_me_u, tag => DATA, pi => (others => '0'), delta => (others => '0')) when ctrl_ex.me_mode /= holiday and ctrl_ex.me_mode /= lp else
-                (data => mem_out_me_u, tag => POINTER, pi => (others => '0'), delta => (others => '0')) when ctrl_ex.me_mode = lp else
+    res_me_u <= (data => mem_out_me_u, tag => DATA, pi => (others => '0'), delta => (others => '0')) when ctrl_ex.me_mode /= holiday and ctrl_ex.me_mode /= lp and ctrl_ex.me_mode /= load_rix else
+                (data => mem_out_me_u, tag => POINTER, pi => (others => '0'), delta => (others => '0')) when ctrl_ex.me_mode = lp and ctrl_ex.me_mode /= load_rix else
+                (data => raux_ex.val, tag => POINTER, pi => mem_out_me_u, delta => (others => '0')) when ctrl_ex.me_mode = load_rix else
                 res_ex;
 END ARCHITECTURE behav;
 

@@ -12,10 +12,8 @@ ARCHITECTURE behav OF ral_nop_unit IS
     signal pointer_ral: boolean;
     signal attr_ral: boolean;
 BEGIN
-    data_ral <= (ctrl_dc.me_mode = lb or ctrl_dc.me_mode = lbu or ctrl_dc.me_mode = lh or ctrl_dc.me_mode = lhu or ctrl_dc.me_mode = lw) and 
-                ((rdst_dc = rdat_ix or (rdst_dc = ali_T'pos(rix) and rdat_ix = ali_T'pos(ra))) or
-                 (rdst_dc = raux_ix or (rdst_dc = ali_T'pos(rix) and raux_ix = ali_T'pos(ra))));
-    pointer_ral <= ctrl_dc.me_mode = lp and (rdst_dc = rptr_ix or (rdst_dc = ali_T'pos(rcd) and rptr_ix = ali_T'pos(ra)));
+    data_ral <= (ctrl_dc.me_mode = lb or ctrl_dc.me_mode = lbu or ctrl_dc.me_mode = lh or ctrl_dc.me_mode = lhu or ctrl_dc.me_mode = lw) and (rdst_dc = rdat_ix or rdst_dc = raux_ix);
+    pointer_ral <= ctrl_dc.me_mode = lp and rdst_dc = rptr_ix;
     attr_ral <= (ctrl_ex.me_mode = lp and (rdst_ex = rptr_ix));
 
     -- if we will clear the instruction in the dc stage anyway we dont need to insert nops for this instr

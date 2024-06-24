@@ -222,6 +222,7 @@ PACKAGE BODY isa IS
                 res.alu_b_sel:= IMM;
                 res.pgu_mode := pgu_auipc;
                 res.branch_mode := no_branch;
+
             when OPC_BRANCH =>
                 res.alu_mode := alu_add;
                 res.imm_mode := b_type;
@@ -252,14 +253,14 @@ PACKAGE BODY isa IS
             when OPC_LOAD =>
                 res.alu_mode := alu_add;
                 res.imm_mode := i_type when instruction(FUNCT3_RANGE) /= "111" else none;
-                res.at_mode  := no;
-                res.rdst     := to_integer(unsigned(instruction(RD_RANGE))) when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) /= ra else ali_T'pos(rix);
-                res.rdat     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = F3_REG else ali_T'pos(rix);
+                res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                res.rdat     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = F3_REG else ali_T'pos(ra);
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                res.raux     := 0;
+                res.raux     := ali_T'pos(ra);
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
-                res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_dat_i;
+                res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_rix when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else pgu_dat_i;
+                res.at_mode  := no when res.pgu_mode /= pgu_rix else delta_only;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := lb_i;
                                      res.me_mode  := lb;
@@ -291,19 +292,19 @@ PACKAGE BODY isa IS
                 res.imm_mode := s_type when instruction(FUNCT3_RANGE) /= "111" else none;
                 res.at_mode  := no;
                 res.rdst     := 0;
-                res.raux     := to_integer(unsigned(instruction(RS2_RANGE))) when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) /= ra else ali_T'pos(rix);
+                res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                res.rdat     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT3_RANGE) = F3_REG else ali_T'pos(rix);
+                res.rdat     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT3_RANGE) = F3_REG else ali_T'pos(ra);
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
-                res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_dat_i;
+                res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_rix when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else pgu_dat_i;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := sb_i;
                                      res.me_mode  := sb;
                     when F3_HALF  => res.mnemonic := sh_i;
                                      res.me_mode  := sh;
                     when F3_WORD  => res.mnemonic := sw_i;
-                                     res.me_mode  := sw;
+                                     res.me_mode  := sw when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) /= ra else store_rix;
                     when F3_REG   => res.mnemonic := sb_r when instruction(FUNCT7_RANGE) = F7_BYTE else
                                                      sh_r when instruction(FUNCT7_RANGE) = F7_HALF else
                                                      sw_r when instruction(FUNCT7_RANGE) = F7_WORD else
@@ -321,7 +322,7 @@ PACKAGE BODY isa IS
                 res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                 res.rdat     := to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALCI_PUSH or instruction(FUNCT3_RANGE) = F3_ALC or instruction(FUNCT3_RANGE) = F3_ALCID or instruction(FUNCT3_RANGE) = F3_ALCIP else 
-                                ali_T'pos(rix);
+                                ali_T'pos(ra);
                 res.rptr     := ali_T'pos(frame) when res.rdst = ali_T'pos(frame) else ali_T'pos(alc_addr);
                 res.raux     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALC else 
                                 to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALCI_PUSH else   
@@ -352,22 +353,20 @@ PACKAGE BODY isa IS
                                             res.rdst     := to_integer(unsigned(instruction(RS1_RANGE)));
                     when F3_SP =>           res.mnemonic := sp_i;
                                             res.imm_mode := s_type;
-                                            res.me_mode  := sp;
+                                            res.me_mode  := sp when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) /= ra else store_rcd;
                                             res.at_mode  := no;
                                             res.rdst     := 0;
-                                            res.raux     := to_integer(unsigned(instruction(RS2_RANGE))) when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) /= ra else ali_T'pos(rcd);
+                                            res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                                            --res.rdat     := to_integer(unsigned(instruction(RS2_RANGE)));
-                                            res.pgu_mode := pgu_ptr_i;
+                                            res.pgu_mode := pgu_rcd when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else pgu_ptr_i;
                     when F3_LP =>           res.mnemonic := lp_i;
                                             res.imm_mode := i_type;
                                             res.me_mode  := lp;
-                                            res.at_mode  := yes when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) /= ra else rix;
-                                            res.rdst     := to_integer(unsigned(instruction(RD_RANGE))) when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) /= ra else ali_T'pos(rcd);
-                                            res.raux     := 0;
+                                            res.at_mode  := yes when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) /= ra else delta_only;
+                                            res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                            res.raux     := ali_T'pos(ra);
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                                            --res.rdat     := to_integer(unsigned(instruction(RS2_RANGE)));
-                                            res.pgu_mode := pgu_ptr_i;
+                                            res.pgu_mode := pgu_rcd when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else pgu_ptr_i;
                                             
                     when F3_JLIB =>         res.mnemonic := jlib;
                                             res.alu_mode := alu_add;
@@ -376,7 +375,7 @@ PACKAGE BODY isa IS
                                             res.at_mode  := no;
                                             res.rdst     := ali_T'pos(ra);
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                                            res.rdat     := ali_T'pos(rix);
+                                            res.rdat     := ali_T'pos(ra);
                                             res.raux     := ali_T'pos(frame);
                                             res.alu_a_sel:= DAT;
                                             res.alu_b_sel:= IMM;
@@ -396,7 +395,7 @@ PACKAGE BODY isa IS
                             when F7_LPR =>  res.mnemonic := lp_r;
                                             res.imm_mode := none;
                                             res.me_mode  := lp;
-                                            res.at_mode  := yes when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) /= ra else rix;
+                                            res.at_mode  := yes;
                                             res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                                             res.raux     := 0;
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
@@ -409,7 +408,7 @@ PACKAGE BODY isa IS
                                             res.rdst     := ali_T'pos(frame);
                                             res.raux     := 0;
                                             res.rptr     := ali_T'pos(frame);
-                                            res.rdat     := ali_T'pos(rix);
+                                            res.rdat     := ali_T'pos(ra);
                                             res.pgu_mode := pgu_pop;
                             when others =>  res.mnemonic := illegal;
                                             res.pgu_mode := pgu_nop;

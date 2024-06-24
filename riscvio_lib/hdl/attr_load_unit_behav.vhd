@@ -12,6 +12,6 @@ BEGIN
     ram_addr_at <= addr_me_uq.data(ram_addr_at'high + 3 downto 3);
 
     pi_at_u <= ram_rdata_at(31 downto 0) when at_mode_me = yes else (others => '0');
-    dt_at_u <= ram_rdata_at(63 downto 32) when at_mode_me = yes else (others => '0');
+    dt_at_u <= ram_rdata_at(63 downto 32) when at_mode_me = yes or at_mode_me = delta_only else (others => '0');
 END ARCHITECTURE behav;
 

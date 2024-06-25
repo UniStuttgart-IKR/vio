@@ -67,7 +67,7 @@ BEGIN
                     
                     when  WAITING => 
                         if not dc_stall then
-                            if clr_addr_int = end_addr_aligned then
+                            if obj_init_addr = end_addr_aligned then
                                 current_state <= DONE;
                             else
                                 last_obj_init_addr <= clr_addr_int;
@@ -85,10 +85,10 @@ BEGIN
     
     process(all) is
     begin
-        obj_init_wr_int <= ((current_state = WRITING or current_state = WAITING) and clr_addr_int /= end_addr_aligned) or (unit_active and current_state = IDLE);
+        obj_init_wr_int <= ((current_state = WRITING or current_state = WAITING) and obj_init_addr /= end_addr_aligned) or (unit_active and current_state = IDLE);
         obj_init_stall <= obj_init_wr_int;
         obj_init_wr <= obj_init_wr_int;
-        next_obj_init_addr <= clr_addr_int when (current_state = WRITING or current_state = WAITING) and not dc else
+        next_obj_init_addr <= clr_addr_int when (current_state = WRITING or current_state = WAITING) and not dc_stall else
                               start_addr_aligned when dc_stall and current_state = IDLE else 
                               last_obj_init_addr when dc_stall else 
                               res_ex.data;

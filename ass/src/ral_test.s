@@ -47,9 +47,9 @@ core.start:
             nop
             nop
             nop
-            alci    s1, 1, 4
+            alci    s1, 2, 5
             sp      s1, 0(s0)
-            alci    s2, 1, 4
+            alci    s2, 3, 9
             sp      s2, 0(s1)
             nop
             nop

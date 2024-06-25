@@ -16,7 +16,10 @@ USE ieee.numeric_std.all;
 
 
 ARCHITECTURE mixed OF ac_wrapper IS
+    signal ld: std_logic_vector(63 downto 0);
 BEGIN
+    pi <= ld(31 downto 0) when at_mode = yes else (others => '0');
+    dt <= ld(63 downto 32) when at_mode = yes else (others => '0');
     acache: entity primitive_cache
         generic map (
             BUS_WIDTH => BUS_WIDTH,
@@ -29,9 +32,9 @@ BEGIN
             clk       => clk,
             res_n     => res_n,
             stall     => stall,
-            addr      => addr,
-            next_addr => next_addr,
-            rd        => rena = '1',
+            addr      => addr.data,
+            next_addr => next_addr.data,
+            rd        => at_mode = yes,
 
             ld        => ld,
 

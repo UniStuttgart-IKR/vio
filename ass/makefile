@@ -30,10 +30,10 @@ MISCDIR	= misc
 	@hexdump -C -v $(basename $^).elf | cut -c 10-58  | tr -d "\n\r" | tr -d ' ' | sed 's/.\{2\}/& ,0x/g' | head -n 64 > $(basename $^).dat
 
 %.mif: %.s %.o %.bin
-	@python3 misc/dat2mif.py -d 256 -w 64 -p 0000000000000000  $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
+	@python3 misc/dat2mif.py -d 512 -w 64 -p 0000000000000000  $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
 
 %.mif: %.o %.bin
-	@python3 misc/dat2mif.py -d 256 -w 64 -p 0000000000000000  $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
+	@python3 misc/dat2mif.py -d 512 -w 64 -p 0000000000000000  $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
 
 %.l: %.s %.o %.elf
 	@$(MISCDIR)/bin/riscv32-unknown-elf-objdump -D -M no-aliases $(OUTDIR)/$(basename $@).elf > $(OUTDIR)/$(basename $@).l

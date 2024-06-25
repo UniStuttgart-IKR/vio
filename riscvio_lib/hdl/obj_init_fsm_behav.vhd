@@ -88,8 +88,11 @@ BEGIN
         obj_init_wr_int <= ((current_state = WRITING or current_state = WAITING) and clr_addr_int /= end_addr_aligned) or (unit_active and current_state = IDLE);
         obj_init_stall <= obj_init_wr_int;
         obj_init_wr <= obj_init_wr_int;
-        next_obj_init_addr <= clr_addr_int when (unit_active or current_state = WRITING or current_state = WAITING) else word_T(unsigned(start_addr_aligned));
-        obj_init_addr <= last_obj_init_addr;
+        next_obj_init_addr <= clr_addr_int when (current_state = WRITING or current_state = WAITING) and not dc else
+                              start_addr_aligned when dc_stall and current_state = IDLE else 
+                              last_obj_init_addr when dc_stall else 
+                              res_ex.data;
+        obj_init_addr <= start_addr_aligned when current_state = IDLE and unit_active else last_obj_init_addr;
         obj_init_data <= res_ex.delta when clr_addr_int = word_T(unsigned(start_addr_aligned) + 4) and current_state = WRITING else
                         (others => '0') when current_state = WRITING else 
                          res_ex.pi;

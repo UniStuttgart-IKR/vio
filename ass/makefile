@@ -2,6 +2,7 @@ SRCDIR	= src
 BINDIR	= bin
 OUTDIR	= out
 MISCDIR	= misc
+PROJROOTDIR = ../riscvio_lib/
 
 %.s: $(SRCDIR)/%.s3
 	@python3 $(MISCDIR)/riscvio-preproc.py $^
@@ -31,9 +32,11 @@ MISCDIR	= misc
 
 %.mif: %.s %.o %.bin
 	@python3 misc/dat2mif.py -d 512 -w 64 -p 0000000000000000  $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
+	@cp $(OUTDIR)/$(basename $@).mif $(PROJROOTDIR)/boot.mif
 
 %.mif: %.o %.bin
 	@python3 misc/dat2mif.py -d 512 -w 64 -p 0000000000000000  $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
+	@cp $(OUTDIR)/$(basename $@).mif $(PROJROOTDIR)/boot.mif
 
 %.l: %.s %.o %.elf
 	@$(MISCDIR)/bin/riscv32-unknown-elf-objdump -D -M no-aliases $(OUTDIR)/$(basename $@).elf > $(OUTDIR)/$(basename $@).l

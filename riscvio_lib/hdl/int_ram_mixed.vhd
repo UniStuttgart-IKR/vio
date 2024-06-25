@@ -48,7 +48,6 @@ ARCHITECTURE mixed OF int_ram IS
   signal addr: std_logic_vector(ADDR_WIDTH - 1 downto 0);
   signal we: std_logic;
   signal wdata, rdata: std_logic_vector(63 downto 0);
-  
   signal ic_rack_int, dc_rack_int, ac_rack_int, dc_wack_int: boolean;
   
 BEGIN
@@ -56,9 +55,9 @@ BEGIN
   -- internal ram controller
   
   -- concurrent signal assignments
-  ic_rdata <= rdata;
-  dc_rdata <= rdata;
-  ac_rdata <= rdata;
+  ic_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
+  dc_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
+  ac_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
   
   we       <= '1' when dc_wreq else '0';
   wdata    <= dc_wdata;
@@ -200,7 +199,7 @@ BEGIN
     PORT MAP (
       address_a => addr,
       clock0 => clk,
-      data_a => wdata,
+      data_a => wdata(31 downto 0) & wdata(63 downto 32),
       wren_a => we,
       q_a => rdata
     );

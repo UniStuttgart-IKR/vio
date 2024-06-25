@@ -34,7 +34,7 @@ ARCHITECTURE behav OF primitive_cache IS
     signal words_to_write: row_selected_words_T;
 
 
-    type fill_state_T is (IDLE, PREPARING, LOADING, ALMOST_DONE, WAITING);
+    type fill_state_T is (IDLE, PREPARING, LOADING, ALMOST_DONE, WAITING, WAIT_FOR_RELEASE);
     signal fill_state: fill_state_T;
     signal line_fill_ctr: natural range 0 to N + 1;
     signal last_line_fill_ctr: natural range 0 to N + 1;
@@ -127,7 +127,7 @@ BEGIN
     ld <= row_selected_words(to_integer(unsigned(addr(WORD_IN_ADDR))));
     line_hit <= line_tag_selected = addr(TAG_IN_ADDR) and line_valid = (0 => '1');
 
-    stall <= (not line_hit and (rd or we)) or writeback_state /= IDLE or invalidation_state /= IDLE or writeback_state /= IDLE;
+    stall <= (not line_hit and (rd or we)) or invalidation_state /= IDLE or writeback_state /= IDLE;
     
     word_to_write_fill_p: process(all) is
     begin
@@ -189,6 +189,10 @@ BEGIN
                             fill_state <= PREPARING;
                             line_fill_ctr <= line_fill_ctr + 1;
                         end if;
+                    when WAIT_FOR_RELEASE =>
+                        if not (rd or we) then
+                            fill_state <= IDLE;
+                        end if;
                 end case;
             end if;
         end if;
@@ -211,6 +215,8 @@ BEGIN
             when LOADING | WAITING =>
                 rreq <= true;
                 raddr <= addr(TAG_IN_ADDR) & addr(LINE_IN_ADDR) & std_logic_vector(to_unsigned(line_fill_ctr, WORDS_IN_LINE_LOG - BUS_PER_WORD_LOG)) & zero_byte_addr & zero_bus_addr;
+                
+                set_line_tag <= '1' when line_fill_ctr = N - 1 and rack else '0';
 
                 for i in BUS_PER_WORD - 1 downto 0 loop
                     words_we_fill((last_line_fill_ctr) * BUS_PER_WORD + i) <= '1' when rack else '0';
@@ -223,8 +229,10 @@ BEGIN
                 raddr <= addr(TAG_IN_ADDR) & addr(LINE_IN_ADDR) & std_logic_vector(to_unsigned(line_fill_ctr, WORDS_IN_LINE_LOG - BUS_PER_WORD_LOG)) & zero_byte_addr & zero_bus_addr;
 
                 for i in BUS_PER_WORD - 1 downto 0 loop
-                    words_we_fill((last_line_fill_ctr) * BUS_PER_WORD + i) <= '1' when rack else '0';
+                    words_we_fill((last_line_fill_ctr) * BUS_PER_WORD + i) <= '1' when rack and line_fill_ctr /= 0 else '0';
                 end loop;
+            when WAIT_FOR_RELEASE =>
+                    null;
 
         end case;
     end process;

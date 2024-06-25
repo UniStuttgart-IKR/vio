@@ -110,7 +110,7 @@ PACKAGE BODY isa IS
                         res.mnemonic := nop when instruction = NOP_INSTR else add_i;
                         res.alu_mode := alu_add;
                         res.imm_mode := i_type;
-                        res.at_mode  := yes;
+                        res.at_mode  := maybe;
                     when (F3_SRL_SRA or F3_MINU_ROR_RORI_ORC_REV) =>
                         res.mnemonic := srl_i when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else
                                         sra_i when instruction(FUNCT7_RANGE) = F7_SUB_SRA else
@@ -362,7 +362,7 @@ PACKAGE BODY isa IS
                     when F3_LP =>           res.mnemonic := lp_i;
                                             res.imm_mode := i_type;
                                             res.me_mode  := load_rcd when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else lp;
-                                            res.at_mode  := yes when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) /= ra else delta_only;
+                                            res.at_mode  := maybe when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) /= ra else delta_only;
                                             res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                                             res.raux     := ali_T'pos(ra);
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
@@ -395,7 +395,7 @@ PACKAGE BODY isa IS
                             when F7_LPR =>  res.mnemonic := lp_r;
                                             res.imm_mode := none;
                                             res.me_mode  := lp;
-                                            res.at_mode  := yes;
+                                            res.at_mode  := maybe;
                                             res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                                             res.raux     := 0;
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
@@ -404,7 +404,7 @@ PACKAGE BODY isa IS
                             when F7_POP =>  res.mnemonic := pop;
                                             res.imm_mode := none;
                                             res.me_mode  := holiday;
-                                            res.at_mode  := yes;
+                                            res.at_mode  := maybe;
                                             res.rdst     := ali_T'pos(frame);
                                             res.raux     := 0;
                                             res.rptr     := ali_T'pos(frame);
@@ -448,7 +448,7 @@ PACKAGE BODY isa IS
                         res.alu_b_sel:= AUX;
                         res.alu_mode := alu_add when instruction(FUNCT5_RANGE) = F5_CCP else
                                         alu_illegal;
-                        res.at_mode  := yes;
+                        res.at_mode  := maybe;
                         res.me_mode  := holiday;
                         res.rptr     := 0;
                         res.rdat     := 0;

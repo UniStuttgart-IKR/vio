@@ -45,7 +45,7 @@ BEGIN
     pgu_mode_ex <= ctrl_ex.pgu_mode;
 
 
-    me_addr_uq <= me_addr_u;
+    me_addr_uq <= me_addr_u when not stall else me_addr;
     raux_dc_uq <= raux_dc;
     rptr_dc_uq <= rptr_dc;
     rdat_dc_uq <= rdat_dc;

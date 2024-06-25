@@ -27,18 +27,17 @@ core.entry:
             mv      s1, s0
             sp      s1, 0(frame)
 
-            jlib    s0, 0
+            jlib    s0,  8
 
             lp      s0, 0(frame)
-            jlib    s0, 4
+            jlib    s0,  12
 
             ebreak
-
-doom:       jal     t0, doom
 
 
 
 core.end:
+
 
 
 .section usb, "xa"
@@ -64,11 +63,15 @@ usb.b:      push    0,0
 usb.c:      pushg   0,0
             sw      ra, 0(frame)
             sp      ra, 0(frame)
-            jlib    a0, 0
+            jlib    a0,  8
             lp      ra, 0(frame)
             lw      ra, 0(frame)
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
+
+
+
 usb.end:
+
 
 
 .section hdmi, "xa"
@@ -76,13 +79,15 @@ usb.end:
 .word (hdmi.end - hdmi.trampEnd) | 0b11
 
 hdmi.trampStart:
-hdmi.start_: j hdmi.start
+hdmi.s_: j hdmi.s
 hdmi.trampEnd:
 
 
-hdmi.start: nop
+hdmi.s: nop
             nop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
+
+
 hdmi.end:
 
 

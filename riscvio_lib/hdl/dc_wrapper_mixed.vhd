@@ -15,7 +15,6 @@ USE ieee.numeric_std.all;
 
 
 ARCHITECTURE mixed OF dc_wrapper IS
-    signal wdata_rev: std_logic_vector(wdata'range);
     signal caddr: word_T;
     signal cnext_addr: word_T;
     signal sd: word_T;
@@ -51,16 +50,15 @@ BEGIN
             rreq      => rreq,
             rack      => rack,
             raddr     => raddr,
-            rdata     => rdata(31 downto 0) & rdata(63 downto 32),
+            rdata     => rdata,
 
 
             wreq      => wreq,
             wack      => wack,
             waddr     => waddr,
-            wdata     => wdata_rev
+            wdata     => wdata
         );
 
-    wdata <= wdata_rev(31 downto 0) & wdata_rev(63 downto 32);
 
     sd <= obj_init_data when obj_init_wr else sd_pipeline;
     caddr <= obj_init_addr when obj_init_wr else addr;

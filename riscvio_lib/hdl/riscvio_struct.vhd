@@ -84,6 +84,8 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL incremented_pc                : pc_T;
    SIGNAL index_out_of_bounds_exception : boolean;
    SIGNAL insert_nop                    : boolean;
+   SIGNAL me_addr_u                     : word_T;
+   SIGNAL me_addr_uq                    : word_T;
    SIGNAL me_mode_dc_uq                 : mem_mode_t;
    SIGNAL me_mode_ex                    : mem_mode_T;
    SIGNAL mem_out_me_u                  : word_T;
@@ -118,6 +120,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL rdat_dc                       : rdat_T;
    SIGNAL rdat_dc_reg                   : rdat_T;
    SIGNAL rdat_dc_u                     : rdat_T;
+   SIGNAL rdat_dc_uq                    : rdat_T;
    SIGNAL rdat_ex                       : rdat_T;
    SIGNAL rdat_ex_reg                   : rdat_T;
    SIGNAL rdat_ix                       : reg_ix_T;
@@ -136,7 +139,6 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL res_at_u                      : reg_mem_T;
    SIGNAL res_ex                        : reg_mem_T;
    SIGNAL res_ex_u                      : reg_mem_T;
-   SIGNAL res_ex_uq                     : reg_mem_T;
    SIGNAL res_me                        : reg_mem_T;
    SIGNAL res_me_u                      : reg_mem_T;
    SIGNAL res_wb                        : reg_mem_T;
@@ -240,11 +242,12 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT block_ram_if
    PORT (
-      addr           : IN     reg_mem_T ;
+      addr           : IN     word_T ;
       dram_q_a       : IN     STD_LOGIC_VECTOR (31 DOWNTO 0);
       mode           : IN     mem_mode_T ;
       mode_u         : IN     mem_mode_T ;
       raux           : IN     raux_T ;
+      rdat           : IN     rdat_T ;
       rptr           : IN     rptr_T ;
       dram_address_a : OUT    word_T ;
       dram_byteena_a : OUT    STD_LOGIC_VECTOR (3 DOWNTO 0);
@@ -403,6 +406,7 @@ ARCHITECTURE struct OF riscvio IS
       frame_type_exception          : IN     boolean ;
       imm_dc                        : IN     word_T ;
       index_out_of_bounds_exception : IN     boolean ;
+      me_addr_u                     : IN     word_T ;
       raux_dc                       : IN     raux_T ;
       rdat_dc                       : IN     rdat_T ;
       rdst_ix_dc                    : IN     reg_ix_T ;
@@ -415,15 +419,16 @@ ARCHITECTURE struct OF riscvio IS
       allocating_me                 : OUT    boolean ;
       ctrl_ex                       : OUT    ctrl_sig_T ;
       imm_ex_reg                    : OUT    word_T ;
+      me_addr_uq                    : OUT    word_T ;
       me_mode_dc_uq                 : OUT    mem_mode_t ;
       me_mode_ex                    : OUT    mem_mode_T ;
       pgu_mode_ex                   : OUT    pgu_mode_T ;
       raux_dc_uq                    : OUT    raux_T ;
       raux_ex_reg                   : OUT    raux_T ;
+      rdat_dc_uq                    : OUT    rdat_T ;
       rdat_ex_reg                   : OUT    rdat_T ;
       rdst_ix_ex_reg                : OUT    reg_ix_T ;
       res_ex                        : OUT    reg_mem_T ;
-      res_ex_uq                     : OUT    reg_mem_T ;
       rptr_dc_uq                    : OUT    rptr_T ;
       rptr_ex_reg                   : OUT    rptr_T 
    );
@@ -589,6 +594,7 @@ ARCHITECTURE struct OF riscvio IS
       rptr                          : IN     rptr_T ;
       frame_type_exception          : OUT    boolean ;
       index_out_of_bounds_exception : OUT    boolean ;
+      me_addr                       : OUT    word_T ;
       ptr                           : OUT    reg_mem_T ;
       state_error_exception         : OUT    boolean 
    );
@@ -755,11 +761,12 @@ BEGIN
       );
    block_ram_if_i : block_ram_if
       PORT MAP (
-         addr           => res_ex_uq,
+         addr           => me_addr_uq,
          dram_q_a       => ram_rdata_me,
          mode           => me_mode_ex,
          mode_u         => me_mode_dc_uq,
          raux           => raux_dc_uq,
+         rdat           => rdat_dc_uq,
          rptr           => rptr_dc_uq,
          dram_address_a => dram_address_a,
          dram_byteena_a => dram_byteena_a,
@@ -908,6 +915,7 @@ BEGIN
          frame_type_exception          => frame_type_exception,
          imm_dc                        => imm_dc,
          index_out_of_bounds_exception => index_out_of_bounds_exception,
+         me_addr_u                     => me_addr_u,
          raux_dc                       => raux_dc,
          rdat_dc                       => rdat_dc,
          rdst_ix_dc                    => rdst_ix_dc,
@@ -920,15 +928,16 @@ BEGIN
          allocating_me                 => allocating_me,
          ctrl_ex                       => ctrl_ex,
          imm_ex_reg                    => imm_ex_reg,
+         me_addr_uq                    => me_addr_uq,
          me_mode_dc_uq                 => me_mode_dc_uq,
          me_mode_ex                    => me_mode_ex,
          pgu_mode_ex                   => pgu_mode_ex,
          raux_dc_uq                    => raux_dc_uq,
          raux_ex_reg                   => raux_ex_reg,
+         rdat_dc_uq                    => rdat_dc_uq,
          rdat_ex_reg                   => rdat_ex_reg,
          rdst_ix_ex_reg                => rdst_ix_ex_reg,
          res_ex                        => res_ex,
-         res_ex_uq                     => res_ex_uq,
          rptr_dc_uq                    => rptr_dc_uq,
          rptr_ex_reg                   => rptr_ex_reg
       );
@@ -1104,6 +1113,7 @@ BEGIN
          rptr                          => rptr_dc,
          frame_type_exception          => frame_type_exception,
          index_out_of_bounds_exception => index_out_of_bounds_exception,
+         me_addr                       => me_addr_u,
          ptr                           => pgu_ptr_ex_u,
          state_error_exception         => state_error_pgu
       );

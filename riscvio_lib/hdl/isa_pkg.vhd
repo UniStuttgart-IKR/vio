@@ -49,7 +49,7 @@ PACKAGE isa IS
        pi: word_T;
        dt: word_T;
     end record pc_T;
-    constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (3 => '1', others => '0'), pi => (others => '0'), dt => (others => '0'));
+    constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '0'));
 
 
     type ali_T is (zero, ra, frame, core, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t3, t4, t5, t6, imm, alc_lim, alc_addr, frame_lim, root, no_csr);

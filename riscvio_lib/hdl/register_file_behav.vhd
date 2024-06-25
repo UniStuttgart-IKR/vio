@@ -15,8 +15,8 @@ BEGIN
     
     rdat.ix   <= rdat_ix;
     rdat.ali  <= ali_T'val(rdat_ix) when rdat_ix <= ali_T'pos(t6) else zero;
-    rdat.val  <= registers(ali_T'val(rdat_ix)).data when rdat_ix <= ali_T'pos(t6) else
-                 registers(ra).pi when rdat_ix = ali_T'pos(ra) else
+    rdat.val  <= registers(ra).pi when rdat_ix = ali_T'pos(ra) else
+                 registers(ali_T'val(rdat_ix)).data when rdat_ix <= ali_T'pos(t6) else
                  (others => '0');
 
     rptr.ix   <= rptr_ix;

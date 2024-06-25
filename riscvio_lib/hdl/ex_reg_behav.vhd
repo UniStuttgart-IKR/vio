@@ -44,9 +44,10 @@ BEGIN
     pgu_mode_ex <= ctrl_ex.pgu_mode;
 
 
-    res_ex_uq <= res_ex_u;
+    me_addr_uq <= me_addr_u;
     raux_dc_uq <= raux_dc;
     rptr_dc_uq <= rptr_dc;
+    rdat_dc_uq <= rdat_dc;
     allocating_me <= ali_T'val(rptr_ex_reg.ix) = alc_addr;
 END ARCHITECTURE behav;
 

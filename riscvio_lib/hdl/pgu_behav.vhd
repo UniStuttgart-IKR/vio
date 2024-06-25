@@ -87,15 +87,16 @@ BEGIN
                    calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 4, raux.val) & tag when pgu_mode = pgu_push  else
                    calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 8, raux.val) & tag when pgu_mode = pgu_pushg else
                    calcLen(rptr.pi, rptr.dt, 8, rptr.val(word_T'high downto 3) & "000", true) & tag when pgu_mode = pgu_pop else
+                   std_logic_vector(unsigned(pc.ptr) + unsigned(pc.ix) + unsigned(imm) + 8) when pgu_mode = pgu_auipc else 
+                   (others => '0');
 
-                   std_logic_vector(unsigned(rptr.val) + 8)  when pgu_mode = pgu_rix else
+    me_addr <=     std_logic_vector(unsigned(rptr.val) + 8)  when pgu_mode = pgu_rix else
                    std_logic_vector(unsigned(rptr.val) + 12) when pgu_mode = pgu_rcd else
 
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(31), rptr.dt(30))          when pgu_mode = pgu_dat_i else
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(31), rptr.dt(30), true)    when pgu_mode = pgu_ptr_i else
                    calcAddr(rptr.pi, rdat.val, rptr.val, rptr.dt(31), rptr.dt(30))          when pgu_mode = pgu_dat_r else
                    calcAddr(rptr.pi, rdat.val, rptr.val, rptr.dt(31), rptr.dt(30), true)    when pgu_mode = pgu_ptr_r else 
-                   std_logic_vector(unsigned(pc.ptr) + unsigned(pc.ix) + unsigned(imm))     when pgu_mode = pgu_auipc else 
                    (others => '0');
 
     ptr.tag <= POINTER;
@@ -107,8 +108,6 @@ BEGIN
                    ( 4 downto 0 =>      imm( 4 downto 0), others => '0') when pgu_mode = pgu_push else
                    ( 4 downto 0 =>      imm( 4 downto 0), others => '0') when pgu_mode = pgu_pusht else
                    ( 4 downto 0 =>      imm( 4 downto 0), others => '0') when pgu_mode = pgu_pushg else
-
-                   rdat.val                                             when pgu_mode = pgu_rcd else
                    (others => '0');
 
 --                  read only

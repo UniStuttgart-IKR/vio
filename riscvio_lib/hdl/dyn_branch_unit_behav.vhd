@@ -57,7 +57,7 @@ BEGIN
 
     dbt.ix <=   '0' & rptr.pi(word_T'high-1 downto 1) & '0' when rdat.ali = ra and branch_mode = jalr  else
                 rdat.val(word_T'high downto 1) & '0' when branch_mode = jalr else
-                std_logic_vector(unsigned(imm) + 8) when branch_mode = jlib else
+                std_logic_vector(unsigned(imm)) when branch_mode = jlib else
                 std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(imm)), WORD_SIZE));
     dbt.ptr <=  rptr.val when (branch_mode = jalr and rdat.ali = ra and rptr.pi(31) = '1') or branch_mode = jlib else pc.ptr;
     dbt.pi <=   pc.pi;

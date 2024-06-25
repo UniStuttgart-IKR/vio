@@ -17,34 +17,20 @@ core.start: li      frame, 0x305
             nop
 
 core.entry:
-            nop
-            nop
-            nop
-            nop
-            nop
-            nop
-            nop
-            nop
-            li      t0, 12
-            li      t1, 24
-            add     t2, t1,t0
-
             pushg   1, 0
             sp      ra, 0(frame)
             sw      ra, 0(frame)
+
+            la      a0, hdmi
 
             la      s0, usb
             mv      s1, s0
             sp      s1, 0(frame)
 
-            jlib    s0,  8
+            jlib    s0, 0
 
             lp      s0, 0(frame)
-            jlib    s0,  12
-
-            li      t0, 12
-            li      t1, 24
-            add     t2, t1,t0
+            jlib    s0, 4
 
             ebreak
 
@@ -65,71 +51,39 @@ usb.b_: j usb.b
 usb.trampEnd:
 
 
-
-usb.af:     andn    t3, t0,t1
-            orn     t4, t0,t1
-            xnor    t5, t0,t1
-            clz     t6, t0
-            ctz     a0, t0
-            cpop    a1, t0
-            max     a2, t0,t1
-            maxu    a3, t0,t1
-            min     a4, t0,t1
-            minu    a5, t0,t1
-            sext.b  s0, t0
-            sext.h  s1, t1
-            zext.h  s2, t0
-            rol     s3, t0,t1
-            ror     s4, t0,t1
-            rori    s5, t0,16
-            orc.b   s6, t0
-            rev8    s8, t0
-            ret
+usb.af:     nop
+            nop
+            ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
 usb.b:      push    0,0
             sw      ra, 0(frame)
-            andn    t3, t0,t1
-            orn     t4, t0,t1
-            xnor    t5, t0,t1
-            clz     t6, t0
-            ctz     a0, t0
-            cpop    a1, t0
-            max     a2, t0,t1
-            maxu    a3, t0,t1
-            min     a4, t0,t1
-            minu    a5, t0,t1
-            sext.b  s0, t0
-            sext.h  s1, t1
-            zext.h  s2, t0
-            rol     s3, t0,t1
-            ror     s4, t0,t1
-            rori    s5, t0,16
-            orc.b   s6, t0
-            rev8    s8, t0
             jal     usb.c
             lw      ra, 0(frame)
-            ret
+            ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
-usb.c:      andn    t3, t0,t1
-            orn     t4, t0,t1
-            xnor    t5, t0,t1
-            clz     t6, t0
-            ctz     a0, t0
-            cpop    a1, t0
-            max     a2, t0,t1
-            maxu    a3, t0,t1
-            min     a4, t0,t1
-            minu    a5, t0,t1
-            sext.b  s0, t0
-            sext.h  s1, t1
-            zext.h  s2, t0
-            rol     s3, t0,t1
-            ror     s4, t0,t1
-            rori    s5, t0,16
-            orc.b   s6, t0
-            rev8    s8, t0
-            ret
+usb.c:      pushg   0,0
+            sw      ra, 0(frame)
+            sp      ra, 0(frame)
+            jlib    a0, 0
+            lp      ra, 0(frame)
+            lw      ra, 0(frame)
+            ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 usb.end:
+
+
+.section hdmi, "xa"
+.word hdmi.trampEnd - hdmi.trampStart
+.word (hdmi.end - hdmi.trampEnd) | 0b11
+
+hdmi.trampStart:
+hdmi.start_: j hdmi.start
+hdmi.trampEnd:
+
+
+hdmi.start: nop
+            nop
+            ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
+hdmi.end:
 
 
 

@@ -49,16 +49,16 @@ usb.b:      push    0,0
 usb.c:      pushg   0,0
             sw      ra, 0(frame)
             sp      ra, 0(frame)
-            jlib    a0, @hdmi.a
+            jlib    a0, @hdmi.start
             lp      ra, 0(frame)
             lw      ra, 0(frame)
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
 
 @hdmi>
-a
+start
 private
 
-hdmi.a:     nop
+hdmi.start: nop
             nop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)

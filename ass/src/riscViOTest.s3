@@ -28,7 +28,6 @@ core.entry:
 
             ebreak
 
-doom:       jal     t0, doom
 
 
 @usb>
@@ -49,16 +48,19 @@ usb.b:      push    0,0
 usb.c:      pushg   0,0
             sw      ra, 0(frame)
             sp      ra, 0(frame)
-            jlib    a0, @hdmi.start
+            jlib    a0, @hdmi.s
             lp      ra, 0(frame)
             lw      ra, 0(frame)
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
 
+
 @hdmi>
-start
+s
 private
 
-hdmi.start: nop
+hdmi.s: nop
             nop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
+
+

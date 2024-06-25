@@ -68,7 +68,7 @@ def calcCOregions(coobjects, contents) -> [{}]:
     coobjectsnew = coobjects[:]
     for i, coobj in enumerate(coobjectsnew):
         if i != len(coobjects) - 1:
-            coobj["endpos"] = coobjects[(i + 1)]["hdrstartpos"]
+            coobj["endpos"][1] = coobjects[(i + 1)]["hdrstartpos"][1] - 1
         else:
             coobj["endpos"][0] = coobj["hdrstartpos"][0]
             coobj["endpos"][1] = len(contents[coobj["endpos"][0]]) - 1
@@ -92,17 +92,23 @@ def extractPublicFuncs(coobjects, contents) -> [{}]:
     return coobjectsnew
 
 def advanceCodeObjectRefs(insertpos, insertlen, codeobjects):
-    for codeobject in codeobjects:
+    for i, codeobject in enumerate(codeobjects):
         for fieldname in ["hdrstartpos", "hdrendpos", "hdrfnstartpos", "endpos"]:
-            if codeobject[fieldname][1] >= insertpos:
-                codeobject[fieldname][1] += insertlen
+            if codeobjects[i][fieldname][1] >= insertpos:
+                codeobjects[i][fieldname][1] += insertlen
+            
+
 
 def insertSectionEndLabels(contents, codeobjects) -> []:
     newcontents = contents[:]
 
     for codeobject in codeobjects:
+        fileId = codeobject["endpos"][0]
         label = "\n{0}.end:\n\n\n".format(codeobject["name"])
-        newcontents[codeobject["endpos"][0]] = newcontents[codeobject["endpos"][0]][:codeobject["endpos"][1]] + label + newcontents[codeobject["endpos"][0]][codeobject["endpos"][1]:]
+
+
+        newcontents[fileId] = newcontents[fileId][:(codeobject["endpos"][1])] + label + newcontents[fileId][(codeobject["endpos"][1]):]
+
         advanceCodeObjectRefs(codeobject["endpos"][1], len(label), codeobjects)
         pass
 
@@ -148,12 +154,15 @@ def expandFunctionNames(contents, codeobjects) -> []:
         codeobjectStr = newcontents[codeobject["hdrendpos"][0]][codeobject["hdrendpos"][1]:codeobject["endpos"][1]]
 
 
-        newCodeObjectStr = re.sub("\n([^. ]" + ALLOWEDCOOBJNAMES + ":)\n", "\n" + codeobject["name"] + ".\\1\n", codeobjectStr)
+        newCodeObjectStr = re.sub("\n(" + ALLOWEDCOOBJNAMES + "):", "\n" + codeobject["name"] + ".\\1:", codeobjectStr)
 
-        newcontents[codeobject["hdrendpos"][0]] = newcontents[codeobject["hdrendpos"][0]][:codeobject["hdrendpos"][1]] + newCodeObjectStr + \
+        newcontent = newcontents[codeobject["hdrendpos"][0]][:codeobject["hdrendpos"][1]] + newCodeObjectStr + \
                                                newcontents[codeobject["endpos"][0]][(codeobject["endpos"][1]):]
 
-        advanceCodeObjectRefs(codeobject["endpos"][1], len(newCodeObjectStr) - len(codeobjectStr), codeobjects[(i-1):])
+        newcontents[codeobject["hdrendpos"][0]] = newcontent
+        advanceCodeObjectRefs(codeobject["endpos"][1], len(newCodeObjectStr) - len(codeobjectStr), codeobjects[(i):])
+
+
     return newcontents
 
 def replaceCOFctReferences(contents, codeobjects) ->  []:
@@ -225,3 +234,4 @@ def __main__() -> None:
     
 if __name__ == "__main__":
     __main__()
+

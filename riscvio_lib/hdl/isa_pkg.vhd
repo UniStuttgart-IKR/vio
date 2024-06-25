@@ -239,7 +239,7 @@ PACKAGE isa IS
     type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU, PC_IX);
     type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_pop, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_auipc, pgu_rix, pgu_rcd, pgu_nop);
     type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, holiday);
-    type at_mode_T is (yes, no, delta_only);
+    type at_mode_T is (maybe, no, delta_only);
     type branch_mode_T is (jlib, rtlib, jal, jalr, beq, bne, blt, bge, bltu, bgeu, no_branch);
 
     type ctrl_sig_T is record 

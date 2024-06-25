@@ -47,7 +47,7 @@ BEGIN
             rreq      => ic_rreq,
             rack      => ic_rack,
             raddr     => ic_raddr,
-            rdata     => ic_rdata(31 downto 0) & ic_rdata(63 downto 32)
+            rdata     => ic_rdata
         );
 
 END ARCHITECTURE mixed;

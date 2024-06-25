@@ -16,6 +16,13 @@ PACKAGE caches IS
 
     constant IC_LINES:      natural := 4;
     constant IC_LINE_WIDTH: natural := 16;
+    
+    constant DC_LINES:      natural := 4;
+    constant DC_LINE_WIDTH: natural := 16;
+
+    constant AC_LINES:      natural := 16;
+    constant AC_LINE_WIDTH: natural := 1;
+
     constant ADDR_WIDTH:    natural := 32;
 
     subtype buzz_word_T is std_logic_vector(BUS_WIDTH - 1 downto 0);

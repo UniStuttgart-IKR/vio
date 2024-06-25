@@ -15,16 +15,11 @@ ARCHITECTURE struct OF riscvio IS
    -- Internal signal declarations
    SIGNAL REG_MEM_NULL_SIG              : reg_mem_T;
    SIGNAL a                             : word_T;
-   SIGNAL ac_ld                         : word_T;
-   SIGNAL ac_rack                       : boolean;
-   SIGNAL ac_raddr                      : std_logic_vector(31 DOWNTO 0);
-   SIGNAL ac_rdata                      : buzz_word_T;
-   SIGNAL ac_rena                       : std_logic;
-   SIGNAL ac_rreq                       : boolean;
    SIGNAL ac_stall                      : boolean;
+   SIGNAL addr_me                       : reg_mem_T;
    SIGNAL addr_me_uq                    : reg_mem_T;
    SIGNAL allocating_at                 : boolean;
-   SIGNAL allocating_me                 : boolean                      := false;
+   SIGNAL allocating_me                 : boolean  := false;
    SIGNAL allocating_wb                 : boolean;
    SIGNAL alu_a_in_sel_dc               : alu_in_sel_T;
    SIGNAL alu_b_in_sel_dc               : alu_in_sel_T;
@@ -33,7 +28,6 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL at_mode_me                    : at_mode_T;
    SIGNAL b                             : word_T;
    SIGNAL branch_mode_dc                : branch_mode_T;
-   SIGNAL byteena_b                     : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
    SIGNAL csr_ix                        : csr_ix_T;
    SIGNAL csr_val                       : word_T;
    SIGNAL ctrl_dc                       : ctrl_sig_T;
@@ -43,28 +37,10 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL ctrl_me                       : ctrl_sig_T;
    SIGNAL current_pc_d                  : pc_T;
    SIGNAL current_pc_uq                 : pc_T;
-   SIGNAL data_b                        : STD_LOGIC_VECTOR(63 DOWNTO 0);
    SIGNAL dbt                           : pc_T;
    SIGNAL dbt_valid                     : boolean;
    SIGNAL dbu_out_ex_u                  : reg_mem_T;
-   SIGNAL dc_bena                       : std_logic_vector(3 DOWNTO 0);
-   SIGNAL dc_ld                         : word_T;
-   SIGNAL dc_rack                       : boolean;
-   SIGNAL dc_raddr                      : std_logic_vector(31 DOWNTO 0);
-   SIGNAL dc_rdata                      : buzz_word_T;
-   SIGNAL dc_rena                       : std_logic;
-   SIGNAL dc_rreq                       : boolean;
-   SIGNAL dc_sd                         : word_T;
    SIGNAL dc_stall                      : boolean;
-   SIGNAL dc_wack                       : boolean;
-   SIGNAL dc_waddr                      : std_logic_vector(31 DOWNTO 0);
-   SIGNAL dc_wdata                      : buzz_word_T;
-   SIGNAL dc_wena                       : std_logic;
-   SIGNAL dc_wreq                       : boolean;
-   SIGNAL dram_address_a                : word_T;
-   SIGNAL dram_byteena_a                : STD_LOGIC_VECTOR(3 DOWNTO 0);
-   SIGNAL dram_data_a                   : STD_LOGIC_VECTOR(31 DOWNTO 0);
-   SIGNAL dram_wren_a                   : STD_LOGIC;
    SIGNAL dt_at_u                       : word_T;
    SIGNAL end_addr                      : word_T;
    SIGNAL false_sig                     : boolean;
@@ -84,11 +60,13 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL incremented_pc                : pc_T;
    SIGNAL index_out_of_bounds_exception : boolean;
    SIGNAL insert_nop                    : boolean;
+   SIGNAL me_addr                       : word_T;
    SIGNAL me_addr_u                     : word_T;
    SIGNAL me_addr_uq                    : word_T;
-   SIGNAL me_mode_dc_uq                 : mem_mode_t;
    SIGNAL me_mode_ex                    : mem_mode_T;
+   SIGNAL me_mode_ex_uq                 : mem_mode_T;
    SIGNAL mem_out_me_u                  : word_T;
+   SIGNAL next_obj_init_addr            : word_T;
    SIGNAL obj_init_addr                 : word_T;
    SIGNAL obj_init_data                 : word_T;
    SIGNAL obj_init_stall                : boolean;
@@ -100,13 +78,6 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL pgu_mode_ex                   : pgu_mode_T;
    SIGNAL pgu_ptr_ex_u                  : reg_mem_T;
    SIGNAL pi_at_u                       : word_T;
-   SIGNAL ram_addr_at                   : std_logic_vector(8 DOWNTO 0);
-   SIGNAL ram_addr_me                   : STD_LOGIC_VECTOR(9 DOWNTO 0);
-   SIGNAL ram_byteena_me                : STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '1');
-   SIGNAL ram_rdata_at                  : std_logic_vector(63 DOWNTO 0);
-   SIGNAL ram_rdata_me                  : STD_LOGIC_VECTOR(31 DOWNTO 0);
-   SIGNAL ram_wdata_me                  : STD_LOGIC_VECTOR(31 DOWNTO 0);
-   SIGNAL ram_wren_me                   : STD_LOGIC                    := '0';
    SIGNAL raux_dc                       : raux_T;
    SIGNAL raux_dc_reg                   : raux_T;
    SIGNAL raux_dc_u                     : raux_T;
@@ -133,12 +104,13 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL rdst_ix_dec                   : reg_ix_T;
    SIGNAL rdst_ix_ex                    : reg_ix_T;
    SIGNAL rdst_ix_ex_reg                : reg_ix_T;
-   SIGNAL rdst_ix_me                    : reg_ix_T                     := 0;
-   SIGNAL rdst_ix_me_reg                : reg_ix_T                     := 0;
+   SIGNAL rdst_ix_me                    : reg_ix_T := 0;
+   SIGNAL rdst_ix_me_reg                : reg_ix_T := 0;
    SIGNAL res_at                        : reg_mem_T;
    SIGNAL res_at_u                      : reg_mem_T;
    SIGNAL res_ex                        : reg_mem_T;
    SIGNAL res_ex_u                      : reg_mem_T;
+   SIGNAL res_ex_uq                     : reg_mem_T;
    SIGNAL res_me                        : reg_mem_T;
    SIGNAL res_me_u                      : reg_mem_T;
    SIGNAL res_wb                        : reg_mem_T;
@@ -157,22 +129,24 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL stall                         : boolean;
    SIGNAL state_error_dbu               : boolean;
    SIGNAL state_error_pgu               : boolean;
-   SIGNAL wren_b                        : STD_LOGIC                    := '0';
-   SIGNAL zero_reg_ix                   : reg_ix_T                     := 0;
+   SIGNAL zero_reg_ix                   : reg_ix_T := 0;
 
 
    -- Component Declarations
    COMPONENT ac_wrapper
    PORT (
-      clk   : IN     std_logic ;
-      rack  : IN     boolean ;
-      rdata : IN     buzz_word_T ;
-      rena  : IN     std_logic ;
-      res_n : IN     std_logic ;
-      ld    : OUT    word_T ;
-      raddr : OUT    std_logic_vector (31 DOWNTO 0);
-      rreq  : OUT    boolean ;
-      stall : OUT    boolean 
+      addr      : IN     reg_mem_T ;
+      at_mode   : IN     at_mode_T ;
+      clk       : IN     std_logic ;
+      next_addr : IN     reg_mem_T ;
+      rack      : IN     boolean ;
+      rdata     : IN     buzz_word_T ;
+      res_n     : IN     std_logic ;
+      dt        : OUT    word_T ;
+      pi        : OUT    word_T ;
+      raddr     : OUT    std_logic_vector (31 DOWNTO 0);
+      rreq      : OUT    boolean ;
+      stall     : OUT    boolean 
    );
    END COMPONENT;
    COMPONENT alu
@@ -228,32 +202,6 @@ ARCHITECTURE struct OF riscvio IS
       pi_at_u  : IN     word_T ;
       res_me   : IN     reg_mem_T ;
       res_at_u : OUT    reg_mem_T 
-   );
-   END COMPONENT;
-   COMPONENT attr_load_unit
-   PORT (
-      addr_me_uq   : IN     reg_mem_T ;
-      at_mode_me   : IN     at_mode_T ;
-      ram_rdata_at : IN     std_logic_vector (63 DOWNTO 0);
-      dt_at_u      : OUT    word_T ;
-      pi_at_u      : OUT    word_T ;
-      ram_addr_at  : OUT    std_logic_vector (8 DOWNTO 0)
-   );
-   END COMPONENT;
-   COMPONENT block_ram_if
-   PORT (
-      addr           : IN     word_T ;
-      dram_q_a       : IN     STD_LOGIC_VECTOR (31 DOWNTO 0);
-      mode           : IN     mem_mode_T ;
-      mode_u         : IN     mem_mode_T ;
-      raux           : IN     raux_T ;
-      rdat           : IN     rdat_T ;
-      rptr           : IN     rptr_T ;
-      dram_address_a : OUT    word_T ;
-      dram_byteena_a : OUT    STD_LOGIC_VECTOR (3 DOWNTO 0);
-      dram_data_a    : OUT    STD_LOGIC_VECTOR (31 DOWNTO 0);
-      dram_wren_a    : OUT    STD_LOGIC ;
-      mem_out        : OUT    word_T 
    );
    END COMPONENT;
    COMPONENT clr_ptr_end_addr_mux
@@ -319,37 +267,29 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT dc_wrapper
    PORT (
-      bena  : IN     std_logic_vector (3 DOWNTO 0);
-      clk   : IN     std_logic ;
-      rack  : IN     boolean ;
-      rdata : IN     buzz_word_T ;
-      rena  : IN     std_logic ;
-      res_n : IN     std_logic ;
-      sd    : IN     word_T ;
-      wack  : IN     boolean ;
-      wena  : IN     std_logic ;
-      ld    : OUT    word_T ;
-      raddr : OUT    std_logic_vector (31 DOWNTO 0);
-      rreq  : OUT    boolean ;
-      stall : OUT    boolean ;
-      waddr : OUT    std_logic_vector (31 DOWNTO 0);
-      wdata : OUT    buzz_word_T ;
-      wreq  : OUT    boolean 
-   );
-   END COMPONENT;
-   COMPONENT dcbr_wraccess_mux
-   PORT (
-      dram_address_a : IN     word_T ;
-      dram_byteena_a : IN     STD_LOGIC_VECTOR (3 DOWNTO 0);
-      dram_data_a    : IN     STD_LOGIC_VECTOR (31 DOWNTO 0);
-      dram_wren_a    : IN     STD_LOGIC ;
-      obj_init_addr  : IN     word_T ;
-      obj_init_data  : IN     word_T ;
-      obj_init_wr    : IN     boolean ;
-      ram_addr_me    : OUT    STD_LOGIC_VECTOR (9 DOWNTO 0);
-      ram_byteena_me : OUT    STD_LOGIC_VECTOR (3 DOWNTO 0);
-      ram_wdata_me   : OUT    STD_LOGIC_VECTOR (31 DOWNTO 0);
-      ram_wren_me    : OUT    STD_LOGIC 
+      addr               : IN     word_T ;
+      clk                : IN     std_logic ;
+      mode               : IN     mem_mode_T ;
+      next_addr          : IN     word_T ;
+      next_mode          : IN     mem_mode_T ;
+      next_obj_init_addr : IN     word_T ;
+      obj_init_addr      : IN     word_T ;
+      obj_init_data      : IN     word_T ;
+      obj_init_wr        : IN     boolean ;
+      rack               : IN     boolean ;
+      rdata              : IN     buzz_word_T ;
+      res_n              : IN     std_logic ;
+      sd_raux            : IN     raux_T ;
+      sd_rdat            : IN     rdat_T ;
+      sd_rptr            : IN     rptr_T ;
+      wack               : IN     boolean ;
+      ld                 : OUT    word_T ;
+      raddr              : OUT    std_logic_vector (31 DOWNTO 0);
+      rreq               : OUT    boolean ;
+      stall              : OUT    boolean ;
+      waddr              : OUT    std_logic_vector (31 DOWNTO 0);
+      wdata              : OUT    buzz_word_T ;
+      wreq               : OUT    boolean 
    );
    END COMPONENT;
    COMPONENT decoder
@@ -365,21 +305,6 @@ ARCHITECTURE struct OF riscvio IS
       rptr_ix     : OUT    reg_ix_T;
       sbt         : OUT    pc_T;
       sbt_valid   : OUT    boolean
-   );
-   END COMPONENT;
-   COMPONENT dual_port_memory
-   PORT (
-      address_a : IN     STD_LOGIC_VECTOR (9 DOWNTO 0);
-      address_b : IN     STD_LOGIC_VECTOR (8 DOWNTO 0);
-      byteena_a : IN     STD_LOGIC_VECTOR (3 DOWNTO 0) := (OTHERS => '1');
-      byteena_b : IN     STD_LOGIC_VECTOR (7 DOWNTO 0) := (OTHERS => '1');
-      clock     : IN     STD_LOGIC                     := '1';
-      data_a    : IN     STD_LOGIC_VECTOR (31 DOWNTO 0);
-      data_b    : IN     STD_LOGIC_VECTOR (63 DOWNTO 0);
-      wren_a    : IN     STD_LOGIC                     := '0';
-      wren_b    : IN     STD_LOGIC                     := '0';
-      q_a       : OUT    STD_LOGIC_VECTOR (31 DOWNTO 0);
-      q_b       : OUT    STD_LOGIC_VECTOR (63 DOWNTO 0)
    );
    END COMPONENT;
    COMPONENT dyn_branch_unit
@@ -419,9 +344,10 @@ ARCHITECTURE struct OF riscvio IS
       allocating_me                 : OUT    boolean ;
       ctrl_ex                       : OUT    ctrl_sig_T ;
       imm_ex_reg                    : OUT    word_T ;
+      me_addr                       : OUT    word_T ;
       me_addr_uq                    : OUT    word_T ;
-      me_mode_dc_uq                 : OUT    mem_mode_t ;
       me_mode_ex                    : OUT    mem_mode_T ;
+      me_mode_ex_uq                 : OUT    mem_mode_T ;
       pgu_mode_ex                   : OUT    pgu_mode_T ;
       raux_dc_uq                    : OUT    raux_T ;
       raux_ex_reg                   : OUT    raux_T ;
@@ -429,6 +355,7 @@ ARCHITECTURE struct OF riscvio IS
       rdat_ex_reg                   : OUT    rdat_T ;
       rdst_ix_ex_reg                : OUT    reg_ix_T ;
       res_ex                        : OUT    reg_mem_T ;
+      res_ex_uq                     : OUT    reg_mem_T ;
       rptr_dc_uq                    : OUT    rptr_T ;
       rptr_ex_reg                   : OUT    rptr_T 
    );
@@ -509,6 +436,7 @@ ARCHITECTURE struct OF riscvio IS
       res_n         : IN     std_logic ;
       rptr_ex       : IN     rptr_T ;
       stall         : IN     boolean ;
+      addr_me       : OUT    reg_mem_T ;
       addr_me_uq    : OUT    reg_mem_T ;
       allocating_at : OUT    boolean ;
       at_mode_me    : OUT    at_mode_T ;
@@ -553,15 +481,18 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT obj_init_fsm
    PORT (
-      clk            : IN     std_logic ;
-      end_addr       : IN     word_T ;
-      pgu_mode_ex    : IN     pgu_mode_T ;
-      res_ex         : IN     reg_mem_T ;
-      res_n          : IN     std_logic ;
-      obj_init_addr  : OUT    word_T ;
-      obj_init_data  : OUT    word_T ;
-      obj_init_stall : OUT    boolean ;
-      obj_init_wr    : OUT    boolean 
+      clk                : IN     std_logic ;
+      dc_stall           : IN     boolean ;
+      end_addr           : IN     word_T ;
+      pgu_mode_ex        : IN     pgu_mode_T ;
+      res_ex             : IN     reg_mem_T ;
+      res_ex_uq          : IN     reg_mem_T ;
+      res_n              : IN     std_logic ;
+      next_obj_init_addr : OUT    word_T ;
+      obj_init_addr      : OUT    word_T ;
+      obj_init_data      : OUT    word_T ;
+      obj_init_stall     : OUT    boolean ;
+      obj_init_wr        : OUT    boolean 
    );
    END COMPONENT;
    COMPONENT pc_incrementer
@@ -628,6 +559,8 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT stall_logic
    PORT (
+      ac_stall       : IN     boolean ;
+      dc_stall       : IN     boolean ;
       ic_stall       : IN     boolean ;
       obj_init_stall : IN     boolean ;
       stall          : OUT    boolean 
@@ -642,16 +575,12 @@ ARCHITECTURE struct OF riscvio IS
    FOR ALL : alu_b_mux USE ENTITY riscvio_lib.alu_b_mux;
    FOR ALL : at_reg USE ENTITY riscvio_lib.at_reg;
    FOR ALL : at_res_mux USE ENTITY riscvio_lib.at_res_mux;
-   FOR ALL : attr_load_unit USE ENTITY riscvio_lib.attr_load_unit;
-   FOR ALL : block_ram_if USE ENTITY riscvio_lib.block_ram_if;
    FOR ALL : clr_ptr_end_addr_mux USE ENTITY riscvio_lib.clr_ptr_end_addr_mux;
    FOR ALL : csr_rf_mux USE ENTITY riscvio_lib.csr_rf_mux;
    FOR ALL : csr_unit USE ENTITY riscvio_lib.csr_unit;
    FOR ALL : dc_reg USE ENTITY riscvio_lib.dc_reg;
    FOR ALL : dc_wrapper USE ENTITY riscvio_lib.dc_wrapper;
-   FOR ALL : dcbr_wraccess_mux USE ENTITY riscvio_lib.dcbr_wraccess_mux;
    FOR ALL : decoder USE ENTITY riscvio_lib.decoder;
-   FOR ALL : dual_port_memory USE ENTITY riscvio_lib.dual_port_memory;
    FOR ALL : dyn_branch_unit USE ENTITY riscvio_lib.dyn_branch_unit;
    FOR ALL : ex_reg USE ENTITY riscvio_lib.ex_reg;
    FOR ALL : ex_res_mux USE ENTITY riscvio_lib.ex_res_mux;
@@ -674,12 +603,6 @@ ARCHITECTURE struct OF riscvio IS
 
 BEGIN
    -- Architecture concurrent statements
-   -- HDL Embedded Text Block 1 eb1
-   -- eb1 1  
-   byteena_b <= (others => '1');
-   data_b <= (others => '0');
-   wren_b <= '0';                                    
-
    -- HDL Embedded Text Block 2 eb2
    -- eb2 2  
    REG_MEM_NULL_SIG <= REG_MEM_NULL;
@@ -688,17 +611,20 @@ BEGIN
 
 
    -- Instance port mappings.
-   U_1 : ac_wrapper
+   ac_i : ac_wrapper
       PORT MAP (
-         clk   => clk,
-         rack  => ac_rack,
-         rdata => ac_rdata,
-         rena  => ac_rena,
-         res_n => res_n,
-         ld    => ac_ld,
-         raddr => ac_raddr,
-         rreq  => ac_rreq,
-         stall => ac_stall
+         addr      => addr_me,
+         at_mode   => at_mode_me,
+         clk       => clk,
+         next_addr => addr_me_uq,
+         rack      => ac_rack,
+         rdata     => ac_rdata,
+         res_n     => res_n,
+         dt        => dt_at_u,
+         pi        => pi_at_u,
+         raddr     => ac_raddr,
+         rreq      => ac_rreq,
+         stall     => ac_stall
       );
    alu_i : alu
       PORT MAP (
@@ -749,30 +675,6 @@ BEGIN
          pi_at_u  => pi_at_u,
          res_me   => res_me,
          res_at_u => res_at_u
-      );
-   attr_ld_i : attr_load_unit
-      PORT MAP (
-         addr_me_uq   => addr_me_uq,
-         at_mode_me   => at_mode_me,
-         ram_rdata_at => ram_rdata_at,
-         dt_at_u      => dt_at_u,
-         pi_at_u      => pi_at_u,
-         ram_addr_at  => ram_addr_at
-      );
-   block_ram_if_i : block_ram_if
-      PORT MAP (
-         addr           => me_addr_uq,
-         dram_q_a       => ram_rdata_me,
-         mode           => me_mode_ex,
-         mode_u         => me_mode_dc_uq,
-         raux           => raux_dc_uq,
-         rdat           => rdat_dc_uq,
-         rptr           => rptr_dc_uq,
-         dram_address_a => dram_address_a,
-         dram_byteena_a => dram_byteena_a,
-         dram_data_a    => dram_data_a,
-         dram_wren_a    => dram_wren_a,
-         mem_out        => mem_out_me_u
       );
    clr_ptr_end_addr_mux_i : clr_ptr_end_addr_mux
       PORT MAP (
@@ -831,38 +733,31 @@ BEGIN
          rdst_ix_dc_reg  => rdst_ix_dc_reg,
          rptr_dc_reg     => rptr_dc_reg
       );
-   U_0 : dc_wrapper
+   dc_i : dc_wrapper
       PORT MAP (
-         bena  => dc_bena,
-         clk   => clk,
-         rack  => dc_rack,
-         rdata => dc_rdata,
-         rena  => dc_rena,
-         res_n => res_n,
-         sd    => dc_sd,
-         wack  => dc_wack,
-         wena  => dc_wena,
-         ld    => dc_ld,
-         raddr => dc_raddr,
-         rreq  => dc_rreq,
-         stall => dc_stall,
-         waddr => dc_waddr,
-         wdata => dc_wdata,
-         wreq  => dc_wreq
-      );
-   dcbr_wraccs_mux_i : dcbr_wraccess_mux
-      PORT MAP (
-         dram_address_a => dram_address_a,
-         dram_byteena_a => dram_byteena_a,
-         dram_data_a    => dram_data_a,
-         dram_wren_a    => dram_wren_a,
-         obj_init_addr  => obj_init_addr,
-         obj_init_data  => obj_init_data,
-         obj_init_wr    => obj_init_wr,
-         ram_addr_me    => ram_addr_me,
-         ram_byteena_me => ram_byteena_me,
-         ram_wdata_me   => ram_wdata_me,
-         ram_wren_me    => ram_wren_me
+         addr               => me_addr,
+         clk                => clk,
+         mode               => me_mode_ex,
+         next_addr          => me_addr_uq,
+         next_mode          => me_mode_ex_uq,
+         next_obj_init_addr => next_obj_init_addr,
+         obj_init_addr      => obj_init_addr,
+         obj_init_data      => obj_init_data,
+         obj_init_wr        => obj_init_wr,
+         rack               => dc_rack,
+         rdata              => dc_rdata,
+         res_n              => res_n,
+         sd_raux            => raux_dc_uq,
+         sd_rdat            => rdat_dc_uq,
+         sd_rptr            => rptr_dc_uq,
+         wack               => dc_wack,
+         ld                 => mem_out_me_u,
+         raddr              => dc_raddr,
+         rreq               => dc_rreq,
+         stall              => dc_stall,
+         waddr              => dc_waddr,
+         wdata              => dc_wdata,
+         wreq               => dc_wreq
       );
    decoder_i : decoder
       PORT MAP (
@@ -877,20 +772,6 @@ BEGIN
          ctr_sig     => ctrl_dc_dec,
          sbt_valid   => sbt_valid,
          sbt         => sbt
-      );
-   dram : dual_port_memory
-      PORT MAP (
-         address_a => ram_addr_me,
-         address_b => ram_addr_at,
-         byteena_a => ram_byteena_me,
-         byteena_b => byteena_b,
-         clock     => clk,
-         data_a    => ram_wdata_me,
-         data_b    => data_b,
-         wren_a    => ram_wren_me,
-         wren_b    => wren_b,
-         q_a       => ram_rdata_me,
-         q_b       => ram_rdata_at
       );
    dbu_i : dyn_branch_unit
       PORT MAP (
@@ -928,9 +809,10 @@ BEGIN
          allocating_me                 => allocating_me,
          ctrl_ex                       => ctrl_ex,
          imm_ex_reg                    => imm_ex_reg,
+         me_addr                       => me_addr,
          me_addr_uq                    => me_addr_uq,
-         me_mode_dc_uq                 => me_mode_dc_uq,
          me_mode_ex                    => me_mode_ex,
+         me_mode_ex_uq                 => me_mode_ex_uq,
          pgu_mode_ex                   => pgu_mode_ex,
          raux_dc_uq                    => raux_dc_uq,
          raux_ex_reg                   => raux_ex_reg,
@@ -938,6 +820,7 @@ BEGIN
          rdat_ex_reg                   => rdat_ex_reg,
          rdst_ix_ex_reg                => rdst_ix_ex_reg,
          res_ex                        => res_ex,
+         res_ex_uq                     => res_ex_uq,
          rptr_dc_uq                    => rptr_dc_uq,
          rptr_ex_reg                   => rptr_ex_reg
       );
@@ -1035,6 +918,7 @@ BEGIN
          res_n         => res_n,
          rptr_ex       => rptr_ex,
          stall         => stall,
+         addr_me       => addr_me,
          addr_me_uq    => addr_me_uq,
          allocating_at => allocating_at,
          at_mode_me    => at_mode_me,
@@ -1075,15 +959,18 @@ BEGIN
       );
    obj_init_fsm_i : obj_init_fsm
       PORT MAP (
-         clk            => clk,
-         end_addr       => end_addr,
-         pgu_mode_ex    => pgu_mode_ex,
-         res_ex         => res_ex,
-         res_n          => res_n,
-         obj_init_addr  => obj_init_addr,
-         obj_init_data  => obj_init_data,
-         obj_init_stall => obj_init_stall,
-         obj_init_wr    => obj_init_wr
+         clk                => clk,
+         dc_stall           => dc_stall,
+         end_addr           => end_addr,
+         pgu_mode_ex        => pgu_mode_ex,
+         res_ex             => res_ex,
+         res_ex_uq          => res_ex_uq,
+         res_n              => res_n,
+         next_obj_init_addr => next_obj_init_addr,
+         obj_init_addr      => obj_init_addr,
+         obj_init_data      => obj_init_data,
+         obj_init_stall     => obj_init_stall,
+         obj_init_wr        => obj_init_wr
       );
    pc_increment_i : pc_incrementer
       PORT MAP (
@@ -1144,6 +1031,8 @@ BEGIN
       );
    stall_i : stall_logic
       PORT MAP (
+         ac_stall       => ac_stall,
+         dc_stall       => dc_stall,
          ic_stall       => ic_stall,
          obj_init_stall => obj_init_stall,
          stall          => stall

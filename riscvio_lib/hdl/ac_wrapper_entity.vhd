@@ -9,15 +9,18 @@ USE riscvio_lib.caches.all;
 
 ENTITY ac_wrapper IS
    PORT( 
-      clk   : IN     std_logic;
-      rack  : IN     boolean;
-      rdata : IN     buzz_word_T;
-      rena  : IN     std_logic;
-      res_n : IN     std_logic;
-      ld    : OUT    word_T;
-      raddr : OUT    std_logic_vector (31 DOWNTO 0);
-      rreq  : OUT    boolean;
-      stall : OUT    boolean
+      addr      : IN     reg_mem_T;
+      at_mode   : IN     at_mode_T;
+      clk       : IN     std_logic;
+      next_addr : IN     reg_mem_T;
+      rack      : IN     boolean;
+      rdata     : IN     buzz_word_T;
+      res_n     : IN     std_logic;
+      dt        : OUT    word_T;
+      pi        : OUT    word_T;
+      raddr     : OUT    std_logic_vector (31 DOWNTO 0);
+      rreq      : OUT    boolean;
+      stall     : OUT    boolean
    );
 
 -- Declarations

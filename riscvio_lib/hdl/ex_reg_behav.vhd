@@ -21,6 +21,7 @@ BEGIN
             imm_ex_reg  <= (others => '0');
             ctrl_ex <= CTRL_NULL;
             res_ex <= REG_MEM_NULL;
+            me_addr <= (others => '0');
         else
             if clk'event and clk = '1' then
 
@@ -34,13 +35,13 @@ BEGIN
                     imm_ex_reg  <= imm_dc;
 
                     res_ex <= res_ex_u;
+                    me_addr <= me_addr_u;
                 end if;
             end if;
         end if;
     end process;
 
     me_mode_ex <= ctrl_ex.me_mode;
-    me_mode_dc_uq <= ctrl_dc.me_mode;
     pgu_mode_ex <= ctrl_ex.pgu_mode;
 
 

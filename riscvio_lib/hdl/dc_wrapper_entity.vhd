@@ -9,22 +9,29 @@ USE riscvio_lib.caches.all;
 
 ENTITY dc_wrapper IS
    PORT( 
-      bena  : IN     std_logic_vector (3 DOWNTO 0);
-      clk   : IN     std_logic;
-      rack  : IN     boolean;
-      rdata : IN     buzz_word_T;
-      rena  : IN     std_logic;
-      res_n : IN     std_logic;
-      sd    : IN     word_T;
-      wack  : IN     boolean;
-      wena  : IN     std_logic;
-      ld    : OUT    word_T;
-      raddr : OUT    std_logic_vector (31 DOWNTO 0);
-      rreq  : OUT    boolean;
-      stall : OUT    boolean;
-      waddr : OUT    std_logic_vector (31 DOWNTO 0);
-      wdata : OUT    buzz_word_T;
-      wreq  : OUT    boolean
+      addr               : IN     word_T;
+      clk                : IN     std_logic;
+      mode               : IN     mem_mode_T;
+      next_addr          : IN     word_T;
+      next_mode          : IN     mem_mode_T;
+      next_obj_init_addr : IN     word_T;
+      obj_init_addr      : IN     word_T;
+      obj_init_data      : IN     word_T;
+      obj_init_wr        : IN     boolean;
+      rack               : IN     boolean;
+      rdata              : IN     buzz_word_T;
+      res_n              : IN     std_logic;
+      sd_raux            : IN     raux_T;
+      sd_rdat            : IN     rdat_T;
+      sd_rptr            : IN     rptr_T;
+      wack               : IN     boolean;
+      ld                 : OUT    word_T;
+      raddr              : OUT    std_logic_vector (31 DOWNTO 0);
+      rreq               : OUT    boolean;
+      stall              : OUT    boolean;
+      waddr              : OUT    std_logic_vector (31 DOWNTO 0);
+      wdata              : OUT    buzz_word_T;
+      wreq               : OUT    boolean
    );
 
 -- Declarations

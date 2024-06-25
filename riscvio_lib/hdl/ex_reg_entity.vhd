@@ -27,9 +27,10 @@ ENTITY ex_reg IS
       allocating_me                 : OUT    boolean;
       ctrl_ex                       : OUT    ctrl_sig_T;
       imm_ex_reg                    : OUT    word_T;
+      me_addr                       : OUT    word_T;
       me_addr_uq                    : OUT    word_T;
-      me_mode_dc_uq                 : OUT    mem_mode_t;
       me_mode_ex                    : OUT    mem_mode_T;
+      me_mode_ex_uq                 : OUT    mem_mode_T;
       pgu_mode_ex                   : OUT    pgu_mode_T;
       raux_dc_uq                    : OUT    raux_T;
       raux_ex_reg                   : OUT    raux_T;
@@ -37,6 +38,7 @@ ENTITY ex_reg IS
       rdat_ex_reg                   : OUT    rdat_T;
       rdst_ix_ex_reg                : OUT    reg_ix_T;
       res_ex                        : OUT    reg_mem_T;
+      res_ex_uq                     : OUT    reg_mem_T;
       rptr_dc_uq                    : OUT    rptr_T;
       rptr_ex_reg                   : OUT    rptr_T
    );

@@ -10,7 +10,8 @@
 ARCHITECTURE behav OF dcbr_wraccess_mux IS
 BEGIN
     ram_byteena_me <= (others => '1') when obj_init_wr else dram_byteena_a;
-    ram_addr_me <= obj_init_addr(ram_addr_me'high + 2 downto 2) when obj_init_wr else dram_address_a(ram_addr_me'high + 2 downto 2);
+    ram_addr_me <= obj_init_addr when obj_init_wr else dram_address_a;
+    next_ram_addr_me <= next_obj_init_addr when obj_init_wr else next_dram_address_a;
     ram_wren_me <= '1' when obj_init_wr else dram_wren_a;
     ram_wdata_me <= obj_init_data when obj_init_wr else dram_data_a;
 

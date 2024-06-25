@@ -1,12 +1,3 @@
---
--- VHDL Architecture riscvio_lib.fwd_unit.behav
---
--- Created:
---          by - rbnlux.ckoehler (pc037)
---          at - 16:51:59 06/19/24
---
--- using Mentor Graphics HDL Designer(TM) 2022.3 Built on 14 Jul 2022 at 13:56:12
---
 ARCHITECTURE behav OF fwd_unit IS
 BEGIN
     rdst_fwd <= rdst_reg;
@@ -28,4 +19,3 @@ BEGIN
 
     imm_fwd <= imm_reg;
 END ARCHITECTURE behav;
-

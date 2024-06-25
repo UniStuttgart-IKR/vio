@@ -10,7 +10,6 @@
 ARCHITECTURE behav OF at_res_mux IS
 BEGIN
     res_at_u <= (data => res_me.data, tag => POINTER, pi => pi_at_u, delta => dt_at_u) when ctrl_me.at_mode = yes and res_me.tag = POINTER else
-                (data => res_me.data, tag => POINTER, pi => res_me.pi, delta => dt_at_u) when ctrl_me.at_mode = delta_only and res_me.tag = POINTER else
                 res_me;
 END ARCHITECTURE behav;
 

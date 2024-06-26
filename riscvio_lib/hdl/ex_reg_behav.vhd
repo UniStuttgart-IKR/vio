@@ -46,9 +46,9 @@ BEGIN
 
 
     me_addr_uq <= me_addr_u when not stall else me_addr;
-    raux_dc_uq <= raux_dc;
-    rptr_dc_uq <= rptr_dc;
-    rdat_dc_uq <= rdat_dc;
+    raux_dc_uq <= raux_ex_reg;
+    rptr_dc_uq <= rptr_ex_reg;
+    rdat_dc_uq <= rdat_ex_reg;
     allocating_me <= ali_T'val(rptr_ex_reg.ix) = alc_addr;
 END ARCHITECTURE behav;
 

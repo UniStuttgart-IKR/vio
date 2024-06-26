@@ -59,7 +59,7 @@ BEGIN
   dc_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
   ac_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
   
-  we       <= '1' when dc_wreq else '0';
+  we       <= '1' when dc_wack else '0';
   wdata    <= dc_wdata;
   
   -- request handling fsm state memory
@@ -115,7 +115,7 @@ BEGIN
   end process  request_fsm_transitions;
 
   -- request handling acknoledge and address signal control
-  request_fsm_outputs: process(all) is
+  request_fsm_outputs: process(request_current_state, ic_rreq, dc_rreq, dc_wreq, ac_rreq, ic_raddr, dc_raddr, dc_waddr, ac_raddr) is
   begin
     ic_rack_int     <= false;
     dc_rack_int     <= false;
@@ -147,7 +147,7 @@ BEGIN
         dc_rack_int     <= true;
       when HANDLINGDCWREQ => 
         addr       <= conv_addr(dc_waddr);
-        dc_rack_int     <= true;
+        dc_wack_int     <= true;
       when HANDLINGACREQ => 
         addr       <= conv_addr(ac_raddr);
         ac_rack_int     <= true;

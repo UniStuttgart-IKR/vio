@@ -27,7 +27,7 @@ ARCHITECTURE behav OF obj_init_fsm IS
     signal end_addr_aligned, start_addr_aligned: word_T;
 BEGIN
     unit_active <= pgu_mode_ex = pgu_alc or pgu_mode_ex = pgu_alcp or pgu_mode_ex = pgu_alcd or pgu_mode_ex = pgu_alci or pgu_mode_ex = pgu_push or pgu_mode_ex = pgu_pusht or pgu_mode_ex = pgu_pushg;
-    end_addr_aligned <= end_addr(word_T'high downto 3) & "000";
+    end_addr_aligned <= (end_addr(word_T'high downto 3) & "000");
     start_addr_aligned <= res_ex.data(word_T'high downto 3) & "000";
 
     fsm_transistions: process(clk, res_n) is
@@ -67,7 +67,7 @@ BEGIN
                     
                     when  WAITING => 
                         if not dc_stall then
-                            if obj_init_addr = end_addr_aligned then
+                            if unsigned(obj_init_addr) = unsigned(end_addr_aligned) - 4 then
                                 current_state <= DONE;
                             else
                                 last_obj_init_addr <= clr_addr_int;

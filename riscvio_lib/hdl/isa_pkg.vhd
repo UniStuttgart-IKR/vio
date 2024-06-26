@@ -52,8 +52,8 @@ PACKAGE isa IS
     constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '0'));
 
 
-    type ali_T is (zero, ra, frame, core, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t3, t4, t5, t6, imm, alc_lim, alc_addr, frame_lim, root, no_csr);
-    subtype csr_ix_T is natural range ali_T'pos(alc_lim) to ali_T'pos(no_csr);
+    type ali_T is (zero, ra, frame, core, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t3, t4, t5, t6, imm, mtvec, misa, mstatus, mcause, mtval, mepc, mvendorid, marchid, mimpid,  alc_lim, alc_addr, frame_lim, root, no_csr);
+    subtype csr_ix_T is natural range ali_T'pos(mtvec) to ali_T'pos(no_csr);
     subtype reg_ix_T is natural range 0 to ali_T'pos(root);
     type reg_T is record
         ali: ali_T;
@@ -61,6 +61,7 @@ PACKAGE isa IS
         mem: reg_mem_T;
     end record reg_T;
 
+    type exception_T is (panic, sverr, sterr, illeg, privv, tcoil, tciob, endoc, rixeq, rdcnu, rcdnc, drfnu, drfcd, wrptv, sealv, ixoob, frtyp, aperr, hpovf, stovf, ccmis);
 
     type reg_wb_T is record
         ali: ali_T;
@@ -101,6 +102,7 @@ PACKAGE isa IS
                         andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, min, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
                         sp_r, lp_r, sv, rst, qdtb, qdth, qdtw, qdtd, qpi, gcp, pop, rtlib, cpfc, check, sp_i, lp_i, jlib, alc, alci_p, alci_d, alci, pushg, pusht, push, 
                         ebreak, ecall, alcb, ciop, ccp, rpr, qpir, qdtr, qptr, seal, unsl,
+                        csrrw, csrrs, csrrc,
                         illegal);
     type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);
 
@@ -118,6 +120,18 @@ PACKAGE isa IS
     subtype RD_RANGE is natural range 11 downto 7;
 
     subtype imm_20bit_T is std_logic_vector(IMM20_RANGE'high - 1 downto 0);
+
+
+    constant CSR_MEPC_IX:       std_logic_vector(11 downto 0) := X"341";
+    constant CSR_MISA_IX:       std_logic_vector(11 downto 0) := X"301";
+    constant CSR_MSTATUS_IX:    std_logic_vector(11 downto 0) := X"300";
+    constant CSR_MCAUSE_IX:     std_logic_vector(11 downto 0) := X"342";
+    constant CSR_MTVAL_IX:      std_logic_vector(11 downto 0) := X"343";
+    constant CSR_MTVEC_IX:      std_logic_vector(11 downto 0) := X"305";
+    constant CSR_MVENDORID_IX:  std_logic_vector(11 downto 0) := X"F11";
+    constant CSR_MARCHID_IX:    std_logic_vector(11 downto 0) := X"F12";
+    constant CSR_MIMPID_IX:     std_logic_vector(11 downto 0) := X"F13";
+
 
     constant OPC_ALU_I:     std_logic_vector(OPC_RANGE) := "0010011";
     constant OPC_ALU_R:     std_logic_vector(OPC_RANGE) := "0110011";
@@ -159,6 +173,11 @@ PACKAGE isa IS
     constant F7_SUB_SRA:   std_logic_vector(FUNCT7_RANGE) := "0100000";
 
     -- SYSTEM
+    constant F3_ENV:        std_logic_vector(FUNCT3_RANGE) := "000";
+    constant F3_CSRRW:      std_logic_vector(FUNCT3_RANGE) := "001";
+    constant F3_CSRRS:      std_logic_vector(FUNCT3_RANGE) := "010";
+    constant F3_CSRRC:      std_logic_vector(FUNCT3_RANGE) := "011";
+
     constant F7_ENV:        std_logic_vector(FUNCT7_RANGE) := "0000000";
     constant F5_ECALL:      std_logic_vector(FUNCT5_RANGE) := "00000";
     constant F5_EBREAK:     std_logic_vector(FUNCT5_RANGE) := "00001";

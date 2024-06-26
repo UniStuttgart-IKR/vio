@@ -24,6 +24,7 @@ BEGIN
                                                             or  ctrl_me.pgu_mode = pgu_alcd 
                                                             or  ctrl_me.pgu_mode = pgu_alci)
                                                             and rdst_ix_me /= ali_T'pos(frame) else 
+                                       rdst_ix_me when rdst_ix_me > ali_T'pos(imm) else
                                        ali_T'pos(no_csr);
                                        
                     rd_wb.ali <= ali_T'val(rdst_ix_me);

@@ -419,44 +419,104 @@ PACKAGE BODY isa IS
                                             res.imm_mode := none;
                 end case;
             when OPC_SYSTEM => 
-                case instruction(FUNCT7_RANGE) is
-                    when F7_ENV =>
-                        if instruction(FUNCT5_RANGE) = F5_EBREAK then
-                            res.mnemonic := ebreak;
-                            res.alu_mode := alu_illegal;
-                            res.imm_mode := none;
-                            res.me_mode  := holiday;
-                            res.at_mode  := no;
-                            res.rdst     := 0;
-                            res.rdat     := 0;
-                            res.rptr     := 0;
-                            res.raux     := 0;
-                            res.alu_a_sel:= DAT;
-                            res.alu_b_sel:= AUX;
-                            res.pgu_mode := pgu_nop;
-                        elsif instruction(FUNCT5_RANGE) = F5_ECALL then
+                case instruction(FUNCT3_RANGE) is
+                    when F3_ENV =>
+                        case instruction(FUNCT7_RANGE) is
+                            when F7_ENV =>
+                                if instruction(FUNCT5_RANGE) = F5_EBREAK then
+                                    res.mnemonic := ebreak;
+                                    res.alu_mode := alu_illegal;
+                                    res.imm_mode := none;
+                                    res.me_mode  := holiday;
+                                    res.at_mode  := no;
+                                    res.rdst     := 0;
+                                    res.rdat     := 0;
+                                    res.rptr     := 0;
+                                    res.raux     := 0;
+                                    res.alu_a_sel:= DAT;
+                                    res.alu_b_sel:= AUX;
+                                    res.pgu_mode := pgu_nop;
+                                elsif instruction(FUNCT5_RANGE) = F5_ECALL then
 
-                        end if;
+                                end if;
+                            when F7_OR =>
+                                res.mnemonic := ccp when instruction(FUNCT5_RANGE) = F5_CCP else
+                                                illegal;
+                                res.pgu_mode := pgu_nop when instruction(FUNCT5_RANGE) = F5_CCP else
+                                                pgu_nop;
+                                res.imm_mode := none;
+                                res.alu_a_sel:= DAT;
+                                res.alu_b_sel:= AUX;
+                                res.alu_mode := alu_add when instruction(FUNCT5_RANGE) = F5_CCP else
+                                                alu_illegal;
+                                res.at_mode  := maybe;
+                                res.me_mode  := holiday;
+                                res.rptr     := 0;
+                                res.rdat     := 0;
+                                res.raux     := to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT5_RANGE) = F5_CCP else
+                                                0;
+                                res.rdst     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT5_RANGE) = F5_CCP else
+                                                0;
+    
+                            when others =>
+                                res.mnemonic := illegal;
+                                res.alu_mode := alu_illegal;
+                                res.imm_mode := none;
+                                res.me_mode  := holiday;
+                                res.at_mode  := no;
+                                res.rdst     := 0;
+                                res.rdat     := 0;
+                                res.rptr     := 0;
+                                res.raux     := 0;
+                                res.alu_a_sel:= DAT;
+                                res.alu_b_sel:= AUX;
+                                res.pgu_mode := pgu_nop;
 
-                    when F7_OR =>
-                        res.mnemonic := ccp when instruction(FUNCT5_RANGE) = F5_CCP else
-                                        illegal;
-                        res.pgu_mode := pgu_nop when instruction(FUNCT5_RANGE) = F5_CCP else
-                                        pgu_nop;
-                        res.imm_mode := none;
-                        res.alu_a_sel:= DAT;
-                        res.alu_b_sel:= AUX;
-                        res.alu_mode := alu_add when instruction(FUNCT5_RANGE) = F5_CCP else
-                                        alu_illegal;
-                        res.at_mode  := maybe;
+                        end case;
+
+                    when F3_CSRRW => 
                         res.me_mode  := holiday;
-                        res.rptr     := 0;
+                        res.at_mode  := no;
                         res.rdat     := 0;
-                        res.raux     := to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT5_RANGE) = F5_CCP else
-                                        0;
-                        res.rdst     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT5_RANGE) = F5_CCP else
-                                        0;
-                        
+                        res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                        res.raux     := 0;
+                        res.alu_a_sel:= AUX;
+                        res.alu_b_sel:= IMM;
+                        res.pgu_mode := pgu_nop;
+                        case instruction(IMM12_RANGE) is
+                            when CSR_MEPC_IX =>     res.rdst := ali_T'pos(mepc);
+                                                    res.mnemonic := csrrw;
+                            when CSR_MISA_IX =>     res.rdst := ali_T'pos(misa);
+                                                    res.mnemonic := csrrw;
+                            when CSR_MSTATUS_IX =>  res.rdst := ali_T'pos(mstatus);
+                                                    res.mnemonic := csrrw;
+                            when CSR_MCAUSE_IX =>   res.rdst := ali_T'pos(mcause);
+                                                    res.mnemonic := csrrw;
+                            when CSR_MTVAL_IX =>    res.rdst := ali_T'pos(mtval);
+                                                    res.mnemonic := csrrw;
+                            when CSR_MTVEC_IX =>    res.rdst := ali_T'pos(mepc);
+                                                    res.mnemonic := csrrw;
+                            when CSR_MVENDORID_IX =>res.rdst := ali_T'pos(mvendorid);
+                                                    res.mnemonic := csrrw;
+                            when CSR_MARCHID_IX =>  res.rdst := ali_T'pos(marchid);
+                                                    res.mnemonic := csrrw;
+                            when CSR_MIMPID_IX =>   res.rdst := ali_T'pos(mimpid);
+                                                    res.mnemonic := csrrw;
+                            when others => 
+                                res.mnemonic := illegal;
+                                res.alu_mode := alu_illegal;
+                                res.imm_mode := none;
+                                res.me_mode  := holiday;
+                                res.at_mode  := no;
+                                res.rdst     := 0;
+                                res.rdat     := 0;
+                                res.rptr     := 0;
+                                res.raux     := 0;
+                                res.alu_a_sel:= DAT;
+                                res.alu_b_sel:= AUX;
+                                res.pgu_mode := pgu_nop;
+                        end case;
+ 
                     when others =>
                         res.mnemonic := illegal;
                         res.alu_mode := alu_illegal;

@@ -10,11 +10,13 @@ core.trampStart:
 core.start_: j core.start
 core.trampEnd:
 
-core.start: li      frame, 0x305
+core.start:      li      frame, 0x305
+            la      t0, exc_handel
+            csrw    mtval, t0
             push    4,8
             jal     core.entry
-            nop
-            nop
+            addi    t0, t1,2
+            addi    t3, t4,5
 
 core.entry:
             pushg   1, 0
@@ -27,13 +29,16 @@ core.entry:
             mv      s1, s0
             sp      s1, 0(frame)
 
-            jlib    s0,  8
+            jlib    s0,  0
 
             lp      s0, 0(frame)
-            jlib    s0,  12
+            jlib    s0,  4
 
             ebreak
 
+            nop
+            nop
+exc_handel: j       exc_handel
 
 
 
@@ -50,20 +55,20 @@ usb.b_: j usb.b
 usb.trampEnd:
 
 
-usb.af:     nop
-            nop
-            ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
+usb.af:         addi    t0, t1,2
+            addi    t3, t4,5
+            ret                 #standard risc-v pseudo-instruction for jalr zero, 0(ra)
 
-usb.b:      push    0,0
+usb.b:          push    0,0
             sw      ra, 0(frame)
             jal     usb.c
             lw      ra, 0(frame)
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
-usb.c:      pushg   0,0
+usb.c:          pushg   0,0
             sw      ra, 0(frame)
             sp      ra, 0(frame)
-            jlib    a0,  8
+            jlib    a0,  0
             lp      ra, 0(frame)
             lw      ra, 0(frame)
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
@@ -83,8 +88,8 @@ hdmi.s_: j hdmi.s
 hdmi.trampEnd:
 
 
-hdmi.s: nop
-            nop
+hdmi.s:          addi    t0, t1,2
+            addi    t3, t4,5
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
 

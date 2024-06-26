@@ -9,7 +9,7 @@ PROJROOTDIR = ../riscvio_lib/
 	@sleep 0.1
 
 %.o: $(SRCDIR)/%.s
-	@$(MISCDIR)/bin/riscv32-unknown-elf-as $^ -march=rv32i_zbb_zor_zri -o $(BINDIR)/$@
+	@$(MISCDIR)/bin/riscv32-unknown-elf-as $^ -march=rv32i_zbb_zor_zri_zicsr -o $(BINDIR)/$@
 	
 %.bin: $(BINDIR)/%.o
 	@$(MISCDIR)/bin/riscv32-unknown-elf-ld -e core.start -T $(MISCDIR)/riscv_model.ld -o $(OUTDIR)/$@ $^

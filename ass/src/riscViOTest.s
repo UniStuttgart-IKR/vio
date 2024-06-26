@@ -36,8 +36,8 @@ core.entry:
 
 
 
-core.end:
 
+core.end:
 
 
 .section usb, "xa"
@@ -70,8 +70,8 @@ usb.c:      pushg   0,0
 
 
 
-usb.end:
 
+usb.end:
 
 
 .section hdmi, "xa"

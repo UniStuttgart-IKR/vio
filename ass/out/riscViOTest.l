@@ -1,5 +1,5 @@
 
-out/riscViOTest.elf:     Dateiformat elf32-littleriscv
+out/riscViOTest.elf:     file format elf32-littleriscv
 
 
 Disassembly of section core:

@@ -4,13 +4,13 @@
 @core>
 start
 private
-core.start: li      frame, 0x305
+start: li      frame, 0x305
             push    4,8
-            jal     core.entry
+            jal     entry
             nop
             nop
 
-core.entry:
+entry:
             pushg   1, 0
             sp      ra, 0(frame)
             sw      ra, 0(frame)
@@ -35,17 +35,17 @@ af
 b
 private
 
-usb.af:     nop
+af:     nop
             nop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
-usb.b:      push    0,0
+b:      push    0,0
             sw      ra, 0(frame)
-            jal     usb.c
+            jal     c
             lw      ra, 0(frame)
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
-usb.c:      pushg   0,0
+c:      pushg   0,0
             sw      ra, 0(frame)
             sp      ra, 0(frame)
             jlib    a0, @hdmi.s
@@ -59,7 +59,7 @@ usb.c:      pushg   0,0
 s
 private
 
-hdmi.s: nop
+s: nop
             nop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 

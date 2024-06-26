@@ -19,9 +19,21 @@ BEGIN
             imm_me  <= (others => '0');
             ctrl_me <= CTRL_NULL;
             res_me <= REG_MEM_NULL;
+            pc_me <= PC_NULL;
+            exc_me <= well_behaved;
         else
             if clk'event and clk = '1' then
-                if not stall then
+                if pipe_flush then
+                    rdst_ix_me <= 0;
+                    rdat_me <= RDAT_NULL;
+                    rptr_me <= RPTR_NULL;
+                    raux_me <= RAUX_NULL;
+                    imm_me  <= (others => '0');
+                    ctrl_me <= CTRL_NULL;
+                    res_me <= REG_MEM_NULL;
+                    pc_me <= PC_NULL;
+                    exc_me <= well_behaved;
+                elsif not stall then
                     ctrl_me <= ctrl_ex;
 
                     rdst_ix_me <= rdst_ix_ex;
@@ -30,6 +42,9 @@ BEGIN
                     raux_me <= raux_ex;
                     imm_me  <= imm_ex;
                     res_me <= res_me_u;
+                    
+                    pc_me <= pc_ex;
+                    exc_me <= exc_me_u;
                 end if;
             end if;
         end if;

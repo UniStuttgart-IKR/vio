@@ -23,7 +23,7 @@ BEGIN
     instr    <= sub_wire0(7 DOWNTO 0) & sub_wire0(15 DOWNTO 8) & sub_wire0(23 DOWNTO 16) & sub_wire0(31 DOWNTO 24);
     instr_addr <= std_logic_vector(unsigned(pc.ix) + unsigned(pc.ptr) + to_unsigned(8, instr_addr'length)); 
     next_instr_addr <= std_logic_vector(unsigned(next_pc.ix) + unsigned(next_pc.ptr) + to_unsigned(8, instr_addr'length)); 
-    no_branch <= not(sbranch or dbranch);
+    no_branch <= not(sbranch or dbranch or pipe_flush);
 
 
     icache: entity primitive_cache

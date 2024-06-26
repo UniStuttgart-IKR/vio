@@ -1,12 +1,4 @@
---
--- VHDL Package Header riscvio_lib.isa
---
--- Created:
---          by - rbnlux.ckoehler (pc037)
---          at - 16:28:31 04/24/24
---
--- using Mentor Graphics HDL Designer(TM) 2022.3 Built on 14 Jul 2022 at 13:56:12
---
+
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -16,6 +8,7 @@ PACKAGE isa IS
     constant HALF_WORD_SIZE: natural := 16;
     constant BYTE_SIZE: natural := 8;
     constant INSTRUCTION_SIZE: positive := 4;
+    constant IGNORE_EXC: boolean := true;
 
     subtype word_T is std_logic_vector(WORD_SIZE - 1 downto 0);
     subtype dword_T is std_logic_vector(DWORD_SIZE - 1 downto 0);
@@ -61,7 +54,7 @@ PACKAGE isa IS
         mem: reg_mem_T;
     end record reg_T;
 
-    type exception_T is (panic, sverr, sterr, illeg, privv, tcoil, tciob, endoc, rixeq, rdcnu, rcdnc, drfnu, drfcd, wrptv, sealv, ixoob, frtyp, aperr, hpovf, stovf, ccmis);
+    type exc_reason_T is (panic, illeg, sverr, sterr, privv, tcoil, tciob, endoc, rixeq, rdcnu, rcdnc, drfnu, drfcd, wrptv, sealv, ixoob, frtyp, aperr, hpovf, stovf, well_behaved);
 
     type reg_wb_T is record
         ali: ali_T;

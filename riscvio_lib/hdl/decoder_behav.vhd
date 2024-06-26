@@ -28,6 +28,8 @@ BEGIN
     ctr_sig.pgu_mode    <= decoded_inst.pgu_mode;
     ctr_sig.branch_mode <= decoded_inst.branch_mode;
 
+    exc <= illeg when ctr_sig.mnemonic = illegal else well_behaved;
+
     extend: process(all) is
     begin
         if decoded_inst.mnemonic /= jal then

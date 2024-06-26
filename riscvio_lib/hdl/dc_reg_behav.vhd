@@ -19,10 +19,20 @@ BEGIN
       ctrl_dc <= CTRL_NULL;
       pc_dc <= PC_NULL;
       branch_mode_dc <= no_branch;
-      
+      exc_dc <= well_behaved;
     else
       if clk'event and clk = '1' then
-        if not stall then
+        if pipe_flush then
+          rdst_ix_dc_reg <= 0;
+          rdat_dc_reg <= RDAT_NULL;
+          rptr_dc_reg <= RPTR_NULL;
+          raux_dc_reg <= RAUX_NULL;
+          imm_dc_reg  <= (others => '0');
+          ctrl_dc <= CTRL_NULL;
+          pc_dc <= PC_NULL;
+          branch_mode_dc <= no_branch;
+          exc_dc <= well_behaved;
+        elsif not stall then
           ctrl_dc <= CTRL_NULL when dbt_valid else ctrl_dc_u;
           branch_mode_dc <= no_branch when dbt_valid else ctrl_dc_u.branch_mode;
 
@@ -33,6 +43,7 @@ BEGIN
           imm_dc_reg  <= (others => '0') when dbt_valid else imm_dc_u;
           
           pc_dc <= pc_if;
+          exc_dc <= exc_dc_u;
         end if;
       end if;
     end if;

@@ -15,9 +15,17 @@ BEGIN
             rd_wb <= REG_WB_NULL;
             res_at <= REG_MEM_NULL;
             rdst_ix_at <= ali_T'pos(zero);
+            pc_wb <= PC_NULL;
+            exc_wb <= well_behaved;
         else
             if clk'event and clk = '1' then
-                if not stall then
+                if pipe_flush then
+                    rd_wb <= REG_WB_NULL;
+                    res_at <= REG_MEM_NULL;
+                    rdst_ix_at <= ali_T'pos(zero);
+                    pc_wb <= PC_NULL;
+                    exc_wb <= well_behaved;
+                elsif not stall then
                     rd_wb.rf_index <= rdst_ix_me;
                     rd_wb.csr_index <= ali_T'pos(alc_addr) when (ctrl_me.pgu_mode = pgu_alc 
                                                             or  ctrl_me.pgu_mode = pgu_alcp 
@@ -37,6 +45,8 @@ BEGIN
                     res_at <= res_at_u;
                     rdst_ix_at <= rdst_ix_me;
                     
+                    pc_wb <= pc_me;
+                    exc_wb <= exc_me;
                     assert ctrl_me.mnemonic /= ebreak report "EBREAK" severity failure;
                 end if;
             end if;
@@ -44,5 +54,6 @@ BEGIN
     end process;
 
     allocating_wb <= ali_T'val(rd_wb.csr_index) = alc_addr;
+    pipe_flush <= exc_wb /= well_behaved and not IGNORE_EXC;
 END ARCHITECTURE behav;
 

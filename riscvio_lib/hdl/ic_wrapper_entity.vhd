@@ -18,15 +18,16 @@ USE riscvio_lib.isa.all;
 ENTITY ic_wrapper IS
 	PORT
 	(
-		pc		 : IN pc_T;
-        next_pc  : IN pc_T;
-		clk    : IN STD_LOGIC  := '1';
-        res_n    : IN std_logic;
-		instr    : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        stall    : OUT boolean;
+		pc		   : IN pc_T;
+        next_pc    : IN pc_T;
+		clk        : IN STD_LOGIC  := '1';
+        res_n      : IN std_logic;
+		instr      : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        stall      : OUT boolean;
 
-        sbranch  : IN boolean;
-        dbranch  : IN boolean;
+        sbranch    : IN boolean;
+        dbranch    : IN boolean;
+        pipe_flush : IN boolean;
 
         ic_rreq            : OUT boolean;
         ic_rack            : IN boolean;

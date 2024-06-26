@@ -22,10 +22,24 @@ BEGIN
             ctrl_ex <= CTRL_NULL;
             res_ex <= REG_MEM_NULL;
             me_addr <= (others => '0');
+            pc_ex <= PC_NULL;
+            
+            exc_ex <= well_behaved;
         else
             if clk'event and clk = '1' then
-
-                if not stall then
+                if pipe_flush then
+                    rdst_ix_ex_reg <= 0;
+                    rdat_ex_reg <= RDAT_NULL;
+                    rptr_ex_reg <= RPTR_NULL;
+                    raux_ex_reg <= RAUX_NULL;
+                    imm_ex_reg  <= (others => '0');
+                    ctrl_ex <= CTRL_NULL;
+                    res_ex <= REG_MEM_NULL;
+                    me_addr <= (others => '0');
+                    pc_ex <= PC_NULL;
+                        
+                    exc_ex <= well_behaved;
+                elsif not stall then
                     ctrl_ex <= ctrl_dc;
                     
                     rdst_ix_ex_reg <= rdst_ix_dc;
@@ -36,6 +50,9 @@ BEGIN
 
                     res_ex <= res_ex_u;
                     me_addr <= me_addr_u;
+                    
+                    pc_ex <= pc_dc;
+                    exc_ex <= exc_ex_u;
                 end if;
             end if;
         end if;

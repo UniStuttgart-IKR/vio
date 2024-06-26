@@ -15,7 +15,9 @@ BEGIN
       pc_current_pc <= (ptr => X"00000000", ix => X"00000000", pi => (others => '0'), dt => (others => '0'));
     else
       if clk'event and clk = '1' then
-        if not (stall or insert_nop) or sbt_valid or dbt_valid then
+        if pipe_flush then
+          pc_current_pc <= (ptr => X"00000000", ix => X"00000000", pi => (others => '0'), dt => (others => '0'));
+        elsif not (stall or insert_nop) or sbt_valid or dbt_valid then
           pc_current_pc <= current_pc_d;
         end if;
       end if;

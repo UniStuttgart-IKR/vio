@@ -28,7 +28,9 @@ ENTITY decoder IS
 
       ctr_sig     : OUT    ctrl_sig_t;
       sbt_valid   : OUT    boolean;
-      sbt         : OUT    pc_T
+      sbt         : OUT    pc_T;
+
+      exc         : OUT    exc_reason_T
    );
 
 -- Declarations

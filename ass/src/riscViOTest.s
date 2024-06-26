@@ -10,7 +10,7 @@ core.trampStart:
 core.start_: j core.start
 core.trampEnd:
 
-core.start:      li      frame, 0x305
+core.start:      li      frame, 0x805
             la      t0, exc_handel
             csrw    mtval, t0
             push    4,8

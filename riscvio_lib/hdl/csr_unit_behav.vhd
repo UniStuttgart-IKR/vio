@@ -37,16 +37,19 @@ BEGIN
                     mepc_val <= rd_wb.mem;
                 end if;
 
-
-                if rd_wb.rf_index = ali_T'pos(frame) then
-                    stack_overflow <= unsigned(rd_wb.mem.data) < unsigned(csrs(frame_lim));
-                end if;
+                -- we need to check for this sooner
+                --if rd_wb.rf_index = ali_T'pos(frame) then
+                --    stack_overflow <= unsigned(rd_wb.mem.data) < unsigned(csrs(frame_lim));
+                --end if;
             end if;
         end if;
     end process;
 
 
     csr_val <= csrs(ali_T'val(csr_ix));
-    heap_overflow <= unsigned(csrs(alc_addr)) < unsigned(csrs(alc_lim));
+    alc_lim_csr <= csrs(alc_lim);
+    frame_lim_csr <= csrs(frame_lim);
+    -- we need to check for this sooner
+    --heap_overflow <= unsigned(csrs(alc_addr)) < unsigned(csrs(alc_lim));
 END ARCHITECTURE behav;
 

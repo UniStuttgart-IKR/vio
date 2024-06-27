@@ -60,7 +60,7 @@ BEGIN
                 std_logic_vector(unsigned(imm)) when branch_mode = jlib else
                 std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(imm)), WORD_SIZE));
     dbt.ptr <=  rptr.val when (branch_mode = jalr and rdat.ali = ra and rptr.pi(31) = '1') or branch_mode = jlib else pc.ptr;
-    dbt.pi <=   pc.pi;
-    dbt.dt <=   pc.dt;
+    dbt.pi <=   pc.pi when branch_mode /= jlib else rptr.pi;
+    dbt.dt <=   pc.dt when branch_mode /= jlib else rptr.dt;
 END ARCHITECTURE behav;
 

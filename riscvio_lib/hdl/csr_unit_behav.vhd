@@ -8,7 +8,7 @@ USE ieee.numeric_std.all;
 ARCHITECTURE behav OF csr_unit IS
     type csrs_T is array(mtvec to root) of word_T;
     signal csrs: csrs_T;
-    signal mepc_val: reg_mem_T;
+    signal mepc_reg: reg_mem_T;
 BEGIN
     reg: process(clk, res_n) is
     begin
@@ -23,33 +23,23 @@ BEGIN
             csrs(mstatus) <= X"00000000";
             csrs(mcause) <= X"00000000";
             csrs(mtval) <= X"00000000";
-            mepc_val <= (data => X"00000000", pi => X"00000000", delta => X"00000000", tag => POINTER);
+            mepc_reg <= (data => X"00000000", pi => X"00000000", delta => X"00000000", tag => POINTER);
             csrs(mvendorid) <= X"00000000";
             csrs(marchid) <= X"00000000";
             csrs(mimpid) <= X"00000000";
-
-            stack_overflow <= false;
         else
             if clk'event and clk = '1' then
-                if (rd_wb.csr_index /= ali_T'pos(no_csr) and rd_wb.csr_index /= ali_T'pos(mepc))then
+                if rd_wb.csr_index = ali_T'pos(mepc) then
+                    mepc_reg <= rd_wb.mem;
+                elsif rd_wb.csr_index /= ali_T'pos(no_csr) then
                     csrs(ali_T'val(rd_wb.csr_index)) <= rd_wb.mem.data;
-                elsif rd_wb.csr_index = ali_T'pos(mepc) then
-                    mepc_val <= rd_wb.mem;
                 end if;
-
-                -- we need to check for this sooner
-                --if rd_wb.rf_index = ali_T'pos(frame) then
-                --    stack_overflow <= unsigned(rd_wb.mem.data) < unsigned(csrs(frame_lim));
-                --end if;
             end if;
         end if;
     end process;
 
-
-    csr_val <= csrs(ali_T'val(csr_ix));
-    alc_lim_csr <= csrs(alc_lim);
-    frame_lim_csr <= csrs(frame_lim);
-    -- we need to check for this sooner
-    --heap_overflow <= unsigned(csrs(alc_addr)) < unsigned(csrs(alc_lim));
+    csr_reg <=  (data => csrs(ali_T'val(csr_ix)), pi => csrs(alc_lim), delta => csrs(frame_lim), tag => POINTER)    when ali_T'val(csr_ix) = alc_addr else
+                mepc_reg                                                                                            when ali_T'val(csr_ix) = mepc else
+                (data => csrs(ali_T'val(csr_ix)), pi => X"00000000", delta => X"00000000", tag => DATA);
 END ARCHITECTURE behav;
 

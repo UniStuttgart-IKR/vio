@@ -2,8 +2,13 @@
 
 
 @core>
+init
 start
 private
+init:       la      x3, @core
+            addi    x3, x3,-8
+            jlib    x3, @core.start
+
 start:      li      frame, 0x805
             la      t0, exc_handel
             csrw    mtval, t0

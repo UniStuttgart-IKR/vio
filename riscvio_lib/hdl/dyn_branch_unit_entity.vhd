@@ -23,7 +23,6 @@ ENTITY dyn_branch_unit IS
     alu_flags      : IN alu_flags_T;
     branch_mode    : IN branch_mode_T;
     pc             : IN pc_T;
-    dyn_branch_tgt : IN word_T;
 
     state_error    : OUT boolean;
     ra_out         : OUT reg_mem_T;

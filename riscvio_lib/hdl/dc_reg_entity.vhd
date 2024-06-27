@@ -20,7 +20,7 @@ ENTITY dc_reg IS
       clk             : IN     std_logic;
       ctrl_dc_u       : IN     ctrl_sig_T;
       dbt_valid       : IN     boolean;
-      exc_dc_u        : IN     exc_reason_T;
+      exc_dc_u        : IN     exc_cause_T;
       heap_overflow   : IN     boolean;
       imm_dc_u        : IN     word_T;
       pc_if           : IN     pc_T;
@@ -37,7 +37,7 @@ ENTITY dc_reg IS
       alu_mode_dc     : OUT    alu_mode_T;
       branch_mode_dc  : OUT    branch_mode_T;
       ctrl_dc         : OUT    ctrl_sig_T;
-      exc_dc          : OUT    exc_reason_T;
+      exc_dc          : OUT    exc_cause_T;
       imm_dc_reg      : OUT    word_T;
       pc_dc           : OUT    pc_T;
       pgu_mode_dc     : OUT    pgu_mode_T;

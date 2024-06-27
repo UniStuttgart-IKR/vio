@@ -4,11 +4,16 @@
 
 .section core, "xa"
 .word core.trampEnd - core.trampStart
-.word (core.end - core.trampEnd) | 0b11
+.word (core.end - core.trampStart - 4)
 
 core.trampStart:
+core.init_: j core.init
 core.start_: j core.start
 core.trampEnd:
+
+core.init:       la      x3, core
+            addi    x3, x3,-8
+            jlib    x3,  4
 
 core.start:      li      frame, 0x805
             la      t0, exc_handel
@@ -47,7 +52,7 @@ core.end:
 
 .section usb, "xa"
 .word usb.trampEnd - usb.trampStart
-.word (usb.end - usb.trampEnd) | 0b11
+.word (usb.end - usb.trampStart - 4)
 
 usb.trampStart:
 usb.af_: j usb.af
@@ -81,7 +86,7 @@ usb.end:
 
 .section hdmi, "xa"
 .word hdmi.trampEnd - hdmi.trampStart
-.word (hdmi.end - hdmi.trampEnd) | 0b11
+.word (hdmi.end - hdmi.trampStart - 4)
 
 hdmi.trampStart:
 hdmi.s_: j hdmi.s

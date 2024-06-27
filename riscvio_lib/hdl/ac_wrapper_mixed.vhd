@@ -18,8 +18,8 @@ USE ieee.numeric_std.all;
 ARCHITECTURE mixed OF ac_wrapper IS
     signal ld: std_logic_vector(63 downto 0);
 BEGIN
-    pi <= ld(31 downto 0) when ld_attr else (others => '0');
-    dt <= ld(63 downto 32) when ld_attr else (others => '0');
+    pi <= ld(7 downto 0) & ld(15 downto 8) & ld(23 downto 16) & ld(31 downto 24) when ld_attr else (others => '0');
+    dt <= ld(39 downto 32) & ld(47 downto 40) & ld(55 downto 48) & ld(63 downto 56) when ld_attr else (others => '0');
     acache: entity primitive_cache
         generic map (
             BUS_WIDTH => BUS_WIDTH,

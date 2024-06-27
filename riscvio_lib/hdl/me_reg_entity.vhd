@@ -19,7 +19,7 @@ ENTITY me_reg IS
    PORT( 
       clk           : IN     std_logic;
       ctrl_ex       : IN     ctrl_sig_T;
-      exc_me_u      : IN     exc_reason_T;
+      exc_me_u      : IN     exc_cause_T;
       imm_ex        : IN     word_T;
       pc_ex         : IN     pc_T;
       pipe_flush    : IN     boolean;
@@ -34,7 +34,7 @@ ENTITY me_reg IS
       addr_me_uq    : OUT    reg_mem_T;
       allocating_at : OUT    boolean;
       ctrl_me       : OUT    ctrl_sig_T;
-      exc_me        : OUT    exc_reason_T;
+      exc_me        : OUT    exc_cause_T;
       imm_me        : OUT    word_T;
       ld_attr       : OUT    boolean;
       pc_me         : OUT    pc_T;

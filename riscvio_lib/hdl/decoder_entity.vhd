@@ -30,7 +30,7 @@ ENTITY decoder IS
       sbt_valid   : OUT    boolean;
       sbt         : OUT    pc_T;
 
-      exc         : OUT    exc_reason_T
+      exc         : OUT    exc_cause_T
    );
 
 -- Declarations

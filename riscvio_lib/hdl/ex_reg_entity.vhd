@@ -19,7 +19,7 @@ ENTITY ex_reg IS
    PORT( 
       clk            : IN     std_logic;
       ctrl_dc        : IN     ctrl_sig_T;
-      exc_ex_u       : IN     exc_reason_T;
+      exc_ex_u       : IN     exc_cause_T;
       imm_dc         : IN     word_T;
       me_addr_u      : IN     word_T;
       pc_dc          : IN     pc_T;
@@ -33,7 +33,7 @@ ENTITY ex_reg IS
       stall          : IN     boolean;
       allocating_me  : OUT    boolean;
       ctrl_ex        : OUT    ctrl_sig_T;
-      exc_ex         : OUT    exc_reason_T;
+      exc_ex         : OUT    exc_cause_T;
       imm_ex_reg     : OUT    word_T;
       me_addr        : OUT    word_T;
       me_addr_uq     : OUT    word_T;

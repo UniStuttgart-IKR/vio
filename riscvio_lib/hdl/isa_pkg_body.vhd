@@ -100,7 +100,7 @@ PACKAGE BODY isa IS
                 res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                 res.rdat     := 0;
-                res.rptr     := 0;
+                res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.raux     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.alu_a_sel:= AUX;
                 res.alu_b_sel:= IMM;
@@ -111,6 +111,7 @@ PACKAGE BODY isa IS
                         res.alu_mode := alu_add;
                         res.imm_mode := i_type;
                         res.at_mode  := maybe;
+                        res.pgu_mode := pgu_addi;
                     when (F3_SRL_SRA or F3_MINU_ROR_RORI_ORC_REV) =>
                         res.mnemonic := srl_i when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else
                                         sra_i when instruction(FUNCT7_RANGE) = F7_SUB_SRA else

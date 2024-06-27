@@ -5,8 +5,8 @@ USE riscvio_lib.isa.all;
 
 ENTITY me_exc_encoder IS
    PORT( 
-      prev_exc       : IN  exc_reason_T;
-      exc            : OUT exc_reason_T;
+      prev_exc       : IN  exc_cause_T;
+      exc            : OUT exc_cause_T;
 
       heap_overflow : IN  boolean;
       stack_overflow  : IN  boolean

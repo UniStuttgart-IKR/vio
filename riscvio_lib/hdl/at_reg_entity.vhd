@@ -19,7 +19,7 @@ ENTITY at_reg IS
    PORT( 
       clk           : IN     std_logic;
       ctrl_me       : IN     ctrl_sig_T;
-      exc_me        : IN     exc_reason_T;
+      exc_me        : IN     exc_cause_T;
       imm_me        : IN     word_T;
       pc_me         : IN     pc_T;
       raux_me       : IN     raux_T;
@@ -30,7 +30,7 @@ ENTITY at_reg IS
       rptr_me       : IN     rptr_T;
       stall         : IN     boolean;
       allocating_wb : OUT    boolean;
-      exc_wb        : OUT    exc_reason_T;
+      exc_wb        : OUT    exc_cause_T;
       pc_wb         : OUT    pc_T;
       pipe_flush    : OUT    boolean;
       rd_wb         : OUT    reg_wb_T;

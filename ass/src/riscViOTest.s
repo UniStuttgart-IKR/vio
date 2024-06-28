@@ -7,15 +7,13 @@
 .word (core.end - core.trampStart - 4)
 
 core.trampStart:
-core.init_: j core.init
 core.start_: j core.start
 core.trampEnd:
 
-core.init:       la      x3, core
+core.start:      la      x3, core
             addi    x3, x3,-8
-            jlib    x3,  4
 
-core.start:      li      frame, 0x805
+            li      frame, 0x805
             la      t0, exc_handel
             csrw    mtval, t0
             push    4,8
@@ -24,9 +22,8 @@ core.start:      li      frame, 0x805
             addi    t3, t4,5
 
 core.entry:
-            pushg   1, 0
+            pushg   1,2
             sp      ra, 0(frame)
-            sw      ra, 0(frame)
 
             la      a0, hdmi
 
@@ -46,10 +43,10 @@ core.entry:
 exc_handel: j       exc_handel
 
 
-
 core.end:
 
 
+.align 3
 .section usb, "xa"
 .word usb.trampEnd - usb.trampStart
 .word (usb.end - usb.trampStart - 4)
@@ -64,18 +61,18 @@ usb.af:         addi    t0, t1,2
             addi    t3, t4,5
             ret                 #standard risc-v pseudo-instruction for jalr zero, 0(ra)
 
-usb.b:          push    0,0
-            sw      ra, 0(frame)
+usb.b:          pushg   0,0
+            sp      ra, 0(frame)
             jal     usb.c
-            lw      ra, 0(frame)
+            lp      ra, 0(frame)
+            pop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
 usb.c:          pushg   0,0
-            sw      ra, 0(frame)
             sp      ra, 0(frame)
             jlib    a0,  0
             lp      ra, 0(frame)
-            lw      ra, 0(frame)
+            pop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
 
@@ -84,6 +81,7 @@ usb.c:          pushg   0,0
 usb.end:
 
 
+.align 3
 .section hdmi, "xa"
 .word hdmi.trampEnd - hdmi.trampStart
 .word (hdmi.end - hdmi.trampStart - 4)

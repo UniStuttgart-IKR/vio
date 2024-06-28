@@ -60,6 +60,8 @@ BEGIN
 
     me_mode_ex <= ctrl_ex.me_mode;
     pgu_mode_ex <= ctrl_ex.pgu_mode;
+    pgu_mode_dc_uq <= ctrl_dc.pgu_mode;
+    res_ex_uq <= res_ex_u;
 
 
     me_addr_uq <= me_addr_u when not stall else me_addr;

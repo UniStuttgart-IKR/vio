@@ -75,10 +75,10 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL me_addr_uq                    : word_T;
    SIGNAL me_mode_ex                    : mem_mode_T;
    SIGNAL me_mode_ex_uq                 : mem_mode_T;
-   SIGNAL mem_out_me_u                  : word_T;
+   SIGNAL mem_out_me_u                  : dword_T;
    SIGNAL next_obj_init_addr            : word_T;
    SIGNAL obj_init_addr                 : word_T;
-   SIGNAL obj_init_data                 : word_T;
+   SIGNAL obj_init_data                 : dword_T;
    SIGNAL obj_init_stall                : boolean;
    SIGNAL obj_init_wr                   : boolean;
    SIGNAL pc_current_pc                 : pc_T;
@@ -88,6 +88,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL pc_me                         : pc_T;
    SIGNAL pc_wb                         : pc_T;
    SIGNAL pgu_mode_dc                   : pgu_mode_T;
+   SIGNAL pgu_mode_dc_uq                : pgu_mode_T;
    SIGNAL pgu_mode_ex                   : pgu_mode_T;
    SIGNAL pgu_ptr_ex_u                  : reg_mem_T;
    SIGNAL pi_at_u                       : word_T;
@@ -301,7 +302,7 @@ ARCHITECTURE struct OF riscvio IS
       next_mode          : IN     mem_mode_T ;
       next_obj_init_addr : IN     word_T ;
       obj_init_addr      : IN     word_T ;
-      obj_init_data      : IN     word_T ;
+      obj_init_data      : IN     dword_T ;
       obj_init_wr        : IN     boolean ;
       rack               : IN     boolean ;
       rdata              : IN     buzz_word_T ;
@@ -310,7 +311,7 @@ ARCHITECTURE struct OF riscvio IS
       sd_rdat            : IN     rdat_T ;
       sd_rptr            : IN     rptr_T ;
       wack               : IN     boolean ;
-      ld                 : OUT    word_T ;
+      ld                 : OUT    dword_T ;
       raddr              : OUT    std_logic_vector (31 DOWNTO 0);
       rreq               : OUT    boolean ;
       stall              : OUT    boolean ;
@@ -386,6 +387,7 @@ ARCHITECTURE struct OF riscvio IS
       me_mode_ex     : OUT    mem_mode_T ;
       me_mode_ex_uq  : OUT    mem_mode_T ;
       pc_ex          : OUT    pc_T ;
+      pgu_mode_dc_uq : OUT    pgu_mode_T ;
       pgu_mode_ex    : OUT    pgu_mode_T ;
       raux_dc_uq     : OUT    raux_T ;
       raux_ex_reg    : OUT    raux_T ;
@@ -505,7 +507,7 @@ ARCHITECTURE struct OF riscvio IS
    COMPONENT me_res_mux
    PORT (
       ctrl_ex      : IN     ctrl_sig_T ;
-      mem_out_me_u : IN     word_T ;
+      mem_out_me_u : IN     dword_T ;
       raux_ex      : IN     raux_T ;
       res_ex       : IN     reg_mem_T ;
       res_me_u     : OUT    reg_mem_T 
@@ -539,6 +541,7 @@ ARCHITECTURE struct OF riscvio IS
       dc_stall           : IN     boolean ;
       end_addr           : IN     word_T ;
       frame_lim_csr      : IN     word_T ;
+      pgu_mode_dc_uq     : IN     pgu_mode_T ;
       pgu_mode_ex        : IN     pgu_mode_T ;
       rdst_ix_ex         : IN     reg_ix_T ;
       res_ex             : IN     reg_mem_T ;
@@ -547,7 +550,7 @@ ARCHITECTURE struct OF riscvio IS
       heap_overflow_ex   : OUT    boolean ;
       next_obj_init_addr : OUT    word_T ;
       obj_init_addr      : OUT    word_T ;
-      obj_init_data      : OUT    word_T ;
+      obj_init_data      : OUT    dword_T ;
       obj_init_stall     : OUT    boolean ;
       obj_init_wr        : OUT    boolean ;
       stack_overflow_ex  : OUT    boolean 
@@ -896,6 +899,7 @@ BEGIN
          me_mode_ex     => me_mode_ex,
          me_mode_ex_uq  => me_mode_ex_uq,
          pc_ex          => pc_ex,
+         pgu_mode_dc_uq => pgu_mode_dc_uq,
          pgu_mode_ex    => pgu_mode_ex,
          raux_dc_uq     => raux_dc_uq,
          raux_ex_reg    => raux_ex_reg,
@@ -1061,6 +1065,7 @@ BEGIN
          dc_stall           => dc_stall,
          end_addr           => end_addr,
          frame_lim_csr      => frame_lim_csr,
+         pgu_mode_dc_uq     => pgu_mode_dc_uq,
          pgu_mode_ex        => pgu_mode_ex,
          rdst_ix_ex         => rdst_ix_ex,
          res_ex             => res_ex,

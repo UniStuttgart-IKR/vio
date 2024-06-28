@@ -149,13 +149,17 @@ def replaceCOHeaders(contents, codeobjects) -> [str]:
 
     hdrReplacements = []
     for codeobject in codeobjects:
+        dstexpr = ""
+        if codeobject["name"] != "core":
+            dstexpr += ".align 3\n"
+            
         if codeobject["super"]:
             srcexpr = "(@{}>)([\\S\n\t\v]*)private\n".format(codeobject["name"])
-            dstexpr = '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word ({0}.end - {0}.trampStart - 4)\n\n{0}.trampStart:\n'.format(
+            dstexpr += '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word ({0}.end - {0}.trampStart - 4)\n\n{0}.trampStart:\n'.format(
                 codeobject["name"])
         else:
             srcexpr = "(@{}:)([\\S\n\t\v]*)private\n".format(codeobject["name"])
-            dstexpr = '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word {0}.end - {0}.trampStart - 4\n\n{0}.trampStart:\n'.format(
+            dstexpr += '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word {0}.end - {0}.trampStart - 4\n\n{0}.trampStart:\n'.format(
                 codeobject["name"])
 
         for fct in codeobject["publicfns"]:

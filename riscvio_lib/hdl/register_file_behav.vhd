@@ -15,20 +15,32 @@ BEGIN
     
     rdat.ix   <= rdat_ix;
     rdat.ali  <= ali_T'val(rdat_ix) when rdat_ix <= ali_T'pos(t6) else zero;
-    rdat.val  <= registers(ra).pi when rdat_ix = ali_T'pos(ra) else
+    rdat.val  <= rd_wb.mem.data when rdat_ix = rd_wb.rf_index and rdat_ix = ali_T'pos(ra) else
+                 rd_wb.mem.data when rdat_ix = rd_wb.rf_index and rdat_ix /= 0 else
+                 registers(ra).pi when rdat_ix = ali_T'pos(ra) else
                  registers(ali_T'val(rdat_ix)).data when rdat_ix <= ali_T'pos(t6) else
                  (others => '0');
 
     rptr.ix   <= rptr_ix;
     rptr.ali  <= ali_T'val(rptr_ix) when rptr_ix <= ali_T'pos(t6) else zero;
-    rptr.val  <= registers(ali_T'val(rptr_ix)).data when rptr_ix <= ali_T'pos(t6) else (others => '0');
-    rptr.pi   <= registers(ali_T'val(rptr_ix)).pi when rptr_ix <= ali_T'pos(t6) else (others => '0');
-    rptr.dt   <= registers(ali_T'val(rptr_ix)).delta when rptr_ix <= ali_T'pos(t6) else (others => '0');
+    rptr.val  <= rd_wb.mem.data when rptr_ix = rd_wb.rf_index and rptr_ix /= 0 else
+                 registers(ali_T'val(rptr_ix)).data when rptr_ix <= ali_T'pos(t6) else
+                 (others => '0');
+    rptr.pi   <= rd_wb.mem.pi when rptr_ix = rd_wb.rf_index and rptr_ix /= 0 else
+                 registers(ali_T'val(rptr_ix)).pi when rptr_ix <= ali_T'pos(t6) else
+                 (others => '0');
+    rptr.dt   <= rd_wb.mem.delta when rptr_ix = rd_wb.rf_index and rptr_ix /= 0 else
+                 registers(ali_T'val(rptr_ix)).delta when rptr_ix <= ali_T'pos(t6) else
+                 (others => '0');
 
     raux.ix   <= raux_ix;
     raux.ali  <= ali_T'val(raux_ix) when raux_ix <= ali_T'pos(t6) else zero;
-    raux.val  <= registers(ali_T'val(raux_ix)).data when raux_ix <= ali_T'pos(t6) else (others => '0');
-    raux.tag  <= registers(ali_T'val(raux_ix)).tag when raux_ix <= ali_T'pos(t6) else DATA;
+    raux.val  <= rd_wb.mem.data when raux_ix = rd_wb.rf_index and raux_ix /= 0 else
+                 registers(ali_T'val(raux_ix)).data when raux_ix <= ali_T'pos(t6) else 
+                 (others => '0');
+    raux.tag  <= rd_wb.mem.tag when raux_ix = rd_wb.rf_index and raux_ix /= 0 else
+                 registers(ali_T'val(raux_ix)).tag when raux_ix <= ali_T'pos(t6) else
+                 DATA;
     
     write: process(clk, res_n) is
     begin

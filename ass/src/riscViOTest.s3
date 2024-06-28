@@ -2,14 +2,12 @@
 
 
 @core>
-init
 start
 private
-init:       la      x3, @core
+start:      la      x3, @core
             addi    x3, x3,-8
-            jlib    x3, @core.start
 
-start:      li      frame, 0x805
+            li      frame, 0x805
             la      t0, exc_handel
             csrw    mtval, t0
             push    4,8
@@ -18,9 +16,8 @@ start:      li      frame, 0x805
             addi    t3, t4,5
 
 entry:
-            pushg   1, 0
+            pushg   1,2
             sp      ra, 0(frame)
-            sw      ra, 0(frame)
 
             la      a0, @hdmi
 
@@ -39,7 +36,6 @@ entry:
             nop
 exc_handel: j       exc_handel
 
-
 @usb>
 af
 b
@@ -49,18 +45,18 @@ af:         addi    t0, t1,2
             addi    t3, t4,5
             ret                 #standard risc-v pseudo-instruction for jalr zero, 0(ra)
 
-b:          push    0,0
-            sw      ra, 0(frame)
+b:          pushg   0,0
+            sp      ra, 0(frame)
             jal     c
-            lw      ra, 0(frame)
+            lp      ra, 0(frame)
+            pop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
 c:          pushg   0,0
-            sw      ra, 0(frame)
             sp      ra, 0(frame)
             jlib    a0, @hdmi.s
             lp      ra, 0(frame)
-            lw      ra, 0(frame)
+            pop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
 

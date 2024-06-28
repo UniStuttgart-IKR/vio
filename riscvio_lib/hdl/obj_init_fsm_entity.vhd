@@ -14,6 +14,7 @@ ENTITY obj_init_fsm IS
       dc_stall           : IN     boolean;
       end_addr           : IN     word_T;
       frame_lim_csr      : IN     word_T;
+      pgu_mode_dc_uq     : IN     pgu_mode_T;
       pgu_mode_ex        : IN     pgu_mode_T;
       rdst_ix_ex         : IN     reg_ix_T;
       res_ex             : IN     reg_mem_T;
@@ -22,7 +23,7 @@ ENTITY obj_init_fsm IS
       heap_overflow_ex   : OUT    boolean;
       next_obj_init_addr : OUT    word_T;
       obj_init_addr      : OUT    word_T;
-      obj_init_data      : OUT    word_T;
+      obj_init_data      : OUT    dword_T;
       obj_init_stall     : OUT    boolean;
       obj_init_wr        : OUT    boolean;
       stack_overflow_ex  : OUT    boolean

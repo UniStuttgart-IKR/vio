@@ -15,14 +15,22 @@ PACKAGE isa IS
     subtype half_word_T is std_logic_vector(HALF_WORD_SIZE - 1 downto 0);
     subtype byte_T is std_logic_vector(BYTE_SIZE - 1 downto 0);
 
+    subtype WORD0_RANGE is natural range 31 downto 0;
+    subtype WORD1_RANGE is natural range 63 downto 32;
 
     subtype HWORD0_RANGE is natural range 15 downto 0;
     subtype HWORD1_RANGE is natural range 31 downto 16; 
+    subtype HWORD2_RANGE is natural range 47 downto 32; 
+    subtype HWORD3_RANGE is natural range 63 downto 48; 
 
     subtype BYTE0_RANGE is natural range 7 downto 0;
     subtype BYTE1_RANGE is natural range 15 downto 8;
     subtype BYTE2_RANGE is natural range 23 downto 16;
     subtype BYTE3_RANGE is natural range 31 downto 24;
+    subtype BYTE4_RANGE is natural range 39 downto 32;
+    subtype BYTE5_RANGE is natural range 47 downto 40;
+    subtype BYTE6_RANGE is natural range 55 downto 48;
+    subtype BYTE7_RANGE is natural range 63 downto 56;
 
     constant NOP_INSTR: word_T := X"00000013";
 
@@ -250,7 +258,7 @@ PACKAGE isa IS
                         alu_illegal);
     type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU, PC_IX);
     type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_pop, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_auipc, pgu_addi, pgu_rix, pgu_rcd, pgu_nop);
-    type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store, store_rix, store_rcd, store_attr, load_rix, load_rcd, holiday);
+    type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store_rpc, load_rpc, load_ix, store_ix, holiday);
     type at_mode_T is (maybe, no, delta_only);
     type branch_mode_T is (jlib, rtlib, jal, jalr, beq, bne, blt, bge, bltu, bgeu, no_branch);
 

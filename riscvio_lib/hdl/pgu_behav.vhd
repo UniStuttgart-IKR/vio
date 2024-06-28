@@ -11,7 +11,7 @@ library ieee;
 use ieee.numeric_std.all;
 ARCHITECTURE behav OF pgu IS
 --TODO: add frame shape and color generation!!
-    pure function calcLen(pi: word_T; dt: word_T; offs: natural; alc_addr: word_T; pop: boolean := false) return std_logic_vector is
+    pure function calcLen(pi: word_T; dt: word_T; alc_addr: word_T; pop: boolean := false) return std_logic_vector is
         variable pi_aligned, dt_aligned: word_T;
         variable reserved_space: natural range 8 to 16;
         variable addr: word_T;
@@ -83,20 +83,21 @@ BEGIN
             "100" when pgu_mode = pgu_pop and rptr.val(0) = '1' else
             "000";
 
-    ptr.data   <=  calcLen(rdat.val,                                        raux.val,                                       0, rptr.val) & tag when pgu_mode = pgu_alc  else
-                   calcLen(imm,                                             rdat.val,                                       0, rptr.val) & tag when pgu_mode = pgu_alcp else
-                   calcLen(rdat.val,                                        imm,                                            0, rptr.val) & tag when pgu_mode = pgu_alcd  else
-                   calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 0, rptr.val) & tag when pgu_mode = pgu_alci  else
-                   calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 0, raux.val) & tag when pgu_mode = pgu_pusht else
-                   calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 4, raux.val) & tag when pgu_mode = pgu_push  else
-                   calcLen((4 downto 0 => imm(4 downto 0), others => '0'), (6 downto 0 => imm(11 downto 5), others => '0'), 8, raux.val) & tag when pgu_mode = pgu_pushg else
-                   calcLen(rptr.pi, rptr.dt, 8, rptr.val(word_T'high downto 3) & "000", true) & tag when pgu_mode = pgu_pop else
+    ptr.data   <=  calcLen(ptr.pi, ptr.delta, rptr.val) & tag when pgu_mode = pgu_alc  else
+                   calcLen(ptr.pi, ptr.delta, rptr.val) & tag when pgu_mode = pgu_alcp else
+                   calcLen(ptr.pi, ptr.delta, rptr.val) & tag when pgu_mode = pgu_alcd  else
+                   calcLen(ptr.pi, ptr.delta, rptr.val) & tag when pgu_mode = pgu_alci  else
+                   calcLen(ptr.pi, ptr.delta, raux.val) & tag when pgu_mode = pgu_pusht else
+                   calcLen(ptr.pi, ptr.delta, raux.val) & tag when pgu_mode = pgu_push  else
+                   calcLen(ptr.pi, ptr.delta, raux.val) & tag when pgu_mode = pgu_pushg else
+                   calcLen(rptr.pi, rptr.dt, rptr.val(word_T'high downto 3) & "000", true) & tag when pgu_mode = pgu_pop else
                    word_T(unsigned(pc.ptr) + unsigned(pc_ix_int) + 8) when (pgu_mode = pgu_auipc or pgu_mode = pgu_addi) and unsigned(pc_ix_int) > unsigned(pc.dt) else 
-                   pc.ptr when pgu_mode = pgu_auipc or pgu_mode = pgu_addi else 
+                   word_T(unsigned(pc.ptr) + unsigned(imm)) when pgu_mode = pgu_auipc else
+                   word_T(unsigned(rptr.val) + unsigned(imm)) when pgu_mode = pgu_addi else
                    (others => '0');
 
     me_addr <=     std_logic_vector(unsigned(rptr.val) + 8)  when pgu_mode = pgu_rix else
-                   std_logic_vector(unsigned(rptr.val) + 12) when pgu_mode = pgu_rcd else
+                   std_logic_vector(unsigned(rptr.val) + 8) when pgu_mode = pgu_rcd else
 
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(31), rptr.dt(30))          when pgu_mode = pgu_dat_i else
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(31), rptr.dt(30), true)    when pgu_mode = pgu_ptr_i else

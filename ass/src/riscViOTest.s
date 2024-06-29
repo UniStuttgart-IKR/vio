@@ -13,7 +13,6 @@ core.trampEnd:
 
 core.start:      la      x3, core
             addi    x3, x3,-8
-            li      frame, 0x805
             jlib    x3,  4
             nop
             nop

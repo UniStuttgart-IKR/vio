@@ -55,7 +55,8 @@ BEGIN
         waddr     => waddr,
         wdata     => wdata
     );
---  
+
+
     stall_bool <= stall_int;
     stall <= '1' when stall_int else 'Z';
     sd <= obj_init_data when obj_init_wr else sd_pipeline;

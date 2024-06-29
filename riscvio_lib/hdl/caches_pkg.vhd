@@ -12,7 +12,7 @@ USE ieee.std_logic_1164.all;
 
 
 PACKAGE caches IS
-    constant BUS_WIDTH: natural := 128;
+    constant BUS_WIDTH: natural := 256;
 
     constant IC_LINES:      natural := 4;
     constant IC_LINE_WIDTH: natural := 16;

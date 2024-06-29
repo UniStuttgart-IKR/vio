@@ -14,6 +14,8 @@ ARCHITECTURE behav OF obj_init_fsm IS
     signal heap_overflow_int: boolean;
     signal stack_overflow_int: boolean;
 
+    signal obj_init_stall: boolean;
+
     signal end_addr_aligned, start_addr_aligned: word_T;
 BEGIN
     unit_active     <= pgu_mode_ex = pgu_alc or pgu_mode_ex = pgu_alcp or pgu_mode_ex = pgu_alcd or pgu_mode_ex = pgu_alci or pgu_mode_ex = pgu_push or pgu_mode_ex = pgu_pusht or pgu_mode_ex = pgu_pushg;
@@ -50,7 +52,9 @@ BEGIN
                      res_ex_uq.delta & res_ex_uq.pi when obj_init_addr = start_addr_aligned and unit_activating else
                      (others => '0');
     obj_init_stall <= unit_active and unsigned(obj_init_addr_int) < unsigned(end_addr_aligned);
+    stall <= '1' when obj_init_stall else 'Z';
     obj_init_wr <= (unit_active and unsigned(obj_init_addr_int) < unsigned(end_addr_aligned)) or unit_activating;
+
     
 END ARCHITECTURE behav;
 

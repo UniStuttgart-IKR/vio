@@ -33,7 +33,7 @@ BEGIN
                     res_me <= REG_MEM_NULL;
                     pc_me <= PC_NULL;
                     exc_me <= well_behaved;
-                elsif not stall then
+                elsif not (stall = '1') then
                     ctrl_me <= ctrl_ex;
 
                     rdst_ix_me <= rdst_ix_ex;
@@ -51,7 +51,7 @@ BEGIN
     end process;
 
     ld_attr <= ctrl_me.at_mode = maybe and res_me.tag = POINTER;
-    addr_me_uq <= res_me_u when not stall else res_me;
+    addr_me_uq <= res_me_u when not (stall = '1') else res_me;
     addr_me <= res_me;
     allocating_at <= ali_T'val(rptr_me.ix) = alc_addr;
 END ARCHITECTURE behav;

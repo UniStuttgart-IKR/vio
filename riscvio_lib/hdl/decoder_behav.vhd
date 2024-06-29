@@ -29,6 +29,7 @@ BEGIN
     ctr_sig.branch_mode <= decoded_inst.branch_mode;
 
     exc <= illeg when ctr_sig.mnemonic = illegal else well_behaved;
+    xret <= decoded_inst.xret;
 
     extend: process(all) is
     begin
@@ -49,7 +50,7 @@ BEGIN
                 when shamt_type => 
                     imm <= (others => '0');
                     imm(4 downto 0) <= instruction(RS2_RANGE);
-                when none => null;
+                when none => imm <= (others => '0');
             end case;
         else
             imm <= X"FFFFFFFF";

@@ -8,7 +8,7 @@ PACKAGE isa IS
     constant HALF_WORD_SIZE: natural := 16;
     constant BYTE_SIZE: natural := 8;
     constant INSTRUCTION_SIZE: positive := 4;
-    constant IGNORE_EXC: boolean := true;
+    constant IGNORE_EXC: boolean := false;
 
     subtype word_T is std_logic_vector(WORD_SIZE - 1 downto 0);
     subtype dword_T is std_logic_vector(DWORD_SIZE - 1 downto 0);
@@ -50,7 +50,8 @@ PACKAGE isa IS
        pi: word_T;
        dt: word_T;
     end record pc_T;
-    constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '0'));
+    -- core object size is as large as possible at startup to make sure ic cache will load the instructions
+    constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '1'));
 
 
     type ali_T is (zero, ra, frame, core, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t3, t4, t5, t6, imm, mtvec, misa, mstatus, mcause, mtval, mepc, mvendorid, marchid, mimpid,  alc_lim, alc_addr, frame_lim, root, no_csr);
@@ -103,7 +104,7 @@ PACKAGE isa IS
                         andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, min, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
                         sp_r, lp_r, sv, rst, qdtb, qdth, qdtw, qdtd, qpi, gcp, pop, rtlib, cpfc, check, sp_i, lp_i, jlib, alc, alci_p, alci_d, alci, pushg, pusht, push, 
                         ebreak, ecall, alcb, ciop, ccp, rpr, qpir, qdtr, qptr, seal, unsl,
-                        csrrw, csrrs, csrrc,
+                        csrrw, csrrs, csrrc, mret,
                         illegal);
     type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);
 
@@ -119,6 +120,10 @@ PACKAGE isa IS
     subtype RS1_RANGE is natural range 19 downto 15;
     subtype RS2_RANGE is natural range 24 downto 20;
     subtype RD_RANGE is natural range 11 downto 7;
+
+    subtype TAG_RANGE is natural range 2 downto 0;
+
+    constant IO_POINTER_TAG: std_logic_vector(TAG_RANGE) := "011";
 
     subtype imm_20bit_T is std_logic_vector(IMM20_RANGE'high - 1 downto 0);
 
@@ -180,6 +185,7 @@ PACKAGE isa IS
     constant F3_CSRRC:      std_logic_vector(FUNCT3_RANGE) := "011";
 
     constant F7_ENV:        std_logic_vector(FUNCT7_RANGE) := "0000000";
+    constant F7_MRET:       std_logic_vector(FUNCT7_RANGE) := "0011000";
     constant F5_ECALL:      std_logic_vector(FUNCT5_RANGE) := "00000";
     constant F5_EBREAK:     std_logic_vector(FUNCT5_RANGE) := "00001";
 
@@ -257,7 +263,7 @@ PACKAGE isa IS
                         alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orcb, alu_rev8,
                         alu_illegal);
     type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU, PC_IX);
-    type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_pop, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_auipc, pgu_addi, pgu_rix, pgu_rcd, pgu_nop);
+    type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_pop, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_auipc, pgu_addi, pgu_rix, pgu_rcd, pgu_nop, pgu_passthrough);
     type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store_rpc, load_rpc, load_ix, store_ix, holiday);
     type at_mode_T is (maybe, no, delta_only);
     type branch_mode_T is (jlib, rtlib, jal, jalr, beq, bne, blt, bge, bltu, bgeu, no_branch);
@@ -274,6 +280,8 @@ PACKAGE isa IS
     end record ctrl_sig_T;
     constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, branch_mode => no_branch, alu_a_sel => DAT, alu_b_sel => DAT, mnemonic => nop, me_mode => holiday, at_mode => no, pgu_mode => pgu_nop);
     
+    type xret_T is (none, mret);
+
     type decode_T is record 
         mnemonic:       mnemonic_T;
         alu_mode:       alu_mode_T;
@@ -288,6 +296,7 @@ PACKAGE isa IS
         raux:           reg_ix_T;
         imm_mode:       imm_T;
         branch_mode:    branch_mode_T;
+        xret:           xret_T;
     end record decode_T;
     
     type alu_flags_T is record
@@ -295,6 +304,8 @@ PACKAGE isa IS
       altb: boolean;
       altbu: boolean;
     end record alu_flags_T;
+
+
 
     pure function decodeOpc(instruction: std_logic_vector(31 downto 0)) return decode_T;
     pure function extractJTypeImm(inst: word_T) return word_T;

@@ -8,14 +8,26 @@
 
 core.trampStart:
 core.start_: j core.start
+core.init_: j core.init
 core.trampEnd:
 
 core.start:      la      x3, core
             addi    x3, x3,-8
+            li      frame, 0x805
+            jlib    x3,  4
+            nop
+            nop
 
+core.init:     
             li      frame, 0x805
             la      t0, exc_handel
-            csrw    mtval, t0
+            csrw    mtvec, t0
+
+            alci    t1, 4, 8
+
+            lw      t2, 377(t1)
+
+
             push    4,8
             jal     core.entry
             addi    t0, t1,2
@@ -26,6 +38,8 @@ core.entry:
             sp      ra, 0(frame)
 
             la      a0, hdmi
+
+
 
             la      s0, usb
             mv      s1, s0
@@ -40,7 +54,22 @@ core.entry:
 
             nop
             nop
-exc_handel: j       exc_handel
+
+
+exc_handel:
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
+            mret
+            # test instr abort
+            addi    t0, t0, -5
+            addi    t1, t1, -9
+
 
 
 core.end:

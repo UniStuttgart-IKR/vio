@@ -50,6 +50,8 @@ BEGIN
         end loop;
         registers(core).data <= X"FFFFFFF8";
         registers(core).tag <= POINTER;
+        registers(frame).data <= X"00000001";
+        registers(frame).tag <= POINTER;
       else
         if clk'event and clk = '1' then
           if rd_wb.rf_index /= 0 and rd_wb.rf_index <= ali_T'pos(t6) then

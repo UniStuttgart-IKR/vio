@@ -23,7 +23,7 @@ ENTITY ic_wrapper IS
 		clk        : IN STD_LOGIC  := '1';
         res_n      : IN std_logic;
 		instr      : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        stall      : OUT boolean;
+        stall      : OUT std_logic;
 
         sbranch    : IN boolean;
         dbranch    : IN boolean;

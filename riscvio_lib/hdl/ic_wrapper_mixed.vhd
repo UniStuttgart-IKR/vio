@@ -18,12 +18,13 @@ ARCHITECTURE mixed OF ic_wrapper IS
     signal sub_wire0: std_logic_vector(31 downto 0);
     signal instr_addr: std_logic_vector(31 downto 0);
     signal next_instr_addr: std_logic_vector(31 downto 0);
-    signal no_branch: boolean;
+    signal rd_instr: boolean;
+    signal stall_int: boolean;
 BEGIN
     instr    <= sub_wire0(7 DOWNTO 0) & sub_wire0(15 DOWNTO 8) & sub_wire0(23 DOWNTO 16) & sub_wire0(31 DOWNTO 24);
     instr_addr <= std_logic_vector(unsigned(pc.ix) + unsigned(pc.ptr) + to_unsigned(8, instr_addr'length)); 
     next_instr_addr <= std_logic_vector(unsigned(next_pc.ix) + unsigned(next_pc.ptr) + to_unsigned(8, instr_addr'length)); 
-    no_branch <= not(sbranch or dbranch or pipe_flush);
+    rd_instr <= not(sbranch or dbranch or pipe_flush); --todo: fix core delta and unsigned(pc.ix) <= unsigned(pc.dt);
 
 
     icache: entity primitive_cache
@@ -37,10 +38,10 @@ BEGIN
         port map (
             clk       => clk,
             res_n     => res_n,
-            stall     => stall,
+            stall     => stall_int,
             addr      => instr_addr,
             next_addr => next_instr_addr,
-            rd        => no_branch,
+            rd        => rd_instr,
 
             ld        => sub_wire0,
 
@@ -50,5 +51,6 @@ BEGIN
             rdata     => ic_rdata
         );
 
+        stall <= '1' when stall_int else 'Z';
 END ARCHITECTURE mixed;
 

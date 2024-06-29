@@ -24,42 +24,40 @@ ARCHITECTURE mixed OF dc_wrapper IS
     signal rena: boolean;
     signal bena_pipeline: std_logic_vector(7 downto 0);
     signal bena: std_logic_vector(7 downto 0);
+    signal stall_int: boolean;
 BEGIN
-    dcache: entity primitive_cache
-        generic map (
-            BUS_WIDTH => BUS_WIDTH,
-            WORDS_IN_LINE => DC_LINE_WIDTH,
-            LINES => DC_LINES,
-            ADDR_WIDTH => 32,
-            DATA_WIDTH => 64
-        )
-        port map (
-            clk       => clk,
-            res_n     => res_n,
-            stall     => stall,
-            addr      => caddr,
-            next_addr => cnext_addr,
-            rd        => rena,
-            we        => wena or obj_init_wr,
-            byte_ena  => bena,
-
-            ld        => ld_word,
-            sd        => sd,
-
-
-            rreq      => rreq,
-            rack      => rack,
-            raddr     => raddr,
-            rdata     => rdata,
-
-
-            wreq      => wreq,
-            wack      => wack,
-            waddr     => waddr,
-            wdata     => wdata
-        );
-
-
+  dcache: entity primitive_cache
+    generic map (
+        BUS_WIDTH => BUS_WIDTH,
+        WORDS_IN_LINE => DC_LINE_WIDTH,
+        LINES => DC_LINES,
+        ADDR_WIDTH => 32,
+        DATA_WIDTH => 64,
+        LEVERAGE_BURSTS => false
+    )
+    port map (
+        clk       => clk,
+        res_n     => res_n,
+        stall     => stall_int,
+        addr      => caddr,
+        next_addr => cnext_addr,
+        rd        => rena,
+        we        => wena or obj_init_wr,
+        byte_ena  => bena,
+        ld        => ld_word,
+        sd        => sd,
+        rreq      => rreq,
+        rack      => rack,
+        raddr     => raddr,
+        rdata     => rdata,
+        wreq      => wreq,
+        wack      => wack,
+        waddr     => waddr,
+        wdata     => wdata
+    );
+--  
+    stall_bool <= stall_int;
+    stall <= '1' when stall_int else 'Z';
     sd <= obj_init_data when obj_init_wr else sd_pipeline;
     caddr <= obj_init_addr when obj_init_wr else addr;
     cnext_addr <= next_obj_init_addr when obj_init_wr else next_addr;

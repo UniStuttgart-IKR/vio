@@ -18,8 +18,10 @@ ENTITY next_pc_mux IS
     incremented_pc: in pc_T;
     static_branch_pc: in pc_T;
     dynamic_branch_pc: in pc_T;
+    csr_pc           : in pc_T;
     dbta_valid: in boolean;
     sbta_valid: in boolean;
+    csr_pc_valid: in boolean;
     
     
     next_pc: out pc_T

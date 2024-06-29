@@ -19,13 +19,7 @@ BEGIN
             exc_wb <= well_behaved;
         else
             if clk'event and clk = '1' then
-                if pipe_flush then
-                    rd_wb <= REG_WB_NULL;
-                    res_at <= REG_MEM_NULL;
-                    rdst_ix_at <= ali_T'pos(zero);
-                    pc_wb <= PC_NULL;
-                    exc_wb <= well_behaved;
-                elsif not stall then
+                if not (stall = '1') then
                     rd_wb.rf_index <= rdst_ix_me;
                     rd_wb.csr_index <= ali_T'pos(alc_addr) when (ctrl_me.pgu_mode = pgu_alc 
                                                             or  ctrl_me.pgu_mode = pgu_alcp 

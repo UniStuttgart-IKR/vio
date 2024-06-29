@@ -9,12 +9,16 @@
 --  
 LIBRARY altera_mf;
 USE altera_mf.altera_mf_components.all;
+LIBRARY ieee;
+USE ieee.numeric_std.all;
+use IEEE.math_real.all;
+
 ARCHITECTURE mixed OF int_ram IS
   
   -- 64k internal ram 
   -- 2k addresses with 256 Bit width
   constant BYTE_ADDR_WIDTH : positive := 12;
-  constant ADDR_WIDTH: positive := 9;
+  constant ADDR_WIDTH: positive := BYTE_ADDR_WIDTH - integer(ceil(log2(real(BUS_WIDTH/8))));
   
   type requeststateT is (IDLE, HANDLINGICREQ, HANDLINGDCWREQ, HANDLINGDCRREQ, HANDLINGACREQ);
 
@@ -25,7 +29,7 @@ ARCHITECTURE mixed OF int_ram IS
   pure function conv_addr (addr: in  word_T) return std_logic_vector is
     variable result: std_logic_vector(ADDR_WIDTH - 1 downto 0) := (others => '0');
   begin
-    result := addr(BYTE_ADDR_WIDTH - 1 downto 3);
+    result := addr(BYTE_ADDR_WIDTH - 1 downto BYTE_ADDR_WIDTH - ADDR_WIDTH);
     return result;
   end function conv_addr;
   
@@ -47,19 +51,31 @@ ARCHITECTURE mixed OF int_ram IS
   -- internal ram signals
   signal addr: std_logic_vector(ADDR_WIDTH - 1 downto 0);
   signal we: std_logic;
-  signal wdata, rdata: std_logic_vector(63 downto 0);
+  signal wdata, rdata: std_logic_vector(BUS_WIDTH - 1 downto 0);
   signal ic_rack_int, dc_rack_int, ac_rack_int, dc_wack_int: boolean;
+  signal last_dc_wack: boolean;
   
+  pure function rev_words(a: std_logic_vector) return std_logic_vector is
+    variable tmp: std_logic_vector(BUS_WIDTH - 1 downto 0);
+  begin
+    for i in BUS_WIDTH/32 - 1 downto 0 loop
+      tmp((i+1) * 32 - 1 downto i*32) := a(BUS_WIDTH - i * 32 - 1 downto BUS_WIDTH - (i + 1) * 32);
+    end loop;
+
+    return tmp;
+  end function rev_words;
 BEGIN
   
   -- internal ram controller
   
   -- concurrent signal assignments
-  ic_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
-  dc_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
-  ac_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
-  
-  we       <= '1' when dc_wack else '0';
+  --ic_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
+  --dc_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
+  --ac_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
+  ic_rdata <= rev_words(rdata);-- rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
+  dc_rdata <= rev_words(rdata);--rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
+  ac_rdata <= rev_words(rdata);--rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
+  we       <= '1' when dc_wack and not last_dc_wack else '0';
   wdata    <= dc_wdata;
   
   -- request handling fsm state memory
@@ -70,6 +86,7 @@ BEGIN
     else
       if clk'event and clk = '1' then
         request_current_state <= request_next_state;
+        last_dc_wack <= dc_wack;
       end if;
     end if; 
   end process request_fsm_state;
@@ -177,7 +194,7 @@ BEGIN
     end if; 
   end process;
   
-
+  
 	altsyncram_component : altsyncram
     GENERIC MAP (
       clock_enable_input_a => "BYPASS",
@@ -186,20 +203,20 @@ BEGIN
       intended_device_family => "Cyclone V",
       lpm_hint => "ENABLE_RUNTIME_MOD=NO",
       lpm_type => "altsyncram",
-      numwords_a => 512,
+      numwords_a => 2**ADDR_WIDTH,
       operation_mode => "SINGLE_PORT",
       outdata_aclr_a => "NONE",
       outdata_reg_a => "UNREGISTERED",
       power_up_uninitialized => "FALSE",
       read_during_write_mode_port_a => "NEW_DATA_NO_NBE_READ",
-      widthad_a => 9,
-      width_a => 64,
+      widthad_a => ADDR_WIDTH,
+      width_a => BUS_WIDTH,
       width_byteena_a => 1
     )
     PORT MAP (
       address_a => addr,
       clock0 => clk,
-      data_a => wdata(31 downto 0) & wdata(63 downto 32),
+      data_a => rev_words(wdata),--wdata(31 downto 0) & wdata(63 downto 32) & wdata(95 downto 64) & wdata(127 downto 96),
       wren_a => we,
       q_a => rdata
     );

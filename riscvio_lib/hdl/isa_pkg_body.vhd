@@ -16,6 +16,7 @@ PACKAGE BODY isa IS
         res.imm_mode := none;
         res.pgu_mode := pgu_nop;
         res.branch_mode := no_branch;
+        res.xret := none;
         case instruction(OPC_RANGE) is
             when OPC_ALU_R => 
                 res.imm_mode := none;
@@ -440,6 +441,21 @@ PACKAGE BODY isa IS
                                 elsif instruction(FUNCT5_RANGE) = F5_ECALL then
 
                                 end if;
+                            when F7_MRET => 
+                                res.xret := mret;
+                                res.mnemonic := mret;
+                                res.alu_mode := alu_illegal;
+                                res.imm_mode := none;
+                                res.me_mode  := holiday;
+                                res.at_mode  := no;
+                                res.rdst     := 0;
+                                res.rdat     := 0;
+                                res.rptr     := 0;
+                                res.raux     := 0;
+                                res.alu_a_sel:= DAT;
+                                res.alu_b_sel:= AUX;
+                                res.pgu_mode := pgu_nop;
+
                             when F7_OR =>
                                 res.mnemonic := ccp when instruction(FUNCT5_RANGE) = F5_CCP else
                                                 illegal;
@@ -478,12 +494,14 @@ PACKAGE BODY isa IS
                     when F3_CSRRW => 
                         res.me_mode  := holiday;
                         res.at_mode  := no;
+                        res.imm_mode := none;
+                        res.alu_mode := alu_illegal;
                         res.rdat     := 0;
                         res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                         res.raux     := 0;
                         res.alu_a_sel:= AUX;
                         res.alu_b_sel:= IMM;
-                        res.pgu_mode := pgu_nop;
+                        res.pgu_mode := pgu_passthrough;
                         case instruction(IMM12_RANGE) is
                             when CSR_MEPC_IX =>     res.rdst := ali_T'pos(mepc);
                                                     res.mnemonic := csrrw;
@@ -495,7 +513,7 @@ PACKAGE BODY isa IS
                                                     res.mnemonic := csrrw;
                             when CSR_MTVAL_IX =>    res.rdst := ali_T'pos(mtval);
                                                     res.mnemonic := csrrw;
-                            when CSR_MTVEC_IX =>    res.rdst := ali_T'pos(mepc);
+                            when CSR_MTVEC_IX =>    res.rdst := ali_T'pos(mtvec);
                                                     res.mnemonic := csrrw;
                             when CSR_MVENDORID_IX =>res.rdst := ali_T'pos(mvendorid);
                                                     res.mnemonic := csrrw;

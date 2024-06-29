@@ -82,6 +82,8 @@ BEGIN
             "101" when pgu_mode = pgu_pop and rptr.val(0) = '0' else
             "100" when pgu_mode = pgu_pop and rptr.val(0) = '1' else
             "000";
+    
+    mem_sel <= rptr.val(TAG_RANGE) /= IO_POINTER_TAG;
 
     ptr.data   <=  calcLen(ptr.pi, ptr.delta, rptr.val) & tag when pgu_mode = pgu_alc  else
                    calcLen(ptr.pi, ptr.delta, rptr.val) & tag when pgu_mode = pgu_alcp else
@@ -91,9 +93,10 @@ BEGIN
                    calcLen(ptr.pi, ptr.delta, raux.val) & tag when pgu_mode = pgu_push  else
                    calcLen(ptr.pi, ptr.delta, raux.val) & tag when pgu_mode = pgu_pushg else
                    calcLen(rptr.pi, rptr.dt, rptr.val(word_T'high downto 3) & "000", true) & tag when pgu_mode = pgu_pop else
+                   rptr.val when pgu_mode = pgu_passthrough else
                    word_T(unsigned(pc.ptr) + unsigned(pc_ix_int) + 8) when (pgu_mode = pgu_auipc or pgu_mode = pgu_addi) and unsigned(pc_ix_int) > unsigned(pc.dt) else 
-                   word_T(unsigned(pc.ptr) + unsigned(imm)) when pgu_mode = pgu_auipc else
-                   word_T(unsigned(rptr.val) + unsigned(imm)) when pgu_mode = pgu_addi else
+                   pc.ptr when pgu_mode = pgu_auipc else
+                   rptr.val when pgu_mode = pgu_addi else
                    (others => '0');
 
     me_addr <=     std_logic_vector(unsigned(rptr.val) + 8)  when pgu_mode = pgu_rix else
@@ -114,6 +117,7 @@ BEGIN
                    ( 4 downto 0 =>      imm( 4 downto 0), others => '0') when pgu_mode = pgu_push else
                    ( 4 downto 0 =>      imm( 4 downto 0), others => '0') when pgu_mode = pgu_pusht else
                    ( 4 downto 0 =>      imm( 4 downto 0), others => '0') when pgu_mode = pgu_pushg else
+                   rptr.pi when pgu_mode = pgu_passthrough else
                    pc.ix when pgu_mode = pgu_auipc and unsigned(pc_ix_int(word_T'range)) <= unsigned(pc.dt) else 
                    pc_ix_int when pgu_mode = pgu_auipc else 
                    pc_ix_int when pgu_mode = pgu_addi and unsigned(pc_ix_int(word_T'range)) <= unsigned(pc.dt) else 
@@ -130,9 +134,11 @@ BEGIN
                    (31 => '0', 30 => '0', 6 downto 0 => imm(11 downto 5), others => '0') when pgu_mode = pgu_pusht else
                    (31 => '1', 30 => '1', 6 downto 0 => imm(11 downto 5), others => '0') when pgu_mode = pgu_pushg else
 
+                   rptr.dt when pgu_mode = pgu_passthrough else
                    pc.dt when pgu_mode = pgu_auipc and unsigned(pc_ix_int(word_T'range)) <= unsigned(pc.dt) else 
                    rptr.dt when pgu_mode = pgu_addi and unsigned(pc_ix_int(word_T'range)) <= unsigned(pc.dt) else 
                    (others => '0');
+
 
 END ARCHITECTURE behav;
 

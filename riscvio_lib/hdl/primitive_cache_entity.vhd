@@ -19,7 +19,8 @@ ENTITY primitive_cache IS
         WORDS_IN_LINE: positive;
         LINES: positive;
         ADDR_WIDTH: positive;
-        DATA_WIDTH: positive
+        DATA_WIDTH: positive;
+        LEVERAGE_BURSTS: boolean := false
     );
     PORT(
         clk, res_n      : IN std_logic;

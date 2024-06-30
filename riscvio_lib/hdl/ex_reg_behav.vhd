@@ -25,8 +25,6 @@ BEGIN
             pc_ex <= PC_NULL;
             
             exc_ex <= well_behaved;
-            mem_ena_ex <= true;
-            io_ena_ex <= false;
         else
             if clk'event and clk = '1' then
                 if pipe_flush then
@@ -41,8 +39,6 @@ BEGIN
                     pc_ex <= PC_NULL;
                         
                     exc_ex <= well_behaved;
-                    mem_ena_ex <= true;
-                    io_ena_ex <= false;
                 elsif not (stall = '1') then
                     ctrl_ex <= ctrl_dc;
                     
@@ -57,8 +53,6 @@ BEGIN
                     
                     pc_ex <= pc_dc;
                     exc_ex <= exc_ex_u;
-                    mem_ena_ex <= mem_sel_u;
-                    io_ena_ex <= not mem_sel_u;
                 end if;
             end if;
         end if;
@@ -71,9 +65,9 @@ BEGIN
 
 
     me_addr_uq <= me_addr_u when not (stall = '1') else me_addr;
-    raux_dc_uq <= raux_ex_reg;
-    rptr_dc_uq <= rptr_ex_reg;
-    rdat_dc_uq <= rdat_ex_reg;
+    --raux_dc_uq <= raux_ex_reg;
+    --rptr_dc_uq <= rptr_ex_reg;
+    --rdat_dc_uq <= rdat_ex_reg;
     allocating_me <= ali_T'val(rptr_ex_reg.ix) = alc_addr;
 END ARCHITECTURE behav;
 

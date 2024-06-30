@@ -155,7 +155,7 @@ BEGIN
                         end if;
                     when PREPARING => 
                         fill_state <= LOADING;
-                        line_fill_ctr <= line_fill_ctr + 1;
+                        --line_fill_ctr <= line_fill_ctr + 1;
                     when LOADING =>
                         if not rack then
                             fill_state <= WAITING;
@@ -196,17 +196,19 @@ BEGIN
 
     fill_unit_output_p: process(all) is
         variable used_line_ctr: natural range 0 to N + 1;
+        variable used_addr: std_logic_vector(addr'range);
     begin
         rreq <= false;
         raddr <= (others => '0');
         set_line_tag <= '0';
         words_we_fill <= (others => '0');
         used_line_ctr := last_line_fill_ctr when (fill_state = LOADING or fill_state = PREPARING) and not rack else line_fill_ctr;
+        used_addr := last_wr_addr when (fill_state = LOADING or fill_state = PREPARING) and not rack else addr;
 
         
         if fill_state /= IDLE or (not line_hit and (rd or we) and invalidation_state = IDLE) then
             if N /= 0 then
-                raddr <= addr(TAG_IN_ADDR) & addr(LINE_IN_ADDR) & std_logic_vector(to_unsigned(used_line_ctr, WORDS_IN_LINE_LOG - WORDS_PER_BUS_LOG)) & zero_byte_addr & zero_bus_addr;
+                raddr <= used_addr(TAG_IN_ADDR) & addr(LINE_IN_ADDR) & std_logic_vector(to_unsigned(used_line_ctr, WORDS_IN_LINE_LOG - WORDS_PER_BUS_LOG)) & zero_byte_addr & zero_bus_addr;
             else
                 raddr <= addr(addr'left downto LINE_IN_ADDR'right + Q_LOG) & zero_byte_addr & zero_bus_addr;
             end if;
@@ -226,12 +228,14 @@ BEGIN
                
                 set_line_tag <= '1' when (line_fill_ctr = N - 1 or N = 0) and rack else '0';
                 
-                if N /= 0 then
-                    for i in WORDS_PER_BUS - 1 downto 0 loop
-                        words_we_fill((last_line_fill_ctr) * WORDS_PER_BUS + i) <= '1' when rack else '0';
-                    end loop;
-                else
-                    words_we_fill(0) <= '1' when rack else '0';
+                if rack then
+                    if N /= 0 then
+                        for i in WORDS_PER_BUS - 1 downto 0 loop
+                            words_we_fill((last_line_fill_ctr) * WORDS_PER_BUS + i) <= '1';
+                        end loop;
+                    else
+                        words_we_fill(0) <= '1';
+                    end if;
                 end if;
         end case;
 

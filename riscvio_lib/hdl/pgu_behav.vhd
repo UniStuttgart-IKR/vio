@@ -83,8 +83,6 @@ BEGIN
             "100" when pgu_mode = pgu_pop and rptr.val(0) = '1' else
             "000";
     
-    mem_sel <= rptr.val(TAG_RANGE) /= IO_POINTER_TAG;
-
     ptr.data   <=  calcLen(ptr.pi, ptr.delta, rptr.val) & tag when pgu_mode = pgu_alc  else
                    calcLen(ptr.pi, ptr.delta, rptr.val) & tag when pgu_mode = pgu_alcp else
                    calcLen(ptr.pi, ptr.delta, rptr.val) & tag when pgu_mode = pgu_alcd  else
@@ -93,7 +91,8 @@ BEGIN
                    calcLen(ptr.pi, ptr.delta, raux.val) & tag when pgu_mode = pgu_push  else
                    calcLen(ptr.pi, ptr.delta, raux.val) & tag when pgu_mode = pgu_pushg else
                    calcLen(rptr.pi, rptr.dt, rptr.val(word_T'high downto 3) & "000", true) & tag when pgu_mode = pgu_pop else
-                   rptr.val when pgu_mode = pgu_passthrough else
+                   rptr.val when pgu_mode = pgu_passthrough or ((pgu_mode = pgu_dat_i or pgu_mode = pgu_dat_r) and rptr.val(TAG_RANGE) = IO_POINTER_TAG) else
+                   rdat.val(11 downto 0) & raux.val(16 downto 0) & IO_POINTER_TAG when pgu_mode = pgu_ciop else
                    word_T(unsigned(pc.ptr) + unsigned(pc_ix_int) + 8) when (pgu_mode = pgu_auipc or pgu_mode = pgu_addi) and unsigned(pc_ix_int) > unsigned(pc.dt) else 
                    pc.ptr when pgu_mode = pgu_auipc else
                    rptr.val when pgu_mode = pgu_addi else
@@ -101,6 +100,9 @@ BEGIN
 
     me_addr <=     std_logic_vector(unsigned(rptr.val) + 8)  when pgu_mode = pgu_rix else
                    std_logic_vector(unsigned(rptr.val) + 8) when pgu_mode = pgu_rcd else
+                
+                   imm                                                                      when pgu_mode = pgu_dat_i and rptr.val(TAG_RANGE) = IO_POINTER_TAG else
+                   rdat.val                                                                 when pgu_mode = pgu_dat_r and rptr.val(TAG_RANGE) = IO_POINTER_TAG else
 
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(31), rptr.dt(30))          when pgu_mode = pgu_dat_i else
                    calcAddr(rptr.pi, imm,      rptr.val, rptr.dt(31), rptr.dt(30), true)    when pgu_mode = pgu_ptr_i else
@@ -134,7 +136,10 @@ BEGIN
                    (31 => '0', 30 => '0', 6 downto 0 => imm(11 downto 5), others => '0') when pgu_mode = pgu_pusht else
                    (31 => '1', 30 => '1', 6 downto 0 => imm(11 downto 5), others => '0') when pgu_mode = pgu_pushg else
 
-                   rptr.dt when pgu_mode = pgu_passthrough else
+                   rptr.dt                                                  when pgu_mode = pgu_passthrough or pgu_mode = pgu_dat_i  or pgu_mode = pgu_dat_r  else
+                   (15 downto 0 => raux.val(16 downto 1), others => '0')    when pgu_mode = pgu_ciop and raux.val(0) = '0' else
+                   word_T(unsigned(raux.val(16 downto 1))*4096)             when pgu_mode = pgu_ciop and raux.val(0) = '1' else
+
                    pc.dt when pgu_mode = pgu_auipc and unsigned(pc_ix_int(word_T'range)) <= unsigned(pc.dt) else 
                    rptr.dt when pgu_mode = pgu_addi and unsigned(pc_ix_int(word_T'range)) <= unsigned(pc.dt) else 
                    (others => '0');

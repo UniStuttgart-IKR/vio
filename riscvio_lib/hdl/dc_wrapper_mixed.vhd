@@ -25,6 +25,7 @@ ARCHITECTURE mixed OF dc_wrapper IS
     signal bena_pipeline: std_logic_vector(7 downto 0);
     signal bena: std_logic_vector(7 downto 0);
     signal stall_int: boolean;
+    signal mem_access: boolean;
 BEGIN
   dcache: entity primitive_cache
     generic map (
@@ -33,7 +34,7 @@ BEGIN
         LINES => DC_LINES,
         ADDR_WIDTH => 32,
         DATA_WIDTH => 64,
-        LEVERAGE_BURSTS => false
+        LEVERAGE_BURSTS => true
     )
     port map (
         clk       => clk,
@@ -41,8 +42,8 @@ BEGIN
         stall     => stall_int,
         addr      => caddr,
         next_addr => cnext_addr,
-        rd        => rena,
-        we        => wena or obj_init_wr,
+        rd        => rena and mem_access,
+        we        => (wena or obj_init_wr) and mem_access,
         byte_ena  => bena,
         ld        => ld_word,
         sd        => sd,
@@ -56,7 +57,7 @@ BEGIN
         wdata     => wdata
     );
 
-
+    mem_access <= ptr.data(TAG_RANGE) /= IO_POINTER_TAG;
     stall_bool <= stall_int;
     stall <= '1' when stall_int else 'Z';
     sd <= obj_init_data when obj_init_wr else sd_pipeline;

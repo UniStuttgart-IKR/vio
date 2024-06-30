@@ -22,6 +22,8 @@ init:
             li      t2, 3 * 2 + 0
             ciop    s9, t1, t2
 
+            # without this lw there is no way to clear t0 pointer tag
+            lw      t0, 0(zero)
             li      t0, 'I'
             sb      t0, 0(s9)
             li      t0, 'T'

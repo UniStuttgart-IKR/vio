@@ -16,9 +16,36 @@ init:
             la      t0, exc_handel
             csrw    mtvec, t0
 
-            alci    t1, 4, 8
+            # Device 1
+            li      t1, 1
+            # 3 Registers, register capability
+            li      t2, 3 * 2 + 0
+            ciop    s9, t1, t2
 
-            lw      t2, 377(t1)
+            # without this lw there is no way to clear t0 pointer tag
+            lw      t0, 0(zero)
+            li      t0, 'I'
+            sb      t0, 0(s9)
+            li      t0, 'T'
+            sb      t0, 0(s9)
+            li      t0, 'S'
+            sb      t0, 0(s9)
+            li      t0, ' '
+            sb      t0, 0(s9)
+            li      t0, 'A'
+            sb      t0, 0(s9)
+            li      t0, 'L'
+            sb      t0, 0(s9)
+            li      t0, 'I'
+            sb      t0, 0(s9)
+            li      t0, 'V'
+            sb      t0, 0(s9)
+            li      t0, 'E'
+            sb      t0, 0(s9)
+            li      t0, '!'
+            sb      t0, 0(s9)
+            li      t0, 10
+            sb      t0, 0(s9)
 
 
             push    4,8
@@ -55,7 +82,7 @@ exc_handel:
             nop
             nop
             nop
-            nop
+            nop 
             nop
             nop
             mret

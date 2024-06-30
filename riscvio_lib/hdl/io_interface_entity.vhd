@@ -18,11 +18,11 @@ ENTITY io_interface IS
         addr:       in word_T;
         next_addr:  in word_T;
 
+        ptr:        in reg_mem_T;
         sd_rdat:    in rdat_T;
         sd_rptr:    in rptr_T;
         sd_raux:    in raux_T;
 
-        ena:        in boolean;
 
         mode:       in mem_mode_T;
         next_mode:  in mem_mode_T;
@@ -33,9 +33,9 @@ ENTITY io_interface IS
 
         io_wdata:   out word_T;
         io_rdata:   in word_T;
-        io_addr:    out word_T;
-        io_wreq:    out boolean;
-        io_rreq:    out boolean;
+        io_ix:      out word_T;
+        io_dev:     out std_logic_vector(11 downto 0);
+        io_mode:    out mem_mode_T;
         io_stall:   in std_logic
 
 

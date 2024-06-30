@@ -31,9 +31,9 @@ BEGIN
             csrs(mimpid) <= X"00000000";
         else
             if clk'event and clk = '1' then
-                if rd_wb.csr_index = ali_T'pos(core) then
+                if rd_wb.ali = core then
                     core_reg <= rd_wb.mem;
-                elsif rd_wb.csr_index = ali_T'pos(mtvec) then
+                elsif rd_wb.ali = mtvec then
                     csrs(mtvec) <= rd_wb.mem.pi;
                 elsif rd_wb.csr_index /= ali_T'pos(no_csr) then
                     csrs(ali_T'val(rd_wb.csr_index)) <= rd_wb.mem.data;
@@ -51,7 +51,7 @@ BEGIN
 
     csr_reg <=  (data => csrs(ali_T'val(csr_ix)), pi => csrs(alc_lim), delta => csrs(frame_lim), tag => POINTER)    when ali_T'val(csr_ix) = alc_addr else
                 -- todo: convert all pointers to include an index to fix this 
-                --mepc_reg                                                                                            when ali_T'val(csr_ix) = mepc else
+                (data => mepc_reg.ptr, pi => mepc_reg.pi, delta => mepc_reg.dt, tag => POINTER) when ali_T'val(csr_ix) = mepc else
                 (data => csrs(ali_T'val(csr_ix)), pi => X"00000000", delta => X"00000000", tag => DATA);
 
     cjt <= (ptr => core_reg.data, ix => csrs(mtvec), pi => core_reg.pi, dt => core_reg.delta) when exc_wb /= well_behaved else 

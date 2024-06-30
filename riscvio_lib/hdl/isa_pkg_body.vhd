@@ -455,7 +455,21 @@ PACKAGE BODY isa IS
                                 res.alu_a_sel:= DAT;
                                 res.alu_b_sel:= AUX;
                                 res.pgu_mode := pgu_nop;
+                            when F7_CIOP =>
+                                res.mnemonic := ciop;
+                                res.alu_mode := alu_illegal;
+                                res.imm_mode := none;
+                                res.me_mode  := holiday;
+                                res.at_mode  := no;
+                                res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                res.rptr     := 0;
+                                res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
+                                res.alu_a_sel:= DAT;
+                                res.alu_b_sel:= AUX;
+                                res.pgu_mode := pgu_ciop;
 
+                                
                             when F7_OR =>
                                 res.mnemonic := ccp when instruction(FUNCT5_RANGE) = F5_CCP else
                                                 illegal;

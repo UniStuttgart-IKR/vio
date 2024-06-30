@@ -16,7 +16,7 @@ BEGIN
     io_mode <= mode when io_access else holiday;
     io_ix <= addr;
     io_dev <= ptr.data(31 downto 20);
-    io_wdata <= (others => '0') when not io_access else
+    io_wdata <= (others => 'Z') when not io_access else
                 sd_rdat.val when mode = store_rpc else
                 sd_raux.val;
                 

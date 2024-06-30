@@ -28,30 +28,30 @@ core.init:
             li      t2, 3 * 2 + 0
             ciop    s9, t1, t2
 
-            # without this lw there is no way to turn clear t0 pointer tag
+            # without this lw there is no way to clear t0 pointer tag
             lw      t0, 0(zero)
-            li      t0, 'I'
-            sb      t0, 0(s9)
-            li      t0, 'T'
-            sb      t0, 0(s9)
-            li      t0, 'S'
-            sb      t0, 0(s9)
-            li      t0, ' '
-            sb      t0, 0(s9)
-            li      t0, 'A'
-            sb      t0, 0(s9)
-            li      t0, 'L'
-            sb      t0, 0(s9)
-            li      t0, 'I'
-            sb      t0, 0(s9)
-            li      t0, 'V'
-            sb      t0, 0(s9)
-            li      t0, 'E'
-            sb      t0, 0(s9)
-            li      t0, '!'
-            sb      t0, 0(s9)
-            li      t0, 10
-            sb      t0, 0(s9)
+            li      t1, 'I'
+            sb      t1, 0(s9)
+            li      t1, 'T'
+            sb      t1, 0(s9)
+            li      t1, 'S'
+            sb      t1, 0(s9)
+            li      t1, ' '
+            sb      t1, 0(s9)
+            li      t1, 'A'
+            sb      t1, 0(s9)
+            li      t1, 'L'
+            sb      t1, 0(s9)
+            li      t1, 'I'
+            sb      t1, 0(s9)
+            li      t1, 'V'
+            sb      t1, 0(s9)
+            li      t1, 'E'
+            sb      t1, 0(s9)
+            li      t1, '!'
+            sb      t1, 0(s9)
+            li      t1, 10
+            sb      t1, 0(s9)
 
 
             push    4,8

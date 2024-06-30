@@ -36,10 +36,11 @@ entity uart is
     );
     port (  
         clock               :   in  std_logic;
-        reset               :   in  std_logic;    
+        res_n               :   in  std_logic;    
         data_stream_in      :   in  std_logic_vector(7 downto 0);
         data_stream_in_stb  :   in  std_logic;
         data_stream_in_ack  :   out std_logic;
+        data_stream_in_done  :   out std_logic;
         data_stream_out     :   out std_logic_vector(7 downto 0);
         data_stream_out_stb :   out std_logic;
         tx                  :   out std_logic;
@@ -109,7 +110,7 @@ begin
     oversample_clock_divider : process (clock)
     begin
         if rising_edge (clock) then
-            if reset = '1' then
+            if res_n = '0' then
                 rx_baud_counter <= (others => '0');
                 rx_baud_tick <= '0';    
             else
@@ -130,7 +131,7 @@ begin
     rxd_synchronise : process(clock)
     begin
         if rising_edge(clock) then
-            if reset = '1' then
+            if res_n = '0' then
                 uart_rx_data_sr <= (others => '1');
             else
                 if rx_baud_tick = '1' then
@@ -147,7 +148,7 @@ begin
     rxd_filter : process(clock)
     begin
         if rising_edge(clock) then
-            if reset = '1' then
+            if res_n = '0' then
                 uart_rx_filter <= (others => '1');
                 uart_rx_bit <= '1';
             else
@@ -194,7 +195,7 @@ begin
     uart_receive_data   : process(clock)
     begin
         if rising_edge(clock) then
-            if reset = '1' then
+            if res_n = '0' then
                 uart_rx_state <= rx_get_start_bit;
                 uart_rx_data_vec <= (others => '0');
                 uart_rx_count <= (others => '0');
@@ -243,7 +244,7 @@ begin
     tx_clock_divider : process (clock)
     begin
         if rising_edge (clock) then
-            if reset = '1' then
+            if res_n = '0' then
                 tx_baud_counter <= (others => '0');
                 tx_baud_tick <= '0';    
             else
@@ -266,7 +267,7 @@ begin
     uart_send_data : process(clock)
     begin
         if rising_edge(clock) then
-            if reset = '1' then
+            if res_n = '0' then
                 uart_tx_data <= '1';
                 uart_tx_data_vec <= (others => '0');
                 uart_tx_count <= (others => '0');
@@ -310,4 +311,6 @@ begin
             end if;
         end if;
     end process uart_send_data;    
+
+    data_stream_in_done <= '1' when uart_tx_state = tx_send_stop_bit else '0';
 end rtl;

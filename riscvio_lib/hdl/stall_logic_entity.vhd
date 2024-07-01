@@ -10,10 +10,10 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 LIBRARY riscvio_lib;
 USE riscvio_lib.isa.all;
-USE riscvio_lib.caches.all;
+USE riscvio_lib.pipeline.all;
 LIBRARY altera_mf;
 USE altera_mf.altera_mf_components.all;
-USE riscvio_lib.caches.all;
+USE riscvio_lib.pipeline.all;
 
 ENTITY stall_logic IS
    PORT( 

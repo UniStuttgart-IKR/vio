@@ -9,7 +9,7 @@
 --
 LIBRARY riscvio_lib;
 USE riscvio_lib.primitive_cache;
-USE riscvio_lib.caches.all;
+USE riscvio_lib.pipeline.all;
 LIBRARY ieee;
 USE ieee.numeric_std.all;
 
@@ -25,7 +25,6 @@ ARCHITECTURE mixed OF dc_wrapper IS
     signal bena_pipeline: std_logic_vector(7 downto 0);
     signal bena: std_logic_vector(7 downto 0);
     signal stall_int: boolean;
-    signal mem_access: boolean;
 BEGIN
   dcache: entity primitive_cache
     generic map (
@@ -34,7 +33,7 @@ BEGIN
         LINES => DC_LINES,
         ADDR_WIDTH => 32,
         DATA_WIDTH => 64,
-        LEVERAGE_BURSTS => true
+        LEVERAGE_BURSTS => false
     )
     port map (
         clk       => clk,
@@ -42,8 +41,8 @@ BEGIN
         stall     => stall_int,
         addr      => caddr,
         next_addr => cnext_addr,
-        rd        => rena and mem_access,
-        we        => (wena or obj_init_wr) and mem_access,
+        rd        => rena and not addr.io_access,
+        we        => (wena or obj_init_wr) and not addr.io_access,
         byte_ena  => bena,
         ld        => ld_word,
         sd        => sd,
@@ -57,12 +56,11 @@ BEGIN
         wdata     => wdata
     );
 
-    mem_access <= ptr.data(TAG_RANGE) /= IO_POINTER_TAG;
     stall_bool <= stall_int;
     stall <= '1' when stall_int else 'Z';
     sd <= obj_init_data when obj_init_wr else sd_pipeline;
-    caddr <= obj_init_addr when obj_init_wr else addr;
-    cnext_addr <= next_obj_init_addr when obj_init_wr else next_addr;
+    caddr <= obj_init_addr when obj_init_wr else addr.addr;
+    cnext_addr <= next_obj_init_addr when obj_init_wr else next_addr.addr;
     bena <= (others => '1') when obj_init_wr else bena_pipeline;
 
     read_p: process (all) is
@@ -72,7 +70,7 @@ BEGIN
         
         case mode is
         when lb =>
-            case addr(2 downto 0) is
+            case addr.addr(2 downto 0) is
             when "000" =>
                 ld              <= (others => ld_word(BYTE0_RANGE'high));
                 ld(BYTE0_RANGE) <= ld_word(BYTE0_RANGE);             
@@ -102,7 +100,7 @@ BEGIN
             end case;
 
         when lbu =>
-            case addr(2 downto 0) is
+            case addr.addr(2 downto 0) is
             when "000" =>
                 ld(BYTE0_RANGE) <= ld_word(BYTE0_RANGE); 
             when "001" =>
@@ -124,7 +122,7 @@ BEGIN
             end case;
             
         when lh =>
-            case addr(2 downto 1) is
+            case addr.addr(2 downto 1) is
             when "00" =>
                 ld               <= (others => ld_word(HWORD0_RANGE'high));
                 ld(HWORD0_RANGE) <= ld_word(HWORD0_RANGE);             
@@ -142,7 +140,7 @@ BEGIN
             end case;
             
         when lhu =>
-            case addr(2 downto 1) is
+            case addr.addr(2 downto 1) is
             when "00" =>
                 ld(HWORD0_RANGE) <= ld_word(HWORD0_RANGE);             
             when "01" =>
@@ -156,7 +154,7 @@ BEGIN
             end case;
 
         when lw | lp =>
-            case addr(2) is
+            case addr.addr(2) is
             when '0' =>
                 ld(WORD0_RANGE) <= ld_word(WORD0_RANGE);
             when '1' =>
@@ -182,7 +180,7 @@ BEGIN
         
         case mode is
         when sb =>
-            bena_pipeline(to_integer(unsigned(addr(2 downto 0)))) <= '1';
+            bena_pipeline(to_integer(unsigned(addr.addr(2 downto 0)))) <= '1';
             sd_pipeline(BYTE0_RANGE) <= sd_raux.val(BYTE0_RANGE);
             sd_pipeline(BYTE1_RANGE) <= sd_raux.val(BYTE0_RANGE);
             sd_pipeline(BYTE2_RANGE) <= sd_raux.val(BYTE0_RANGE);
@@ -194,15 +192,15 @@ BEGIN
 
             
         when sh =>
-            bena_pipeline(to_integer(unsigned(addr(2 downto 1) & '0'))) <= '1';
-            bena_pipeline(to_integer(unsigned(addr(2 downto 1) & '1'))) <= '1';
+            bena_pipeline(to_integer(unsigned(addr.addr(2 downto 1) & '0'))) <= '1';
+            bena_pipeline(to_integer(unsigned(addr.addr(2 downto 1) & '1'))) <= '1';
             sd_pipeline <=  sd_raux.val(HWORD0_RANGE) 
                           & sd_raux.val(HWORD0_RANGE)
                           & sd_raux.val(HWORD0_RANGE)
                           & sd_raux.val(HWORD0_RANGE);
                 
         when sw | sp =>
-            bena_pipeline <= X"F0" when addr(2) = '1' else X"0F";
+            bena_pipeline <= X"F0" when addr.addr(2) = '1' else X"0F";
             sd_pipeline <=  sd_raux.val
                           & sd_raux.val;
 

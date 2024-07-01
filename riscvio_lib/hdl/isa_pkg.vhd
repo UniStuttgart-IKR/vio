@@ -34,81 +34,6 @@ PACKAGE isa IS
 
     constant NOP_INSTR: word_T := X"00000013";
 
-    type reg_tag_T is (DATA, POINTER);
-    type reg_mem_T is record
-      tag: reg_tag_T;
-      data: word_T;
-      pi: word_T;
-      delta: word_T;
-    end record reg_mem_T;
-    constant REG_MEM_NULL: reg_mem_T := (tag => DATA, data => (others => '0'), pi => (others => '0'), delta => (others => '0'));
-    
-
-    type pc_T is record
-       ptr: word_T;
-       ix: word_T;
-       pi: word_T;
-       dt: word_T;
-    end record pc_T;
-    -- core object size is as large as possible at startup to make sure ic cache will load the instructions
-    constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), pi => (others => '0'), dt => (others => '1'));
-
-
-    type ali_T is (zero, ra, frame, core, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t3, t4, t5, t6, imm, mtvec, misa, mstatus, mcause, mtval, mepc, mvendorid, marchid, mimpid,  alc_lim, alc_addr, frame_lim, root, no_csr);
-    subtype csr_ix_T is natural range ali_T'pos(mtvec) to ali_T'pos(no_csr);
-    subtype reg_ix_T is natural range 0 to ali_T'pos(root);
-    type reg_T is record
-        ali: ali_T;
-        index: reg_ix_T;
-        mem: reg_mem_T;
-    end record reg_T;
-
-    type exc_cause_T is (panic, illeg, sverr, sterr, privv, tcoil, tciob, endoc, rixeq, rdcnu, rcdnc, drfnu, drfcd, wrptv, sealv, ixoob, frtyp, aperr, hpovf, stovf, well_behaved);
-
-    type reg_wb_T is record
-        ali: ali_T;
-        rf_index: reg_ix_T;
-        csr_index: csr_ix_T;
-        mem: reg_mem_T;
-    end record reg_wb_T;
-    constant REG_WB_NULL: reg_wb_T := (ali => zero, rf_index => 0, csr_index => ali_T'pos(no_csr), mem => REG_MEM_NULL);
-
-    type rdat_T is record
-        ali: ali_T;
-        ix: reg_ix_T;
-        val: word_T;
-    end record rdat_T;
-    CONSTANT RDAT_NULL: rdat_T := (ali => zero, ix => 0, val => (others => '0'));
-    type rptr_T is record
-        ali: ali_T;
-        ix: reg_ix_T;
-        val: word_T;
-        pi: word_T;
-        dt: word_T;
-    end record rptr_T;
-    CONSTANT RPTR_NULL: rptr_T := (ali => zero, ix => 0, val => (others => '0'), pi => (others => '0'), dt => (others => '0'));
-    type raux_T is record
-        ali: ali_T;
-        ix: reg_ix_T;
-        tag: reg_tag_T;
-        val: word_T;
-    end record raux_T;
-    CONSTANT RAUX_NULL: raux_T := (ali => zero, ix => 0, val => (others => '0'), tag => DATA);
-
-    constant REG_NULL: reg_T := (ali => zero, index => 0, mem => REG_MEM_NULL);
-
-    type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r,
-                        jal, jr, beq, bne, blt, bge, bltu, bgeu,
-                        lui, auipc,
-                        lb_i, lh_i, lw_i, lbu_i, lhu_i, sb_i, sh_i, sw_i, lb_r, lh_r, lw_r, lbu_r, lhu_r, sb_r, sh_r, sw_r,
-                        andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, min, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
-                        sp_r, lp_r, sv, rst, qdtb, qdth, qdtw, qdtd, qpi, gcp, pop, rtlib, cpfc, check, sp_i, lp_i, jlib, alc, alci_p, alci_d, alci, pushg, pusht, push, 
-                        ebreak, ecall, alcb, ciop, ccp, rpr, qpir, qdtr, qptr, seal, unsl,
-                        csrrw, csrrs, csrrc, mret,
-                        illegal);
-    type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);
-
-
     subtype OPC_RANGE is natural range 6 downto 0;
     subtype FUNCT3_RANGE is natural range 14 downto 12;
     subtype FUNCT5_RANGE is natural range 24 downto 20;
@@ -121,12 +46,7 @@ PACKAGE isa IS
     subtype RS2_RANGE is natural range 24 downto 20;
     subtype RD_RANGE is natural range 11 downto 7;
 
-    subtype TAG_RANGE is natural range 2 downto 0;
-
-    constant IO_POINTER_TAG: std_logic_vector(TAG_RANGE) := "011";
-
     subtype imm_20bit_T is std_logic_vector(IMM20_RANGE'high - 1 downto 0);
-
 
     constant CSR_MEPC_IX:       std_logic_vector(11 downto 0) := X"341";
     constant CSR_MISA_IX:       std_logic_vector(11 downto 0) := X"301";
@@ -259,56 +179,17 @@ PACKAGE isa IS
     constant F7_BYTEU:                      std_logic_vector(FUNCT7_RANGE) := "1000000";
     constant F7_HALFU:                      std_logic_vector(FUNCT7_RANGE) := "1000001";
 
+    type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r,
+                        jal, jr, beq, bne, blt, bge, bltu, bgeu,
+                        lui, auipc,
+                        lb_i, lh_i, lw_i, lbu_i, lhu_i, sb_i, sh_i, sw_i, lb_r, lh_r, lw_r, lbu_r, lhu_r, sb_r, sh_r, sw_r,
+                        andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, mins, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
+                        sp_r, lp_r, sv, rst, qdtb, qdth, qdtw, qdtd, qpi, gcp, pop, rtlib, cpfc, check, sp_i, lp_i, jlib, alc, alci_p, alci_d, alci, pushg, pusht, push, 
+                        ebreak, ecall, alcb, ciop, ccp, rpr, qpir, qdtr, qptr, seal, unsl,
+                        csrrw, csrrs, csrrc, mret,
+                        illegal);
+    type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);
 
-    type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, 
-                        alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orcb, alu_rev8,
-                        alu_illegal);
-    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU, PC_IX);
-    type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_pop, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_auipc, pgu_addi, pgu_rix, pgu_rcd, pgu_nop, pgu_passthrough, pgu_ciop);
-    type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store_rpc, load_rpc, load_ix, store_ix, holiday);
-    type at_mode_T is (maybe, no, delta_only);
-    type branch_mode_T is (jlib, rtlib, jal, jalr, beq, bne, blt, bge, bltu, bgeu, no_branch);
-
-    type ctrl_sig_T is record 
-        alu_mode:       alu_mode_T;
-        alu_a_sel:      alu_in_sel_T;
-        alu_b_sel:      alu_in_sel_T;
-        mnemonic:       mnemonic_T;
-        pgu_mode:       pgu_mode_T;
-        me_mode:        mem_mode_T;
-        at_mode:        at_mode_T;
-        branch_mode:    branch_mode_T;
-    end record ctrl_sig_T;
-    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, branch_mode => no_branch, alu_a_sel => DAT, alu_b_sel => DAT, mnemonic => nop, me_mode => holiday, at_mode => no, pgu_mode => pgu_nop);
-    
-    type xret_T is (none, mret);
-
-    type decode_T is record 
-        mnemonic:       mnemonic_T;
-        alu_mode:       alu_mode_T;
-        alu_a_sel:      alu_in_sel_T;
-        alu_b_sel:      alu_in_sel_T;
-        pgu_mode:       pgu_mode_T;
-        me_mode:        mem_mode_T;
-        at_mode:        at_mode_T;
-        rdst:           reg_ix_T;
-        rdat:           reg_ix_T;
-        rptr:           reg_ix_T;
-        raux:           reg_ix_T;
-        imm_mode:       imm_T;
-        branch_mode:    branch_mode_T;
-        xret:           xret_T;
-    end record decode_T;
-    
-    type alu_flags_T is record
-      eq: boolean;
-      altb: boolean;
-      altbu: boolean;
-    end record alu_flags_T;
-
-
-
-    pure function decodeOpc(instruction: std_logic_vector(31 downto 0)) return decode_T;
     pure function extractJTypeImm(inst: word_T) return word_T;
     pure function extractSTypeImm(inst: word_T) return word_T;
     pure function extractBTypeImm(inst: word_T) return word_T;

@@ -12,6 +12,7 @@ USE ieee.std_logic_1164.all;
 USE ieee.numeric_std.all;
 library riscvio_lib;
 use riscvio_lib.isa.all;
+USE riscvio_lib.pipeline.all;
 
 
 ENTITY register_file IS

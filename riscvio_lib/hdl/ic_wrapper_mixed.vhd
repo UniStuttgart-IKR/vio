@@ -10,7 +10,7 @@
 
 LIBRARY riscvio_lib;
 USE riscvio_lib.primitive_cache;
-USE riscvio_lib.caches.all;
+USE riscvio_lib.pipeline.all;
 LIBRARY ieee;
 USE ieee.numeric_std.all;
 

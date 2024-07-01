@@ -11,6 +11,7 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 LIBRARY riscvio_lib;
 USE riscvio_lib.isa.all;
+USE riscvio_lib.pipeline.all;
 
 
 ENTITY ral_nop_unit IS

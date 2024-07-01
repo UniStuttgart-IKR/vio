@@ -10,7 +10,7 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 LIBRARY riscvio_lib;
-USE riscvio_lib.caches.all;
+USE riscvio_lib.pipeline.all;
 USE riscvio_lib.ISA.all;
 
 ENTITY int_ram is

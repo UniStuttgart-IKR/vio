@@ -10,6 +10,7 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 library riscvio_lib;
+use riscvio_lib.pipeline.all;
 use riscvio_lib.isa.all;
 
 ENTITY alu IS

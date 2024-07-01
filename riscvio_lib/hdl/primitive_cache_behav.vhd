@@ -9,6 +9,7 @@
 --
 LIBRARY riscvio_lib;
 USE riscvio_lib.simple_dual_port_ram;
+USE riscvio_lib.helper.isAllStd;
 LIBRARY ieee;
 use IEEE.math_real.all;
 use ieee.numeric_std.all;
@@ -411,7 +412,7 @@ BEGIN
             when WAITS => null;
 
             when IDLE => 
-                line_ix <= next_addr(LINE_IN_ADDR);
+                line_ix <= addr(LINE_IN_ADDR) when line_hit and isAllStd(words_we, '0') else next_addr(LINE_IN_ADDR);
                 valid_bit_to_write <= (0 => '1');
                 line_valid_bit_write <= set_line_tag;
 

@@ -11,7 +11,7 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 
 LIBRARY riscvio_lib;
-USE riscvio_lib.caches.all;
+USE riscvio_lib.pipeline.all;
 
 ENTITY primitive_cache IS
     GENERIC(

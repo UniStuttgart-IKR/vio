@@ -21,7 +21,7 @@ BEGIN
             imm_ex_reg  <= (others => '0');
             ctrl_ex <= CTRL_NULL;
             res_ex <= REG_MEM_NULL;
-            me_addr <= (others => '0');
+            me_addr <= MEM_ADDR_NULL;
             pc_ex <= PC_NULL;
             
             exc_ex <= well_behaved;
@@ -35,7 +35,7 @@ BEGIN
                     imm_ex_reg  <= (others => '0');
                     ctrl_ex <= CTRL_NULL;
                     res_ex <= REG_MEM_NULL;
-                    me_addr <= (others => '0');
+                    me_addr <= MEM_ADDR_NULL;
                     pc_ex <= PC_NULL;
                         
                     exc_ex <= well_behaved;

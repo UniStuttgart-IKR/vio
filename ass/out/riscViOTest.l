@@ -7,7 +7,7 @@ Disassembly of section core:
 00000000 <core.start_-0x8>:
    0:	0008                	.insn	2, 0x0008
    2:	0000                	.insn	2, 0x
-   4:	00bc                	.insn	2, 0x00bc
+   4:	00c8                	.insn	2, 0x00c8
 	...
 
 00000008 <core.start_>:
@@ -26,9 +26,9 @@ Disassembly of section core:
 
 00000028 <core.init>:
   28:	00001137          	lui	frame,0x1
-  2c:	80510113          	addi	frame,frame,-2043 # 805 <_end+0x6cd>
+  2c:	80510113          	addi	frame,frame,-2043 # 805 <_end+0x6c5>
   30:	00000297          	auipc	t0,0x0
-  34:	06c28293          	addi	t0,t0,108 # 9c <exc_handel>
+  34:	07828293          	addi	t0,t0,120 # a8 <exc_handel>
   38:	30529073          	csrrw	zero,mtvec,t0
   3c:	00100313          	addi	t1,zero,1
   40:	00600393          	addi	t2,zero,6
@@ -45,88 +45,90 @@ Disassembly of section core:
   64:	0421708b          	pushg	1,2
   68:	0011100b          	sp	ra,0(frame)
   6c:	00000517          	auipc	a0,0x0
-  70:	0b450513          	addi	a0,a0,180 # 120 <usb.end+0x4>
-  74:	00000417          	auipc	s0,0x0
-  78:	05c40413          	addi	s0,s0,92 # d0 <core.end+0x8>
-  7c:	00040493          	addi	s1,s0,0
-  80:	0091100b          	sp	s1,0(frame)
-  84:	0004300b          	jlib	s0,0
-  88:	0001240b          	lp	s0,0(frame)
-  8c:	0044300b          	jlib	s0,4
-  90:	00100073          	ebreak
-  94:	00000013          	addi	zero,zero,0
-  98:	00000013          	addi	zero,zero,0
-
-0000009c <exc_handel>:
-  9c:	00000013          	addi	zero,zero,0
+  70:	0bc50513          	addi	a0,a0,188 # 128 <usb.end+0x4>
+  74:	fd050573          	ccp	a0,a0
+  78:	00000417          	auipc	s0,0x0
+  7c:	06040413          	addi	s0,s0,96 # d8 <core.end+0x4>
+  80:	00000013          	addi	zero,zero,0
+  84:	fd040473          	ccp	s0,s0
+  88:	00040493          	addi	s1,s0,0
+  8c:	0091100b          	sp	s1,0(frame)
+  90:	0004300b          	jlib	s0,0
+  94:	0001240b          	lp	s0,0(frame)
+  98:	0044300b          	jlib	s0,4
+  9c:	00100073          	ebreak
   a0:	00000013          	addi	zero,zero,0
   a4:	00000013          	addi	zero,zero,0
+
+000000a8 <exc_handel>:
   a8:	00000013          	addi	zero,zero,0
   ac:	00000013          	addi	zero,zero,0
   b0:	00000013          	addi	zero,zero,0
   b4:	00000013          	addi	zero,zero,0
   b8:	00000013          	addi	zero,zero,0
-  bc:	30200073          	mret
-  c0:	ffb28293          	addi	t0,t0,-5
-  c4:	ff730313          	addi	t1,t1,-9
+  bc:	00000013          	addi	zero,zero,0
+  c0:	00000013          	addi	zero,zero,0
+  c4:	00000013          	addi	zero,zero,0
+  c8:	30200073          	mret
+  cc:	ffb28293          	addi	t0,t0,-5
+  d0:	ff730313          	addi	t1,t1,-9
 
-000000c8 <core.end>:
-  c8:	0000                	.insn	2, 0x
-	...
+000000d4 <core.end>:
+  d4:	00000013          	addi	zero,zero,0
 
 Disassembly of section usb:
 
-000000d0 <usb.af_-0x8>:
-  d0:	0008                	.insn	2, 0x0008
-  d2:	0000                	.insn	2, 0x
-  d4:	0040                	.insn	2, 0x0040
+000000d8 <usb.af_-0x8>:
+  d8:	0008                	.insn	2, 0x0008
+  da:	0000                	.insn	2, 0x
+  dc:	0040                	.insn	2, 0x0040
 	...
 
-000000d8 <usb.af_>:
-  d8:	0080006f          	jal	zero,e0 <usb.af>
+000000e0 <usb.af_>:
+  e0:	0080006f          	jal	zero,e8 <usb.af>
 
-000000dc <usb.b_>:
-  dc:	0100006f          	jal	zero,ec <usb.b>
+000000e4 <usb.b_>:
+  e4:	0100006f          	jal	zero,f4 <usb.b>
 
-000000e0 <usb.af>:
-  e0:	00230293          	addi	t0,t1,2
-  e4:	005e8e13          	addi	t3,t4,5
-  e8:	00008067          	jalr	zero,0(ra)
+000000e8 <usb.af>:
+  e8:	00230293          	addi	t0,t1,2
+  ec:	005e8e13          	addi	t3,t4,5
+  f0:	00008067          	jalr	zero,0(ra)
 
-000000ec <usb.b>:
-  ec:	0021700b          	pushg	0,0
-  f0:	0011100b          	sp	ra,0(frame)
-  f4:	010000ef          	jal	ra,104 <usb.c>
-  f8:	0001208b          	lp	ra,0(frame)
-  fc:	1800000b          	pop
- 100:	00008067          	jalr	zero,0(ra)
+000000f4 <usb.b>:
+  f4:	0021700b          	pushg	0,0
+  f8:	0011100b          	sp	ra,0(frame)
+  fc:	010000ef          	jal	ra,10c <usb.c>
+ 100:	0001208b          	lp	ra,0(frame)
+ 104:	1800000b          	pop
+ 108:	00008067          	jalr	zero,0(ra)
 
-00000104 <usb.c>:
- 104:	0021700b          	pushg	0,0
- 108:	0011100b          	sp	ra,0(frame)
- 10c:	0005300b          	jlib	a0,0
- 110:	0001208b          	lp	ra,0(frame)
- 114:	1800000b          	pop
- 118:	00008067          	jalr	zero,0(ra)
+0000010c <usb.c>:
+ 10c:	0021700b          	pushg	0,0
+ 110:	0011100b          	sp	ra,0(frame)
+ 114:	0005300b          	jlib	a0,0
+ 118:	0001208b          	lp	ra,0(frame)
+ 11c:	1800000b          	pop
+ 120:	00008067          	jalr	zero,0(ra)
 
-0000011c <usb.end>:
- 11c:	00000013          	addi	zero,zero,0
+00000124 <usb.end>:
+ 124:	00000013          	addi	zero,zero,0
 
 Disassembly of section hdmi:
 
-00000120 <hdmi.s_-0x8>:
- 120:	0004                	.insn	2, 0x0004
- 122:	0000                	.insn	2, 0x
- 124:	000c                	.insn	2, 0x000c
+00000128 <hdmi.s_-0x8>:
+ 128:	0004                	.insn	2, 0x0004
+ 12a:	0000                	.insn	2, 0x
+ 12c:	000c                	.insn	2, 0x000c
 	...
 
-00000128 <hdmi.s_>:
- 128:	0040006f          	jal	zero,12c <hdmi.s>
+00000130 <hdmi.s_>:
+ 130:	0040006f          	jal	zero,134 <hdmi.s>
 
-0000012c <hdmi.s>:
- 12c:	00230293          	addi	t0,t1,2
- 130:	005e8e13          	addi	t3,t4,5
- 134:	00008067          	jalr	zero,0(ra)
+00000134 <hdmi.s>:
+ 134:	00230293          	addi	t0,t1,2
+ 138:	005e8e13          	addi	t3,t4,5
+ 13c:	00008067          	jalr	zero,0(ra)
 
 Disassembly of section .riscv.attributes:
 
@@ -149,7 +151,7 @@ Disassembly of section .riscv.attributes:
   20:	7a5f 726f 7031      	.insn	6, 0x7031726f7a5f
   26:	5f30                	.insn	2, 0x5f30
   28:	697a                	.insn	2, 0x697a
-  2a:	32727363          	bgeu	ctxt,t2,350 <_end+0x218>
+  2a:	32727363          	bgeu	ctxt,t2,350 <_end+0x210>
   2e:	3070                	.insn	2, 0x3070
   30:	7a5f 6262 7031      	.insn	6, 0x703162627a5f
   36:	0030                	.insn	2, 0x0030

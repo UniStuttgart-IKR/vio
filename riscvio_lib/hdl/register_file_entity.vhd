@@ -19,9 +19,9 @@ ENTITY register_file IS
   port(
     clk, res_n: in std_logic;
     
-    rdat_ix: in reg_ix_T;
-    rptr_ix: in reg_ix_T;
-    raux_ix: in reg_ix_T;
+    rdat_ix: in reg_nbr_T;
+    rptr_ix: in reg_nbr_T;
+    raux_ix: in reg_nbr_T;
     
     rdat:  out rdat_T;
     rptr:  out rptr_T;

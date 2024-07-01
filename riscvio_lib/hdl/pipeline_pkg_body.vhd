@@ -102,7 +102,6 @@ PACKAGE BODY pipeline IS
                         res.alu_mode := alu_add;
                         res.imm_mode := i_type;
                         res.at_mode  := maybe;
-                        res.pgu_mode := pgu_addi;
                     when (F3_SRL_SRA or F3_MINU_ROR_RORI_ORC_REV) =>
                         res.mnemonic := srl_i when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else
                                         sra_i when instruction(FUNCT7_RANGE) = F7_SUB_SRA else
@@ -463,12 +462,12 @@ PACKAGE BODY pipeline IS
                             when F7_OR =>
                                 res.mnemonic := ccp when instruction(FUNCT5_RANGE) = F5_CCP else
                                                 illegal;
-                                res.pgu_mode := pgu_nop when instruction(FUNCT5_RANGE) = F5_CCP else
+                                res.pgu_mode := pgu_ccp when instruction(FUNCT5_RANGE) = F5_CCP else
                                                 pgu_nop;
                                 res.imm_mode := none;
                                 res.alu_a_sel:= DAT;
                                 res.alu_b_sel:= AUX;
-                                res.alu_mode := alu_add when instruction(FUNCT5_RANGE) = F5_CCP else
+                                res.alu_mode := alu_illegal when instruction(FUNCT5_RANGE) = F5_CCP else
                                                 alu_illegal;
                                 res.at_mode  := maybe;
                                 res.me_mode  := holiday;
@@ -499,13 +498,13 @@ PACKAGE BODY pipeline IS
                         res.me_mode  := holiday;
                         res.at_mode  := no;
                         res.imm_mode := none;
-                        res.alu_mode := alu_illegal;
+                        res.alu_mode := alu_add;
                         res.rdat     := 0;
                         res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                        res.raux     := 0;
-                        res.alu_a_sel:= AUX;
+                        res.raux     := to_integer(unsigned(instruction(RS1_RANGE)));
+                        res.alu_a_sel:= PTRVAL;
                         res.alu_b_sel:= IMM;
-                        res.pgu_mode := pgu_passthrough;
+                        res.pgu_mode := pgu_nop;
                         case instruction(IMM12_RANGE) is
                             when CSR_MEPC_IX =>     res.rdst := ali_T'pos(mepc);
                                                     res.mnemonic := csrrw;

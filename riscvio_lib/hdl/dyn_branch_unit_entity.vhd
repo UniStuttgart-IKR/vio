@@ -20,7 +20,7 @@ ENTITY dyn_branch_unit IS
     raux           : IN raux_T;
     rptr           : IN rptr_T;
     imm            : IN word_T;
-    rdst_ix        : IN reg_ix_T;
+    rdst_ix        : IN reg_nbr_T;
     alu_flags      : IN alu_flags_T;
     branch_mode    : IN branch_mode_T;
     pc             : IN pc_T;

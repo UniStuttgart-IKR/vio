@@ -21,8 +21,8 @@ BEGIN
     unit_active     <= pgu_mode_ex = pgu_alc or pgu_mode_ex = pgu_alcp or pgu_mode_ex = pgu_alcd or pgu_mode_ex = pgu_alci or pgu_mode_ex = pgu_push or pgu_mode_ex = pgu_pusht or pgu_mode_ex = pgu_pushg;
     unit_activating <= pgu_mode_dc_uq = pgu_alc or pgu_mode_dc_uq = pgu_alcp or pgu_mode_dc_uq = pgu_alcd or pgu_mode_dc_uq = pgu_alci or pgu_mode_dc_uq = pgu_push or pgu_mode_dc_uq = pgu_pusht or pgu_mode_dc_uq = pgu_pushg;
     end_addr_aligned <= (end_addr(word_T'high downto 3) & "000");
-    start_addr_aligned <= res_ex_uq.data(word_T'high downto 3) & "000" when unit_activating else
-                          res_ex.data(word_T'high downto 3) & "000" when unit_active else
+    start_addr_aligned <= res_ex_uq.val(word_T'high downto 3) & "000" when unit_activating else
+                          res_ex.val(word_T'high downto 3) & "000" when unit_active else
                           (others => '0');
 
     heap_alc <= (pgu_mode_ex = pgu_alc or  pgu_mode_ex = pgu_alcp or  pgu_mode_ex = pgu_alcd or  pgu_mode_ex = pgu_alci) and rdst_ix_ex /= ali_T'pos(frame);
@@ -48,8 +48,8 @@ BEGIN
     end process init;
     obj_init_addr <= start_addr_aligned when unit_activating else obj_init_addr_int when unit_active else (others => '0');
     next_obj_init_addr <= word_T(unsigned(obj_init_addr) + 8);
-    obj_init_data <= res_ex.delta & res_ex.pi when obj_init_addr = start_addr_aligned and unit_active else
-                     res_ex_uq.delta & res_ex_uq.pi when obj_init_addr = start_addr_aligned and unit_activating else
+    obj_init_data <= res_ex.dt & res_ex.pi when obj_init_addr = start_addr_aligned and unit_active else
+                     res_ex_uq.dt & res_ex_uq.pi when obj_init_addr = start_addr_aligned and unit_activating else
                      (others => '0');
     obj_init_stall <= unit_active and unsigned(obj_init_addr_int) < unsigned(end_addr_aligned);
     stall <= '1' when obj_init_stall else 'Z';

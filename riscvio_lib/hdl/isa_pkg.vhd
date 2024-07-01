@@ -8,6 +8,7 @@ PACKAGE isa IS
     constant HALF_WORD_SIZE: natural := 16;
     constant BYTE_SIZE: natural := 8;
     constant INSTRUCTION_SIZE: positive := 4;
+    constant INDEX_SIZE: natural := 0;
     constant IGNORE_EXC: boolean := true;
 
     subtype word_T is std_logic_vector(WORD_SIZE - 1 downto 0);

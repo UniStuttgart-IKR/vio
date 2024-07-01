@@ -15,7 +15,7 @@ ENTITY ex_reg IS
       pipe_flush     : IN     boolean;
       raux_dc        : IN     raux_T;
       rdat_dc        : IN     rdat_T;
-      rdst_ix_dc     : IN     reg_ix_T;
+      rdst_ix_dc     : IN     reg_nbr_T;
       res_ex_u       : IN     reg_mem_T;
       res_n          : IN     std_logic;
       rptr_dc        : IN     rptr_T;
@@ -33,7 +33,7 @@ ENTITY ex_reg IS
       pgu_mode_ex    : OUT    pgu_mode_T;
       raux_ex_reg    : OUT    raux_T;
       rdat_ex_reg    : OUT    rdat_T;
-      rdst_ix_ex_reg : OUT    reg_ix_T;
+      rdst_ix_ex_reg : OUT    reg_nbr_T;
       res_ex         : OUT    reg_mem_T;
       res_ex_uq      : OUT    reg_mem_T;
       rptr_ex_reg    : OUT    rptr_T

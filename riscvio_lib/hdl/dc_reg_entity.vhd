@@ -15,7 +15,7 @@ ENTITY dc_reg IS
       pipe_flush      : IN     boolean;
       raux_dc_u       : IN     raux_T;
       rdat_dc_u       : IN     rdat_T;
-      rdst_ix_dc_u    : IN     reg_ix_T;
+      rdst_ix_dc_u    : IN     reg_nbr_T;
       res_n           : IN     std_logic;
       rptr_dc_u       : IN     rptr_T;
       stall           : IN     std_logic;
@@ -30,7 +30,7 @@ ENTITY dc_reg IS
       pgu_mode_dc     : OUT    pgu_mode_T;
       raux_dc_reg     : OUT    raux_T;
       rdat_dc_reg     : OUT    rdat_T;
-      rdst_ix_dc_reg  : OUT    reg_ix_T;
+      rdst_ix_dc_reg  : OUT    reg_nbr_T;
       rptr_dc_reg     : OUT    rptr_T
    );
 

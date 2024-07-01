@@ -9,7 +9,6 @@
 --
 
 LIBRARY riscvio_lib;
-USE riscvio_lib.primitive_cache;
 USE riscvio_lib.pipeline.all;
 LIBRARY ieee;
 USE ieee.numeric_std.all;
@@ -21,7 +20,7 @@ ARCHITECTURE mixed OF ac_wrapper IS
 BEGIN
     pi <= ld(7 downto 0) & ld(15 downto 8) & ld(23 downto 16) & ld(31 downto 24) when ld_attr else (others => '0');
     dt <= ld(39 downto 32) & ld(47 downto 40) & ld(55 downto 48) & ld(63 downto 56) when ld_attr else (others => '0');
-    acache: entity primitive_cache
+    acache: entity riscvio_lib.primitive_cache
         generic map (
             BUS_WIDTH => BUS_WIDTH,
             WORDS_IN_LINE => AC_LINE_WIDTH,
@@ -33,8 +32,8 @@ BEGIN
             clk       => clk,
             res_n     => res_n,
             stall     => stall_int,
-            addr      => addr.data,
-            next_addr => next_addr.data,
+            addr      => addr.val,
+            next_addr => next_addr.val,
             rd        => ld_attr,
 
             ld        => ld,

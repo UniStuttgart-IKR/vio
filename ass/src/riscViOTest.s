@@ -64,10 +64,13 @@ core.entry:
             sp      ra, 0(frame)
 
             la      a0, hdmi
+            ccp     a0, a0
 
 
 
             la      s0, usb
+            nop
+            ccp     s0, s0
             mv      s1, s0
             sp      s1, 0(frame)
 

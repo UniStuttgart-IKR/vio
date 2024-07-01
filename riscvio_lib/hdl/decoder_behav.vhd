@@ -53,15 +53,14 @@ BEGIN
                 when none => imm <= (others => '0');
             end case;
         else
-            imm <= X"FFFFFFFF";
+            imm <= X"00000000";
         end if;
     end process extend;
 
     sbt_valid <= decoded_inst.branch_mode = jal;
     sbt.ix <= std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(extractJTypeImm(instruction))), WORD_SIZE));
     sbt.ptr <= pc.ptr;
-    sbt.pi <= pc.pi;
-    sbt.dt <= pc.dt;
+    sbt.eoc <= pc.eoc;
 
 
     rdst_ix <= decoded_inst.rdst;

@@ -11,8 +11,8 @@ ENTITY nop_gen IS
       imm_dc_u     : OUT    word_T;
       imm_dec      : IN     word_T;
       insert_nop   : IN     boolean;
-      rdst_ix_dc_u : OUT    reg_ix_T;
-      rdst_ix_dec  : IN     reg_ix_T
+      rdst_ix_dc_u : OUT    reg_nbr_T;
+      rdst_ix_dec  : IN     reg_nbr_T
    );
 
 END nop_gen ;

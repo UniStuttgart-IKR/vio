@@ -13,6 +13,7 @@ BEGIN
          rptr_dc.val when alu_b_in_sel = PTRVAL else
          rptr_dc.pi  when alu_b_in_sel = PTRPI else
          rptr_dc.dt  when alu_b_in_sel = PTRDT else
+         raux_dc.ix  when alu_b_in_sel = AUX and raux_dc.tag = POINTER else
          raux_dc.val when alu_b_in_sel = AUX else
          imm_dc;
 END ARCHITECTURE behav;

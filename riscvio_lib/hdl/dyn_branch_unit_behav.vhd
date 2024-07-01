@@ -38,29 +38,27 @@ BEGIN
                 dbt_valid <= not alu_flags.altbu or alu_flags.eq;
             when jalr =>
                 dbt_valid <= true;
-                ra_out <=   (tag => POINTER, data => rptr.val, pi => rix_int, delta => rptr.dt) when rdst_ix = ali_T'pos(ra) else
-                            (tag => DATA, data => rix_int, pi => (others => '0'), delta => (others => '0'));
+                ra_out <=   (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
                 state_error <=  (raux.val(0) = rptr.pi(0) and rdst_ix = ali_T'pos(ra)) or (raux.val(0) /= rptr.pi(0) and rdat.ali = ra);
             when jal =>
                 dbt_valid <= false;
-                ra_out <= (tag => POINTER, data => rptr.val, pi => rix_int, delta => rptr.dt);
+                ra_out <= (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
                 state_error <= raux.val(0) = rdat.val(0) and rdst_ix = ali_T'pos(ra);
             when jlib =>
                 dbt_valid <= true;
                 rix_int(31) := '1';
-                ra_out <= (tag => POINTER, data => pc.ptr, pi => rix_int, delta => pc.dt);
+                ra_out <= (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
                 state_error <= raux.val(0) = rdat.val(0);
             when others => 
                 dbt_valid <= false;
         end case;
     end process;
 
-    dbt.ix <=   '0' & rptr.pi(word_T'high-1 downto 1) & '0' when rdat.ali = ra and branch_mode = jalr  else
+    dbt.ptr <=  rptr.val when (branch_mode = jalr and rdat.ali = ra and rptr.ix(31) = '1') or branch_mode = jlib else pc.ptr;
+    dbt.ix <=   '0' & rptr.ix(word_T'high-1 downto 1) & '0' when rdat.ali = ra and branch_mode = jalr  else
                 rdat.val(word_T'high downto 1) & '0' when branch_mode = jalr else
                 std_logic_vector(unsigned(imm)) when branch_mode = jlib else
                 std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(imm)), WORD_SIZE));
-    dbt.ptr <=  rptr.val when (branch_mode = jalr and rdat.ali = ra and rptr.pi(31) = '1') or branch_mode = jlib else pc.ptr;
-    dbt.pi <=   pc.pi when branch_mode /= jlib else rptr.pi;
-    dbt.dt <=   pc.dt when branch_mode /= jlib else rptr.dt;
+    dbt.eoc <=  pc.eoc when branch_mode /= jlib else rptr.dt;
 END ARCHITECTURE behav;
 

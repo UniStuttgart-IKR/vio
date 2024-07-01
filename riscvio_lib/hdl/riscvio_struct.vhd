@@ -16,7 +16,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL addr_me_uq                    : reg_mem_T;
    SIGNAL alc_lim_csr                   : word_T;
    SIGNAL allocating_at                 : boolean;
-   SIGNAL allocating_me                 : boolean  := false;
+   SIGNAL allocating_me                 : boolean   := false;
    SIGNAL allocating_wb                 : boolean;
    SIGNAL alu_a_in_sel_dc               : alu_in_sel_T;
    SIGNAL alu_b_in_sel_dc               : alu_in_sel_T;
@@ -26,7 +26,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL branch_mode_dc                : branch_mode_T;
    SIGNAL cjt                           : pc_T;
    SIGNAL cjt_valid                     : boolean;
-   SIGNAL csr_ix                        : csr_ix_T;
+   SIGNAL csr_ix                        : csr_nbr_T;
    SIGNAL csr_reg                       : reg_mem_T;
    SIGNAL ctrl_dc                       : ctrl_sig_T;
    SIGNAL ctrl_dc_dec                   : ctrl_sig_t;
@@ -90,12 +90,13 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL pgu_ptr_ex_u                  : reg_mem_T;
    SIGNAL pi_at_u                       : word_T;
    SIGNAL pipe_flush                    : boolean;
+   SIGNAL pointer_arith_exc             : boolean;
    SIGNAL raux_dc                       : raux_T;
    SIGNAL raux_dc_reg                   : raux_T;
    SIGNAL raux_dc_u                     : raux_T;
    SIGNAL raux_ex                       : raux_T;
    SIGNAL raux_ex_reg                   : raux_T;
-   SIGNAL raux_ix                       : reg_ix_T;
+   SIGNAL raux_ix                       : reg_nbr_T;
    SIGNAL raux_me                       : raux_T;
    SIGNAL raux_rf                       : raux_T;
    SIGNAL rd_wb                         : reg_wb_T;
@@ -104,18 +105,18 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL rdat_dc_u                     : rdat_T;
    SIGNAL rdat_ex                       : rdat_T;
    SIGNAL rdat_ex_reg                   : rdat_T;
-   SIGNAL rdat_ix                       : reg_ix_T;
+   SIGNAL rdat_ix                       : reg_nbr_T;
    SIGNAL rdat_me                       : rdat_T;
    SIGNAL rdat_rf                       : rdat_T;
-   SIGNAL rdst_ix_at                    : reg_ix_T;
-   SIGNAL rdst_ix_dc                    : reg_ix_T;
-   SIGNAL rdst_ix_dc_reg                : reg_ix_T;
-   SIGNAL rdst_ix_dc_u                  : reg_ix_T;
-   SIGNAL rdst_ix_dec                   : reg_ix_T;
-   SIGNAL rdst_ix_ex                    : reg_ix_T;
-   SIGNAL rdst_ix_ex_reg                : reg_ix_T;
-   SIGNAL rdst_ix_me                    : reg_ix_T := 0;
-   SIGNAL rdst_ix_me_reg                : reg_ix_T := 0;
+   SIGNAL rdst_ix_at                    : reg_nbr_T;
+   SIGNAL rdst_ix_dc                    : reg_nbr_T;
+   SIGNAL rdst_ix_dc_reg                : reg_nbr_T;
+   SIGNAL rdst_ix_dc_u                  : reg_nbr_T;
+   SIGNAL rdst_ix_dec                   : reg_nbr_T;
+   SIGNAL rdst_ix_ex                    : reg_nbr_T;
+   SIGNAL rdst_ix_ex_reg                : reg_nbr_T;
+   SIGNAL rdst_ix_me                    : reg_nbr_T := 0;
+   SIGNAL rdst_ix_me_reg                : reg_nbr_T := 0;
    SIGNAL res_at                        : reg_mem_T;
    SIGNAL res_at_u                      : reg_mem_T;
    SIGNAL res_ex                        : reg_mem_T;
@@ -129,7 +130,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL rptr_dc_u                     : rptr_T;
    SIGNAL rptr_ex                       : rptr_T;
    SIGNAL rptr_ex_reg                   : rptr_T;
-   SIGNAL rptr_ix                       : reg_ix_T;
+   SIGNAL rptr_ix                       : reg_nbr_T;
    SIGNAL rptr_me                       : rptr_T;
    SIGNAL rptr_rf                       : rptr_T;
    SIGNAL sbt                           : pc_T;
@@ -139,7 +140,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL state_error_dbu               : boolean;
    SIGNAL state_error_pgu               : boolean;
    SIGNAL xret                          : xret_T;
-   SIGNAL zero_reg_ix                   : reg_ix_T := 0;
+   SIGNAL zero_reg_ix                   : reg_nbr_T := 0;
 
 
    -- Component Declarations
@@ -196,7 +197,7 @@ ARCHITECTURE struct OF riscvio IS
       pc_me         : IN     pc_T ;
       raux_me       : IN     raux_T ;
       rdat_me       : IN     rdat_T ;
-      rdst_ix_me    : IN     reg_ix_T ;
+      rdst_ix_me    : IN     reg_nbr_T ;
       res_at_u      : IN     reg_mem_T ;
       res_n         : IN     std_logic ;
       rptr_me       : IN     rptr_T ;
@@ -206,7 +207,7 @@ ARCHITECTURE struct OF riscvio IS
       pc_wb         : OUT    pc_T ;
       pipe_flush    : OUT    boolean ;
       rd_wb         : OUT    reg_wb_T ;
-      rdst_ix_at    : OUT    reg_ix_T ;
+      rdst_ix_at    : OUT    reg_nbr_T ;
       res_at        : OUT    reg_mem_T 
    );
    END COMPONENT;
@@ -222,7 +223,7 @@ ARCHITECTURE struct OF riscvio IS
    COMPONENT clr_ptr_end_addr_mux
    PORT (
       raux_ex    : IN     raux_T ;
-      rdst_ix_ex : IN     reg_ix_T ;
+      rdst_ix_ex : IN     reg_nbr_T ;
       rptr_ex    : IN     rptr_T ;
       end_addr   : OUT    word_T 
    );
@@ -231,9 +232,9 @@ ARCHITECTURE struct OF riscvio IS
    PORT (
       csr_reg   : IN     reg_mem_T ;
       raux_rf   : IN     raux_T ;
-      rdat_ix   : IN     reg_ix_T ;
+      rdat_ix   : IN     reg_nbr_T ;
       rdat_rf   : IN     rdat_T ;
-      rptr_ix   : IN     reg_ix_T ;
+      rptr_ix   : IN     reg_nbr_T ;
       rptr_rf   : IN     rptr_T ;
       raux_dc_u : OUT    raux_T ;
       rdat_dc_u : OUT    rdat_T ;
@@ -243,7 +244,7 @@ ARCHITECTURE struct OF riscvio IS
    COMPONENT csr_unit
    PORT (
       clk           : IN     std_logic ;
-      csr_ix        : IN     csr_ix_T ;
+      csr_ix        : IN     csr_nbr_T ;
       exc_wb        : IN     exc_cause_T ;
       pc_wb         : IN     pc_T ;
       rd_wb         : IN     reg_wb_T ;
@@ -267,7 +268,7 @@ ARCHITECTURE struct OF riscvio IS
       pipe_flush      : IN     boolean ;
       raux_dc_u       : IN     raux_T ;
       rdat_dc_u       : IN     rdat_T ;
-      rdst_ix_dc_u    : IN     reg_ix_T ;
+      rdst_ix_dc_u    : IN     reg_nbr_T ;
       res_n           : IN     std_logic ;
       rptr_dc_u       : IN     rptr_T ;
       stall           : IN     std_logic ;
@@ -282,7 +283,7 @@ ARCHITECTURE struct OF riscvio IS
       pgu_mode_dc     : OUT    pgu_mode_T ;
       raux_dc_reg     : OUT    raux_T ;
       rdat_dc_reg     : OUT    rdat_T ;
-      rdst_ix_dc_reg  : OUT    reg_ix_T ;
+      rdst_ix_dc_reg  : OUT    reg_nbr_T ;
       rptr_dc_reg     : OUT    rptr_T 
    );
    END COMPONENT;
@@ -319,14 +320,14 @@ ARCHITECTURE struct OF riscvio IS
    PORT (
       instruction : IN     word_T;
       pc          : IN     pc_T;
-      csr_ix      : OUT    csr_ix_T;
+      csr_ix      : OUT    csr_nbr_T;
       ctr_sig     : OUT    ctrl_sig_t;
       exc         : OUT    exc_cause_T;
       imm         : OUT    word_T;
-      raux_ix     : OUT    reg_ix_T;
-      rdat_ix     : OUT    reg_ix_T;
-      rdst_ix     : OUT    reg_ix_T;
-      rptr_ix     : OUT    reg_ix_T;
+      raux_ix     : OUT    reg_nbr_T;
+      rdat_ix     : OUT    reg_nbr_T;
+      rdst_ix     : OUT    reg_nbr_T;
+      rptr_ix     : OUT    reg_nbr_T;
       sbt         : OUT    pc_T;
       sbt_valid   : OUT    boolean;
       xret        : OUT    xret_T
@@ -340,7 +341,7 @@ ARCHITECTURE struct OF riscvio IS
       pc          : IN     pc_T;
       raux        : IN     raux_T;
       rdat        : IN     rdat_T;
-      rdst_ix     : IN     reg_ix_T;
+      rdst_ix     : IN     reg_nbr_T;
       rptr        : IN     rptr_T;
       dbt         : OUT    pc_T;
       dbt_valid   : OUT    boolean;
@@ -350,12 +351,13 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT ex_exc_encoder
    PORT (
-      frame_type_exc  : IN     boolean;
-      ixoob_exc       : IN     boolean;
-      prev_exc        : IN     exc_cause_T;
-      state_err_a_exc : IN     boolean;
-      state_err_b_exc : IN     boolean;
-      exc             : OUT    exc_cause_T
+      frame_type_exc    : IN     boolean;
+      ixoob_exc         : IN     boolean;
+      pointer_arith_exc : IN     boolean;
+      prev_exc          : IN     exc_cause_T;
+      state_err_a_exc   : IN     boolean;
+      state_err_b_exc   : IN     boolean;
+      exc               : OUT    exc_cause_T
    );
    END COMPONENT;
    COMPONENT ex_reg
@@ -369,7 +371,7 @@ ARCHITECTURE struct OF riscvio IS
       pipe_flush     : IN     boolean ;
       raux_dc        : IN     raux_T ;
       rdat_dc        : IN     rdat_T ;
-      rdst_ix_dc     : IN     reg_ix_T ;
+      rdst_ix_dc     : IN     reg_nbr_T ;
       res_ex_u       : IN     reg_mem_T ;
       res_n          : IN     std_logic ;
       rptr_dc        : IN     rptr_T ;
@@ -387,7 +389,7 @@ ARCHITECTURE struct OF riscvio IS
       pgu_mode_ex    : OUT    pgu_mode_T ;
       raux_ex_reg    : OUT    raux_T ;
       rdat_ex_reg    : OUT    rdat_T ;
-      rdst_ix_ex_reg : OUT    reg_ix_T ;
+      rdst_ix_ex_reg : OUT    reg_nbr_T ;
       res_ex         : OUT    reg_mem_T ;
       res_ex_uq      : OUT    reg_mem_T ;
       rptr_ex_reg    : OUT    rptr_T 
@@ -395,13 +397,16 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT ex_res_mux
    PORT (
-      alu_out_ex_u   : IN     word_T ;
-      branch_mode_dc : IN     branch_mode_T ;
-      dbu_out_ex_u   : IN     reg_mem_T ;
-      pgu_mode_dc    : IN     pgu_mode_T ;
-      pgu_ptr_ex_u   : IN     reg_mem_T ;
-      raux_dc        : IN     raux_T ;
-      res_ex_u       : OUT    reg_mem_T 
+      alu_mode_dc       : IN     alu_mode_T ;
+      alu_out_ex_u      : IN     word_T ;
+      branch_mode_dc    : IN     branch_mode_T ;
+      dbu_out_ex_u      : IN     reg_mem_T ;
+      pgu_mode_dc       : IN     pgu_mode_T ;
+      pgu_ptr_ex_u      : IN     reg_mem_T ;
+      raux_dc           : IN     raux_T ;
+      rptr_dc           : IN     rptr_T ;
+      pointer_arith_exc : OUT    boolean ;
+      res_ex_u          : OUT    reg_mem_T 
    );
    END COMPONENT;
    COMPONENT fwd_unit
@@ -409,21 +414,21 @@ ARCHITECTURE struct OF riscvio IS
       fwd_0     : IN     boolean ;
       fwd_1     : IN     boolean ;
       fwd_2     : IN     boolean ;
-      fwd_idx_0 : IN     reg_ix_T   := 0;
-      fwd_idx_1 : IN     reg_ix_T   := 0;
-      fwd_idx_2 : IN     reg_ix_T   := 0;
+      fwd_idx_0 : IN     reg_nbr_T  := 0;
+      fwd_idx_1 : IN     reg_nbr_T  := 0;
+      fwd_idx_2 : IN     reg_nbr_T  := 0;
       fwd_res_0 : IN     reg_mem_T  := REG_MEM_NULL;
       fwd_res_1 : IN     reg_mem_T  := REG_MEM_NULL;
       fwd_res_2 : IN     reg_mem_T  := REG_MEM_NULL;
       imm_reg   : IN     word_T ;
       raux_reg  : IN     raux_T ;
       rdat_reg  : IN     rdat_T ;
-      rdst_reg  : IN     reg_ix_T ;
+      rdst_reg  : IN     reg_nbr_T ;
       rptr_reg  : IN     rptr_T ;
       imm_fwd   : OUT    word_T ;
       raux_fwd  : OUT    raux_T ;
       rdat_fwd  : OUT    rdat_T ;
-      rdst_fwd  : OUT    reg_ix_T ;
+      rdst_fwd  : OUT    reg_nbr_T ;
       rptr_fwd  : OUT    rptr_T 
    );
    END COMPONENT;
@@ -497,7 +502,7 @@ ARCHITECTURE struct OF riscvio IS
       pipe_flush    : IN     boolean ;
       raux_ex       : IN     raux_T ;
       rdat_ex       : IN     rdat_T ;
-      rdst_ix_ex    : IN     reg_ix_T ;
+      rdst_ix_ex    : IN     reg_nbr_T ;
       res_me_u      : IN     reg_mem_T ;
       res_n         : IN     std_logic ;
       rptr_ex       : IN     rptr_T ;
@@ -512,7 +517,7 @@ ARCHITECTURE struct OF riscvio IS
       pc_me         : OUT    pc_T ;
       raux_me       : OUT    raux_T ;
       rdat_me       : OUT    rdat_T ;
-      rdst_ix_me    : OUT    reg_ix_T ;
+      rdst_ix_me    : OUT    reg_nbr_T ;
       res_me        : OUT    reg_mem_T ;
       rptr_me       : OUT    rptr_T 
    );
@@ -544,10 +549,10 @@ ARCHITECTURE struct OF riscvio IS
       ctrl_dc_dec  : IN     ctrl_sig_t;
       imm_dec      : IN     word_T;
       insert_nop   : IN     boolean;
-      rdst_ix_dec  : IN     reg_ix_T;
+      rdst_ix_dec  : IN     reg_nbr_T;
       ctrl_dc_u    : OUT    ctrl_sig_T;
       imm_dc_u     : OUT    word_T;
-      rdst_ix_dc_u : OUT    reg_ix_T
+      rdst_ix_dc_u : OUT    reg_nbr_T
    );
    END COMPONENT;
    COMPONENT obj_init_fsm
@@ -559,7 +564,7 @@ ARCHITECTURE struct OF riscvio IS
       frame_lim_csr      : IN     word_T ;
       pgu_mode_dc_uq     : IN     pgu_mode_T ;
       pgu_mode_ex        : IN     pgu_mode_T ;
-      rdst_ix_ex         : IN     reg_ix_T ;
+      rdst_ix_ex         : IN     reg_nbr_T ;
       res_ex             : IN     reg_mem_T ;
       res_ex_uq          : IN     reg_mem_T ;
       res_n              : IN     std_logic ;
@@ -601,7 +606,7 @@ ARCHITECTURE struct OF riscvio IS
       pgu_mode                      : IN     pgu_mode_T ;
       raux                          : IN     raux_T ;
       rdat                          : IN     rdat_T ;
-      rdst_ix                       : IN     reg_ix_T ;
+      rdst_ix                       : IN     reg_nbr_T ;
       rptr                          : IN     rptr_T ;
       frame_type_exception          : OUT    boolean ;
       index_out_of_bounds_exception : OUT    boolean ;
@@ -616,22 +621,22 @@ ARCHITECTURE struct OF riscvio IS
       ctrl_ex    : IN     ctrl_sig_T;
       ctrl_if    : IN     ctrl_sig_T;
       dbt_valid  : IN     boolean;
-      raux_ix    : IN     reg_ix_T;
-      rdat_ix    : IN     reg_ix_T;
-      rdst_dc    : IN     reg_ix_T;
-      rdst_ex    : IN     reg_ix_T;
-      rptr_ix    : IN     reg_ix_T;
+      raux_ix    : IN     reg_nbr_T;
+      rdat_ix    : IN     reg_nbr_T;
+      rdst_dc    : IN     reg_nbr_T;
+      rdst_ex    : IN     reg_nbr_T;
+      rptr_ix    : IN     reg_nbr_T;
       insert_nop : OUT    boolean
    );
    END COMPONENT;
    COMPONENT register_file
    PORT (
       clk     : IN     std_logic;
-      raux_ix : IN     reg_ix_T;
+      raux_ix : IN     reg_nbr_T;
       rd_wb   : IN     reg_wb_T;
-      rdat_ix : IN     reg_ix_T;
+      rdat_ix : IN     reg_nbr_T;
       res_n   : IN     std_logic;
-      rptr_ix : IN     reg_ix_T;
+      rptr_ix : IN     reg_nbr_T;
       raux    : OUT    raux_T;
       rdat    : OUT    rdat_T;
       rptr    : OUT    rptr_T
@@ -878,12 +883,13 @@ BEGIN
       );
    ex_exc_i : ex_exc_encoder
       PORT MAP (
-         prev_exc        => exc_dc,
-         exc             => exc_ex_u,
-         frame_type_exc  => frame_type_exception,
-         state_err_a_exc => state_error_pgu,
-         ixoob_exc       => index_out_of_bounds_exception,
-         state_err_b_exc => state_error_dbu
+         prev_exc          => exc_dc,
+         exc               => exc_ex_u,
+         frame_type_exc    => frame_type_exception,
+         state_err_a_exc   => state_error_pgu,
+         pointer_arith_exc => pointer_arith_exc,
+         ixoob_exc         => index_out_of_bounds_exception,
+         state_err_b_exc   => state_error_dbu
       );
    ex_reg_i : ex_reg
       PORT MAP (
@@ -921,13 +927,16 @@ BEGIN
       );
    ex_res_mux_i : ex_res_mux
       PORT MAP (
-         alu_out_ex_u   => alu_out_ex_u,
-         branch_mode_dc => branch_mode_dc,
-         dbu_out_ex_u   => dbu_out_ex_u,
-         pgu_mode_dc    => pgu_mode_dc,
-         pgu_ptr_ex_u   => pgu_ptr_ex_u,
-         raux_dc        => raux_dc,
-         res_ex_u       => res_ex_u
+         alu_mode_dc       => alu_mode_dc,
+         alu_out_ex_u      => alu_out_ex_u,
+         branch_mode_dc    => branch_mode_dc,
+         dbu_out_ex_u      => dbu_out_ex_u,
+         pgu_mode_dc       => pgu_mode_dc,
+         pgu_ptr_ex_u      => pgu_ptr_ex_u,
+         raux_dc           => raux_dc,
+         rptr_dc           => rptr_dc,
+         pointer_arith_exc => pointer_arith_exc,
+         res_ex_u          => res_ex_u
       );
    fwd_ex_i : fwd_unit
       PORT MAP (

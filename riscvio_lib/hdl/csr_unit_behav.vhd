@@ -24,8 +24,8 @@ BEGIN
             csrs(mstatus) <= X"00000000";
             csrs(mcause) <= X"00000000";
             csrs(mtval) <= X"00000000";
-            mepc_reg <= (ptr => X"00000000", pi => X"00000000", dt => X"00000000", ix => X"00000000");
-            core_reg <= (data => X"00000000", pi => X"00000000", delta => X"FFFFFFFF", tag => POINTER);
+            mepc_reg <= (ptr => X"00000000", ix => X"00000000", eoc => X"00000000");
+            core_reg <= (val => X"00000000", ix => X"00000000", pi => X"00000000", dt => X"FFFFFFFF", tag => POINTER);
             csrs(mvendorid) <= X"4C654C75";
             csrs(marchid) <= X"5256694F";
             csrs(mimpid) <= X"00000000";
@@ -34,9 +34,9 @@ BEGIN
                 if rd_wb.ali = core then
                     core_reg <= rd_wb.mem;
                 elsif rd_wb.ali = mtvec then
-                    csrs(mtvec) <= rd_wb.mem.pi;
-                elsif rd_wb.csr_index /= ali_T'pos(no_csr) then
-                    csrs(ali_T'val(rd_wb.csr_index)) <= rd_wb.mem.data;
+                    csrs(mtvec) <= rd_wb.mem.ix;
+                elsif rd_wb.csr_nbr /= ali_T'pos(no_csr) then
+                    csrs(ali_T'val(rd_wb.csr_nbr)) <= rd_wb.mem.val;
                 end if;
                 
                 if exc_wb /= well_behaved then
@@ -49,12 +49,12 @@ BEGIN
         end if;
     end process;
 
-    csr_reg <=  (data => csrs(ali_T'val(csr_ix)), pi => csrs(alc_lim), delta => csrs(frame_lim), tag => POINTER)    when ali_T'val(csr_ix) = alc_addr else
+    csr_reg <=  (val => csrs(ali_T'val(csr_ix)), pi => csrs(alc_lim), dt => csrs(frame_lim), ix => X"00000000", tag => POINTER)    when ali_T'val(csr_ix) = alc_addr else
                 -- todo: convert all pointers to include an index to fix this 
-                (data => mepc_reg.ptr, pi => mepc_reg.pi, delta => mepc_reg.dt, tag => POINTER) when ali_T'val(csr_ix) = mepc else
-                (data => csrs(ali_T'val(csr_ix)), pi => X"00000000", delta => X"00000000", tag => DATA);
+                (val => mepc_reg.ptr, ix => mepc_reg.ix, pi => X"00000000", dt => mepc_reg.eoc, tag => POINTER) when ali_T'val(csr_ix) = mepc else
+                (val => csrs(ali_T'val(csr_ix)), ix => X"00000000", pi => X"00000000", dt => X"00000000", tag => DATA);
 
-    cjt <= (ptr => core_reg.data, ix => csrs(mtvec), pi => core_reg.pi, dt => core_reg.delta) when exc_wb /= well_behaved else 
+    cjt <= (ptr => core_reg.val, ix => csrs(mtvec), eoc => core_reg.dt) when exc_wb /= well_behaved else 
             mepc_reg when xret = mret else
             PC_NULL;
 

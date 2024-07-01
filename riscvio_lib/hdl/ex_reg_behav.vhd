@@ -68,6 +68,6 @@ BEGIN
     --raux_dc_uq <= raux_ex_reg;
     --rptr_dc_uq <= rptr_ex_reg;
     --rdat_dc_uq <= rdat_ex_reg;
-    allocating_me <= ali_T'val(rptr_ex_reg.ix) = alc_addr;
+    allocating_me <= ali_T'val(rptr_ex_reg.nbr) = alc_addr;
 END ARCHITECTURE behav;
 

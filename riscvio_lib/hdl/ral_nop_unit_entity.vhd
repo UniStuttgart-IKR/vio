@@ -20,12 +20,12 @@ ENTITY ral_nop_unit IS
         ctrl_dc         : IN     ctrl_sig_T;
         ctrl_ex         : IN     ctrl_sig_T;
         
-        rdat_ix         : IN     reg_ix_T;
-        raux_ix         : IN     reg_ix_T;
-        rptr_ix         : IN     reg_ix_T;
+        rdat_ix         : IN     reg_nbr_T;
+        raux_ix         : IN     reg_nbr_T;
+        rptr_ix         : IN     reg_nbr_T;
 
-        rdst_dc         : IN     reg_ix_T;
-        rdst_ex         : IN     reg_ix_T;
+        rdst_dc         : IN     reg_nbr_T;
+        rdst_ex         : IN     reg_nbr_T;
 
         dbt_valid       : IN     boolean;
         insert_nop      : OUT    boolean

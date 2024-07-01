@@ -11,6 +11,7 @@ ENTITY ex_exc_encoder IS
 
       frame_type_exc : IN  boolean;
       state_err_a_exc  : IN  boolean;
+      pointer_arith_exc  : IN  boolean;
       ixoob_exc      : IN  boolean;
       state_err_b_exc  : IN  boolean
    );

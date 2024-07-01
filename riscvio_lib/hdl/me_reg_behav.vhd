@@ -53,6 +53,6 @@ BEGIN
     ld_attr <= ctrl_me.at_mode = maybe and res_me.tag = POINTER;
     addr_me_uq <= res_me_u when not (stall = '1') else res_me;
     addr_me <= res_me;
-    allocating_at <= ali_T'val(rptr_me.ix) = alc_addr;
+    allocating_at <= ali_T'val(rptr_me.nbr) = alc_addr;
 END ARCHITECTURE behav;
 

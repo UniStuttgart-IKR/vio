@@ -11,7 +11,7 @@ ENTITY pgu IS
       pgu_mode                      : IN     pgu_mode_T;
       raux                          : IN     raux_T;
       rdat                          : IN     rdat_T;
-      rdst_ix                       : IN     reg_ix_T;
+      rdst_ix                       : IN     reg_nbr_T;
       rptr                          : IN     rptr_T;
       frame_type_exception          : OUT    boolean;
       index_out_of_bounds_exception : OUT    boolean;

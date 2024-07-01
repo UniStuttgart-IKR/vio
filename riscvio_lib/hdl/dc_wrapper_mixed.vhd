@@ -8,7 +8,6 @@
 -- using Mentor Graphics HDL Designer(TM) 2022.3 Built on 14 Jul 2022 at 13:56:12
 --
 LIBRARY riscvio_lib;
-USE riscvio_lib.primitive_cache;
 USE riscvio_lib.pipeline.all;
 LIBRARY ieee;
 USE ieee.numeric_std.all;
@@ -26,7 +25,7 @@ ARCHITECTURE mixed OF dc_wrapper IS
     signal bena: std_logic_vector(7 downto 0);
     signal stall_int: boolean;
 BEGIN
-  dcache: entity primitive_cache
+  dcache: entity riscvio_lib.primitive_cache
     generic map (
         BUS_WIDTH => BUS_WIDTH,
         WORDS_IN_LINE => DC_LINE_WIDTH,

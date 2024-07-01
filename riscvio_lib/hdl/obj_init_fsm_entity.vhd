@@ -13,7 +13,7 @@ ENTITY obj_init_fsm IS
       frame_lim_csr      : IN     word_T;
       pgu_mode_dc_uq     : IN     pgu_mode_T;
       pgu_mode_ex        : IN     pgu_mode_T;
-      rdst_ix_ex         : IN     reg_ix_T;
+      rdst_ix_ex         : IN     reg_nbr_T;
       res_ex             : IN     reg_mem_T;
       res_ex_uq          : IN     reg_mem_T;
       res_n              : IN     std_logic;

@@ -7,7 +7,7 @@ USE riscvio_lib.pipeline.all;
 ENTITY csr_unit IS
    PORT( 
       clk           : IN     std_logic;
-      csr_ix        : IN     csr_ix_T;
+      csr_ix        : IN     csr_nbr_T;
       exc_wb        : IN     exc_cause_T;
       pc_wb         : IN     pc_T;
       rd_wb         : IN     reg_wb_T;

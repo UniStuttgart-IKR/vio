@@ -41,6 +41,9 @@ BEGIN
     raux.val  <= rd_wb.mem.val when raux_ix = rd_wb.rf_nbr and raux_ix /= 0 else
                  registers(ali_T'val(raux_ix)).val when raux_ix <= ali_T'pos(t6) else 
                  (others => '0');
+    raux.ix   <= rd_wb.mem.ix when raux_ix = rd_wb.rf_nbr and raux_ix /= 0 else
+                 registers(ali_T'val(raux_ix)).ix when raux_ix <= ali_T'pos(t6) else 
+                 (others => '0');
     raux.tag  <= rd_wb.mem.tag when raux_ix = rd_wb.rf_nbr and raux_ix /= 0 else
                  registers(ali_T'val(raux_ix)).tag when raux_ix <= ali_T'pos(t6) else
                  DATA;

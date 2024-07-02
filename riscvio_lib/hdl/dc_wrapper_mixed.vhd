@@ -204,9 +204,9 @@ BEGIN
                           & sd_raux.val;
 
         when store_rpc =>
-            bena_pipeline <= (others => '1');
+            bena_pipeline <= X"FF" when sd_rptr.dt(31 downto 30) = "10" else X"0F";
             sd_pipeline <=  sd_raux.val
-                          & sd_rdat.val;
+                          & sd_raux.ix;
             
         when others =>
             wena <= false;

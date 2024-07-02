@@ -7,20 +7,10 @@ use ieee.numeric_std.all;
 PACKAGE pipeline IS
 
 --------------------------------------------------------------------------------------
---                                 PIPELINE                                         --
+--                       CSR, REGISTER FILE & PIPELINE                              --
 --------------------------------------------------------------------------------------
 
-    subtype TAG_RANGE is natural range 2 downto 0;
-    constant IO_POINTER_TAG: std_logic_vector(TAG_RANGE) := "011";
-
     --subtype index_T is std_logic_vector(INDEX_SIZE - 1 downto 0);
-
-    type mem_addr_T is record
-      io_access: boolean;
-      addr: word_T;
-    end record mem_addr_T;
-    constant MEM_ADDR_NULL: mem_addr_T := (io_access => false, addr => (others => '0'));
-
     type reg_tag_T is (DATA, POINTER);
     type reg_mem_T is record
       tag: reg_tag_T;
@@ -83,6 +73,10 @@ PACKAGE pipeline IS
     end record raux_T;
     CONSTANT RAUX_NULL: raux_T := (ali => zero, nbr => 0, val => (others => '0'), ix => (others => '0'), tag => DATA);
 
+--------------------------------------------------------------------------------------
+--                                  DECODER                                         --
+--------------------------------------------------------------------------------------
+
     type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, 
                         alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orcb, alu_rev8,
                         alu_illegal);
@@ -129,9 +123,38 @@ PACKAGE pipeline IS
       altbu: boolean;
     end record alu_flags_T;
 
-    type exc_cause_T is (panic, illeg, sverr, sterr, privv, tcoil, tciob, endoc, rixeq, rdcnu, rcdnc, drfnu, drfcd, wrptv, sealv, ixoob, frtyp, aperr, hpovf, stovf, well_behaved);
-
     pure function decodeOpc(instruction: std_logic_vector(31 downto 0)) return decode_T;
+
+
+--------------------------------------------------------------------------------------
+--                          POINTER GENERATION UNIT                                 --
+--------------------------------------------------------------------------------------
+
+    subtype TAG_RANGE is natural range 2 downto 0;
+    constant IO_POINTER_TAG: std_logic_vector(TAG_RANGE) := "011";
+
+    type mem_addr_T is record
+      io_access: boolean;
+      addr: word_T;
+    end record mem_addr_T;
+    constant MEM_ADDR_NULL: mem_addr_T := (io_access => false, addr => (others => '0'));
+
+    pure function allocateNewObject(current_alc_addr: word_T; pi: word_T; dt: word_T; dalc: boolean := false) return word_T;
+    pure function calculateMemoryAddress(pi: word_T; ix: word_T; offs: word_T; base: word_T; rc: std_logic; ri: std_logic; ptr_access: boolean := false) return word_T;
+
+
+--------------------------------------------------------------------------------------
+--                                 EXCEPTIONS                                       --
+--------------------------------------------------------------------------------------
+
+    type exc_cause_T is (panic, illeg, sverr, sterr, privv, tcoil, tciob, endoc, rixeq, rdcnu, rcdnc, drfnu, drfcd, wrptv, sealv, ixoob, frtyp, aperr, hpovf, stovf, ptari, well_behaved);
+    pure function isFrameTypeException(rdst_nbr: reg_nbr_T; frame: rptr_T; pgu_mode: pgu_mode_T) return boolean;
+    pure function isIndexOutOfBoundsException(rdst_nbr: reg_nbr_T; rptr: rptr_T; raux: raux_T; rdat: rdat_T; imm: word_T; pgu_mode: pgu_mode_T) return boolean;
+    pure function isStateErrorException(rdst_nbr: reg_nbr_T; rptr: rptr_T; raux: raux_T; rdat: rdat_T; pc: pc_T; pgu_mode: pgu_mode_T; branch_mode: branch_mode_T) return boolean;
+    pure function isPointerArithException(alu_mode: alu_mode_T; raux: raux_T) return boolean;
+    pure function isTargetCodeIndexOutOfBounds(target_ix: word_T; target_public: word_T; target_private: word_T; branch_mode: branch_mode_T; inter: boolean) return boolean;
+    pure function isHeapOverflowException(allocated_address: word_T; alc_params: rptr_T; pgu_mode: pgu_mode_T) return boolean;
+    pure function isStackOverflowException(allocated_address: word_T; alc_params: rptr_T; pgu_mode: pgu_mode_T) return boolean;
 
 --------------------------------------------------------------------------------------
 --                                  CHACHES                                         --

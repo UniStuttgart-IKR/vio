@@ -11,4 +11,3 @@ ARCHITECTURE behav OF clr_ptr_end_addr_mux IS
 BEGIN
     end_addr <= rptr_ex.val when rdst_ix_ex /= ali_T'pos(frame) else raux_ex.val;
 END ARCHITECTURE behav;
-

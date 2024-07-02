@@ -27,6 +27,7 @@ ENTITY ral_nop_unit IS
         rdst_dc         : IN     reg_nbr_T;
         rdst_ex         : IN     reg_nbr_T;
 
+        sbt_valid       : IN     boolean;
         dbt_valid       : IN     boolean;
         insert_nop      : OUT    boolean
     );

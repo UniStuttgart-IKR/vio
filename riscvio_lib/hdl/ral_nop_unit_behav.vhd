@@ -17,6 +17,6 @@ BEGIN
     attr_ral <= ((ctrl_ex.at_mode = maybe) and (rdst_ex = rptr_ix));
 
     -- if we will clear the instruction in the dc stage anyway we dont need to insert nops for this instr
-    insert_nop <= not dbt_valid and (data_ral or pointer_ral or attr_ral);
+    insert_nop <= not dbt_valid and not sbt_valid and (data_ral or pointer_ral or attr_ral);
 END ARCHITECTURE behav;
 

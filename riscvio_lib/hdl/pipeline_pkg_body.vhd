@@ -178,21 +178,21 @@ PACKAGE BODY pipeline IS
                 res.me_mode  := holiday;
                 res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
-                res.rdat     := 0; 
-                res.rptr     := ali_T'pos(ra);
-                res.raux     := ali_T'pos(frame);
+                res.rptr     := 0; 
+                res.rdat     := ali_T'pos(frame);
+                res.raux     := ali_T'pos(ra);
                 res.pgu_mode := pgu_nop;
                 res.branch_mode := jal;
 
             when OPC_JALR =>
-                res.mnemonic := jr;
-                res.alu_mode := alu_add;
+                res.mnemonic := jalr;
+                res.alu_mode := alu_illegal;
                 res.imm_mode := i_type;
                 res.me_mode  := holiday;
                 res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
-                res.rptr     := ali_T'pos(ra);
-                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
+                res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                res.rdat     := ali_T'pos(ra);
                 res.raux     := ali_T'pos(frame);
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= IMM;
@@ -308,7 +308,7 @@ PACKAGE BODY pipeline IS
                                     res.me_mode  := holiday;
                 end case;
             when OPC_OR =>
-                res.alu_mode := alu_add;
+                res.alu_mode := alu_illegal;
                 res.me_mode  := holiday;
                 res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
@@ -360,14 +360,14 @@ PACKAGE BODY pipeline IS
                                             res.pgu_mode := pgu_rcd when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else pgu_ptr_i;
                                             
                     when F3_JLIB =>         res.mnemonic := jlib;
-                                            res.alu_mode := alu_add;
+                                            res.alu_mode := alu_illegal;
                                             res.imm_mode := i_type;
                                             res.me_mode  := holiday;
                                             res.at_mode  := no;
                                             res.rdst     := ali_T'pos(ra);
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                                            res.rdat     := ali_T'pos(ra);
-                                            res.raux     := ali_T'pos(frame);
+                                            res.rdat     := ali_T'pos(frame);
+                                            res.raux     := ali_T'pos(ra);
                                             res.alu_a_sel:= DAT;
                                             res.alu_b_sel:= IMM;
                                             res.pgu_mode := pgu_nop;
@@ -585,5 +585,106 @@ PACKAGE BODY pipeline IS
         end case;
         return res;
     end function decodeOpc;
+
+    pure function allocateNewObject(current_alc_addr: word_T; pi: word_T; dt: word_T; dalc: boolean := false) return word_T is
+        variable pi_aligned, dt_aligned: word_T;
+        variable reserved_space: natural range 8 to 16;
+        variable addr: word_T;
+        variable old_tag, new_tag: std_logic_vector(2 downto 0);
+    begin
+        old_tag := current_alc_addr(2 downto 0);
+        new_tag := "101" when old_tag = "100" else
+                   "100" when old_tag = "101" else
+                   old_tag;
+
+        pi_aligned := pi(word_T'high-2 downto 0) & "00";
+        dt_aligned := "00" & dt(word_T'high-2 downto 0);
+        reserved_space := 16 when (dt(31) = '1' and dt(30) = '1') else 12 when (dt(31) = '1' or dt(30) = '1') else 8;
+        addr := std_logic_vector(unsigned(current_alc_addr) + unsigned(pi_aligned) + unsigned(dt_aligned) + to_unsigned(reserved_space, word_T'length)) when dalc else
+                std_logic_vector(unsigned(current_alc_addr) - unsigned(pi_aligned) - unsigned(dt_aligned) - to_unsigned(reserved_space, word_T'length));
+        return addr(word_T'high downto 3) & new_tag;
+    end function allocateNewObject;
+
+    pure function calculateMemoryAddress(pi: word_T; ix: word_T; offs: word_T; base: word_T; rc: std_logic; ri: std_logic; ptr_access: boolean := false) return word_T is
+        variable pi_scaled: word_T;
+        variable offset_scaled: word_T;
+        variable index_scaled: word_T;
+        variable index_space: word_T;
+        variable reserved_space: natural range 8 to 16;
+    begin
+        pi_scaled := '0' & pi(word_T'high-1 downto 2) & "00";
+        offset_scaled := offs(word_T'high-2 downto 0) & "00";
+        index_scaled := ix(word_T'high-2 downto 0) & "00";
+        index_space := word_T(unsigned(pi)*INDEX_SIZE+7) and X"FFFFFFFD";
+        reserved_space := 16 when (rc = '1' and ri = '0') else 12 when (rc = '0' or ri = '1') else 8;
+
+        if ptr_access then
+            return std_logic_vector(unsigned(base) + unsigned(offset_scaled) + unsigned(index_scaled) + reserved_space);
+        else
+            return std_logic_vector(unsigned(base) + unsigned(pi_scaled) + unsigned(index_space) + unsigned(offs) + unsigned(ix) + reserved_space);
+        end if;
+    end function calculateMemoryAddress;
+
+    pure function isFrameTypeException(rdst_nbr: reg_nbr_T; frame: rptr_T; pgu_mode: pgu_mode_T) return boolean is
+    begin
+        return  (ali_T'val(rdst_nbr) = ra and pgu_mode = pgu_dat_r and pgu_mode = pgu_ptr_r) or                                                                         --try loading/storing ra with index addressing
+                (ali_T'val(rdst_nbr) = ra and frame.val(2 downto 0) /= "100" and frame.val(2 downto 0) /= "101" and pgu_mode = pgu_dat_r and pgu_mode = pgu_ptr_r) or   --try loading/storing ra from non stack frame object (TODO: could we allow this?)
+                (pgu_mode = pgu_rix and frame.dt(31 downto 30) /= "10" and frame.dt(31 downto 30) /= "01") or                                                           --try loading/storing rix from terminal frame
+                (pgu_mode = pgu_rcd and frame.dt(31 downto 30) /= "10" and frame.dt(31 downto 30) /= "01");                                                             --try loading/storing ra from terminal frame
+    end function isFrameTypeException;
+
+    pure function isIndexOutOfBoundsException(rdst_nbr: reg_nbr_T; rptr: rptr_T; raux: raux_T; rdat: rdat_T; imm: word_T; pgu_mode: pgu_mode_T) return boolean is
+    begin
+        return  ali_T'val(rdst_nbr) /= ra and raux.ali /= ra and (
+                    (pgu_mode = pgu_dat_i and unsigned(imm(28 downto 0)) > unsigned(rptr.dt) and rptr.ali = frame) or
+                    (pgu_mode = pgu_dat_i and unsigned(imm(30 downto 0)) > unsigned(rptr.dt)) or
+                    (pgu_mode = pgu_dat_r and unsigned(rdat.val(28 downto 0)) > unsigned(rptr.dt) and rptr.ali = frame) or
+                    (pgu_mode = pgu_dat_r and unsigned(rdat.val(30 downto 0)) > unsigned(rptr.dt)) or
+                    (pgu_mode = pgu_ptr_i and unsigned(imm(30 downto 2)) > unsigned(rptr.pi)) or
+                    (pgu_mode = pgu_ptr_r and unsigned(rdat.val(30 downto 2)) > unsigned(rptr.pi))
+                );
+    end function isIndexOutOfBoundsException;
+
+    pure function isTargetCodeIndexOutOfBounds(target_ix: word_T; target_public: word_T; target_private: word_T; branch_mode: branch_mode_T; inter: boolean) return boolean is
+    begin
+        return  (branch_mode = jalr and inter and unsigned(target_ix) > unsigned(target_public)) or
+                (branch_mode = jalr and not inter and unsigned(target_ix) > unsigned(target_private)) or
+                (branch_mode = jal and unsigned(target_ix) > unsigned(target_private)) or
+                (branch_mode = jlib and unsigned(target_ix) > unsigned(target_public));
+    end function isTargetCodeIndexOutOfBounds;
+
+    pure function isStateErrorException(rdst_nbr: reg_nbr_T; rptr: rptr_T; raux: raux_T; rdat: rdat_T; pc: pc_T; pgu_mode: pgu_mode_T; branch_mode: branch_mode_T) return boolean is
+        variable pgu_load_store: boolean;
+    begin
+        pgu_load_store := pgu_mode = pgu_dat_i or pgu_mode = pgu_dat_r or pgu_mode = pgu_ptr_i or pgu_mode = pgu_ptr_r;
+        return  pgu_mode = pgu_nop and branch_mode = no_branch and (                                                     --default
+                    ((pgu_mode = pgu_push or pgu_mode = pgu_pusht) and raux.val(0) /= rdat.val(0)) or --try two consecutive pushes
+                    (pgu_mode = pgu_pop and raux.val(0) /= rdat.val(0)) or --try two consecutive pops
+                    ((pgu_mode = pgu_dat_r or pgu_mode = pgu_ptr_r) and rptr.ali = frame) or                        --try executing index load/store on stack frame
+                    (pgu_load_store and raux.ali = frame and rdat.ali /= ra) or                                                        --(should not happen but just to be sure)
+                    (pgu_load_store and raux.ali = frame and raux.val(0) /= rdat.val(0)) or                                        --color of frame does not match color of rix
+                    
+                    (branch_mode = jalr and rptr.ali = ra and rptr.val /= pc.ptr and rptr.ix(31) /= '1') or --try rtlib without inter-rix
+                    (branch_mode = jalr and rptr.ali = ra and raux.val(0) /= rdat.val(0)) or --try ret without popping first
+                    (branch_mode = jalr and rdst_nbr /= 0 and raux.val(0) = rdat.val(0)) or --try bsr/jlib without pushing first
+                    (branch_mode = jlib and rdst_nbr /= 0 and raux.val(0) = rdat.val(0)) or --try bsr/jlib without pushing first
+                    (branch_mode = jal  and rdst_nbr /= 0 and raux.val(0) = rdat.val(0)) --try bsr/jlib without pushing first
+                );
+    end function isStateErrorException;
+
+    pure function isPointerArithException(alu_mode: alu_mode_T; raux: raux_T) return boolean is
+    begin
+        return INDEX_SIZE = 0 and alu_mode /= alu_illegal and alu_mode /= alu_add and raux.tag = POINTER;
+    end function isPointerArithException;
+
+    pure function isHeapOverflowException(allocated_address: word_T; alc_params: rptr_T; pgu_mode: pgu_mode_T) return boolean is
+    begin
+        return unsigned(allocated_address) <= unsigned(alc_params.pi) and (pgu_mode = pgu_alc or pgu_mode = pgu_alci or pgu_mode = pgu_alcd or pgu_mode = pgu_alcp);
+    end function isHeapOverflowException;
+
+    pure function isStackOverflowException(allocated_address: word_T; alc_params: rptr_T; pgu_mode: pgu_mode_T) return boolean is
+    begin
+        return unsigned(allocated_address) <= unsigned(alc_params.dt) and (pgu_mode = pgu_push or pgu_mode = pgu_pusht);
+    end function isStackOverflowException;
 
 END pipeline;

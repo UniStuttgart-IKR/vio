@@ -6,7 +6,7 @@ start
 init
 private
 start:      la      x3, @core
-            addi    x3, x3,-8
+            ccp     x3, x3
             jlib    x3, @core.init
             nop
             nop
@@ -47,23 +47,13 @@ init:
             # li      t1, 10
             # sb      t1, 0(s9)
 
-
-            push    4,8
-            jal     entry
-            addi    t0, t1,2
-            addi    t3, t4,5
-
-entry:
-            pushg   1,2
+            push    1,0
             sp      ra, 0(frame)
 
             la      a0, @hdmi
             ccp     a0, a0
 
-
-
             la      s0, @usb
-            nop
             ccp     s0, s0
             mv      s1, s0
             sp      s1, 0(frame)
@@ -103,14 +93,14 @@ af:         addi    t0, t1,2
             addi    t3, t4,5
             ret                 #standard risc-v pseudo-instruction for jalr zero, 0(ra)
 
-b:          pushg   0,0
+b:          push    0,0
             sp      ra, 0(frame)
             jal     c
             lp      ra, 0(frame)
             pop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
-c:          pushg   0,0
+c:          push    0,0
             sp      ra, 0(frame)
             jlib    a0, @hdmi.s
             lp      ra, 0(frame)

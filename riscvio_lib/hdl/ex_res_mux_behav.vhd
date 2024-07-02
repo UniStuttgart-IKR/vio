@@ -14,5 +14,5 @@ BEGIN
                 (val => rptr_dc.val, tag => POINTER, ix => alu_out_ex_u, pi => rptr_dc.pi, dt => rptr_dc.dt) when alu_mode_dc /= alu_illegal and raux_dc.tag = POINTER else
                 pgu_ptr_ex_u;
 
-    pointer_arith_exc <= INDEX_SIZE = 0 and alu_mode_dc /= alu_illegal and raux_dc.tag = POINTER;
+    pointer_arith_exc <= isPointerArithException(alu_mode_dc, raux_dc);
 END ARCHITECTURE behav;

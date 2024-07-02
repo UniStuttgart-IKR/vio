@@ -26,6 +26,7 @@ ENTITY dyn_branch_unit IS
     pc             : IN pc_T;
 
     state_error    : OUT boolean;
+    target_error   : OUT boolean;
     ra_out         : OUT reg_mem_T;
     dbt_valid      : OUT boolean;
     dbt            : OUT pc_T

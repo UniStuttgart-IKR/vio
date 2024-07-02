@@ -181,7 +181,7 @@ PACKAGE isa IS
     constant F7_HALFU:                      std_logic_vector(FUNCT7_RANGE) := "1000001";
 
     type mnemonic_T is (nop, add_i, add_r, sub_r, sll_i, sll_r, slt_r, slt_i, sltu_i, sltu_r, xor_i, xor_r, srl_i, srl_r, sra_i, sra_r, or_i, or_r, and_i, and_r,
-                        jal, jr, beq, bne, blt, bge, bltu, bgeu,
+                        jal, jalr, beq, bne, blt, bge, bltu, bgeu,
                         lui, auipc,
                         lb_i, lh_i, lw_i, lbu_i, lhu_i, sb_i, sh_i, sw_i, lb_r, lh_r, lw_r, lbu_r, lhu_r, sb_r, sh_r, sw_r,
                         andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, mins, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,

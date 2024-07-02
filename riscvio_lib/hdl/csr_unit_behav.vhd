@@ -49,8 +49,7 @@ BEGIN
         end if;
     end process;
 
-    csr_reg <=  (val => csrs(ali_T'val(csr_ix)), pi => csrs(alc_lim), dt => csrs(frame_lim), ix => X"00000000", tag => POINTER)    when ali_T'val(csr_ix) = alc_addr else
-                -- todo: convert all pointers to include an index to fix this 
+    csr_reg <=  (val => csrs(alc_addr), pi => csrs(alc_lim), dt => csrs(frame_lim), ix => X"00000000", tag => POINTER) when ali_T'val(csr_ix) = alc_addr or ali_T'val(csr_ix) = alc_lim or ali_T'val(csr_ix) = frame_lim else
                 (val => mepc_reg.ptr, ix => mepc_reg.ix, pi => X"00000000", dt => mepc_reg.eoc, tag => POINTER) when ali_T'val(csr_ix) = mepc else
                 (val => csrs(ali_T'val(csr_ix)), ix => X"00000000", pi => X"00000000", dt => X"00000000", tag => DATA);
 

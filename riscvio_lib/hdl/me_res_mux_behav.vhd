@@ -11,10 +11,10 @@ ARCHITECTURE behav OF me_res_mux IS
     signal in_data: std_logic_vector(mem_out_me_u'range);
 BEGIN
     in_data <= mem_out_me_u when res_ex.val(TAG_RANGE) /= IO_POINTER_TAG else X"00000000" & io_out_me_u; 
-    res_me_u <= (val => in_data(WORD0_RANGE), tag => DATA,    ix => (others => '0'), pi => (others => '0'), dt => (others => '0')) when ctrl_ex.me_mode /= holiday and ctrl_ex.me_mode /= lp and ctrl_ex.me_mode /= load_ix and ctrl_ex.me_mode /= load_rpc else
-                (val => in_data(WORD0_RANGE), tag => POINTER, ix => (others => '0'), pi => (others => '0'), dt => (others => '0')) when ctrl_ex.me_mode = lp else
-                (val => in_data(WORD1_RANGE), tag => POINTER, ix => (others => '0'), pi => in_data(WORD0_RANGE), dt => (others => '0')) when ctrl_ex.me_mode = load_rpc else
-                (val => raux_ex.val, tag => POINTER, ix => in_data(WORD0_RANGE), pi => (others => '0') , dt => (others => '0')) when ctrl_ex.me_mode = load_ix else
+    res_me_u <= (val => in_data(WORD0_RANGE), tag => DATA,    ix => (others => '0'),      pi => (others => '0'), dt => (others => '0')) when ctrl_ex.me_mode /= holiday and ctrl_ex.me_mode /= lp and ctrl_ex.me_mode /= load_ix and ctrl_ex.me_mode /= load_rpc else
+                (val => in_data(WORD0_RANGE), tag => POINTER, ix => (others => '0'),      pi => (others => '0'), dt => (others => '0')) when ctrl_ex.me_mode = lp else
+                (val => res_ex.val,           tag => POINTER, ix => in_data(WORD0_RANGE), pi => res_ex.pi,       dt => res_ex.dt)       when ctrl_ex.me_mode = load_rpc and rptr_ex.dt(31 downto 30) /= "10" else
+                (val => in_data(WORD1_RANGE), tag => POINTER, ix => in_data(WORD0_RANGE), pi => (others => '0'), dt => (others => '0')) when ctrl_ex.me_mode = load_rpc else
+                (val => raux_ex.val,          tag => POINTER, ix => in_data(WORD0_RANGE), pi => (others => '0'), dt => (others => '0')) when ctrl_ex.me_mode = load_ix else
                 res_ex;
 END ARCHITECTURE behav;
-

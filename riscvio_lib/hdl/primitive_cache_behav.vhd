@@ -133,7 +133,7 @@ BEGIN
     ld <= row_selected_words(to_integer(unsigned(addr(WORD_IN_ADDR))));
     line_hit <= line_tag_selected = addr(TAG_IN_ADDR) and line_valid = (0 => '1');
 
-    stall <= (not line_hit and rd) or invalidation_state /= IDLE or write_stall;
+    stall <= ((not line_hit or fill_state /= IDLE) and rd) or invalidation_state /= IDLE or write_stall;
     
 
 
@@ -412,7 +412,7 @@ BEGIN
             when WAITS => null;
 
             when IDLE => 
-                line_ix <= addr(LINE_IN_ADDR) when line_hit and isAllStd(words_we, '0') else next_addr(LINE_IN_ADDR);
+                line_ix <= addr(LINE_IN_ADDR) when line_hit and not isAllStd(words_we, '0') else next_addr(LINE_IN_ADDR);
                 valid_bit_to_write <= (0 => '1');
                 line_valid_bit_write <= set_line_tag;
 

@@ -11,6 +11,10 @@ LIBRARY ieee;
 USE ieee.numeric_std.all;
 
 ARCHITECTURE behav OF dyn_branch_unit IS
+    pure function calcIndex(ix: word_T; imm: word_T) return word_T is
+    begin
+        return word_T(unsigned('0' & ix(word_T'high-1 downto 1) & '0') + unsigned(imm));
+    end function calcIndex;
 BEGIN
 
     -- dbta_valid needs to clear if, dc registers
@@ -21,7 +25,6 @@ BEGIN
         new_rix := std_logic_vector(unsigned(pc_raw) + 4);
         rix_int :=  (word_T'high-1 downto 1 => new_rix(word_T'high-1 downto 1), 0 => '1', others => '0') when pc.ix(0) = '0' else
                     (word_T'high-1 downto 1 => new_rix(word_T'high-1 downto 1), others => '0') when pc.ix(0) = '1';
-        state_error <= false;
         ra_out <= REG_MEM_NULL;
         case branch_mode is
             when beq =>
@@ -39,26 +42,26 @@ BEGIN
             when jalr =>
                 dbt_valid <= true;
                 ra_out <=   (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
-                state_error <=  (raux.val(0) = rptr.pi(0) and rdst_ix = ali_T'pos(ra)) or (raux.val(0) /= rptr.pi(0) and rdat.ali = ra);
             when jal =>
                 dbt_valid <= false;
                 ra_out <= (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
-                state_error <= raux.val(0) = rdat.val(0) and rdst_ix = ali_T'pos(ra);
             when jlib =>
                 dbt_valid <= true;
                 rix_int(31) := '1';
                 ra_out <= (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
-                state_error <= raux.val(0) = rdat.val(0);
             when others => 
                 dbt_valid <= false;
         end case;
     end process;
 
-    dbt.ptr <=  rptr.val when (branch_mode = jalr and rdat.ali = ra and rptr.ix(31) = '1') or branch_mode = jlib else pc.ptr;
-    dbt.ix <=   '0' & rptr.ix(word_T'high-1 downto 1) & '0' when rdat.ali = ra and branch_mode = jalr  else
-                rdat.val(word_T'high downto 1) & '0' when branch_mode = jalr else
-                std_logic_vector(unsigned(imm)) when branch_mode = jlib else
-                std_logic_vector(to_unsigned(to_integer(unsigned(pc.ix)) + to_integer(signed(imm)), WORD_SIZE));
+    target_error <= isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, pc.eoc, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra) when branch_mode = jal else
+                    isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, rptr.dt, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra);
+    state_error <= isStateErrorException(rdst_ix, rptr, raux, rdat, pc, pgu_nop, branch_mode);
+
+    dbt.ptr <=  rptr.val when branch_mode = jalr or branch_mode = jlib else pc.ptr;
+    dbt.ix <=   calcIndex(rptr.ix, imm) when branch_mode = jalr  else
+                imm when branch_mode = jlib else
+                calcIndex(pc.ix, imm);
     dbt.eoc <=  pc.eoc when branch_mode /= jlib else rptr.dt;
 END ARCHITECTURE behav;
 

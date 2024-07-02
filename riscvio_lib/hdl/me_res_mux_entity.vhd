@@ -11,6 +11,7 @@ ENTITY me_res_mux IS
       mem_out_me_u : IN     dword_T;
       raux_ex      : IN     raux_T;
       res_ex       : IN     reg_mem_T;
+      rptr_ex      : IN     rptr_T;
       res_me_u     : OUT    reg_mem_T
    );
 

@@ -12,7 +12,7 @@ core.init_: j core.init
 core.trampEnd:
 
 core.start:      la      x3, core
-            addi    x3, x3,-8
+            ccp     x3, x3
             jlib    x3,  4
             nop
             nop
@@ -53,23 +53,13 @@ core.init:
             # li      t1, 10
             # sb      t1, 0(s9)
 
-
-            push    4,8
-            jal     core.entry
-            addi    t0, t1,2
-            addi    t3, t4,5
-
-core.entry:
-            pushg   1,2
+            push    1,0
             sp      ra, 0(frame)
 
             la      a0, hdmi
             ccp     a0, a0
 
-
-
             la      s0, usb
-            nop
             ccp     s0, s0
             mv      s1, s0
             sp      s1, 0(frame)
@@ -119,14 +109,14 @@ usb.af:         addi    t0, t1,2
             addi    t3, t4,5
             ret                 #standard risc-v pseudo-instruction for jalr zero, 0(ra)
 
-usb.b:          pushg   0,0
+usb.b:          push    0,0
             sp      ra, 0(frame)
             jal     usb.c
             lp      ra, 0(frame)
             pop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
-usb.c:          pushg   0,0
+usb.c:          push    0,0
             sp      ra, 0(frame)
             jlib    a0,  0
             lp      ra, 0(frame)

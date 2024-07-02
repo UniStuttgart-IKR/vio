@@ -43,7 +43,7 @@ BEGIN
           imm_dc_reg  <= (others => '0') when dbt_valid else imm_dc_u;
           
           pc_dc <= pc_if;
-          exc_dc <= exc_dc_u;
+          exc_dc <= well_behaved when dbt_valid else exc_dc_u;
         end if;
       end if;
     end if;

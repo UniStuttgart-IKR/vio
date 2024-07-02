@@ -42,6 +42,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL dt_at_u                       : word_T;
    SIGNAL end_addr                      : word_T;
    SIGNAL exc_dc                        : exc_cause_T;
+   SIGNAL exc_dc_dec                    : exc_cause_T;
    SIGNAL exc_dc_u                      : exc_cause_T;
    SIGNAL exc_ex                        : exc_cause_T;
    SIGNAL exc_ex_u                      : exc_cause_T;
@@ -52,6 +53,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL flags                         : alu_flags_T;
    SIGNAL frame_lim_csr                 : word_T;
    SIGNAL frame_type_exception          : boolean;
+   SIGNAL heap_overflow                 : boolean;
    SIGNAL heap_overflow_ex              : boolean;
    SIGNAL if_instr                      : word_T;
    SIGNAL if_instr_d                    : word_T;
@@ -135,10 +137,12 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL rptr_rf                       : rptr_T;
    SIGNAL sbt                           : pc_T;
    SIGNAL sbt_valid                     : boolean;
+   SIGNAL stack_overflow                : boolean;
    SIGNAL stack_overflow_ex             : boolean;
    SIGNAL stall                         : std_logic;
    SIGNAL state_error_dbu               : boolean;
    SIGNAL state_error_pgu               : boolean;
+   SIGNAL target_error                  : boolean;
    SIGNAL xret                          : xret_T;
    SIGNAL zero_reg_ix                   : reg_nbr_T := 0;
 
@@ -335,29 +339,33 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT dyn_branch_unit
    PORT (
-      alu_flags   : IN     alu_flags_T;
-      branch_mode : IN     branch_mode_T;
-      imm         : IN     word_T;
-      pc          : IN     pc_T;
-      raux        : IN     raux_T;
-      rdat        : IN     rdat_T;
-      rdst_ix     : IN     reg_nbr_T;
-      rptr        : IN     rptr_T;
-      dbt         : OUT    pc_T;
-      dbt_valid   : OUT    boolean;
-      ra_out      : OUT    reg_mem_T;
-      state_error : OUT    boolean
+      alu_flags    : IN     alu_flags_T;
+      branch_mode  : IN     branch_mode_T;
+      imm          : IN     word_T;
+      pc           : IN     pc_T;
+      raux         : IN     raux_T;
+      rdat         : IN     rdat_T;
+      rdst_ix      : IN     reg_nbr_T;
+      rptr         : IN     rptr_T;
+      dbt          : OUT    pc_T;
+      dbt_valid    : OUT    boolean;
+      ra_out       : OUT    reg_mem_T;
+      state_error  : OUT    boolean;
+      target_error : OUT    boolean
    );
    END COMPONENT;
    COMPONENT ex_exc_encoder
    PORT (
-      frame_type_exc    : IN     boolean;
-      ixoob_exc         : IN     boolean;
-      pointer_arith_exc : IN     boolean;
-      prev_exc          : IN     exc_cause_T;
-      state_err_a_exc   : IN     boolean;
-      state_err_b_exc   : IN     boolean;
-      exc               : OUT    exc_cause_T
+      frame_type_exc     : IN     boolean;
+      heap_overflow_exc  : IN     boolean;
+      ixoob_exc          : IN     boolean;
+      pointer_arith_exc  : IN     boolean;
+      prev_exc           : IN     exc_cause_T;
+      stack_overflow_exc : IN     boolean;
+      state_err_dbu_exc  : IN     boolean;
+      state_err_pgu_exc  : IN     boolean;
+      target_bounds_exc  : IN     boolean;
+      exc                : OUT    exc_cause_T
    );
    END COMPONENT;
    COMPONENT ex_reg
@@ -529,6 +537,7 @@ ARCHITECTURE struct OF riscvio IS
       mem_out_me_u : IN     dword_T ;
       raux_ex      : IN     raux_T ;
       res_ex       : IN     reg_mem_T ;
+      rptr_ex      : IN     rptr_T ;
       res_me_u     : OUT    reg_mem_T 
    );
    END COMPONENT;
@@ -547,10 +556,12 @@ ARCHITECTURE struct OF riscvio IS
    COMPONENT nop_gen
    PORT (
       ctrl_dc_dec  : IN     ctrl_sig_t;
+      exc_dc_dec   : IN     exc_cause_T;
       imm_dec      : IN     word_T;
       insert_nop   : IN     boolean;
       rdst_ix_dec  : IN     reg_nbr_T;
       ctrl_dc_u    : OUT    ctrl_sig_T;
+      exc_dc_u     : OUT    exc_cause_T;
       imm_dc_u     : OUT    word_T;
       rdst_ix_dc_u : OUT    reg_nbr_T
    );
@@ -601,18 +612,20 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT pgu
    PORT (
-      imm                           : IN     word_T ;
-      pc                            : IN     pc_T ;
-      pgu_mode                      : IN     pgu_mode_T ;
-      raux                          : IN     raux_T ;
-      rdat                          : IN     rdat_T ;
-      rdst_ix                       : IN     reg_nbr_T ;
-      rptr                          : IN     rptr_T ;
-      frame_type_exception          : OUT    boolean ;
-      index_out_of_bounds_exception : OUT    boolean ;
-      me_addr                       : OUT    mem_addr_T ;
-      ptr                           : OUT    reg_mem_T ;
-      state_error_exception         : OUT    boolean 
+      imm                 : IN     word_T ;
+      pc                  : IN     pc_T ;
+      pgu_mode            : IN     pgu_mode_T ;
+      raux                : IN     raux_T ;
+      rdat                : IN     rdat_T ;
+      rdst_ix             : IN     reg_nbr_T ;
+      rptr                : IN     rptr_T ;
+      frame_error         : OUT    boolean ;
+      heap_overflow       : OUT    boolean ;
+      index_out_of_bounds : OUT    boolean ;
+      me_addr             : OUT    mem_addr_T ;
+      ptr                 : OUT    reg_mem_T ;
+      stack_overflow      : OUT    boolean ;
+      state_error         : OUT    boolean 
    );
    END COMPONENT;
    COMPONENT ral_nop_unit
@@ -626,6 +639,7 @@ ARCHITECTURE struct OF riscvio IS
       rdst_dc    : IN     reg_nbr_T;
       rdst_ex    : IN     reg_nbr_T;
       rptr_ix    : IN     reg_nbr_T;
+      sbt_valid  : IN     boolean;
       insert_nop : OUT    boolean
    );
    END COMPONENT;
@@ -863,33 +877,37 @@ BEGIN
          ctr_sig     => ctrl_dc_dec,
          sbt_valid   => sbt_valid,
          sbt         => sbt,
-         exc         => exc_dc_u,
+         exc         => exc_dc_dec,
          xret        => xret
       );
    dbu_i : dyn_branch_unit
       PORT MAP (
-         rdat        => rdat_dc,
-         raux        => raux_dc,
-         rptr        => rptr_dc,
-         imm         => imm_dc,
-         rdst_ix     => rdst_ix_dc,
-         alu_flags   => flags,
-         branch_mode => branch_mode_dc,
-         pc          => pc_dc,
-         state_error => state_error_dbu,
-         ra_out      => dbu_out_ex_u,
-         dbt_valid   => dbt_valid,
-         dbt         => dbt
+         rdat         => rdat_dc,
+         raux         => raux_dc,
+         rptr         => rptr_dc,
+         imm          => imm_dc,
+         rdst_ix      => rdst_ix_dc,
+         alu_flags    => flags,
+         branch_mode  => branch_mode_dc,
+         pc           => pc_dc,
+         state_error  => state_error_dbu,
+         target_error => target_error,
+         ra_out       => dbu_out_ex_u,
+         dbt_valid    => dbt_valid,
+         dbt          => dbt
       );
    ex_exc_i : ex_exc_encoder
       PORT MAP (
-         prev_exc          => exc_dc,
-         exc               => exc_ex_u,
-         frame_type_exc    => frame_type_exception,
-         state_err_a_exc   => state_error_pgu,
-         pointer_arith_exc => pointer_arith_exc,
-         ixoob_exc         => index_out_of_bounds_exception,
-         state_err_b_exc   => state_error_dbu
+         prev_exc           => exc_dc,
+         exc                => exc_ex_u,
+         frame_type_exc     => frame_type_exception,
+         state_err_pgu_exc  => state_error_pgu,
+         ixoob_exc          => index_out_of_bounds_exception,
+         stack_overflow_exc => stack_overflow,
+         heap_overflow_exc  => heap_overflow,
+         pointer_arith_exc  => pointer_arith_exc,
+         target_bounds_exc  => target_error,
+         state_err_dbu_exc  => state_error_dbu
       );
    ex_reg_i : ex_reg
       PORT MAP (
@@ -1074,6 +1092,7 @@ BEGIN
          mem_out_me_u => mem_out_me_u,
          raux_ex      => raux_ex,
          res_ex       => res_ex,
+         rptr_ex      => rptr_ex,
          res_me_u     => res_me_u
       );
    next_pc_mux_i : next_pc_mux
@@ -1093,6 +1112,8 @@ BEGIN
          ctrl_dc_u    => ctrl_dc_u,
          imm_dc_u     => imm_dc_u,
          imm_dec      => imm_dec,
+         exc_dc_dec   => exc_dc_dec,
+         exc_dc_u     => exc_dc_u,
          insert_nop   => insert_nop,
          rdst_ix_dc_u => rdst_ix_dc_u,
          rdst_ix_dec  => rdst_ix_dec
@@ -1140,18 +1161,20 @@ BEGIN
       );
    pgu_i : pgu
       PORT MAP (
-         imm                           => imm_dc,
-         pc                            => pc_dc,
-         pgu_mode                      => pgu_mode_dc,
-         raux                          => raux_dc,
-         rdat                          => rdat_dc,
-         rdst_ix                       => rdst_ix_dc,
-         rptr                          => rptr_dc,
-         frame_type_exception          => frame_type_exception,
-         index_out_of_bounds_exception => index_out_of_bounds_exception,
-         me_addr                       => me_addr_u,
-         ptr                           => pgu_ptr_ex_u,
-         state_error_exception         => state_error_pgu
+         imm                 => imm_dc,
+         pc                  => pc_dc,
+         pgu_mode            => pgu_mode_dc,
+         raux                => raux_dc,
+         rdat                => rdat_dc,
+         rdst_ix             => rdst_ix_dc,
+         rptr                => rptr_dc,
+         frame_error         => frame_type_exception,
+         heap_overflow       => heap_overflow,
+         index_out_of_bounds => index_out_of_bounds_exception,
+         me_addr             => me_addr_u,
+         ptr                 => pgu_ptr_ex_u,
+         stack_overflow      => stack_overflow,
+         state_error         => state_error_pgu
       );
    ral_nop_i : ral_nop_unit
       PORT MAP (
@@ -1163,6 +1186,7 @@ BEGIN
          rptr_ix    => rptr_ix,
          rdst_dc    => rdst_ix_dc,
          rdst_ex    => rdst_ix_ex,
+         sbt_valid  => sbt_valid,
          dbt_valid  => dbt_valid,
          insert_nop => insert_nop
       );

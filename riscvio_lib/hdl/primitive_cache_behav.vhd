@@ -140,7 +140,7 @@ BEGIN
 
     fill_unit_state_p: process(clk, res_n) is
     begin
-        if res_n = '0' then
+        if res_n /= '1' then
             fill_state <= IDLE;
             line_fill_ctr <= 0;
             last_line_fill_ctr <= 0;
@@ -257,7 +257,7 @@ BEGIN
     
     writeback_unit_state_p: process(clk, res_n) is
     begin
-        if res_n = '0' then
+        if res_n /= '1' then
             writeback_state <= IDLE;
             last_sd <= (others => '0');
             last_wr_addr <= (others => '0');
@@ -367,7 +367,7 @@ BEGIN
 
     invalidation_unit_state_p: process(clk, res_n) is
     begin
-        if res_n = '0' then
+        if res_n /= '1' then
             invalidation_state <= RESET;
             invalidation_line_ix <= (others => '0');
         else

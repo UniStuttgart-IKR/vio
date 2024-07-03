@@ -44,13 +44,13 @@ BEGIN
                     res_me <= res_me_u;
                     
                     pc_me <= pc_ex;
-                    exc_me <= exc_me_u;
+                    exc_me <= exc_ex;
                 end if;
             end if;
         end if;
     end process;
 
-    ld_attr <= ctrl_me.at_mode = maybe and res_me.tag = POINTER;
+    ld_attr <= ctrl_me.at_mode /= no and res_me.tag = POINTER;
     addr_me_uq <= res_me_u when not (stall = '1') else res_me;
     addr_me <= res_me;
     allocating_at <= ali_T'val(rptr_me.nbr) = alc_addr;

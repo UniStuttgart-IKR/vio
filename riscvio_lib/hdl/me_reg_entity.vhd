@@ -8,7 +8,7 @@ ENTITY me_reg IS
    PORT( 
       clk           : IN     std_logic;
       ctrl_ex       : IN     ctrl_sig_T;
-      exc_me_u      : IN     exc_cause_T;
+      exc_ex        : IN     exc_cause_T;
       imm_ex        : IN     word_T;
       pc_ex         : IN     pc_T;
       pipe_flush    : IN     boolean;

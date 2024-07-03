@@ -11,9 +11,6 @@ ARCHITECTURE behav OF obj_init_fsm IS
     signal unit_activating: boolean;
 
     signal heap_alc: boolean;
-    signal heap_overflow_int: boolean;
-    signal stack_overflow_int: boolean;
-
     signal obj_init_stall: boolean;
 
     signal end_addr_aligned, start_addr_aligned: word_T;
@@ -26,11 +23,6 @@ BEGIN
                           (others => '0');
 
     heap_alc <= (pgu_mode_ex = pgu_alc or  pgu_mode_ex = pgu_alcp or  pgu_mode_ex = pgu_alcd or  pgu_mode_ex = pgu_alci) and rdst_ix_ex /= ali_T'pos(frame);
-
-    heap_overflow_int <= unit_active and heap_alc and unsigned(frame_lim_csr) > unsigned(end_addr_aligned) and not IGNORE_EXC;
-    stack_overflow_int <= unit_active and not heap_alc and unsigned(alc_lim_csr) > unsigned(end_addr_aligned) and not IGNORE_EXC;
-    heap_overflow_ex <= heap_overflow_int;
-    stack_overflow_ex <= stack_overflow_int;
     
     init: process(clk, res_n) is
     begin

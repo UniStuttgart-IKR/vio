@@ -6,11 +6,12 @@ use riscvio_lib.pipeline.all;
 ARCHITECTURE behav OF pgu IS
 BEGIN
 
-    frame_error <= isFrameTypeException(rdst_ix, rptr, pgu_mode);
-    state_error <= isStateErrorException(rdst_ix, rptr, raux, rdat, PC_NULL, pgu_mode, no_branch);
-    index_out_of_bounds <= isIndexOutOfBoundsException(rdst_ix, rptr, raux, rdat, imm, pgu_mode);
-    heap_overflow <= isHeapOverflowException(ptr.val, rptr, pgu_mode);
-    stack_overflow <= isStackOverflowException(ptr.val, rptr, pgu_mode);
+    pgu_exc <= frtyp when isFrameTypeException(rdst_ix, rptr, pgu_mode) else
+               sterr when isStateErrorException(rdst_ix, rptr, raux, rdat, PC_NULL, pgu_mode, no_branch) else
+               ixoob when isIndexOutOfBoundsException(rdst_ix, rptr, raux, rdat, imm, pgu_mode) else
+               hpovf when isHeapOverflowException(ptr.val, rptr, pgu_mode) else
+               stovf when isStackOverflowException(ptr.val, rptr, pgu_mode) else
+               well_behaved;
 
 
 

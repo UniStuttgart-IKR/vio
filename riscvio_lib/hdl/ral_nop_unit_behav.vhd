@@ -14,7 +14,7 @@ ARCHITECTURE behav OF ral_nop_unit IS
 BEGIN
     data_ral <= (ctrl_dc.me_mode = lb or ctrl_dc.me_mode = lbu or ctrl_dc.me_mode = lh or ctrl_dc.me_mode = lhu or ctrl_dc.me_mode = lw or ctrl_dc.me_mode = load_ix) and (rdst_dc = rdat_ix or rdst_dc = raux_ix);
     pointer_ral <= (ctrl_dc.me_mode = lp or ctrl_dc.me_mode = load_rpc) and rdst_dc = rptr_ix;
-    attr_ral <= ((ctrl_ex.at_mode = maybe) and (rdst_ex = rptr_ix));
+    attr_ral <= ((ctrl_ex.at_mode /= no) and (rdst_ex = rptr_ix));
 
     -- if we will clear the instruction in the dc stage anyway we dont need to insert nops for this instr
     insert_nop <= not dbt_valid and not sbt_valid and (data_ral or pointer_ral or attr_ral);

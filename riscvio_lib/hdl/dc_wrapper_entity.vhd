@@ -15,7 +15,6 @@ ENTITY dc_wrapper IS
       next_addr          : IN     mem_addr_T;
       next_mode          : IN     mem_mode_T;
       next_obj_init_addr : IN     word_T;
-      obj_init_access    : IN     boolean;
       obj_init_addr      : IN     word_T;
       obj_init_data      : IN     dword_T;
       obj_init_wr        : IN     boolean;

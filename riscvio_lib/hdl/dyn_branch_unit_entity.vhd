@@ -25,8 +25,7 @@ ENTITY dyn_branch_unit IS
     branch_mode    : IN branch_mode_T;
     pc             : IN pc_T;
 
-    state_error    : OUT boolean;
-    target_error   : OUT boolean;
+    dbu_exc        : OUT exc_cause_T;
     ra_out         : OUT reg_mem_T;
     dbt_valid      : OUT boolean;
     dbt            : OUT pc_T

@@ -54,9 +54,10 @@ BEGIN
         end case;
     end process;
 
-    target_error <= isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, pc.eoc, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra) when branch_mode = jal else
-                    isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, rptr.dt, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra);
-    state_error <= isStateErrorException(rdst_ix, rptr, raux, rdat, pc, pgu_nop, branch_mode);
+    dbu_exc <= tciob when isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, pc.eoc, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra) and branch_mode = jal else
+               tciob when isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, rptr.dt, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra) else
+               sterr when isStateErrorException(rdst_ix, rptr, raux, rdat, pc, pgu_nop, branch_mode) else
+               well_behaved;
 
     dbt.ptr <=  rptr.val when branch_mode = jalr or branch_mode = jlib else pc.ptr;
     dbt.ix <=   calcIndex(rptr.ix, imm) when branch_mode = jalr  else

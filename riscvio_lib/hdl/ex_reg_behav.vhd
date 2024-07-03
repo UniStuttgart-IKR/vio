@@ -59,6 +59,7 @@ BEGIN
     end process;
 
     me_mode_ex <= ctrl_ex.me_mode;
+    me_mode_ex_uq <= ctrl_dc.me_mode;
     pgu_mode_ex <= ctrl_ex.pgu_mode;
     pgu_mode_dc_uq <= ctrl_dc.pgu_mode;
     res_ex_uq <= res_ex_u;

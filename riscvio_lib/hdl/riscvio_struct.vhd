@@ -10,141 +10,130 @@ ARCHITECTURE struct OF riscvio IS
    -- Architecture declarations
 
    -- Internal signal declarations
-   SIGNAL REG_MEM_NULL_SIG              : reg_mem_T;
-   SIGNAL a                             : word_T;
-   SIGNAL addr_me                       : reg_mem_T;
-   SIGNAL addr_me_uq                    : reg_mem_T;
-   SIGNAL alc_lim_csr                   : word_T;
-   SIGNAL allocating_at                 : boolean;
-   SIGNAL allocating_me                 : boolean   := false;
-   SIGNAL allocating_wb                 : boolean;
-   SIGNAL alu_a_in_sel_dc               : alu_in_sel_T;
-   SIGNAL alu_b_in_sel_dc               : alu_in_sel_T;
-   SIGNAL alu_mode_dc                   : alu_mode_T;
-   SIGNAL alu_out_ex_u                  : word_T;
-   SIGNAL b                             : word_T;
-   SIGNAL branch_mode_dc                : branch_mode_T;
-   SIGNAL cjt                           : pc_T;
-   SIGNAL cjt_valid                     : boolean;
-   SIGNAL csr_ix                        : csr_nbr_T;
-   SIGNAL csr_reg                       : reg_mem_T;
-   SIGNAL ctrl_dc                       : ctrl_sig_T;
-   SIGNAL ctrl_dc_dec                   : ctrl_sig_t;
-   SIGNAL ctrl_dc_u                     : ctrl_sig_T;
-   SIGNAL ctrl_ex                       : ctrl_sig_T;
-   SIGNAL ctrl_me                       : ctrl_sig_T;
-   SIGNAL current_pc_d                  : pc_T;
-   SIGNAL current_pc_uq                 : pc_T;
-   SIGNAL dbt                           : pc_T;
-   SIGNAL dbt_valid                     : boolean;
-   SIGNAL dbu_out_ex_u                  : reg_mem_T;
-   SIGNAL dc_stall                      : boolean;
-   SIGNAL dt_at_u                       : word_T;
-   SIGNAL end_addr                      : word_T;
-   SIGNAL exc_dc                        : exc_cause_T;
-   SIGNAL exc_dc_dec                    : exc_cause_T;
-   SIGNAL exc_dc_u                      : exc_cause_T;
-   SIGNAL exc_ex                        : exc_cause_T;
-   SIGNAL exc_ex_u                      : exc_cause_T;
-   SIGNAL exc_me                        : exc_cause_T;
-   SIGNAL exc_me_u                      : exc_cause_T;
-   SIGNAL exc_wb                        : exc_cause_T;
-   SIGNAL false_sig                     : boolean;
-   SIGNAL flags                         : alu_flags_T;
-   SIGNAL frame_lim_csr                 : word_T;
-   SIGNAL frame_type_exception          : boolean;
-   SIGNAL heap_overflow                 : boolean;
-   SIGNAL heap_overflow_ex              : boolean;
-   SIGNAL if_instr                      : word_T;
-   SIGNAL if_instr_d                    : word_T;
-   SIGNAL imm_dc                        : word_T;
-   SIGNAL imm_dc_reg                    : word_T;
-   SIGNAL imm_dc_u                      : word_T;
-   SIGNAL imm_dec                       : word_T;
-   SIGNAL imm_ex                        : word_T;
-   SIGNAL imm_ex_reg                    : word_T;
-   SIGNAL imm_me                        : word_T;
-   SIGNAL incremented_pc                : pc_T;
-   SIGNAL index_out_of_bounds_exception : boolean;
-   SIGNAL insert_nop                    : boolean;
-   SIGNAL io_out_me_u                   : word_T;
-   SIGNAL ld_attr                       : boolean;
-   SIGNAL me_addr                       : mem_addr_T;
-   SIGNAL me_addr_u                     : mem_addr_T;
-   SIGNAL me_addr_uq                    : mem_addr_T;
-   SIGNAL me_mode_ex                    : mem_mode_T;
-   SIGNAL me_mode_ex_uq                 : mem_mode_T;
-   SIGNAL mem_out_me_u                  : dword_T;
-   SIGNAL next_obj_init_addr            : word_T;
-   SIGNAL obj_init_access               : boolean;
-   SIGNAL obj_init_addr                 : word_T;
-   SIGNAL obj_init_data                 : dword_T;
-   SIGNAL obj_init_wr                   : boolean;
-   SIGNAL pc_current_pc                 : pc_T;
-   SIGNAL pc_dc                         : pc_T;
-   SIGNAL pc_ex                         : pc_T;
-   SIGNAL pc_if                         : pc_T;
-   SIGNAL pc_me                         : pc_T;
-   SIGNAL pc_wb                         : pc_T;
-   SIGNAL pgu_mode_dc                   : pgu_mode_T;
-   SIGNAL pgu_mode_dc_uq                : pgu_mode_T;
-   SIGNAL pgu_mode_ex                   : pgu_mode_T;
-   SIGNAL pgu_ptr_ex_u                  : reg_mem_T;
-   SIGNAL pi_at_u                       : word_T;
-   SIGNAL pipe_flush                    : boolean;
-   SIGNAL pointer_arith_exc             : boolean;
-   SIGNAL raux_dc                       : raux_T;
-   SIGNAL raux_dc_reg                   : raux_T;
-   SIGNAL raux_dc_u                     : raux_T;
-   SIGNAL raux_ex                       : raux_T;
-   SIGNAL raux_ex_reg                   : raux_T;
-   SIGNAL raux_ix                       : reg_nbr_T;
-   SIGNAL raux_me                       : raux_T;
-   SIGNAL raux_rf                       : raux_T;
-   SIGNAL rd_wb                         : reg_wb_T;
-   SIGNAL rdat_dc                       : rdat_T;
-   SIGNAL rdat_dc_reg                   : rdat_T;
-   SIGNAL rdat_dc_u                     : rdat_T;
-   SIGNAL rdat_ex                       : rdat_T;
-   SIGNAL rdat_ex_reg                   : rdat_T;
-   SIGNAL rdat_ix                       : reg_nbr_T;
-   SIGNAL rdat_me                       : rdat_T;
-   SIGNAL rdat_rf                       : rdat_T;
-   SIGNAL rdst_ix_at                    : reg_nbr_T;
-   SIGNAL rdst_ix_dc                    : reg_nbr_T;
-   SIGNAL rdst_ix_dc_reg                : reg_nbr_T;
-   SIGNAL rdst_ix_dc_u                  : reg_nbr_T;
-   SIGNAL rdst_ix_dec                   : reg_nbr_T;
-   SIGNAL rdst_ix_ex                    : reg_nbr_T;
-   SIGNAL rdst_ix_ex_reg                : reg_nbr_T;
-   SIGNAL rdst_ix_me                    : reg_nbr_T := 0;
-   SIGNAL rdst_ix_me_reg                : reg_nbr_T := 0;
-   SIGNAL res_at                        : reg_mem_T;
-   SIGNAL res_at_u                      : reg_mem_T;
-   SIGNAL res_ex                        : reg_mem_T;
-   SIGNAL res_ex_u                      : reg_mem_T;
-   SIGNAL res_ex_uq                     : reg_mem_T;
-   SIGNAL res_me                        : reg_mem_T;
-   SIGNAL res_me_u                      : reg_mem_T;
-   SIGNAL res_wb                        : reg_mem_T;
-   SIGNAL rptr_dc                       : rptr_T;
-   SIGNAL rptr_dc_reg                   : rptr_T;
-   SIGNAL rptr_dc_u                     : rptr_T;
-   SIGNAL rptr_ex                       : rptr_T;
-   SIGNAL rptr_ex_reg                   : rptr_T;
-   SIGNAL rptr_ix                       : reg_nbr_T;
-   SIGNAL rptr_me                       : rptr_T;
-   SIGNAL rptr_rf                       : rptr_T;
-   SIGNAL sbt                           : pc_T;
-   SIGNAL sbt_valid                     : boolean;
-   SIGNAL stack_overflow                : boolean;
-   SIGNAL stack_overflow_ex             : boolean;
-   SIGNAL stall                         : std_logic;
-   SIGNAL state_error_dbu               : boolean;
-   SIGNAL state_error_pgu               : boolean;
-   SIGNAL target_error                  : boolean;
-   SIGNAL xret                          : xret_T;
-   SIGNAL zero_reg_ix                   : reg_nbr_T := 0;
+   SIGNAL REG_MEM_NULL_SIG   : reg_mem_T;
+   SIGNAL a                  : word_T;
+   SIGNAL addr_me            : reg_mem_T;
+   SIGNAL addr_me_uq         : reg_mem_T;
+   SIGNAL allocating_at      : boolean;
+   SIGNAL allocating_me      : boolean   := false;
+   SIGNAL allocating_wb      : boolean;
+   SIGNAL alu_a_in_sel_dc    : alu_in_sel_T;
+   SIGNAL alu_b_in_sel_dc    : alu_in_sel_T;
+   SIGNAL alu_mode_dc        : alu_mode_T;
+   SIGNAL alu_out_ex_u       : word_T;
+   SIGNAL b                  : word_T;
+   SIGNAL branch_mode_dc     : branch_mode_T;
+   SIGNAL cjt                : pc_T;
+   SIGNAL cjt_valid          : boolean;
+   SIGNAL csr_ix             : csr_nbr_T;
+   SIGNAL csr_reg            : reg_mem_T;
+   SIGNAL ctrl_dc            : ctrl_sig_T;
+   SIGNAL ctrl_dc_dec        : ctrl_sig_t;
+   SIGNAL ctrl_dc_u          : ctrl_sig_T;
+   SIGNAL ctrl_ex            : ctrl_sig_T;
+   SIGNAL ctrl_me            : ctrl_sig_T;
+   SIGNAL current_pc_d       : pc_T;
+   SIGNAL current_pc_uq      : pc_T;
+   SIGNAL dbt                : pc_T;
+   SIGNAL dbt_valid          : boolean;
+   SIGNAL dbu_exc            : exc_cause_T;
+   SIGNAL dbu_out_ex_u       : reg_mem_T;
+   SIGNAL dc_stall           : boolean;
+   SIGNAL dt_at_u            : word_T;
+   SIGNAL end_addr           : word_T;
+   SIGNAL exc_dc             : exc_cause_T;
+   SIGNAL exc_dc_dec         : exc_cause_T;
+   SIGNAL exc_dc_u           : exc_cause_T;
+   SIGNAL exc_ex             : exc_cause_T;
+   SIGNAL exc_ex_u           : exc_cause_T;
+   SIGNAL exc_me             : exc_cause_T;
+   SIGNAL exc_wb             : exc_cause_T;
+   SIGNAL false_sig          : boolean;
+   SIGNAL flags              : alu_flags_T;
+   SIGNAL if_instr           : word_T;
+   SIGNAL if_instr_d         : word_T;
+   SIGNAL imm_dc             : word_T;
+   SIGNAL imm_dc_reg         : word_T;
+   SIGNAL imm_dc_u           : word_T;
+   SIGNAL imm_dec            : word_T;
+   SIGNAL imm_ex             : word_T;
+   SIGNAL imm_ex_reg         : word_T;
+   SIGNAL imm_me             : word_T;
+   SIGNAL incremented_pc     : pc_T;
+   SIGNAL insert_nop         : boolean;
+   SIGNAL io_out_me_u        : word_T;
+   SIGNAL ld_attr            : boolean;
+   SIGNAL me_addr            : mem_addr_T;
+   SIGNAL me_addr_u          : mem_addr_T;
+   SIGNAL me_addr_uq         : mem_addr_T;
+   SIGNAL me_mode_ex         : mem_mode_T;
+   SIGNAL me_mode_ex_uq      : mem_mode_T;
+   SIGNAL mem_out_me_u       : dword_T;
+   SIGNAL mux_exc            : exc_cause_T;
+   SIGNAL next_obj_init_addr : word_T;
+   SIGNAL obj_init_addr      : word_T;
+   SIGNAL obj_init_data      : dword_T;
+   SIGNAL obj_init_wr        : boolean;
+   SIGNAL pc_current_pc      : pc_T;
+   SIGNAL pc_dc              : pc_T;
+   SIGNAL pc_ex              : pc_T;
+   SIGNAL pc_if              : pc_T;
+   SIGNAL pc_me              : pc_T;
+   SIGNAL pc_wb              : pc_T;
+   SIGNAL pgu_exc            : exc_cause_T;
+   SIGNAL pgu_mode_dc        : pgu_mode_T;
+   SIGNAL pgu_mode_dc_uq     : pgu_mode_T;
+   SIGNAL pgu_mode_ex        : pgu_mode_T;
+   SIGNAL pgu_ptr_ex_u       : reg_mem_T;
+   SIGNAL pi_at_u            : word_T;
+   SIGNAL pipe_flush         : boolean;
+   SIGNAL raux_dc            : raux_T;
+   SIGNAL raux_dc_reg        : raux_T;
+   SIGNAL raux_dc_u          : raux_T;
+   SIGNAL raux_ex            : raux_T;
+   SIGNAL raux_ex_reg        : raux_T;
+   SIGNAL raux_ix            : reg_nbr_T;
+   SIGNAL raux_me            : raux_T;
+   SIGNAL raux_rf            : raux_T;
+   SIGNAL rd_wb              : reg_wb_T;
+   SIGNAL rdat_dc            : rdat_T;
+   SIGNAL rdat_dc_reg        : rdat_T;
+   SIGNAL rdat_dc_u          : rdat_T;
+   SIGNAL rdat_ex            : rdat_T;
+   SIGNAL rdat_ex_reg        : rdat_T;
+   SIGNAL rdat_ix            : reg_nbr_T;
+   SIGNAL rdat_me            : rdat_T;
+   SIGNAL rdat_rf            : rdat_T;
+   SIGNAL rdst_ix_at         : reg_nbr_T;
+   SIGNAL rdst_ix_dc         : reg_nbr_T;
+   SIGNAL rdst_ix_dc_reg     : reg_nbr_T;
+   SIGNAL rdst_ix_dc_u       : reg_nbr_T;
+   SIGNAL rdst_ix_dec        : reg_nbr_T;
+   SIGNAL rdst_ix_ex         : reg_nbr_T;
+   SIGNAL rdst_ix_ex_reg     : reg_nbr_T;
+   SIGNAL rdst_ix_me         : reg_nbr_T := 0;
+   SIGNAL rdst_ix_me_reg     : reg_nbr_T := 0;
+   SIGNAL res_at             : reg_mem_T;
+   SIGNAL res_at_u           : reg_mem_T;
+   SIGNAL res_ex             : reg_mem_T;
+   SIGNAL res_ex_u           : reg_mem_T;
+   SIGNAL res_ex_uq          : reg_mem_T;
+   SIGNAL res_me             : reg_mem_T;
+   SIGNAL res_me_u           : reg_mem_T;
+   SIGNAL res_wb             : reg_mem_T;
+   SIGNAL rptr_dc            : rptr_T;
+   SIGNAL rptr_dc_reg        : rptr_T;
+   SIGNAL rptr_dc_u          : rptr_T;
+   SIGNAL rptr_ex            : rptr_T;
+   SIGNAL rptr_ex_reg        : rptr_T;
+   SIGNAL rptr_ix            : reg_nbr_T;
+   SIGNAL rptr_me            : rptr_T;
+   SIGNAL rptr_rf            : rptr_T;
+   SIGNAL sbt                : pc_T;
+   SIGNAL sbt_valid          : boolean;
+   SIGNAL stall              : std_logic;
+   SIGNAL xret               : xret_T;
+   SIGNAL zero_reg_ix        : reg_nbr_T := 0;
 
 
    -- Component Declarations
@@ -247,18 +236,16 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT csr_unit
    PORT (
-      clk           : IN     std_logic ;
-      csr_ix        : IN     csr_nbr_T ;
-      exc_wb        : IN     exc_cause_T ;
-      pc_wb         : IN     pc_T ;
-      rd_wb         : IN     reg_wb_T ;
-      res_n         : IN     std_logic ;
-      xret          : IN     xret_T ;
-      alc_lim_csr   : OUT    word_T ;
-      cjt           : OUT    pc_T ;
-      cjt_valid     : OUT    boolean ;
-      csr_reg       : OUT    reg_mem_T ;
-      frame_lim_csr : OUT    word_T 
+      clk       : IN     std_logic ;
+      csr_ix    : IN     csr_nbr_T ;
+      exc_wb    : IN     exc_cause_T ;
+      pc_wb     : IN     pc_T ;
+      rd_wb     : IN     reg_wb_T ;
+      res_n     : IN     std_logic ;
+      xret      : IN     xret_T ;
+      cjt       : OUT    pc_T ;
+      cjt_valid : OUT    boolean ;
+      csr_reg   : OUT    reg_mem_T 
    );
    END COMPONENT;
    COMPONENT dc_reg
@@ -299,7 +286,6 @@ ARCHITECTURE struct OF riscvio IS
       next_addr          : IN     mem_addr_T ;
       next_mode          : IN     mem_mode_T ;
       next_obj_init_addr : IN     word_T ;
-      obj_init_access    : IN     boolean ;
       obj_init_addr      : IN     word_T ;
       obj_init_data      : IN     dword_T ;
       obj_init_wr        : IN     boolean ;
@@ -339,33 +325,27 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT dyn_branch_unit
    PORT (
-      alu_flags    : IN     alu_flags_T;
-      branch_mode  : IN     branch_mode_T;
-      imm          : IN     word_T;
-      pc           : IN     pc_T;
-      raux         : IN     raux_T;
-      rdat         : IN     rdat_T;
-      rdst_ix      : IN     reg_nbr_T;
-      rptr         : IN     rptr_T;
-      dbt          : OUT    pc_T;
-      dbt_valid    : OUT    boolean;
-      ra_out       : OUT    reg_mem_T;
-      state_error  : OUT    boolean;
-      target_error : OUT    boolean
+      alu_flags   : IN     alu_flags_T;
+      branch_mode : IN     branch_mode_T;
+      imm         : IN     word_T;
+      pc          : IN     pc_T;
+      raux        : IN     raux_T;
+      rdat        : IN     rdat_T;
+      rdst_ix     : IN     reg_nbr_T;
+      rptr        : IN     rptr_T;
+      dbt         : OUT    pc_T;
+      dbt_valid   : OUT    boolean;
+      dbu_exc     : OUT    exc_cause_T;
+      ra_out      : OUT    reg_mem_T
    );
    END COMPONENT;
    COMPONENT ex_exc_encoder
    PORT (
-      frame_type_exc     : IN     boolean;
-      heap_overflow_exc  : IN     boolean;
-      ixoob_exc          : IN     boolean;
-      pointer_arith_exc  : IN     boolean;
-      prev_exc           : IN     exc_cause_T;
-      stack_overflow_exc : IN     boolean;
-      state_err_dbu_exc  : IN     boolean;
-      state_err_pgu_exc  : IN     boolean;
-      target_bounds_exc  : IN     boolean;
-      exc                : OUT    exc_cause_T
+      dbu_exc  : IN     exc_cause_T;
+      mux_exc  : IN     exc_cause_T;
+      pgu_exc  : IN     exc_cause_T;
+      prev_exc : IN     exc_cause_T;
+      exc      : OUT    exc_cause_T
    );
    END COMPONENT;
    COMPONENT ex_reg
@@ -405,16 +385,16 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT ex_res_mux
    PORT (
-      alu_mode_dc       : IN     alu_mode_T ;
-      alu_out_ex_u      : IN     word_T ;
-      branch_mode_dc    : IN     branch_mode_T ;
-      dbu_out_ex_u      : IN     reg_mem_T ;
-      pgu_mode_dc       : IN     pgu_mode_T ;
-      pgu_ptr_ex_u      : IN     reg_mem_T ;
-      raux_dc           : IN     raux_T ;
-      rptr_dc           : IN     rptr_T ;
-      pointer_arith_exc : OUT    boolean ;
-      res_ex_u          : OUT    reg_mem_T 
+      alu_mode_dc    : IN     alu_mode_T ;
+      alu_out_ex_u   : IN     word_T ;
+      branch_mode_dc : IN     branch_mode_T ;
+      dbu_out_ex_u   : IN     reg_mem_T ;
+      pgu_mode_dc    : IN     pgu_mode_T ;
+      pgu_ptr_ex_u   : IN     reg_mem_T ;
+      raux_dc        : IN     raux_T ;
+      rptr_dc        : IN     rptr_T ;
+      mux_exc        : OUT    exc_cause_T ;
+      res_ex_u       : OUT    reg_mem_T 
    );
    END COMPONENT;
    COMPONENT fwd_unit
@@ -492,19 +472,11 @@ ARCHITECTURE struct OF riscvio IS
       stall     : OUT    std_logic
    );
    END COMPONENT;
-   COMPONENT me_exc_encoder
-   PORT (
-      heap_overflow  : IN     boolean;
-      prev_exc       : IN     exc_cause_T;
-      stack_overflow : IN     boolean;
-      exc            : OUT    exc_cause_T
-   );
-   END COMPONENT;
    COMPONENT me_reg
    PORT (
       clk           : IN     std_logic ;
       ctrl_ex       : IN     ctrl_sig_T ;
-      exc_me_u      : IN     exc_cause_T ;
+      exc_ex        : IN     exc_cause_T ;
       imm_ex        : IN     word_T ;
       pc_ex         : IN     pc_T ;
       pipe_flush    : IN     boolean ;
@@ -568,24 +540,19 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT obj_init_fsm
    PORT (
-      alc_lim_csr        : IN     word_T ;
       clk                : IN     std_logic ;
       dc_stall           : IN     boolean ;
       end_addr           : IN     word_T ;
-      frame_lim_csr      : IN     word_T ;
       pgu_mode_dc_uq     : IN     pgu_mode_T ;
       pgu_mode_ex        : IN     pgu_mode_T ;
       rdst_ix_ex         : IN     reg_nbr_T ;
       res_ex             : IN     reg_mem_T ;
       res_ex_uq          : IN     reg_mem_T ;
       res_n              : IN     std_logic ;
-      heap_overflow_ex   : OUT    boolean ;
       next_obj_init_addr : OUT    word_T ;
-      obj_init_access    : OUT    boolean ;
       obj_init_addr      : OUT    word_T ;
       obj_init_data      : OUT    dword_T ;
       obj_init_wr        : OUT    boolean ;
-      stack_overflow_ex  : OUT    boolean ;
       stall              : OUT    std_logic 
    );
    END COMPONENT;
@@ -612,20 +579,16 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT pgu
    PORT (
-      imm                 : IN     word_T ;
-      pc                  : IN     pc_T ;
-      pgu_mode            : IN     pgu_mode_T ;
-      raux                : IN     raux_T ;
-      rdat                : IN     rdat_T ;
-      rdst_ix             : IN     reg_nbr_T ;
-      rptr                : IN     rptr_T ;
-      frame_error         : OUT    boolean ;
-      heap_overflow       : OUT    boolean ;
-      index_out_of_bounds : OUT    boolean ;
-      me_addr             : OUT    mem_addr_T ;
-      ptr                 : OUT    reg_mem_T ;
-      stack_overflow      : OUT    boolean ;
-      state_error         : OUT    boolean 
+      imm      : IN     word_T ;
+      pc       : IN     pc_T ;
+      pgu_mode : IN     pgu_mode_T ;
+      raux     : IN     raux_T ;
+      rdat     : IN     rdat_T ;
+      rdst_ix  : IN     reg_nbr_T ;
+      rptr     : IN     rptr_T ;
+      me_addr  : OUT    mem_addr_T ;
+      pgu_exc  : OUT    exc_cause_T ;
+      ptr      : OUT    reg_mem_T 
    );
    END COMPONENT;
    COMPONENT ral_nop_unit
@@ -679,7 +642,6 @@ ARCHITECTURE struct OF riscvio IS
    FOR ALL : ic_wrapper USE ENTITY riscvio_lib.ic_wrapper;
    FOR ALL : if_reg USE ENTITY riscvio_lib.if_reg;
    FOR ALL : io_interface USE ENTITY riscvio_lib.io_interface;
-   FOR ALL : me_exc_encoder USE ENTITY riscvio_lib.me_exc_encoder;
    FOR ALL : me_reg USE ENTITY riscvio_lib.me_reg;
    FOR ALL : me_res_mux USE ENTITY riscvio_lib.me_res_mux;
    FOR ALL : next_pc_mux USE ENTITY riscvio_lib.next_pc_mux;
@@ -794,18 +756,16 @@ BEGIN
       );
    csr_unit_i : csr_unit
       PORT MAP (
-         clk           => clk,
-         csr_ix        => csr_ix,
-         exc_wb        => exc_wb,
-         pc_wb         => pc_wb,
-         rd_wb         => rd_wb,
-         res_n         => res_n,
-         xret          => xret,
-         alc_lim_csr   => alc_lim_csr,
-         cjt           => cjt,
-         cjt_valid     => cjt_valid,
-         csr_reg       => csr_reg,
-         frame_lim_csr => frame_lim_csr
+         clk       => clk,
+         csr_ix    => csr_ix,
+         exc_wb    => exc_wb,
+         pc_wb     => pc_wb,
+         rd_wb     => rd_wb,
+         res_n     => res_n,
+         xret      => xret,
+         cjt       => cjt,
+         cjt_valid => cjt_valid,
+         csr_reg   => csr_reg
       );
    dc_reg_i : dc_reg
       PORT MAP (
@@ -844,7 +804,6 @@ BEGIN
          next_addr          => me_addr_uq,
          next_mode          => me_mode_ex_uq,
          next_obj_init_addr => next_obj_init_addr,
-         obj_init_access    => obj_init_access,
          obj_init_addr      => obj_init_addr,
          obj_init_data      => obj_init_data,
          obj_init_wr        => obj_init_wr,
@@ -882,32 +841,26 @@ BEGIN
       );
    dbu_i : dyn_branch_unit
       PORT MAP (
-         rdat         => rdat_dc,
-         raux         => raux_dc,
-         rptr         => rptr_dc,
-         imm          => imm_dc,
-         rdst_ix      => rdst_ix_dc,
-         alu_flags    => flags,
-         branch_mode  => branch_mode_dc,
-         pc           => pc_dc,
-         state_error  => state_error_dbu,
-         target_error => target_error,
-         ra_out       => dbu_out_ex_u,
-         dbt_valid    => dbt_valid,
-         dbt          => dbt
+         rdat        => rdat_dc,
+         raux        => raux_dc,
+         rptr        => rptr_dc,
+         imm         => imm_dc,
+         rdst_ix     => rdst_ix_dc,
+         alu_flags   => flags,
+         branch_mode => branch_mode_dc,
+         pc          => pc_dc,
+         dbu_exc     => dbu_exc,
+         ra_out      => dbu_out_ex_u,
+         dbt_valid   => dbt_valid,
+         dbt         => dbt
       );
    ex_exc_i : ex_exc_encoder
       PORT MAP (
-         prev_exc           => exc_dc,
-         exc                => exc_ex_u,
-         frame_type_exc     => frame_type_exception,
-         state_err_pgu_exc  => state_error_pgu,
-         ixoob_exc          => index_out_of_bounds_exception,
-         stack_overflow_exc => stack_overflow,
-         heap_overflow_exc  => heap_overflow,
-         pointer_arith_exc  => pointer_arith_exc,
-         target_bounds_exc  => target_error,
-         state_err_dbu_exc  => state_error_dbu
+         prev_exc => exc_dc,
+         exc      => exc_ex_u,
+         mux_exc  => mux_exc,
+         dbu_exc  => dbu_exc,
+         pgu_exc  => pgu_exc
       );
    ex_reg_i : ex_reg
       PORT MAP (
@@ -945,16 +898,16 @@ BEGIN
       );
    ex_res_mux_i : ex_res_mux
       PORT MAP (
-         alu_mode_dc       => alu_mode_dc,
-         alu_out_ex_u      => alu_out_ex_u,
-         branch_mode_dc    => branch_mode_dc,
-         dbu_out_ex_u      => dbu_out_ex_u,
-         pgu_mode_dc       => pgu_mode_dc,
-         pgu_ptr_ex_u      => pgu_ptr_ex_u,
-         raux_dc           => raux_dc,
-         rptr_dc           => rptr_dc,
-         pointer_arith_exc => pointer_arith_exc,
-         res_ex_u          => res_ex_u
+         alu_mode_dc    => alu_mode_dc,
+         alu_out_ex_u   => alu_out_ex_u,
+         branch_mode_dc => branch_mode_dc,
+         dbu_out_ex_u   => dbu_out_ex_u,
+         pgu_mode_dc    => pgu_mode_dc,
+         pgu_ptr_ex_u   => pgu_ptr_ex_u,
+         raux_dc        => raux_dc,
+         rptr_dc        => rptr_dc,
+         mux_exc        => mux_exc,
+         res_ex_u       => res_ex_u
       );
    fwd_ex_i : fwd_unit
       PORT MAP (
@@ -1049,18 +1002,11 @@ BEGIN
          io_mode   => io_mode,
          io_stall  => io_stall
       );
-   me_exc_i : me_exc_encoder
-      PORT MAP (
-         prev_exc       => exc_ex,
-         exc            => exc_me_u,
-         heap_overflow  => heap_overflow_ex,
-         stack_overflow => stack_overflow_ex
-      );
    me_reg_i : me_reg
       PORT MAP (
          clk           => clk,
          ctrl_ex       => ctrl_ex,
-         exc_me_u      => exc_me_u,
+         exc_ex        => exc_ex,
          imm_ex        => imm_ex,
          pc_ex         => pc_ex,
          pipe_flush    => pipe_flush,
@@ -1120,24 +1066,19 @@ BEGIN
       );
    obj_init_fsm_i : obj_init_fsm
       PORT MAP (
-         alc_lim_csr        => alc_lim_csr,
          clk                => clk,
          dc_stall           => dc_stall,
          end_addr           => end_addr,
-         frame_lim_csr      => frame_lim_csr,
          pgu_mode_dc_uq     => pgu_mode_dc_uq,
          pgu_mode_ex        => pgu_mode_ex,
          rdst_ix_ex         => rdst_ix_ex,
          res_ex             => res_ex,
          res_ex_uq          => res_ex_uq,
          res_n              => res_n,
-         heap_overflow_ex   => heap_overflow_ex,
          next_obj_init_addr => next_obj_init_addr,
-         obj_init_access    => obj_init_access,
          obj_init_addr      => obj_init_addr,
          obj_init_data      => obj_init_data,
          obj_init_wr        => obj_init_wr,
-         stack_overflow_ex  => stack_overflow_ex,
          stall              => stall
       );
    pc_increment_i : pc_incrementer
@@ -1161,20 +1102,16 @@ BEGIN
       );
    pgu_i : pgu
       PORT MAP (
-         imm                 => imm_dc,
-         pc                  => pc_dc,
-         pgu_mode            => pgu_mode_dc,
-         raux                => raux_dc,
-         rdat                => rdat_dc,
-         rdst_ix             => rdst_ix_dc,
-         rptr                => rptr_dc,
-         frame_error         => frame_type_exception,
-         heap_overflow       => heap_overflow,
-         index_out_of_bounds => index_out_of_bounds_exception,
-         me_addr             => me_addr_u,
-         ptr                 => pgu_ptr_ex_u,
-         stack_overflow      => stack_overflow,
-         state_error         => state_error_pgu
+         imm      => imm_dc,
+         pc       => pc_dc,
+         pgu_mode => pgu_mode_dc,
+         raux     => raux_dc,
+         rdat     => rdat_dc,
+         rdst_ix  => rdst_ix_dc,
+         rptr     => rptr_dc,
+         me_addr  => me_addr_u,
+         pgu_exc  => pgu_exc,
+         ptr      => pgu_ptr_ex_u
       );
    ral_nop_i : ral_nop_unit
       PORT MAP (

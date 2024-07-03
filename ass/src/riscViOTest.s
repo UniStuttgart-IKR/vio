@@ -13,7 +13,7 @@ core.trampEnd:
 
 core.start:      la      x3, core
             ccp     x3, x3
-            jlib    x3,  4
+            jalr    ra,  4(x3)
             nop
             nop
 
@@ -29,29 +29,29 @@ core.init:
             ciop    s9, t1, t2
 
             # without this lw there is no way to clear t0 pointer tag
-            lw      t0, 0(zero)
+core.loop:       lw      t0, 0(zero)
             li      t1, 'I'
             sb      t1, 0(s9)
-            # li      t1, 'T'
-            # sb      t1, 0(s9)
-            # li      t1, 'S'
-            # sb      t1, 0(s9)
-            # li      t1, ' '
-            # sb      t1, 0(s9)
-            # li      t1, 'A'
-            # sb      t1, 0(s9)
-            # li      t1, 'L'
-            # sb      t1, 0(s9)
-            # li      t1, 'I'
-            # sb      t1, 0(s9)
-            # li      t1, 'V'
-            # sb      t1, 0(s9)
-            # li      t1, 'E'
-            # sb      t1, 0(s9)
-            # li      t1, '!'
-            # sb      t1, 0(s9)
-            # li      t1, 10
-            # sb      t1, 0(s9)
+            li      t1, 'T'
+            sb      t1, 0(s9)
+            li      t1, 'S'
+            sb      t1, 0(s9)
+            li      t1, ' '
+            sb      t1, 0(s9)
+            li      t1, 'A'
+            sb      t1, 0(s9)
+            li      t1, 'L'
+            sb      t1, 0(s9)
+            li      t1, 'I'
+            sb      t1, 0(s9)
+            li      t1, 'V'
+            sb      t1, 0(s9)
+            li      t1, 'E'
+            sb      t1, 0(s9)
+            li      t1, '!'
+            sb      t1, 0(s9)
+            li      t1, 10
+            sb      t1, 0(s9)
 
             push    1,0
             sp      ra, 0(frame)
@@ -64,15 +64,12 @@ core.init:
             mv      s1, s0
             sp      s1, 0(frame)
 
-            jlib    s0,  0
+            jalr    ra,  0(s0)
 
             lp      s0, 0(frame)
-            jlib    s0,  4
+            jalr    ra,  4(s0)
 
-            ebreak
-
-            nop
-            nop
+            j       core.loop
 
 
 exc_handel:
@@ -118,7 +115,7 @@ usb.b:          push    0,0
 
 usb.c:          push    0,0
             sp      ra, 0(frame)
-            jlib    a0,  0
+            jalr    ra,  0(a0)
             lp      ra, 0(frame)
             pop
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)

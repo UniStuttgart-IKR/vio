@@ -9,6 +9,8 @@
 --
 LIBRARY ieee;
 USE ieee.numeric_std.all;
+LIBRARY riscvio_lib;
+USE riscvio_lib.helper.all;
 
 ARCHITECTURE behav OF dyn_branch_unit IS
     pure function calcIndex(ix: word_T; imm: word_T) return word_T is
@@ -41,6 +43,7 @@ BEGIN
                 dbt_valid <= not alu_flags.altbu or alu_flags.eq;
             when jalr =>
                 dbt_valid <= true;
+                rix_int(31) := '1' when dbt.ptr /= pc.ptr and rptr.ali /= ra else '0';
                 ra_out <=   (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
             when jal =>
                 dbt_valid <= false;
@@ -55,7 +58,7 @@ BEGIN
     end process;
 
     dbu_exc <= tciob when isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, pc.eoc, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra) and branch_mode = jal else
-               tciob when isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, rptr.dt, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra) else
+               tciob when isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, rptr.dt, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra) and branch_mode /= jal else
                sterr when isStateErrorException(rdst_ix, rptr, raux, rdat, pc, pgu_nop, branch_mode) else
                well_behaved;
 
@@ -63,6 +66,6 @@ BEGIN
     dbt.ix <=   calcIndex(rptr.ix, imm) when branch_mode = jalr  else
                 imm when branch_mode = jlib else
                 calcIndex(pc.ix, imm);
-    dbt.eoc <=  pc.eoc when branch_mode /= jlib else rptr.dt;
+    dbt.eoc <=  rptr.dt when branch_mode = jlib or isAllStd(pc.eoc, '0') else pc.eoc;
 END ARCHITECTURE behav;
 

@@ -189,7 +189,7 @@ def expandFunctionNames(contents, codeobjects) -> []:
                                     codeobjectStr)
 
         afterLocalCONameExpansion = afterLabekExpansion[:]
-        jmpMnenmoncs = ["jal", "jr", "j", "jalr", "beq", "bne", "bgt", "blt", "bltu", "bgtu", "bge", "ble"]
+        jmpMnenmoncs = ["jal", "j", "beq", "bne", "bgt", "blt", "bltu", "bgtu", "bge", "ble"]
 
         for fname in codeobject["allfns"]:
             for mnemonic in jmpMnenmoncs:
@@ -213,6 +213,8 @@ def replaceCOFctReferences(contents, codeobjects) -> []:
         for func in codeobject["publicfns"]:
             replacements.append(
                 ["(jlib.*)" + "@{0}.{1}".format(codeobject["name"], func[0]), "\\1 " + str(func[1] * 4)])
+            replacements.append(
+                ["(jalr.*)" + "@{0}.{1}".format(codeobject["name"], func[0]), "\\1 " + str(func[1] * 4)])
             replacements.append(["(la.*)@({0})".format(codeobject["name"]), "\\1\\2"])
 
     for content in contents:

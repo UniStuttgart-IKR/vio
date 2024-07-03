@@ -199,12 +199,20 @@ BEGIN
                           & sd_raux.val(HWORD0_RANGE);
                 
         when sw | sp =>
-            bena_pipeline <= X"F0" when addr.addr(2) = '1' else X"0F";
+            if addr.addr(2) = '1' then
+                bena_pipeline <= X"F0";
+            else
+                bena_pipeline <= X"0F";
+            end if;
             sd_pipeline <=  sd_raux.val
                           & sd_raux.val;
 
         when store_rpc =>
-            bena_pipeline <= X"FF" when sd_rptr.dt(31 downto 30) = "10" else X"0F";
+            if sd_rptr.dt(31 downto 30) = "10" then
+                bena_pipeline <= X"FF";
+            else
+                bena_pipeline <= X"0F";
+            end if;
             sd_pipeline <=  sd_raux.val
                           & sd_raux.ix;
             

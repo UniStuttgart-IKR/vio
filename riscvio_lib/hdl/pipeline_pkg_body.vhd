@@ -33,19 +33,31 @@ PACKAGE BODY pipeline IS
                                 res.alu_mode := alu_illegal;
                         end case;
                     when (F3_SRL_SRA or F3_MINU_ROR_RORI_ORC_REV) =>
-                        res.mnemonic := srl_r when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
-                                        sra_i when instruction(FUNCT7_RANGE) = F7_SUB_SRA else 
-                                        minu when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else 
-                                        ror_r when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else
-                                        illegal;
-                        res.alu_mode := alu_srl when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
-                                        alu_sra when instruction(FUNCT7_RANGE) = F7_SUB_SRA else 
-                                        alu_minu when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else 
-                                        alu_ror when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else
-                                        alu_illegal;
+                        case instruction(FUNCT7_RANGE) is
+                            when F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU =>
+                                res.mnemonic := srl_r;
+                                res.alu_mode := alu_srl;
+                            when F7_SUB_SRA =>
+                                res.mnemonic := sra_i;
+                                res.alu_mode := alu_sra;
+                            when F7_MAX_MAXU_MIN_MINU =>
+                                res.mnemonic := minu;
+                                res.alu_mode := alu_minu;
+                            when F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR =>
+                                res.mnemonic := ror_r;
+                                res.alu_mode := alu_ror;
+                            when others =>
+                                res.mnemonic := illegal;
+                                res.alu_mode := alu_illegal;
+                        end case;
                     when (F3_SLL or F3_ROL_CTZ_CPOP_SEXT) =>
-                        res.mnemonic := rol_r when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else sll_r;
-                        res.alu_mode := alu_rol when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else alu_sll;
+                        if instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR then
+                            res.mnemonic := rol_r;
+                            res.alu_mode := alu_rol;
+                        else
+                            res.mnemonic := sll_r;
+                            res.alu_mode := alu_sll;
+                        end if;
                     when F3_SLT =>
                         res.mnemonic := slt_r;
                         res.alu_mode := alu_slt;
@@ -53,34 +65,58 @@ PACKAGE BODY pipeline IS
                         res.mnemonic := sltu_r;
                         res.alu_mode := alu_sltu;
                     when (F3_XOR or F3_XNOR_MIN_ZEXT) =>
-                        res.mnemonic := xor_r when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
-                                        xnor_r when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
-                                        mins when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
-                                        zext_h when (instruction(FUNCT7_RANGE) = F7_ZEXT and instruction(RS2_RANGE) = F5_CLZ_ZEXT) else 
-                                        illegal;
-                        res.alu_mode := alu_xor when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
-                                        alu_xnor when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
-                                        alu_min when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
-                                        alu_zexth when (instruction(FUNCT7_RANGE) = F7_ZEXT and instruction(RS2_RANGE) = F5_CLZ_ZEXT) else 
-                                        alu_illegal;
+                        case instruction(FUNCT7_RANGE) is
+                            when F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU =>
+                                res.mnemonic := xor_r;
+                                res.alu_mode := alu_xor;
+                            when F7_ANDN_ORN_XNOR =>
+                                res.mnemonic := xnor_r;
+                                res.alu_mode := alu_xnor;
+                            when F7_MAX_MAXU_MIN_MINU =>
+                                res.mnemonic := mins;
+                                res.alu_mode := alu_min;
+                            when F7_ZEXT =>
+                                if instruction(RS2_RANGE) = F5_CLZ_ZEXT then
+                                    res.mnemonic := zext_h;
+                                    res.alu_mode := alu_zexth;
+                                else
+                                    res.mnemonic := illegal;
+                                    res.alu_mode := alu_illegal;
+                                end if;
+                            when others =>
+                                res.mnemonic := illegal;
+                                res.alu_mode := alu_illegal;
+                        end case;
                     when (F3_OR or F3_ORN_MAX) =>
-                        res.mnemonic := or_r when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
-                                        orn_r when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
-                                        max when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
-                                        illegal;
-                        res.alu_mode := alu_or when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else 
-                                        alu_orn when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
-                                        alu_max when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
-                                        alu_illegal;
+                        case instruction(FUNCT7_RANGE) is
+                            when F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU =>
+                                res.mnemonic := or_r;
+                                res.alu_mode := alu_or;
+                            when F7_ANDN_ORN_XNOR =>
+                                res.mnemonic := orn_r;
+                                res.alu_mode := alu_orn;
+                            when F7_MAX_MAXU_MIN_MINU =>
+                                res.mnemonic := max;
+                                res.alu_mode := alu_max;
+                            when others =>
+                                res.mnemonic := illegal;
+                                res.alu_mode := alu_illegal;
+                        end case;
                     when F3_AND =>
-                        res.mnemonic := and_r when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else
-                                        andn_r when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
-                                        maxu when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
-                                        illegal;
-                        res.alu_mode := alu_and when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else
-                                        alu_andn when instruction(FUNCT7_RANGE) = F7_ANDN_ORN_XNOR else 
-                                        alu_maxu when instruction(FUNCT7_RANGE) = F7_MAX_MAXU_MIN_MINU else
-                                        alu_illegal;
+                        case instruction(FUNCT7_RANGE) is
+                            when F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU =>
+                                res.mnemonic := and_r;
+                                res.alu_mode := alu_and;
+                            when F7_ANDN_ORN_XNOR =>
+                                res.mnemonic := andn_r;
+                                res.alu_mode := alu_andn;
+                            when F7_MAX_MAXU_MIN_MINU =>
+                                res.mnemonic := maxu;
+                                res.alu_mode := alu_maxu;
+                            when others =>
+                                res.mnemonic := illegal;
+                                res.alu_mode := alu_illegal;
+                        end case;
                     when others =>
                         res.mnemonic := illegal;
                         res.alu_mode := alu_illegal;
@@ -98,29 +134,50 @@ PACKAGE BODY pipeline IS
                 res.pgu_mode := pgu_nop;
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
-                        res.mnemonic := nop when instruction = NOP_INSTR else add_i;
+                        res.mnemonic := add_i;
+                        if instruction = NOP_INSTR then res.mnemonic := nop; end if;
                         res.alu_mode := alu_add;
                         res.imm_mode := i_type;
                         res.at_mode  := maybe;
                     when (F3_SRL_SRA or F3_MINU_ROR_RORI_ORC_REV) =>
-                        res.mnemonic := srl_i when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else
-                                        sra_i when instruction(FUNCT7_RANGE) = F7_SUB_SRA else
-                                        ror_i when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else
-                                        orcv_b when instruction(FUNCT7_RANGE) = F7_ORC and instruction(RS2_RANGE) = F5_ORC else 
-                                        rev8 when instruction(FUNCT7_RANGE) = F7_REV8 and instruction(RS2_RANGE) = F5_REV8 else 
-                                        illegal;
-                        res.alu_mode := alu_srl when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else
-                                        alu_sra when instruction(FUNCT7_RANGE) = F7_SUB_SRA else
-                                        alu_ror when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else
-                                        alu_orcb when instruction(FUNCT7_RANGE) = F7_ORC and instruction(RS2_RANGE) = F5_ORC else 
-                                        alu_rev8 when instruction(FUNCT7_RANGE) = F7_REV8 and instruction(RS2_RANGE) = F5_REV8 else 
-                                        alu_illegal;
-                        res.imm_mode := shamt_type when instruction(FUNCT7_RANGE) = F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU else
-                                        shamt_type when instruction(FUNCT7_RANGE) = F7_SUB_SRA else
-                                        shamt_type when instruction(FUNCT7_RANGE) = F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR else
-                                        i_type when instruction(FUNCT7_RANGE) = F7_ORC and instruction(RS2_RANGE) = F5_ORC else 
-                                        i_type when instruction(FUNCT7_RANGE) = F7_REV8 and instruction(RS2_RANGE) = F5_REV8 else 
-                                        none;
+                        case instruction(FUNCT7_RANGE) is
+                            when F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU =>
+                                res.mnemonic := srl_i;
+                                res.alu_mode := alu_srl;
+                                res.imm_mode := shamt_type;
+                            when F7_SUB_SRA =>
+                                res.mnemonic := sra_i;
+                                res.alu_mode := alu_sra;
+                                res.imm_mode := shamt_type;
+                            when F7_CLZ_CTZ_CPOP_SEXT_ROL_ROR =>
+                                res.mnemonic := ror_i;
+                                res.alu_mode := alu_ror;
+                                res.imm_mode := shamt_type;
+                            when F7_ORC =>
+                                if instruction(RS2_RANGE) = F5_ORC then
+                                    res.mnemonic := orcv_b;
+                                    res.alu_mode := alu_orcb;
+                                    res.imm_mode := i_type;
+                                else
+                                    res.mnemonic := illegal;
+                                    res.alu_mode := alu_illegal;
+                                    res.imm_mode := none;
+                                end if;
+                            when F7_REV8 =>
+                                if instruction(RS2_RANGE) = F5_REV8 then
+                                    res.mnemonic := rev8;
+                                    res.alu_mode := alu_rev8;
+                                    res.imm_mode := i_type;
+                                else
+                                    res.mnemonic := illegal;
+                                    res.alu_mode := alu_illegal;
+                                    res.imm_mode := none;
+                                end if;
+                            when others =>
+                                res.mnemonic := illegal;
+                                res.alu_mode := alu_illegal;
+                                res.imm_mode := none;
+                        end case;
                     when F3_SLT =>
                         res.mnemonic := slt_i;
                         res.alu_mode := alu_slt;
@@ -243,67 +300,76 @@ PACKAGE BODY pipeline IS
                 end case;
             when OPC_LOAD =>
                 res.alu_mode := alu_add;
-                res.imm_mode := i_type when instruction(FUNCT3_RANGE) /= "111" else none;
+                if instruction(FUNCT3_RANGE) /= "111" then res.imm_mode := i_type; else res.imm_mode := none; end if;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
-                res.rdat     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = F3_REG else ali_T'pos(ra);
+                if instruction(FUNCT3_RANGE) = F3_REG then res.rdat := to_integer(unsigned(instruction(RS2_RANGE))); else res.rdat := ali_T'pos(ra); end if;
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.raux     := ali_T'pos(ra);
                 res.alu_a_sel:= DAT;
-                res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
-                res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_rix when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else pgu_dat_i;
-                res.at_mode  := no when res.pgu_mode /= pgu_rix else delta_only;
+                if instruction(FUNCT3_RANGE) = "111" then res.alu_b_sel := AUX; else res.alu_b_sel := IMM; end if;
+                if instruction(FUNCT3_RANGE) = "111" then res.pgu_mode := pgu_dat_r; elsif ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then res.pgu_mode := pgu_rix; else res.pgu_mode := pgu_dat_i; end if;
+                if res.pgu_mode /= pgu_rix then res.at_mode := no; else res.at_mode := delta_only; end if;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := lb_i;
                                      res.me_mode  := lb;
                     when F3_HALF  => res.mnemonic := lh_i;
                                      res.me_mode  := lh;
                     when F3_WORD  => res.mnemonic := lw_i;
-                                     res.me_mode  := load_ix when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else lw;
+                                     if ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then res.me_mode  := load_ix; else res.me_mode  := lw; end if;
                     when F3_BYTEU => res.mnemonic := lbu_i;
                                      res.me_mode  := lbu;
                     when F3_HALFU => res.mnemonic := lhu_i;
                                      res.me_mode  := lhu;
-                    when F3_REG   => res.mnemonic := lb_r when instruction(FUNCT7_RANGE) = F7_BYTE else
-                                                     lh_r when instruction(FUNCT7_RANGE) = F7_HALF else
-                                                     lw_r when instruction(FUNCT7_RANGE) = F7_WORD else
-                                                     lbu_r when instruction(FUNCT7_RANGE) = F7_BYTEU else
-                                                     lhu_r when instruction(FUNCT7_RANGE) = F7_HALFU else
-                                                     illegal;
-                                     res.me_mode :=  lb when instruction(FUNCT7_RANGE) = F7_BYTE else
-                                                     lh when instruction(FUNCT7_RANGE) = F7_HALF else
-                                                     lw when instruction(FUNCT7_RANGE) = F7_WORD else
-                                                     lbu when instruction(FUNCT7_RANGE) = F7_BYTEU else
-                                                     lhu when instruction(FUNCT7_RANGE) = F7_HALFU else
-                                                     holiday;
+                    when F3_REG   => case instruction(FUNCT7_RANGE) is
+                                     when F7_BYTE =>  res.mnemonic := lb_r;
+                                                      res.me_mode  := lb;
+                                     when F7_HALF =>  res.mnemonic := lh_r;
+                                                      res.me_mode  := lh;
+                                     when F7_WORD =>  res.mnemonic := lw_r;
+                                                      res.me_mode  := lw;
+                                     when F7_BYTEU => res.mnemonic := lbu_r;
+                                                      res.me_mode  := lbu;
+                                     when F7_HALFU => res.mnemonic := lhu_r;
+                                                      res.me_mode  := lhu;
+                                     when others =>   res.mnemonic := illegal;
+                                                      res.me_mode  := holiday;
+                                     end case;
                     when others =>  res.mnemonic := illegal;
                                     res.me_mode  := holiday;
                 end case;
             when OPC_STORE =>
                 res.alu_mode := alu_add;
-                res.imm_mode := s_type when instruction(FUNCT3_RANGE) /= "111" else none;
+                res.imm_mode := s_type;
                 res.at_mode  := no;
                 res.rdst     := 0;
                 res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                res.rdat     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT3_RANGE) = F3_REG else ali_T'pos(ra);
+                res.rdat     := ali_T'pos(ra);
                 res.alu_a_sel:= DAT;
-                res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
-                res.pgu_mode := pgu_dat_r when instruction(FUNCT3_RANGE) = "111" else pgu_rix when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else pgu_dat_i;
+                res.alu_b_sel:= IMM;
+                if ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then res.pgu_mode := pgu_rix; else res.pgu_mode := pgu_dat_i; end if;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := sb_i;
                                      res.me_mode  := sb;
                     when F3_HALF  => res.mnemonic := sh_i;
                                      res.me_mode  := sh;
                     when F3_WORD  => res.mnemonic := sw_i;
-                                     res.me_mode  := sw when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) /= ra else store_ix;
-                    when F3_REG   => res.mnemonic := sb_r when instruction(FUNCT7_RANGE) = F7_BYTE else
-                                                     sh_r when instruction(FUNCT7_RANGE) = F7_HALF else
-                                                     sw_r when instruction(FUNCT7_RANGE) = F7_WORD else
-                                                     illegal;
-                                     res.me_mode :=  sb when instruction(FUNCT7_RANGE) = F7_BYTE else
-                                                     sh when instruction(FUNCT7_RANGE) = F7_HALF else
-                                                     sw when instruction(FUNCT7_RANGE) = F7_WORD else
-                                                     holiday;
+                                     res.me_mode  := store_ix;
+                                     if ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) /= ra then res.me_mode  := sw; end if;
+                    when F3_REG   => res.imm_mode := none;
+                                     res.alu_b_sel:= AUX;
+                                     res.pgu_mode := pgu_dat_r;
+                                     res.rdat     := to_integer(unsigned(instruction(RD_RANGE)));
+                                     case instruction(FUNCT7_RANGE) is
+                                     when F7_BYTE =>  res.mnemonic := sb_r;
+                                                      res.me_mode  := sb;
+                                     when F7_HALF =>  res.mnemonic := sh_r;
+                                                      res.me_mode  := sh;
+                                     when F7_WORD =>  res.mnemonic := sw_r;
+                                                      res.me_mode  := sw;
+                                     when others =>   res.mnemonic := illegal;
+                                                      res.me_mode  := holiday;
+                                     end case;
                     when others =>  res.mnemonic := illegal;
                                     res.me_mode  := holiday;
                 end case;
@@ -312,53 +378,71 @@ PACKAGE BODY pipeline IS
                 res.me_mode  := holiday;
                 res.at_mode  := no;
                 res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
-                res.rdat     := to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALCI_PUSH or instruction(FUNCT3_RANGE) = F3_ALC or instruction(FUNCT3_RANGE) = F3_ALCID or instruction(FUNCT3_RANGE) = F3_ALCIP else 
-                                ali_T'pos(ra);
-                res.rptr     := ali_T'pos(frame) when res.rdst = ali_T'pos(frame) else ali_T'pos(alc_addr);
-                res.raux     := to_integer(unsigned(instruction(RS2_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALC else 
-                                to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT3_RANGE) = F3_ALCI_PUSH else   
-                                0;
+                res.rdat     := ali_T'pos(ra);
+                res.rptr     := ali_T'pos(alc_addr);
+                if res.rdst = ali_T'pos(frame) then res.rptr := ali_T'pos(frame); end if;
+                res.raux     := 0;
                 res.alu_a_sel:= DAT;
-                res.alu_b_sel:= AUX when instruction(FUNCT3_RANGE) = "111" else IMM;
+                res.alu_b_sel:= IMM;
                 case instruction(FUNCT3_RANGE) is
-                    when F3_ALC  =>         res.mnemonic := alc;
+                    when F3_ALC  =>         res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
+                                            res.mnemonic := alc;
                                             res.pgu_mode := pgu_alc;
                                             res.imm_mode := none;
-                    when F3_ALCIP  =>       res.mnemonic := alci_p;
+                    when F3_ALCIP  =>       res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.mnemonic := alci_p;
                                             res.pgu_mode := pgu_alcp;
                                             res.imm_mode := i_type;
-                    when F3_ALCID  =>       res.mnemonic := alci_d;
+                    when F3_ALCID  =>       res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.mnemonic := alci_d;
                                             res.pgu_mode := pgu_alcd;
                                             res.imm_mode := i_type;
-                    when F3_ALCI_PUSH =>    res.mnemonic := alci when instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) /= frame else
-                                                            pusht when instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else
-                                                            pushg when instruction(RS2_RANGE) = F5_PUSHG else
-                                                            push when instruction(RS2_RANGE) = F5_PUSH else
-                                                            illegal;
-                                            res.pgu_mode := pgu_alci when instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) /= frame else
-                                                            pgu_pusht when instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else
-                                                            pgu_pushg when instruction(RS2_RANGE) = F5_PUSHG else
-                                                            pgu_push when instruction(RS2_RANGE) = F5_PUSH else
-                                                            pgu_nop;
+                    when F3_ALCI_PUSH =>    res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.raux     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.imm_mode := s_type;
                                             res.rdst     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            if instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) /= frame then
+                                                res.mnemonic := alci;
+                                                res.pgu_mode := pgu_alci;
+                                            elsif instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then
+                                                res.mnemonic := pusht;
+                                                res.pgu_mode := pgu_pusht;
+                                            elsif instruction(RS2_RANGE) = F5_PUSHG then
+                                                res.mnemonic := pushg;
+                                                res.pgu_mode := pgu_pushg;
+                                            elsif instruction(RS2_RANGE) = F5_PUSH then
+                                                res.mnemonic := push;
+                                                res.pgu_mode := pgu_push;
+                                            else
+                                                res.mnemonic := illegal;
+                                                res.pgu_mode := pgu_nop;
+                                            end if;
                     when F3_SP =>           res.mnemonic := sp_i;
                                             res.imm_mode := s_type;
-                                            res.me_mode  := sp when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) /= ra else store_rpc;
+                                            res.me_mode  := sp;
                                             res.at_mode  := no;
                                             res.rdst     := 0;
                                             res.raux     := to_integer(unsigned(instruction(RS2_RANGE)));
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                                            res.pgu_mode := pgu_rcd when ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else pgu_ptr_i;
+                                            res.pgu_mode := pgu_ptr_i;
+                                            if ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then
+                                                res.pgu_mode := pgu_rcd;
+                                                res.me_mode  := store_rpc;
+                                            end if;
                     when F3_LP =>           res.mnemonic := lp_i;
                                             res.imm_mode := i_type;
-                                            res.me_mode  := load_rpc when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else lp;
-                                            res.at_mode  := maybe when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) /= ra else delta_only;
+                                            res.me_mode  := lp;
+                                            res.at_mode  := delta_only;
                                             res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                                             res.raux     := ali_T'pos(ra);
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
-                                            res.pgu_mode := pgu_rcd when ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame else pgu_ptr_i;
-                                            
+                                            res.pgu_mode := pgu_ptr_i;
+                                            if ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then
+                                                res.pgu_mode := pgu_rcd;
+                                                res.me_mode  := load_rpc;
+                                                res.at_mode  := maybe;
+                                            end if;
                     when F3_JLIB =>         res.mnemonic := jlib;
                                             res.alu_mode := alu_illegal;
                                             res.imm_mode := i_type;
@@ -460,23 +544,26 @@ PACKAGE BODY pipeline IS
 
                                 
                             when F7_OR =>
-                                res.mnemonic := ccp when instruction(FUNCT5_RANGE) = F5_CCP else
-                                                illegal;
-                                res.pgu_mode := pgu_ccp when instruction(FUNCT5_RANGE) = F5_CCP else
-                                                pgu_nop;
+                                res.mnemonic := illegal;
+                                res.pgu_mode := pgu_nop;
                                 res.imm_mode := none;
                                 res.alu_a_sel:= DAT;
                                 res.alu_b_sel:= AUX;
-                                res.alu_mode := alu_illegal when instruction(FUNCT5_RANGE) = F5_CCP else
-                                                alu_illegal;
+                                res.alu_mode := alu_illegal;
                                 res.at_mode  := maybe;
                                 res.me_mode  := holiday;
                                 res.rptr     := 0;
                                 res.rdat     := 0;
-                                res.raux     := to_integer(unsigned(instruction(RS1_RANGE))) when instruction(FUNCT5_RANGE) = F5_CCP else
-                                                0;
-                                res.rdst     := to_integer(unsigned(instruction(RD_RANGE))) when instruction(FUNCT5_RANGE) = F5_CCP else
-                                                0;
+                                res.raux     := 0;
+                                res.rdst     := 0;
+                                case instruction(FUNCT5_RANGE) is
+                                    when F5_CCP =>  res.mnemonic := ccp;
+                                                    res.pgu_mode := pgu_ccp;
+                                                    res.alu_mode := alu_illegal;
+                                                    res.raux     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                                    res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                    when others =>  null;
+                                end case;
     
                             when others =>
                                 res.mnemonic := illegal;
@@ -590,18 +677,28 @@ PACKAGE BODY pipeline IS
         variable pi_aligned, dt_aligned: word_T;
         variable reserved_space: natural range 8 to 16;
         variable addr: word_T;
-        variable old_tag, new_tag: std_logic_vector(2 downto 0);
+        variable new_tag: std_logic_vector(2 downto 0);
     begin
-        old_tag := current_alc_addr(2 downto 0);
-        new_tag := "101" when old_tag = "100" else
-                   "100" when old_tag = "101" else
-                   old_tag;
+        case current_alc_addr(2 downto 0) is
+            when "100" => new_tag := "101";
+            when "101" => new_tag := "100";
+            when others => new_tag := current_alc_addr(2 downto 0);
+        end case;
 
         pi_aligned := pi(word_T'high-2 downto 0) & "00";
         dt_aligned := "00" & dt(word_T'high-2 downto 0);
-        reserved_space := 16 when (dt(31) = '1' and dt(30) = '1') else 12 when (dt(31) = '1' or dt(30) = '1') else 8;
-        addr := std_logic_vector(unsigned(current_alc_addr) + unsigned(pi_aligned) + unsigned(dt_aligned) + to_unsigned(reserved_space, word_T'length)) when dalc else
-                std_logic_vector(unsigned(current_alc_addr) - unsigned(pi_aligned) - unsigned(dt_aligned) - to_unsigned(reserved_space, word_T'length));
+        if dt(31) = '1' and dt(30) = '1' then
+            reserved_space := 16;
+        elsif dt(31) = '1' or dt(30) = '1' then
+            reserved_space := 12;
+        else
+            reserved_space := 8;
+        end if;
+        if dalc then
+            addr := std_logic_vector(unsigned(current_alc_addr) + unsigned(pi_aligned) + unsigned(dt_aligned) + to_unsigned(reserved_space, word_T'length));
+        else
+            addr := std_logic_vector(unsigned(current_alc_addr) - unsigned(pi_aligned) - unsigned(dt_aligned) - to_unsigned(reserved_space, word_T'length));
+        end if;
         return addr(word_T'high downto 3) & new_tag;
     end function allocateNewObject;
 
@@ -616,7 +713,13 @@ PACKAGE BODY pipeline IS
         offset_scaled := offs(word_T'high-2 downto 0) & "00";
         index_scaled := ix(word_T'high-2 downto 0) & "00";
         index_space := word_T(unsigned(pi)*INDEX_SIZE+7) and X"FFFFFFFD";
-        reserved_space := 16 when (rc = '1' and ri = '0') else 12 when (rc = '0' or ri = '1') else 8;
+        if rc = '1' and ri = '0' then
+            reserved_space := 16;
+        elsif rc = '0' and ri = '1' then
+            reserved_space := 12;
+        else
+            reserved_space := 8;
+        end if;
 
         if ptr_access then
             return std_logic_vector(unsigned(base) + unsigned(offset_scaled) + unsigned(index_scaled) + reserved_space);

@@ -21,13 +21,13 @@ BEGIN
             if clk'event and clk = '1' then
                 if not (stall = '1') then
                     rd_wb.rf_nbr <= rdst_ix_me;
-                    rd_wb.csr_nbr <= ali_T'pos(alc_addr) when (ctrl_me.pgu_mode = pgu_alc 
-                                                         or  ctrl_me.pgu_mode = pgu_alcp 
-                                                         or  ctrl_me.pgu_mode = pgu_alcd 
-                                                         or  ctrl_me.pgu_mode = pgu_alci)
-                                                         and rdst_ix_me /= ali_T'pos(frame) else 
-                                    rdst_ix_me when rdst_ix_me > ali_T'pos(imm) else
-                                    ali_T'pos(no_csr);
+                    if (ctrl_me.pgu_mode = pgu_alc or  ctrl_me.pgu_mode = pgu_alcp or  ctrl_me.pgu_mode = pgu_alcd or  ctrl_me.pgu_mode = pgu_alci) and rdst_ix_me /= ali_T'pos(frame) then
+                        rd_wb.csr_nbr <= ali_T'pos(alc_addr);
+                    elsif rdst_ix_me > ali_T'pos(imm) then
+                        rd_wb.csr_nbr <= rdst_ix_me;
+                    else
+                        rd_wb.csr_nbr <= ali_T'pos(no_csr);
+                    end if;
                                        
                     rd_wb.ali <= ali_T'val(rdst_ix_me);
 
@@ -42,7 +42,7 @@ BEGIN
                     
                     pc_wb <= pc_me;
                     exc_wb <= exc_me;
-                    assert ctrl_me.mnemonic /= ebreak report "EBREAK" severity failure;
+                    --assert ctrl_me.mnemonic /= ebreak report "EBREAK" severity failure;
                 end if;
             end if;
         end if;

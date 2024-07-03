@@ -9,7 +9,7 @@ unitName "std_logic_1164"
 )
 (DmPackageRef
 library "riscvio_lib"
-unitName "caches"
+unitName "pipeline"
 )
 (DmPackageRef
 library "riscvio_lib"
@@ -78,30 +78,30 @@ libraryRefs [
 ]
 )
 version "32.1"
-appVersion "2021.1 Built on 14 Jan 2021 at 15:11:42"
+appVersion "2022.3 Built on 14 Jul 2022 at 13:56:12"
 noEmbeddedEditors 1
 model (BlockDiag
 VExpander (VariableExpander
 vvMap [
 (vvPair
 variable "HDLDir"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViO\\riscvio_lib\\hdl"
+value "/u/home/stud/leylknci/Documents/FP/RiscViO/riscvio_lib/hdl"
 )
 (vvPair
 variable "HDSDir"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViO\\riscvio_lib\\hds"
+value "/u/home/stud/leylknci/Documents/FP/RiscViO/riscvio_lib/hds"
 )
 (vvPair
 variable "SideDataDesignDir"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViO\\riscvio_lib\\hds\\riscvio_soc\\struct.bd.info"
+value "/u/home/stud/leylknci/Documents/FP/RiscViO/riscvio_lib/hds/riscvio_soc/struct.bd.info"
 )
 (vvPair
 variable "SideDataUserDir"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViO\\riscvio_lib\\hds\\riscvio_soc\\struct.bd.user"
+value "/u/home/stud/leylknci/Documents/FP/RiscViO/riscvio_lib/hds/riscvio_soc/struct.bd.user"
 )
 (vvPair
 variable "SourceDir"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViO\\riscvio_lib\\hds"
+value "/u/home/stud/leylknci/Documents/FP/RiscViO/riscvio_lib/hds"
 )
 (vvPair
 variable "appl"
@@ -117,27 +117,27 @@ value "%(unit)_%(view)_config"
 )
 (vvPair
 variable "d"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViO\\riscvio_lib\\hds\\riscvio_soc"
+value "/u/home/stud/leylknci/Documents/FP/RiscViO/riscvio_lib/hds/riscvio_soc"
 )
 (vvPair
 variable "d_logical"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViO\\riscvio_lib\\hds\\riscvio_soc"
+value "/u/home/stud/leylknci/Documents/FP/RiscViO/riscvio_lib/hds/riscvio_soc"
 )
 (vvPair
 variable "date"
-value "30.06.2024"
+value "07/03/24"
 )
 (vvPair
 variable "day"
-value "So"
+value "Wed"
 )
 (vvPair
 variable "day_long"
-value "Sonntag"
+value "Wednesday"
 )
 (vvPair
 variable "dd"
-value "30"
+value "03"
 )
 (vvPair
 variable "entity_name"
@@ -161,31 +161,31 @@ value "struct"
 )
 (vvPair
 variable "graphical_source_author"
-value "surfer"
+value "leylknci"
 )
 (vvPair
 variable "graphical_source_date"
-value "30.06.2024"
+value "07/03/24"
 )
 (vvPair
 variable "graphical_source_group"
-value "UNKNOWN"
+value "meyer"
 )
 (vvPair
 variable "graphical_source_host"
-value "SURFER-A0000001"
+value "pc024"
 )
 (vvPair
 variable "graphical_source_time"
-value "17:07:22"
+value "18:24:20"
 )
 (vvPair
 variable "group"
-value "UNKNOWN"
+value "meyer"
 )
 (vvPair
 variable "host"
-value "SURFER-A0000001"
+value "pc024"
 )
 (vvPair
 variable "language"
@@ -221,7 +221,7 @@ value "$HDS_PROJECT_DIR/riscvio_lib/questasim"
 )
 (vvPair
 variable "mm"
-value "06"
+value "07"
 )
 (vvPair
 variable "module_name"
@@ -229,19 +229,19 @@ value "riscvio_soc"
 )
 (vvPair
 variable "month"
-value "Jun"
+value "Jul"
 )
 (vvPair
 variable "month_long"
-value "Juni"
+value "July"
 )
 (vvPair
 variable "p"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViO\\riscvio_lib\\hds\\riscvio_soc\\struct.bd"
+value "/u/home/stud/leylknci/Documents/FP/RiscViO/riscvio_lib/hds/riscvio_soc/struct.bd"
 )
 (vvPair
 variable "p_logical"
-value "Z:\\media\\surfer\\Volume\\Dateien\\vhdl\\RiscViO\\riscvio_lib\\hds\\riscvio_soc\\struct.bd"
+value "/u/home/stud/leylknci/Documents/FP/RiscViO/riscvio_lib/hds/riscvio_soc/struct.bd"
 )
 (vvPair
 variable "package_name"
@@ -265,7 +265,7 @@ value "<TBD>"
 )
 (vvPair
 variable "task_ModelSimPath"
-value "C:\\intelFPGA/20.1\\modelsim_ase\\win32aloem"
+value "/ext/eda/modelsim/2021_3/modeltech/bin"
 )
 (vvPair
 variable "task_NC-SimPath"
@@ -276,8 +276,12 @@ variable "task_PrecisionRTLPath"
 value "<TBD>"
 )
 (vvPair
+variable "task_QuestaCDCFormalPath"
+value "$QHOME/bin"
+)
+(vvPair
 variable "task_QuestaSimPath"
-value "C:\\intelFPGA_lite\\23.1std\\questa_fse\\win64"
+value "$QUESTA_HOME/bin"
 )
 (vvPair
 variable "task_VCSPath"
@@ -297,7 +301,7 @@ value "struct"
 )
 (vvPair
 variable "time"
-value "17:07:22"
+value "18:24:20"
 )
 (vvPair
 variable "unit"
@@ -305,11 +309,11 @@ value "riscvio_soc"
 )
 (vvPair
 variable "user"
-value "surfer"
+value "leylknci"
 )
 (vvPair
 variable "version"
-value "2021.1 Built on 14 Jan 2021 at 15:11:42"
+value "2022.3 Built on 14 Jul 2022 at 13:56:12"
 )
 (vvPair
 variable "view"
@@ -350,11 +354,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 150,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "9000,20550,10500,21950"
+xt "9000,20550,10100,21450"
 st "clk"
-blo "9000,21650"
+blo "9000,21250"
 )
 )
 thePort (LogicalPort
@@ -385,11 +389,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 154,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "9000,21550,11500,22950"
+xt "9000,21550,11000,22450"
 st "res_n"
-blo "9000,22650"
+blo "9000,22250"
 )
 )
 thePort (LogicalPort
@@ -420,12 +424,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 158,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "28000,22300,31000,23700"
+xt "28400,22300,31000,23200"
 st "ic_rack"
 ju 2
-blo "31000,23400"
+blo "31000,23000"
 )
 )
 thePort (LogicalPort
@@ -456,12 +460,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 162,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "18300,20300,31000,21700"
+xt "18500,20300,31000,21200"
 st "ic_raddr : (ADDR_WIDTH - 1:0)"
 ju 2
-blo "31000,21400"
+blo "31000,21000"
 )
 )
 thePort (LogicalPort
@@ -494,12 +498,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 166,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "19100,23300,31000,24700"
+xt "19400,23300,31000,24200"
 st "ic_rdata : (BUS_WIDTH - 1:0)"
 ju 2
-blo "31000,24400"
+blo "31000,24000"
 )
 )
 thePort (LogicalPort
@@ -531,12 +535,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 170,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "28000,21300,31000,22700"
+xt "28500,21300,31000,22200"
 st "ic_rreq"
 ju 2
-blo "31000,22400"
+blo "31000,22000"
 )
 )
 thePort (LogicalPort
@@ -568,12 +572,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 174,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "27800,32550,31000,33950"
+xt "28200,32550,31000,33450"
 st "ac_rack"
 ju 2
-blo "31000,33650"
+blo "31000,33250"
 )
 )
 thePort (LogicalPort
@@ -604,12 +608,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 178,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "23900,31550,31000,32950"
+xt "24000,31550,31000,32450"
 st "ac_raddr : (31:0)"
 ju 2
-blo "31000,32650"
+blo "31000,32250"
 )
 )
 thePort (LogicalPort
@@ -642,12 +646,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 182,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "27400,33550,31000,34950"
+xt "27900,33550,31000,34450"
 st "ac_rdata"
 ju 2
-blo "31000,34650"
+blo "31000,34250"
 )
 )
 thePort (LogicalPort
@@ -678,12 +682,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 186,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "27800,30550,31000,31950"
+xt "28300,30550,31000,31450"
 st "ac_rreq"
 ju 2
-blo "31000,31650"
+blo "31000,31250"
 )
 )
 thePort (LogicalPort
@@ -715,12 +719,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 190,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "27700,27550,31000,28950"
+xt "28100,27550,31000,28450"
 st "dc_rack"
 ju 2
-blo "31000,28650"
+blo "31000,28250"
 )
 )
 thePort (LogicalPort
@@ -751,12 +755,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 194,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "23800,26550,31000,27950"
+xt "23900,26550,31000,27450"
 st "dc_raddr : (31:0)"
 ju 2
-blo "31000,27650"
+blo "31000,27250"
 )
 )
 thePort (LogicalPort
@@ -789,12 +793,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 198,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "27300,28550,31000,29950"
+xt "27800,28550,31000,29450"
 st "dc_rdata"
 ju 2
-blo "31000,29650"
+blo "31000,29250"
 )
 )
 thePort (LogicalPort
@@ -825,12 +829,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 202,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "27700,25550,31000,26950"
+xt "28200,25550,31000,26450"
 st "dc_rreq"
 ju 2
-blo "31000,26650"
+blo "31000,26250"
 )
 )
 thePort (LogicalPort
@@ -862,12 +866,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 206,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "27400,37550,31000,38950"
+xt "27800,37550,31000,38450"
 st "dc_wack"
 ju 2
-blo "31000,38650"
+blo "31000,38250"
 )
 )
 thePort (LogicalPort
@@ -898,12 +902,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 210,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "23500,35550,31000,36950"
+xt "23600,35550,31000,36450"
 st "dc_waddr : (31:0)"
 ju 2
-blo "31000,36650"
+blo "31000,36250"
 )
 )
 thePort (LogicalPort
@@ -936,12 +940,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 214,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "27000,38550,31000,39950"
+xt "27500,38550,31000,39450"
 st "dc_wdata"
 ju 2
-blo "31000,39650"
+blo "31000,39250"
 )
 )
 thePort (LogicalPort
@@ -973,12 +977,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 218,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "27400,36550,31000,37950"
+xt "27900,36550,31000,37450"
 st "dc_wreq"
 ju 2
-blo "31000,37650"
+blo "31000,37250"
 )
 )
 thePort (LogicalPort
@@ -1010,11 +1014,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 222,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "9000,37300,12500,38700"
+xt "9000,37300,12000,38200"
 st "io_rdata"
-blo "9000,38400"
+blo "9000,38000"
 )
 )
 thePort (LogicalPort
@@ -1045,11 +1049,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 226,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "9000,40300,12800,41700"
+xt "9000,40300,12300,41200"
 st "io_wdata"
-blo "9000,41400"
+blo "9000,41000"
 )
 )
 thePort (LogicalPort
@@ -1081,11 +1085,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 230,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "9000,36300,12100,37700"
+xt "9000,36300,11600,37200"
 st "io_stall"
-blo "9000,37400"
+blo "9000,37000"
 )
 )
 thePort (LogicalPort
@@ -1116,11 +1120,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 234,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "9000,39300,12700,40700"
+xt "9000,39300,12200,40200"
 st "io_mode"
-blo "9000,40400"
+blo "9000,40000"
 )
 )
 thePort (LogicalPort
@@ -1152,11 +1156,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 238,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "9000,38300,15300,39700"
+xt "9000,38300,15200,39200"
 st "io_dev : (11:0)"
-blo "9000,39400"
+blo "9000,39000"
 )
 )
 thePort (LogicalPort
@@ -1189,11 +1193,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 962,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "9000,41300,11200,42700"
+xt "9000,41300,10800,42200"
 st "io_ix"
-blo "9000,42400"
+blo "9000,42000"
 )
 )
 thePort (LogicalPort
@@ -1227,31 +1231,31 @@ textVec [
 *26 (Text
 uid 140,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "17750,29100,22550,30500"
+xt "17750,29100,22750,30000"
 st "riscvio_lib"
-blo "17750,30200"
+blo "17750,29800"
 tm "BdLibraryNameMgr"
 )
 *27 (Text
 uid 141,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "17750,30000,20650,31400"
+xt "17750,30000,20650,30900"
 st "riscvio"
-blo "17750,31100"
+blo "17750,30700"
 tm "CptNameMgr"
 )
 *28 (Text
 uid 142,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "17750,30900,21250,32300"
+xt "17750,30900,21350,31800"
 st "riscvio_i"
-blo "17750,32000"
+blo "17750,31600"
 tm "InstanceNameMgr"
 )
 ]
@@ -1264,7 +1268,7 @@ uid 144,0
 text (MLText
 uid 145,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "-7000,26000,-7000,26000"
 )
@@ -1313,11 +1317,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 252,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,13300,52500,14700"
+xt "51000,13300,52100,14200"
 st "clk"
-blo "51000,14400"
+blo "51000,14000"
 )
 )
 thePort (LogicalPort
@@ -1347,11 +1351,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 256,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,14300,53500,15700"
+xt "51000,14300,53000,15200"
 st "res_n"
-blo "51000,15400"
+blo "51000,15000"
 )
 )
 thePort (LogicalPort
@@ -1381,11 +1385,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 260,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,25300,54300,26700"
+xt "51000,25300,53800,26200"
 st "dc_rreq"
-blo "51000,26400"
+blo "51000,26000"
 )
 )
 thePort (LogicalPort
@@ -1416,11 +1420,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 264,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,27300,54300,28700"
+xt "51000,27300,53900,28200"
 st "dc_rack"
-blo "51000,28400"
+blo "51000,28000"
 )
 )
 thePort (LogicalPort
@@ -1451,11 +1455,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 268,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,26300,64000,27700"
+xt "51000,26300,63800,27200"
 st "dc_raddr : (ADDR_WIDTH - 1:0)"
-blo "51000,27400"
+blo "51000,27000"
 )
 )
 thePort (LogicalPort
@@ -1487,11 +1491,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 272,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,28300,63200,29700"
+xt "51000,28300,62900,29200"
 st "dc_rdata : (BUS_WIDTH - 1:0)"
-blo "51000,29400"
+blo "51000,29000"
 )
 )
 thePort (LogicalPort
@@ -1523,11 +1527,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 276,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,30300,54200,31700"
+xt "51000,30300,53700,31200"
 st "ac_rreq"
-blo "51000,31400"
+blo "51000,31000"
 )
 )
 thePort (LogicalPort
@@ -1558,11 +1562,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 280,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,32300,54200,33700"
+xt "51000,32300,53800,33200"
 st "ac_rack"
-blo "51000,33400"
+blo "51000,33000"
 )
 )
 thePort (LogicalPort
@@ -1593,11 +1597,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 284,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,31300,63900,32700"
+xt "51000,31300,63700,32200"
 st "ac_raddr : (ADDR_WIDTH - 1:0)"
-blo "51000,32400"
+blo "51000,32000"
 )
 )
 thePort (LogicalPort
@@ -1629,11 +1633,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 288,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,33300,63100,34700"
+xt "51000,33300,62800,34200"
 st "ac_rdata : (BUS_WIDTH - 1:0)"
-blo "51000,34400"
+blo "51000,34000"
 )
 )
 thePort (LogicalPort
@@ -1665,11 +1669,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 292,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,21300,54000,22700"
+xt "51000,21300,53500,22200"
 st "ic_rreq"
-blo "51000,22400"
+blo "51000,22000"
 )
 )
 thePort (LogicalPort
@@ -1700,11 +1704,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 296,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,22300,54000,23700"
+xt "51000,22300,53600,23200"
 st "ic_rack"
-blo "51000,23400"
+blo "51000,23000"
 )
 )
 thePort (LogicalPort
@@ -1735,11 +1739,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 300,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,20300,63700,21700"
+xt "51000,20300,63500,21200"
 st "ic_raddr : (ADDR_WIDTH - 1:0)"
-blo "51000,21400"
+blo "51000,21000"
 )
 )
 thePort (LogicalPort
@@ -1771,11 +1775,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 304,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,23300,62900,24700"
+xt "51000,23300,62600,24200"
 st "ic_rdata : (BUS_WIDTH - 1:0)"
-blo "51000,24400"
+blo "51000,24000"
 )
 )
 thePort (LogicalPort
@@ -1807,11 +1811,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 308,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,36300,54600,37700"
+xt "51000,36300,54100,37200"
 st "dc_wreq"
-blo "51000,37400"
+blo "51000,37000"
 )
 )
 thePort (LogicalPort
@@ -1842,11 +1846,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 312,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,37300,54600,38700"
+xt "51000,37300,54200,38200"
 st "dc_wack"
-blo "51000,38400"
+blo "51000,38000"
 )
 )
 thePort (LogicalPort
@@ -1877,11 +1881,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 316,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,35300,64300,36700"
+xt "51000,35300,64100,36200"
 st "dc_waddr : (ADDR_WIDTH - 1:0)"
-blo "51000,36400"
+blo "51000,36000"
 )
 )
 thePort (LogicalPort
@@ -1913,11 +1917,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 320,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "51000,38300,63500,39700"
+xt "51000,38300,63200,39200"
 st "dc_wdata : (BUS_WIDTH - 1:0)"
-blo "51000,39400"
+blo "51000,39000"
 )
 )
 thePort (LogicalPort
@@ -1950,31 +1954,31 @@ textVec [
 *48 (Text
 uid 242,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "52100,8000,56900,9400"
+xt "52100,8000,57100,8900"
 st "riscvio_lib"
-blo "52100,9100"
+blo "52100,8700"
 tm "BdLibraryNameMgr"
 )
 *49 (Text
 uid 243,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "52100,9400,55500,10800"
+xt "52100,9400,55400,10300"
 st "int_ram"
-blo "52100,10500"
+blo "52100,10100"
 tm "CptNameMgr"
 )
 *50 (Text
 uid 244,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "52100,10800,56100,12200"
+xt "52100,10800,56100,11700"
 st "int_ram_i"
-blo "52100,11900"
+blo "52100,11500"
 tm "InstanceNameMgr"
 )
 ]
@@ -1987,7 +1991,7 @@ uid 246,0
 text (MLText
 uid 247,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "64500,21000,64500,21000"
 )
@@ -2025,11 +2029,10 @@ suid 1,0
 declText (MLText
 uid 430,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-27200,9300,-25800"
-st "res_n               : std_logic
-"
+xt "-1000,-27200,10000,-26300"
+st "res_n               : std_logic"
 )
 )
 *52 (Net
@@ -2045,11 +2048,10 @@ i "(others => '0')"
 declText (MLText
 uid 432,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-6200,33100,-4800"
-st "SIGNAL dc_raddr            : std_logic_vector(ADDR_WIDTH - 1 downto 0) := (others => '0')
-"
+xt "-1000,-6200,34400,-5300"
+st "SIGNAL dc_raddr            : std_logic_vector(ADDR_WIDTH - 1 downto 0) := (others => '0')"
 )
 )
 *53 (Net
@@ -2064,11 +2066,10 @@ suid 3,0
 declText (MLText
 uid 434,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-4800,25900,-3400"
-st "SIGNAL dc_rdata            : std_logic_vector(BUS_WIDTH - 1 downto 0)
-"
+xt "-1000,-4800,26600,-3900"
+st "SIGNAL dc_rdata            : std_logic_vector(BUS_WIDTH - 1 downto 0)"
 )
 )
 *54 (Net
@@ -2082,11 +2083,10 @@ suid 4,0
 declText (MLText
 uid 436,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-2000,12400,-600"
-st "SIGNAL dc_wack             : boolean
-"
+xt "-1000,-2000,13300,-1100"
+st "SIGNAL dc_wack             : boolean"
 )
 )
 *55 (Net
@@ -2100,11 +2100,10 @@ suid 5,0
 declText (MLText
 uid 438,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,3600,11800,5000"
-st "SIGNAL ic_rack             : boolean
-"
+xt "-1000,3600,12700,4500"
+st "SIGNAL ic_rack             : boolean"
 )
 )
 *56 (Net
@@ -2118,11 +2117,10 @@ suid 6,0
 declText (MLText
 uid 440,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-7600,12100,-6200"
-st "SIGNAL dc_rack             : boolean
-"
+xt "-1000,-7600,13000,-6700"
+st "SIGNAL dc_rack             : boolean"
 )
 )
 *57 (Net
@@ -2136,11 +2134,10 @@ suid 7,0
 declText (MLText
 uid 442,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-21600,12000,-20200"
-st "SIGNAL ac_rack             : boolean
-"
+xt "-1000,-21600,12900,-20700"
+st "SIGNAL ac_rack             : boolean"
 )
 )
 *58 (Net
@@ -2154,11 +2151,10 @@ suid 8,0
 declText (MLText
 uid 444,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-28600,8700,-27200"
-st "clk                 : std_logic
-"
+xt "-1000,-28600,9700,-27700"
+st "clk                 : std_logic"
 )
 )
 *59 (Net
@@ -2173,11 +2169,10 @@ i "false"
 declText (MLText
 uid 446,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-3400,22200,-2000"
-st "SIGNAL dc_rreq             : boolean                                   := false
-"
+xt "-1000,-3400,26200,-2500"
+st "SIGNAL dc_rreq             : boolean                                   := false"
 )
 )
 *60 (Net
@@ -2193,11 +2188,10 @@ i "(others => '0')"
 declText (MLText
 uid 448,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-20200,33000,-18800"
-st "SIGNAL ac_raddr            : std_logic_vector(ADDR_WIDTH - 1 downto 0) := (others => '0')
-"
+xt "-1000,-20200,34300,-19300"
+st "SIGNAL ac_raddr            : std_logic_vector(ADDR_WIDTH - 1 downto 0) := (others => '0')"
 )
 )
 *61 (Net
@@ -2212,11 +2206,10 @@ suid 11,0
 declText (MLText
 uid 450,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-18800,25800,-17400"
-st "SIGNAL ac_rdata            : std_logic_vector(BUS_WIDTH - 1 downto 0)
-"
+xt "-1000,-18800,26500,-17900"
+st "SIGNAL ac_rdata            : std_logic_vector(BUS_WIDTH - 1 downto 0)"
 )
 )
 *62 (Net
@@ -2232,11 +2225,10 @@ i "(others => '0')"
 declText (MLText
 uid 452,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,5000,32800,6400"
-st "SIGNAL ic_raddr            : std_logic_vector(ADDR_WIDTH - 1 downto 0) := (others => '0')
-"
+xt "-1000,5000,34100,5900"
+st "SIGNAL ic_raddr            : std_logic_vector(ADDR_WIDTH - 1 downto 0) := (others => '0')"
 )
 )
 *63 (Net
@@ -2251,11 +2243,10 @@ suid 13,0
 declText (MLText
 uid 454,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,13400,11900,14800"
-st "SIGNAL io_rdata            : word_T
-"
+xt "-1000,13400,12600,14300"
+st "SIGNAL io_rdata            : word_T"
 )
 )
 *64 (Net
@@ -2271,11 +2262,10 @@ suid 15,0
 declText (MLText
 uid 458,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,9200,20900,10600"
-st "SIGNAL io_dev              : std_logic_vector(11 downto 0)
-"
+xt "-1000,9200,21500,10100"
+st "SIGNAL io_dev              : std_logic_vector(11 downto 0)"
 )
 )
 *65 (Net
@@ -2291,11 +2281,10 @@ i "(others => '0')"
 declText (MLText
 uid 460,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,800,32800,2200"
-st "SIGNAL dc_wdata            : std_logic_vector(BUS_WIDTH - 1 downto 0)  := (others => '0')
-"
+xt "-1000,800,34100,1700"
+st "SIGNAL dc_wdata            : std_logic_vector(BUS_WIDTH - 1 downto 0)  := (others => '0')"
 )
 )
 *66 (Net
@@ -2310,11 +2299,10 @@ suid 17,0
 declText (MLText
 uid 462,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,16200,12200,17600"
-st "SIGNAL io_wdata            : word_T
-"
+xt "-1000,16200,12900,17100"
+st "SIGNAL io_wdata            : word_T"
 )
 )
 *67 (Net
@@ -2329,11 +2317,10 @@ i "false"
 declText (MLText
 uid 464,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,2200,22500,3600"
-st "SIGNAL dc_wreq             : boolean                                   := false
-"
+xt "-1000,2200,26500,3100"
+st "SIGNAL dc_wreq             : boolean                                   := false"
 )
 )
 *68 (Net
@@ -2348,11 +2335,10 @@ suid 19,0
 declText (MLText
 uid 466,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,12000,14700,13400"
-st "SIGNAL io_mode             : mem_mode_T
-"
+xt "-1000,12000,15500,12900"
+st "SIGNAL io_mode             : mem_mode_T"
 )
 )
 *69 (Net
@@ -2367,11 +2353,10 @@ suid 20,0
 declText (MLText
 uid 468,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,6400,25600,7800"
-st "SIGNAL ic_rdata            : std_logic_vector(BUS_WIDTH - 1 downto 0)
-"
+xt "-1000,6400,26300,7300"
+st "SIGNAL ic_rdata            : std_logic_vector(BUS_WIDTH - 1 downto 0)"
 )
 )
 *70 (Net
@@ -2386,11 +2371,10 @@ i "false"
 declText (MLText
 uid 470,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,7800,21900,9200"
-st "SIGNAL ic_rreq             : boolean                                   := false
-"
+xt "-1000,7800,25900,8700"
+st "SIGNAL ic_rreq             : boolean                                   := false"
 )
 )
 *71 (Net
@@ -2406,11 +2390,10 @@ i "(others => '0')"
 declText (MLText
 uid 472,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-600,33400,800"
-st "SIGNAL dc_waddr            : std_logic_vector(ADDR_WIDTH - 1 downto 0) := (others => '0')
-"
+xt "-1000,-600,34700,300"
+st "SIGNAL dc_waddr            : std_logic_vector(ADDR_WIDTH - 1 downto 0) := (others => '0')"
 )
 )
 *72 (Net
@@ -2425,11 +2408,10 @@ i "false"
 declText (MLText
 uid 474,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-17400,22100,-16000"
-st "SIGNAL ac_rreq             : boolean                                   := false
-"
+xt "-1000,-17400,26100,-16500"
+st "SIGNAL ac_rreq             : boolean                                   := false"
 )
 )
 *73 (PortIoIn
@@ -2468,12 +2450,12 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 480,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-2500,21300,0,22700"
+xt "-2000,21300,0,22200"
 st "res_n"
 ju 2
-blo "0,22400"
+blo "0,22000"
 tm "WireNameMgr"
 )
 )
@@ -2514,12 +2496,12 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 486,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1500,20300,0,21700"
+xt "-1100,20300,0,21200"
 st "clk"
 ju 2
-blo "0,21400"
+blo "0,21000"
 tm "WireNameMgr"
 )
 )
@@ -2546,11 +2528,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 536,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-49000,35300,-46600,36700"
+xt "-49000,35300,-47000,36200"
 st "clock"
-blo "-49000,36400"
+blo "-49000,36000"
 )
 )
 thePort (LogicalPort
@@ -2580,12 +2562,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 544,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-37500,42300,-28000,43700"
+xt "-36900,42300,-28000,43200"
 st "data_stream_in : (7:0)"
 ju 2
-blo "-28000,43400"
+blo "-28000,43000"
 )
 )
 thePort (LogicalPort
@@ -2616,12 +2598,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 548,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-36200,41300,-28000,42700"
+xt "-35700,41300,-28000,42200"
 st "data_stream_in_stb"
 ju 2
-blo "-28000,42400"
+blo "-28000,42000"
 )
 )
 thePort (LogicalPort
@@ -2651,12 +2633,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 552,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-36200,40300,-28000,41700"
+xt "-35800,40300,-28000,41200"
 st "data_stream_in_ack"
 ju 2
-blo "-28000,41400"
+blo "-28000,41000"
 )
 )
 thePort (LogicalPort
@@ -2687,12 +2669,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 556,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-38100,36300,-28000,37700"
+xt "-37500,36300,-28000,37200"
 st "data_stream_out : (7:0)"
 ju 2
-blo "-28000,37400"
+blo "-28000,37000"
 )
 )
 thePort (LogicalPort
@@ -2725,12 +2707,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 560,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-36800,37300,-28000,38700"
+xt "-36300,37300,-28000,38200"
 st "data_stream_out_stb"
 ju 2
-blo "-28000,38400"
+blo "-28000,38000"
 )
 )
 thePort (LogicalPort
@@ -2762,11 +2744,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 564,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-49000,40300,-47800,41700"
+xt "-49000,40300,-48200,41200"
 st "tx"
-blo "-49000,41400"
+blo "-49000,41000"
 )
 )
 thePort (LogicalPort
@@ -2798,11 +2780,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 568,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-49000,39300,-47800,40700"
+xt "-49000,39300,-48200,40200"
 st "rx"
-blo "-49000,40400"
+blo "-49000,40000"
 )
 )
 thePort (LogicalPort
@@ -2833,12 +2815,12 @@ stg "RightVerticalLayoutStrategy"
 f (Text
 uid 976,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-36900,43300,-28000,44700"
+xt "-36400,43300,-28000,44200"
 st "data_stream_in_done"
 ju 2
-blo "-28000,44400"
+blo "-28000,44000"
 )
 )
 thePort (LogicalPort
@@ -2869,11 +2851,11 @@ stg "VerticalLayoutStrategy"
 f (Text
 uid 990,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-49000,36300,-46500,37700"
+xt "-49000,36300,-47000,37200"
 st "res_n"
-blo "-49000,37400"
+blo "-49000,37000"
 )
 )
 thePort (LogicalPort
@@ -2904,31 +2886,31 @@ textVec [
 *86 (Text
 uid 572,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-40900,44000,-36100,45400"
+xt "-43900,38000,-38900,38900"
 st "riscvio_lib"
-blo "-40900,45100"
+blo "-43900,38700"
 tm "BdLibraryNameMgr"
 )
 *87 (Text
 uid 573,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-40900,45400,-38800,46800"
+xt "-43900,39400,-42100,40300"
 st "uart"
-blo "-40900,46500"
+blo "-43900,40100"
 tm "CptNameMgr"
 )
 *88 (Text
 uid 574,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-40900,46800,-37300,48200"
+xt "-43900,40800,-40300,41700"
 st "uart_if_i"
-blo "-40900,47900"
+blo "-43900,41500"
 tm "InstanceNameMgr"
 )
 ]
@@ -2941,9 +2923,9 @@ uid 576,0
 text (MLText
 uid 577,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-45250,32200,-26450,35000"
+xt "-45250,32200,-26850,34000"
 st "baud            = 1_000_000     ( positive )  
 clock_frequency = 50_000_000    ( positive )  "
 )
@@ -3002,31 +2984,31 @@ textVec [
 *90 (Text
 uid 582,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-11400,37900,-6600,39300"
+xt "-11400,37900,-6400,38800"
 st "riscvio_lib"
-blo "-11400,39000"
+blo "-11400,38600"
 tm "BdLibraryNameMgr"
 )
 *91 (Text
 uid 583,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-11400,39300,-8200,40700"
+xt "-11400,39300,-8300,40200"
 st "io_mux"
-blo "-11400,40400"
+blo "-11400,40000"
 tm "BlkNameMgr"
 )
 *92 (Text
 uid 584,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-11400,40700,-7600,42100"
+xt "-11400,40700,-7600,41600"
 st "io_mux_i"
-blo "-11400,41800"
+blo "-11400,41400"
 tm "InstanceNameMgr"
 )
 ]
@@ -3039,7 +3021,7 @@ uid 586,0
 text (MLText
 uid 587,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "-11400,47900,-11400,47900"
 )
@@ -3074,11 +3056,10 @@ suid 24,0
 declText (MLText
 uid 590,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-16000,22000,-14600"
-st "SIGNAL data_stream_in      : std_logic_vector(7 downto 0)
-"
+xt "-1000,-16000,21800,-15100"
+st "SIGNAL data_stream_in      : std_logic_vector(7 downto 0)"
 )
 )
 *94 (Net
@@ -3092,11 +3073,10 @@ suid 25,0
 declText (MLText
 uid 598,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-11800,14700,-10400"
-st "SIGNAL data_stream_in_stb  : std_logic
-"
+xt "-1000,-11800,14400,-10900"
+st "SIGNAL data_stream_in_stb  : std_logic"
 )
 )
 *95 (Net
@@ -3110,11 +3090,10 @@ suid 26,0
 declText (MLText
 uid 606,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-14600,14700,-13200"
-st "SIGNAL data_stream_in_ack  : std_logic
-"
+xt "-1000,-14600,14500,-13700"
+st "SIGNAL data_stream_in_ack  : std_logic"
 )
 )
 *96 (Net
@@ -3129,11 +3108,10 @@ suid 27,0
 declText (MLText
 uid 614,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-10400,22400,-9000"
-st "SIGNAL data_stream_out     : std_logic_vector(7 downto 0)
-"
+xt "-1000,-10400,22100,-9500"
+st "SIGNAL data_stream_out     : std_logic_vector(7 downto 0)"
 )
 )
 *97 (Net
@@ -3147,11 +3125,10 @@ suid 28,0
 declText (MLText
 uid 622,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-9000,15100,-7600"
-st "SIGNAL data_stream_out_stb : std_logic
-"
+xt "-1000,-9000,14700,-8100"
+st "SIGNAL data_stream_out_stb : std_logic"
 )
 )
 *98 (Net
@@ -3165,11 +3142,10 @@ suid 29,0
 declText (MLText
 uid 662,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-24400,8600,-23000"
-st "tx                  : std_logic
-"
+xt "-1000,-24400,9700,-23500"
+st "tx                  : std_logic"
 )
 )
 *99 (Net
@@ -3183,11 +3159,10 @@ suid 30,0
 declText (MLText
 uid 670,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-25800,8600,-24400"
-st "rx                  : std_logic
-"
+xt "-1000,-25800,9700,-24900"
+st "rx                  : std_logic"
 )
 )
 *100 (PortIoIn
@@ -3226,12 +3201,12 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 688,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-58200,39300,-57000,40700"
+xt "-57800,39300,-57000,40200"
 st "rx"
 ju 2
-blo "-57000,40400"
+blo "-57000,40000"
 tm "WireNameMgr"
 )
 )
@@ -3272,12 +3247,12 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 694,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-58200,40300,-57000,41700"
+xt "-57800,40300,-57000,41200"
 st "tx"
 ju 2
-blo "-57000,41400"
+blo "-57000,41000"
 tm "WireNameMgr"
 )
 )
@@ -3294,11 +3269,10 @@ suid 34,0
 declText (MLText
 uid 850,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,14800,12100,16200"
-st "SIGNAL io_stall            : std_logic
-"
+xt "-1000,14800,12800,15700"
+st "SIGNAL io_stall            : std_logic"
 )
 )
 *103 (Net
@@ -3313,11 +3287,10 @@ suid 35,0
 declText (MLText
 uid 964,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,10600,11200,12000"
-st "SIGNAL io_ix               : word_T
-"
+xt "-1000,10600,12300,11500"
+st "SIGNAL io_ix               : word_T"
 )
 )
 *104 (Net
@@ -3331,11 +3304,10 @@ suid 36,0
 declText (MLText
 uid 978,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-1000,-13200,15200,-11800"
-st "SIGNAL data_stream_in_done : std_logic
-"
+xt "-1000,-13200,14800,-12300"
+st "SIGNAL data_stream_in_done : std_logic"
 )
 )
 *105 (Wire
@@ -3365,11 +3337,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 324,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "4750,21100,7250,22500"
+xt "4750,21100,6750,22000"
 st "res_n"
-blo "4750,22200"
+blo "4750,21800"
 tm "WireNameMgr"
 )
 )
@@ -3404,11 +3376,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 328,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,26100,47000,27500"
+xt "34000,26100,46800,27000"
 st "dc_raddr : (ADDR_WIDTH - 1:0)"
-blo "34000,27200"
+blo "34000,26800"
 tm "WireNameMgr"
 )
 )
@@ -3443,11 +3415,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 332,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,28100,46200,29500"
+xt "34000,28100,45900,29000"
 st "dc_rdata : (BUS_WIDTH - 1:0)"
-blo "34000,29200"
+blo "34000,28800"
 tm "WireNameMgr"
 )
 )
@@ -3480,11 +3452,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 336,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,37100,37600,38500"
+xt "34000,37100,37200,38000"
 st "dc_wack"
-blo "34000,38200"
+blo "34000,37800"
 tm "WireNameMgr"
 )
 )
@@ -3516,11 +3488,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 342,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "46000,13600,48500,15000"
+xt "46000,13600,48000,14500"
 st "res_n"
-blo "46000,14700"
+blo "46000,14300"
 tm "WireNameMgr"
 )
 )
@@ -3553,11 +3525,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 346,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,20600,37000,22000"
+xt "34000,20600,36500,21500"
 st "ic_rreq"
-blo "34000,21700"
+blo "34000,21300"
 tm "WireNameMgr"
 )
 )
@@ -3590,11 +3562,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 350,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,21600,37000,23000"
+xt "34000,21600,36600,22500"
 st "ic_rack"
-blo "34000,22700"
+blo "34000,22300"
 tm "WireNameMgr"
 )
 )
@@ -3627,11 +3599,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 354,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,27100,37300,28500"
+xt "34000,27100,36900,28000"
 st "dc_rack"
-blo "34000,28200"
+blo "34000,27800"
 tm "WireNameMgr"
 )
 )
@@ -3664,11 +3636,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 358,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,32100,37200,33500"
+xt "34000,32100,36800,33000"
 st "ac_rack"
-blo "34000,33200"
+blo "34000,32800"
 tm "WireNameMgr"
 )
 )
@@ -3701,11 +3673,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 362,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,25100,37300,26500"
+xt "34000,25100,36800,26000"
 st "dc_rreq"
-blo "34000,26200"
+blo "34000,25800"
 tm "WireNameMgr"
 )
 )
@@ -3740,11 +3712,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 366,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,31100,46900,32500"
+xt "34000,31100,46700,32000"
 st "ac_raddr : (ADDR_WIDTH - 1:0)"
-blo "34000,32200"
+blo "34000,31800"
 tm "WireNameMgr"
 )
 )
@@ -3779,11 +3751,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 370,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,33100,46100,34500"
+xt "34000,33100,45800,34000"
 st "ac_rdata : (BUS_WIDTH - 1:0)"
-blo "34000,34200"
+blo "34000,33800"
 tm "WireNameMgr"
 )
 )
@@ -3816,11 +3788,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 374,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "4750,20100,6250,21500"
+xt "4750,20100,5850,21000"
 st "clk"
-blo "4750,21200"
+blo "4750,20800"
 tm "WireNameMgr"
 )
 )
@@ -3853,11 +3825,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 378,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,36100,37600,37500"
+xt "34000,36100,37100,37000"
 st "dc_wreq"
-blo "34000,37200"
+blo "34000,36800"
 tm "WireNameMgr"
 )
 )
@@ -3892,11 +3864,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 382,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "36000,19600,48700,21000"
+xt "36000,19600,48500,20500"
 st "ic_raddr : (ADDR_WIDTH - 1:0)"
-blo "36000,20700"
+blo "36000,20300"
 tm "WireNameMgr"
 )
 )
@@ -3928,11 +3900,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 388,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-4000,36600,-500,38000"
+xt "-4000,36600,-1000,37500"
 st "io_rdata"
-blo "-4000,37700"
+blo "-4000,37300"
 tm "WireNameMgr"
 )
 )
@@ -3964,11 +3936,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 394,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-4000,35600,-900,37000"
+xt "-4000,35600,-1400,36500"
 st "io_stall"
-blo "-4000,36700"
+blo "-4000,36300"
 tm "WireNameMgr"
 )
 )
@@ -4002,11 +3974,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 400,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-5750,37600,550,39000"
+xt "-5750,37600,450,38500"
 st "io_dev : (11:0)"
-blo "-5750,38700"
+blo "-5750,38300"
 tm "WireNameMgr"
 )
 )
@@ -4041,11 +4013,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 404,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,38100,46500,39500"
+xt "34000,38100,46200,39000"
 st "dc_wdata : (BUS_WIDTH - 1:0)"
-blo "34000,39200"
+blo "34000,38800"
 tm "WireNameMgr"
 )
 )
@@ -4077,11 +4049,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 410,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-4000,39600,-200,41000"
+xt "-4000,39600,-700,40500"
 st "io_wdata"
-blo "-4000,40700"
+blo "-4000,40300"
 tm "WireNameMgr"
 )
 )
@@ -4113,11 +4085,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 416,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-3750,38600,-50,40000"
+xt "-3750,38600,-550,39500"
 st "io_mode"
-blo "-3750,39700"
+blo "-3750,39300"
 tm "WireNameMgr"
 )
 )
@@ -4152,11 +4124,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 420,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "36000,22600,47900,24000"
+xt "36000,22600,47600,23500"
 st "ic_rdata : (BUS_WIDTH - 1:0)"
-blo "36000,23700"
+blo "36000,23300"
 tm "WireNameMgr"
 )
 )
@@ -4191,11 +4163,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 424,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,35100,47300,36500"
+xt "34000,35100,47100,36000"
 st "dc_waddr : (ADDR_WIDTH - 1:0)"
-blo "34000,36200"
+blo "34000,35800"
 tm "WireNameMgr"
 )
 )
@@ -4228,11 +4200,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 428,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "34000,30100,37200,31500"
+xt "34000,30100,36700,31000"
 st "ac_rreq"
-blo "34000,31200"
+blo "34000,30800"
 tm "WireNameMgr"
 )
 )
@@ -4267,11 +4239,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 596,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-25000,41600,-15500,43000"
+xt "-25000,41600,-16100,42500"
 st "data_stream_in : (7:0)"
-blo "-25000,42700"
+blo "-25000,42300"
 tm "WireNameMgr"
 )
 )
@@ -4304,11 +4276,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 604,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-25000,40600,-16800,42000"
+xt "-25000,40600,-17300,41500"
 st "data_stream_in_stb"
-blo "-25000,41700"
+blo "-25000,41300"
 tm "WireNameMgr"
 )
 )
@@ -4341,11 +4313,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 612,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-25000,39600,-16800,41000"
+xt "-25000,39600,-17200,40500"
 st "data_stream_in_ack"
-blo "-25000,40700"
+blo "-25000,40300"
 tm "WireNameMgr"
 )
 )
@@ -4380,11 +4352,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 620,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-24000,35600,-13900,37000"
+xt "-24000,35600,-14500,36500"
 st "data_stream_out : (7:0)"
-blo "-24000,36700"
+blo "-24000,36300"
 tm "WireNameMgr"
 )
 )
@@ -4417,11 +4389,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 628,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-25000,36600,-16200,38000"
+xt "-25000,36600,-16700,37500"
 st "data_stream_out_stb"
-blo "-25000,37700"
+blo "-25000,37300"
 tm "WireNameMgr"
 )
 )
@@ -4453,11 +4425,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 646,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-53250,36100,-50750,37500"
+xt "-53250,36100,-51250,37000"
 st "res_n"
-blo "-53250,37200"
+blo "-53250,36800"
 tm "WireNameMgr"
 )
 )
@@ -4489,11 +4461,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 654,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-53250,35100,-51750,36500"
+xt "-53250,35100,-52150,36000"
 st "clk"
-blo "-53250,36200"
+blo "-53250,35800"
 tm "WireNameMgr"
 )
 )
@@ -4526,11 +4498,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 668,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-53000,39600,-51800,41000"
+xt "-53000,39600,-52200,40500"
 st "tx"
-blo "-53000,40700"
+blo "-53000,40300"
 tm "WireNameMgr"
 )
 )
@@ -4563,11 +4535,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 676,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-53000,38600,-51800,40000"
+xt "-53000,38600,-52200,39500"
 st "rx"
-blo "-53000,39700"
+blo "-53000,39300"
 tm "WireNameMgr"
 )
 )
@@ -4599,11 +4571,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 832,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "47000,12600,48500,14000"
+xt "47000,12600,48100,13500"
 st "clk"
-blo "47000,13700"
+blo "47000,13300"
 tm "WireNameMgr"
 )
 )
@@ -4635,11 +4607,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 840,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-15250,33100,-12750,34500"
+xt "-15250,33100,-13250,34000"
 st "res_n"
-blo "-15250,34200"
+blo "-15250,33800"
 tm "WireNameMgr"
 )
 )
@@ -4671,11 +4643,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 848,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-15250,32100,-13750,33500"
+xt "-15250,32100,-14150,33000"
 st "clk"
-blo "-15250,33200"
+blo "-15250,32800"
 tm "WireNameMgr"
 )
 )
@@ -4707,11 +4679,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 970,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "4250,40600,6450,42000"
+xt "4250,40600,6050,41500"
 st "io_ix"
-blo "4250,41700"
+blo "4250,41300"
 tm "WireNameMgr"
 )
 )
@@ -4744,11 +4716,11 @@ stg "STSignalDisplayStrategy"
 f (Text
 uid 984,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-24250,42600,-15350,44000"
+xt "-24250,42600,-15850,43500"
 st "data_stream_in_done"
-blo "-24250,43700"
+blo "-24250,43300"
 tm "WireNameMgr"
 )
 )
@@ -4773,18 +4745,18 @@ textVec [
 *144 (Text
 uid 42,0
 va (VaSet
-font "arial,8,1"
+font "lucida,8,1"
 )
-xt "-17000,-30800,-11600,-29800"
+xt "-17000,-30800,-11100,-29900"
 st "Package List"
-blo "-17000,-30000"
+blo "-17000,-30100"
 )
 *145 (MLText
 uid 43,0
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "-17000,-29800,-5200,-20000"
+xt "-17000,-29800,-5900,-23500"
 st "LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 LIBRARY riscvio_lib;
@@ -4804,29 +4776,29 @@ textVec [
 uid 45,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "20000,0,28600,1400"
+xt "20000,0,29200,900"
 st "Compiler Directives"
-blo "20000,1100"
+blo "20000,700"
 )
 *147 (Text
 uid 46,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "20000,1400,30300,2800"
+xt "20000,1400,30300,2300"
 st "Pre-module directives:"
-blo "20000,2500"
+blo "20000,2100"
 )
 *148 (MLText
 uid 47,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "20000,2800,28500,5600"
+xt "20000,2800,28400,4600"
 st "`resetall
 `timescale 1ns/10ps"
 tm "BdCompilerDirectivesTextMgr"
@@ -4835,17 +4807,17 @@ tm "BdCompilerDirectivesTextMgr"
 uid 48,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "20000,5600,30800,7000"
+xt "20000,5600,30700,6500"
 st "Post-module directives:"
-blo "20000,6700"
+blo "20000,6300"
 )
 *150 (MLText
 uid 49,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "20000,0,20000,0"
 tm "BdCompilerDirectivesTextMgr"
@@ -4854,17 +4826,17 @@ tm "BdCompilerDirectivesTextMgr"
 uid 50,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "20000,7000,30500,8400"
+xt "20000,7000,30600,7900"
 st "End-module directives:"
-blo "20000,8100"
+blo "20000,7700"
 )
 *152 (MLText
 uid 51,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "20000,8400,20000,8400"
 tm "BdCompilerDirectivesTextMgr"
@@ -4872,12 +4844,12 @@ tm "BdCompilerDirectivesTextMgr"
 ]
 associable 1
 )
-windowSize "2310,228,3328,918"
-viewArea "-57472,18230,-14326,46418"
-cachedDiagramExtent "-58200,-31400,70000,48200"
+windowSize "-8,13,3848,2137"
+viewArea "-57290,17821,28275,63771"
+cachedDiagramExtent "-57800,-31400,70000,45000"
 hasePageBreakOrigin 1
 pageBreakOrigin "-82000,-51000"
-lastUid 990,0
+lastUid 1053,0
 defaultCommentText (CommentText
 shape (Rectangle
 layer 0
@@ -4891,9 +4863,9 @@ xt "0,0,15000,5000"
 text (MLText
 va (VaSet
 fg "0,0,32768"
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "200,200,2300,1600"
+xt "200,200,1900,1100"
 st "
 Text
 "
@@ -4919,9 +4891,9 @@ autoResize 1
 text (MLText
 va (VaSet
 fg "0,0,32768"
-font "arial,8,0"
+font "lucida,8,0"
 )
-xt "500,2150,1400,3150"
+xt "500,2150,1400,3050"
 st "
 Text
 "
@@ -4945,7 +4917,7 @@ title (TextAssociate
 ps "TopLeftStrategy"
 text (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "1000,1000,4200,2400"
 st "Panel0"
@@ -4970,7 +4942,7 @@ stg "VerticalLayoutStrategy"
 textVec [
 *153 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "2050,2900,5950,4300"
 st "<library>"
@@ -4979,7 +4951,7 @@ tm "BdLibraryNameMgr"
 )
 *154 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "2050,4300,5750,5700"
 st "<block>"
@@ -4988,7 +4960,7 @@ tm "BlkNameMgr"
 )
 *155 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "2050,5700,4050,7100"
 st "U_0"
@@ -5002,7 +4974,7 @@ ps "EdgeToEdgeStrategy"
 matrix (Matrix
 text (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "2050,12900,2050,12900"
 )
@@ -5039,7 +5011,7 @@ stg "VerticalLayoutStrategy"
 textVec [
 *156 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "450,2900,3550,4300"
 st "Library"
@@ -5047,7 +5019,7 @@ blo "450,4000"
 )
 *157 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "450,4300,7550,5700"
 st "MWComponent"
@@ -5055,7 +5027,7 @@ blo "450,5400"
 )
 *158 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "450,5700,2450,7100"
 st "U_0"
@@ -5069,7 +5041,7 @@ ps "EdgeToEdgeStrategy"
 matrix (Matrix
 text (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "-6550,900,-6550,900"
 )
@@ -5104,7 +5076,7 @@ stg "VerticalLayoutStrategy"
 textVec [
 *159 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "750,2900,3850,4300"
 st "Library"
@@ -5113,7 +5085,7 @@ tm "BdLibraryNameMgr"
 )
 *160 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "750,4300,7250,5700"
 st "SaComponent"
@@ -5122,7 +5094,7 @@ tm "CptNameMgr"
 )
 *161 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "750,5700,2750,7100"
 st "U_0"
@@ -5136,7 +5108,7 @@ ps "EdgeToEdgeStrategy"
 matrix (Matrix
 text (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "-6250,900,-6250,900"
 )
@@ -5176,7 +5148,7 @@ stg "VerticalLayoutStrategy"
 textVec [
 *162 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "250,2900,3350,4300"
 st "Library"
@@ -5184,7 +5156,7 @@ blo "250,4000"
 )
 *163 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "250,4300,7750,5700"
 st "VhdlComponent"
@@ -5192,7 +5164,7 @@ blo "250,5400"
 )
 *164 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "250,5700,2250,7100"
 st "U_0"
@@ -5206,7 +5178,7 @@ ps "EdgeToEdgeStrategy"
 matrix (Matrix
 text (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "-6750,900,-6750,900"
 )
@@ -5237,7 +5209,7 @@ stg "VerticalLayoutStrategy"
 textVec [
 *165 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "-250,2900,2850,4300"
 st "Library"
@@ -5245,7 +5217,7 @@ blo "-250,4000"
 )
 *166 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "-250,4300,8250,5700"
 st "VerilogComponent"
@@ -5253,7 +5225,7 @@ blo "-250,5400"
 )
 *167 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "-250,5700,1750,7100"
 st "U_0"
@@ -5267,7 +5239,7 @@ ps "EdgeToEdgeStrategy"
 matrix (Matrix
 text (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "-7250,900,-7250,900"
 )
@@ -5294,7 +5266,7 @@ stg "VerticalLayoutStrategy"
 textVec [
 *168 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "3000,3600,5000,5000"
 st "eb1"
@@ -5303,7 +5275,7 @@ tm "HdlTextNameMgr"
 )
 *169 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "3000,5000,4000,6400"
 st "1"
@@ -5338,9 +5310,9 @@ xt "0,0,18000,5000"
 )
 text (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "200,200,2300,1600"
+xt "200,200,1900,1100"
 st "
 Text
 "
@@ -5362,7 +5334,7 @@ radius 1000
 )
 name (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "-550,-700,550,700"
 st "G"
@@ -5422,7 +5394,7 @@ ps "PortIoTextPlaceStrategy"
 stg "STSignalDisplayStrategy"
 f (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "-1375,-1000,-1375,-1000"
 ju 2
@@ -5461,7 +5433,7 @@ ps "PortIoTextPlaceStrategy"
 stg "STSignalDisplayStrategy"
 f (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "625,-1000,625,-1000"
 blo "625,-1000"
@@ -5497,7 +5469,7 @@ ps "PortIoTextPlaceStrategy"
 stg "STSignalDisplayStrategy"
 f (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "0,-375,0,-375"
 blo "0,-375"
@@ -5534,7 +5506,7 @@ ps "PortIoTextPlaceStrategy"
 stg "STSignalDisplayStrategy"
 f (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "0,-375,0,-375"
 blo "0,-375"
@@ -5564,7 +5536,7 @@ ps "ConnStartEndStrategy"
 stg "STSignalDisplayStrategy"
 f (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "0,0,2100,1400"
 st "sig0"
@@ -5597,7 +5569,7 @@ ps "ConnStartEndStrategy"
 stg "STSignalDisplayStrategy"
 f (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "0,0,2900,1400"
 st "dbus0"
@@ -5627,7 +5599,7 @@ ps "ConnStartEndStrategy"
 stg "VerticalLayoutStrategy"
 first (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "0,0,3600,1400"
 st "bundle0"
@@ -5636,9 +5608,9 @@ tm "BundleNameMgr"
 )
 second (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "0,1400,1100,2800"
+xt "0,1400,600,2300"
 st "()"
 tm "BundleContentsMgr"
 )
@@ -5661,12 +5633,12 @@ ps "BottomRightOffsetStrategy"
 stg "VerticalLayoutStrategy"
 first (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 )
 second (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 tm "PortMapTextMgr"
 )
@@ -5687,9 +5659,9 @@ title (TextAssociate
 ps "TopLeftStrategy"
 text (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "0,-1500,12800,-100"
+xt "0,-1500,12500,-600"
 st "g0: FOR i IN 0 TO n GENERATE"
 tm "FrameTitleTextMgr"
 )
@@ -5705,7 +5677,7 @@ xt "50,50,1450,1850"
 )
 num (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "250,250,1250,1650"
 st "1"
@@ -5719,7 +5691,7 @@ stg "VerticalLayoutStrategy"
 textVec [
 *170 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "13500,20000,22000,21400"
 st "Frame Declarations"
@@ -5727,7 +5699,7 @@ blo "13500,21100"
 )
 *171 (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "13500,21400,13500,21400"
 tm "BdFrameDeclTextMgr"
@@ -5750,9 +5722,9 @@ title (TextAssociate
 ps "TopLeftStrategy"
 text (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
-xt "0,-1500,7900,-100"
+xt "0,-1500,7800,-600"
 st "b0: BLOCK (guard)"
 tm "FrameTitleTextMgr"
 )
@@ -5768,7 +5740,7 @@ xt "50,50,1450,1850"
 )
 num (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "250,250,1250,1650"
 st "1"
@@ -5782,7 +5754,7 @@ stg "VerticalLayoutStrategy"
 textVec [
 *172 (Text
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
 xt "13500,20000,22000,21400"
 st "Frame Declarations"
@@ -5790,7 +5762,7 @@ blo "13500,21100"
 )
 *173 (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "13500,21400,13500,21400"
 tm "BdFrameDeclTextMgr"
@@ -5814,7 +5786,7 @@ ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "0,750,2100,2150"
 st "Port"
@@ -5844,7 +5816,7 @@ ps "CptPortTextPlaceStrategy"
 stg "VerticalLayoutStrategy"
 f (Text
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "0,750,2100,2150"
 st "Port"
@@ -5863,7 +5835,7 @@ o 0
 )
 defaultDeclText (MLText
 va (VaSet
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 )
 archDeclarativeBlock (BdArchDeclBlock
@@ -5872,36 +5844,36 @@ stg "BdArchDeclBlockLS"
 declLabel (Text
 uid 2,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-3000,-31400,2900,-30000"
+xt "-3000,-31400,3000,-30500"
 st "Declarations"
-blo "-3000,-30300"
+blo "-3000,-30700"
 )
 portLabel (Text
 uid 3,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-3000,-30000,-200,-28600"
+xt "-3000,-30000,-500,-29100"
 st "Ports:"
-blo "-3000,-28900"
+blo "-3000,-29300"
 )
 preUserLabel (Text
 uid 4,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-3000,-31400,1000,-30000"
+xt "-3000,-31400,1000,-30500"
 st "Pre User:"
-blo "-3000,-30300"
+blo "-3000,-30700"
 )
 preUserText (MLText
 uid 5,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "-3000,-31400,-3000,-31400"
 tm "BdDeclarativeTextMgr"
@@ -5909,27 +5881,27 @@ tm "BdDeclarativeTextMgr"
 diagSignalLabel (Text
 uid 6,0
 va (VaSet
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-3000,-23000,4300,-21600"
+xt "-3000,-23000,5200,-22100"
 st "Diagram Signals:"
-blo "-3000,-21900"
+blo "-3000,-22300"
 )
 postUserLabel (Text
 uid 7,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,1"
+font "lucida,8,1"
 )
-xt "-3000,-31400,2000,-30000"
+xt "-3000,-31400,1900,-30500"
 st "Post User:"
-blo "-3000,-30300"
+blo "-3000,-30700"
 )
 postUserText (MLText
 uid 8,0
 va (VaSet
 isHidden 1
-font "Ubuntu,8,0"
+font "lucida,8,0"
 )
 xt "-3000,-31400,-3000,-31400"
 tm "BdDeclarativeTextMgr"
@@ -6395,17 +6367,17 @@ sheetRow (SheetRow
 headerVa (MVa
 cellColor "49152,49152,49152"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 cellVa (MVa
 cellColor "65535,65535,65535"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 groupVa (MVa
 cellColor "39936,56832,65280"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 emptyMRCItem *220 (MRCItem
 litem &174
@@ -6631,7 +6603,7 @@ sheetCol (SheetCol
 propVa (MVa
 cellColor "0,49152,49152"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 textAngle 90
 )
 uid 73,0
@@ -6745,17 +6717,17 @@ sheetRow (SheetRow
 headerVa (MVa
 cellColor "49152,49152,49152"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 cellVa (MVa
 cellColor "65535,65535,65535"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 groupVa (MVa
 cellColor "39936,56832,65280"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 )
 emptyMRCItem *277 (MRCItem
 litem &264
@@ -6789,7 +6761,7 @@ sheetCol (SheetCol
 propVa (MVa
 cellColor "0,49152,49152"
 fontColor "0,0,0"
-font "Tahoma,10,0"
+font "courier,10,0"
 textAngle 90
 )
 uid 101,0

@@ -86,7 +86,11 @@ BEGIN
                         case to_integer(unsigned(io_ix)) is
                             when 0 => 
                                 clear_uart_rx_avail <= true;
-                                io_rdata <= (byte_T'range => data_stream_out, others => '0');
+                                --io_rdata <= (byte_T'range => data_stream_out(byte_T'range), others => '0');
+
+                                io_rdata <= (others => '0');
+                                io_rdata(byte_T'range) <= data_stream_out;
+
                                 io_stall <= not uart_rx_data_avail;
                             when 1 => 
                                 io_rdata <= (8 => uart_rx_data_avail, 9 => not uart_sending, others => '0');

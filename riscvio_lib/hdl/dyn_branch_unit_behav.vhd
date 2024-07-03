@@ -17,16 +17,24 @@ ARCHITECTURE behav OF dyn_branch_unit IS
     begin
         return word_T(unsigned('0' & ix(word_T'high-1 downto 1) & '0') + unsigned(imm));
     end function calcIndex;
+
+    signal dbt_int: pc_T;
 BEGIN
 
     -- dbta_valid needs to clear if, dc registers
     process(all) is
         variable new_rix, rix_int, pc_raw: word_T;
     begin
-        pc_raw := (word_T'high-1 downto 1 => pc.ix(word_T'high-1 downto 1), others => '0');
+        rix_int := (others => '0');
+        pc_raw := (others => '0');
+        pc_raw(word_T'high-1 downto 1) := pc.ix(word_T'high-1 downto 1);
         new_rix := std_logic_vector(unsigned(pc_raw) + 4);
-        rix_int :=  (word_T'high-1 downto 1 => new_rix(word_T'high-1 downto 1), 0 => '1', others => '0') when pc.ix(0) = '0' else
-                    (word_T'high-1 downto 1 => new_rix(word_T'high-1 downto 1), others => '0') when pc.ix(0) = '1';
+        if pc.ix(0) = '1' then
+            rix_int(word_T'high-1 downto 1) := new_rix(word_T'high-1 downto 1);
+        else
+            rix_int(word_T'high-1 downto 1) := new_rix(word_T'high-1 downto 1);
+            rix_int(0) := '1';
+        end if;
         ra_out <= REG_MEM_NULL;
         case branch_mode is
             when beq =>
@@ -43,7 +51,11 @@ BEGIN
                 dbt_valid <= not alu_flags.altbu or alu_flags.eq;
             when jalr =>
                 dbt_valid <= true;
-                rix_int(31) := '1' when dbt.ptr /= pc.ptr and rptr.ali /= ra else '0';
+                if dbt.ptr /= pc.ptr and rptr.ali /= ra then
+                    rix_int(31) := '1';
+                else
+                    rix_int(31) := '0';
+                end if;
                 ra_out <=   (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
             when jal =>
                 dbt_valid <= false;
@@ -57,15 +69,17 @@ BEGIN
         end case;
     end process;
 
-    dbu_exc <= tciob when isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, pc.eoc, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra) and branch_mode = jal else
-               tciob when isTargetCodeIndexOutOfBounds(dbt.ix, rptr.pi, rptr.dt, branch_mode, dbt.ptr /= pc.ptr and rptr.ali /= ra) and branch_mode /= jal else
+    dbu_exc <= tciob when isTargetCodeIndexOutOfBounds(dbt_int.ix, rptr.pi, pc.eoc, branch_mode, dbt_int.ptr /= pc.ptr and rptr.ali /= ra) and branch_mode = jal else
+               tciob when isTargetCodeIndexOutOfBounds(dbt_int.ix, rptr.pi, rptr.dt, branch_mode, dbt_int.ptr /= pc.ptr and rptr.ali /= ra) and branch_mode /= jal else
                sterr when isStateErrorException(rdst_ix, rptr, raux, rdat, pc, pgu_nop, branch_mode) else
                well_behaved;
 
-    dbt.ptr <=  rptr.val when branch_mode = jalr or branch_mode = jlib else pc.ptr;
-    dbt.ix <=   calcIndex(rptr.ix, imm) when branch_mode = jalr  else
+    dbt_int.ptr <=  rptr.val when branch_mode = jalr or branch_mode = jlib else pc.ptr;
+    dbt_int.ix <=   calcIndex(rptr.ix, imm) when branch_mode = jalr  else
                 imm when branch_mode = jlib else
                 calcIndex(pc.ix, imm);
-    dbt.eoc <=  rptr.dt when branch_mode = jlib or isAllStd(pc.eoc, '0') else pc.eoc;
+    dbt_int.eoc <=  rptr.dt when branch_mode = jlib or isAllStd(pc.eoc, '0') else pc.eoc;
+
+    dbt <= dbt_int;
 END ARCHITECTURE behav;
 

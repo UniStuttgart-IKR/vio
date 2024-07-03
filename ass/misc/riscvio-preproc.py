@@ -2,7 +2,7 @@ import sys
 import re
 
 HEADERMSG = "# generated from {0} by riscvio-preproc.py by LeyLux Group\n"
-ALLOWEDCOOBJNAMES = "[a-zA-Z0-9]+"
+ALLOWEDCOOBJNAMES = "[a-zA-Z0-9_]+"
 ALLOWEDFNEXPR = "[a-zA-Z0-9]+"
 
 
@@ -50,12 +50,13 @@ def markObjectPositions(obj, contents) -> None:
 
 
 def findCOs(contents) -> []:
-    codeObjects = []
+    pobjects = []
     for i, content in enumerate(contents):
         COmatches = re.finditer("(@" + ALLOWEDCOOBJNAMES + "[>:])([\\S\n\t\v]*)private\n", content)
 
         for match in COmatches:
-            codeObjects.append({
+            pobjects.append({
+                "type": "code",
                 "name": match.group(1).replace(">", "").replace(":", "").replace("@", ""),
                 "super": ">" in match.group(1),
                 "hdrstartpos": [i, match.span(1)[0] + 1],
@@ -66,7 +67,24 @@ def findCOs(contents) -> []:
                 "allfns": []
             })
 
-    return codeObjects
+    return pobjects
+
+def findDOs(contents) -> []:
+    pobjects = []
+
+    for i, content in enumerate(contents):
+        COmatches = re.finditer("\n(" + ALLOWEDCOOBJNAMES + "): object\n", content)
+
+        for match in COmatches:
+            pobjects.append({
+                "type": "data",
+                "name": match.group(1),
+                "hdrstartpos": [i, match.span(1)[0] + 1],
+                "hdrendpos": [i, match.span(1)[1]],
+                "endpos": [-1, -1]
+            })
+
+    return pobjects
 
 
 def calcCOregions(coobjects, contents) -> [{}]:
@@ -85,89 +103,94 @@ def extractPublicFuncs(coobjects, contents) -> [{}]:
     coobjectsnew = coobjects[:]
 
     for i, coobj in enumerate(coobjectsnew):
-        hdrfuncregion = contents[coobj["hdrfnstartpos"][0]][coobj["hdrfnstartpos"][1]:coobj["hdrendpos"][1]]
+        if coobj["type"] == "code":
+            hdrfuncregion = contents[coobj["hdrfnstartpos"][0]][coobj["hdrfnstartpos"][1]:coobj["hdrendpos"][1]]
 
-        funcnames = [x for x in hdrfuncregion.split("\n") if x != ""]
+            funcnames = [x for x in hdrfuncregion.split("\n") if x != ""]
 
-        if len(funcnames) == 0:
-            raise ParseException({"msg": "Code object without public functions", "location": coobj["hdrfnstartpos"][1],
-                                  "fileIdx": coobj["hdrfnstartpos"][0]})
-        for i, funcname in enumerate(funcnames):
-            coobj["publicfns"].append([funcname, i])
+            if len(funcnames) == 0:
+                raise ParseException({"msg": "Code object without public functions", "location": coobj["hdrfnstartpos"][1],
+                                    "fileIdx": coobj["hdrfnstartpos"][0]})
+            for i, funcname in enumerate(funcnames):
+                coobj["publicfns"].append([funcname, i])
 
     return coobjectsnew
 
 
-def extractAllFuncs(codeobjects, contents) -> [{}]:
-    coobjectsnew = codeobjects[:]
+def extractAllFuncs(pobjects, contents) -> [{}]:
+    coobjectsnew = pobjects[:]
 
     for i, coobj in enumerate(coobjectsnew):
-        cofnregion = contents[coobj["hdrendpos"][0]][coobj["hdrendpos"][1]:coobj["endpos"][1]]
-        #print(">" + cofnregion + "<")
-        labelMatches = re.finditer("\n({}):".format(ALLOWEDFNEXPR), cofnregion)
+        if coobj["type"] == "code":
+            cofnregion = contents[coobj["hdrendpos"][0]][coobj["hdrendpos"][1]:coobj["endpos"][1]]
+            #print(">" + cofnregion + "<")
+            labelMatches = re.finditer("\n({}):".format(ALLOWEDFNEXPR), cofnregion)
 
-        for match in labelMatches:
-            coobj["allfns"].append(match.group(1))
+            for match in labelMatches:
+                coobj["allfns"].append(match.group(1))
 
     return coobjectsnew
 
 
-def checkPubicFNExistance(codeobjects) -> None:
-    for codeobject in codeobjects:
-        for publfn in codeobject["publicfns"]:
-            if publfn[0] not in [x[0] for x in codeobject["allfns"]]:
-                raise ParseException(
-                    {"msg": "Public funtion '{}' does not exist!".format(publfn[0]), "location": codeobject["hdrfnstartpos"][1],
-                     "fileIdx": codeobject["hdrfnstartpos"][0]})
+def checkPubicFNExistance(pobjects) -> None:
+    for pobject in pobjects:
+        if pobject["type"] == "code":
+            for publfn in pobject["publicfns"]:
+                if publfn[0] not in [x[0] for x in pobject["allfns"]]:
+                    raise ParseException(
+                        {"msg": "Public funtion '{}' does not exist!".format(publfn[0]), "location": pobject["hdrfnstartpos"][1],
+                        "fileIdx": pobject["hdrfnstartpos"][0]})
 
 
-def advanceCodeObjectRefs(insertpos, insertlen, codeobjects):
-    for i, codeobject in enumerate(codeobjects):
+def advancepobjectRefs(insertpos, insertlen, pobjects):
+    for i, pobject in enumerate(pobjects):
         for fieldname in ["hdrstartpos", "hdrendpos", "hdrfnstartpos", "endpos"]:
-            if codeobjects[i][fieldname][1] >= insertpos:
-                codeobjects[i][fieldname][1] += insertlen
+            try:
+                if pobjects[i][fieldname][1] >= insertpos:
+                    pobjects[i][fieldname][1] += insertlen
+            except KeyError:
+                pass
 
 
-def insertSectionEndLabels(contents, codeobjects) -> []:
+def insertSectionEndLabels(contents, pobjects) -> []:
     newcontents = contents[:]
 
-    for codeobject in codeobjects:
-        fileId = codeobject["endpos"][0]
-        label = "\n{0}.end:\n\n\n".format(codeobject["name"])
+    for pobject in pobjects:
+        fileId = pobject["endpos"][0]
+        label = "\n{0}.end:\n\n\n".format(pobject["name"])
+        newcontents[fileId] = newcontents[fileId][:(pobject["endpos"][1])] + label + newcontents[fileId][
+                                                                                        (pobject["endpos"][1]):]
+        advancepobjectRefs(pobject["endpos"][1], len(label), pobjects)
 
-        newcontents[fileId] = newcontents[fileId][:(codeobject["endpos"][1])] + label + newcontents[fileId][
-                                                                                        (codeobject["endpos"][1]):]
-
-        advanceCodeObjectRefs(codeobject["endpos"][1], len(label), codeobjects)
-        pass
 
     return newcontents
 
 
-def replaceCOHeaders(contents, codeobjects) -> [str]:
+def replaceCOHeaders(contents, pobjects) -> [str]:
     newcontents = []
 
     hdrReplacements = []
-    for codeobject in codeobjects:
-        dstexpr = ""
-        if codeobject["name"] != "core":
-            dstexpr += ".align 3\n"
-            
-        if codeobject["super"]:
-            srcexpr = "(@{}>)([\\S\n\t\v]*)private\n".format(codeobject["name"])
-            dstexpr += '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word ({0}.end - {0}.trampStart - 4)\n\n{0}.trampStart:\n'.format(
-                codeobject["name"])
-        else:
-            srcexpr = "(@{}:)([\\S\n\t\v]*)private\n".format(codeobject["name"])
-            dstexpr += '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word {0}.end - {0}.trampStart - 4\n\n{0}.trampStart:\n'.format(
-                codeobject["name"])
+    for pobject in pobjects:
+        if pobject["type"] == "code":
+            dstexpr = ""
+            if pobject["name"] != "core":
+                dstexpr += ".align 3\n"
+                
+            if pobject["super"]:
+                srcexpr = "(@{}>)([\\S\n\t\v]*)private\n".format(pobject["name"])
+                dstexpr += '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word ({0}.end - {0}.trampStart - 4)\n\n{0}.trampStart:\n'.format(
+                    pobject["name"])
+            else:
+                srcexpr = "(@{}:)([\\S\n\t\v]*)private\n".format(pobject["name"])
+                dstexpr += '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word {0}.end - {0}.trampStart - 4\n\n{0}.trampStart:\n'.format(
+                    pobject["name"])
 
-        for fct in codeobject["publicfns"]:
-            dstexpr += "{0}.{1}_: j {0}.{1}\n".format(codeobject["name"], fct[0])
+            for fct in pobject["publicfns"]:
+                dstexpr += "{0}.{1}_: j {0}.{1}\n".format(pobject["name"], fct[0])
 
-        dstexpr += "{0}.trampEnd:\n\n".format(codeobject["name"])
+            dstexpr += "{0}.trampEnd:\n\n".format(pobject["name"])
 
-        hdrReplacements.append([srcexpr, dstexpr])
+            hdrReplacements.append([srcexpr, dstexpr])
 
     for content in contents:
         for hdrReplacement in hdrReplacements:
@@ -178,44 +201,70 @@ def replaceCOHeaders(contents, codeobjects) -> [str]:
     return newcontents
 
 
-def expandFunctionNames(contents, codeobjects) -> []:
-    newcontents = contents[:]
-
-    for i, codeobject in enumerate(codeobjects):
-        codeobjectStr = newcontents[codeobject["hdrendpos"][0]][codeobject["hdrendpos"][1]:codeobject["endpos"][1]]
-
-        afterLabekExpansion = codeobjectStr
-        afterLabekExpansion = re.sub("\n(" + ALLOWEDCOOBJNAMES + ":)", "\n" + codeobject["name"] + ".\\1",
-                                    codeobjectStr)
-
-        afterLocalCONameExpansion = afterLabekExpansion[:]
-        jmpMnenmoncs = ["jal", "j", "beq", "bne", "bgt", "blt", "bltu", "bgtu", "bge", "ble"]
-
-        for fname in codeobject["allfns"]:
-            for mnemonic in jmpMnenmoncs:
-                afterLocalCONameExpansion = re.sub("({0}\\s.*){1}".format(mnemonic, fname),
-                                                   "\\1{0}.{1}".format(codeobject["name"], fname),
-                                                   afterLocalCONameExpansion)
-        newcontents[codeobject["hdrendpos"][0]] = newcontents[codeobject["hdrendpos"][0]][
-                                                  :codeobject["hdrendpos"][1]] + afterLocalCONameExpansion + \
-                                                  newcontents[codeobject["endpos"][0]][(codeobject["endpos"][1]):]
-
-        advanceCodeObjectRefs(codeobject["endpos"][1], len(afterLocalCONameExpansion) - len(codeobjectStr),
-                              codeobjects[(i):])
-    return newcontents
-
-
-def replaceCOFctReferences(contents, codeobjects) -> []:
+def replaceDataObjHeaders(contents, pobjects) -> []:
     newcontents = []
 
     replacements = []
-    for codeobject in codeobjects:
-        for func in codeobject["publicfns"]:
-            replacements.append(
-                ["(jlib.*)" + "@{0}.{1}".format(codeobject["name"], func[0]), "\\1 " + str(func[1] * 4)])
-            replacements.append(
-                ["(jalr.*)" + "@{0}.{1}".format(codeobject["name"], func[0]), "\\1 " + str(func[1] * 4)])
-            replacements.append(["(la.*)@({0})".format(codeobject["name"]), "\\1\\2"])
+    for pobject in pobjects:
+        if pobject["type"] == "data":
+            dstexpr = ".align 3\n"
+            srcexpr = "\n({}): object\n".format(pobject["name"])
+            dstexpr += '.section {0}\n.word 0 # todo: add ptr support\n.word ({0}.end - {0})\n\n{0}:\n'.format(pobject["name"])
+
+
+            replacements.append([srcexpr, dstexpr])
+
+            advancepobjectRefs(pobject["endpos"][1], len(dstexpr) - len(srcexpr), pobjects)
+
+    for content in contents:
+        for replacement in replacements:
+            content = re.sub(replacement[0], replacement[1], content)
+
+        newcontents.append(content)
+
+    return newcontents
+
+
+def expandFunctionNames(contents, pobjects) -> []:
+    newcontents = contents[:]
+
+    for i, pobject in enumerate(pobjects):
+        if pobject["type"] == "code":
+            pobjectStr = newcontents[pobject["hdrendpos"][0]][pobject["hdrendpos"][1]:pobject["endpos"][1]]
+
+            afterLabekExpansion = pobjectStr
+            afterLabekExpansion = re.sub("\n(" + ALLOWEDCOOBJNAMES + ":)", "\n" + pobject["name"] + ".\\1",
+                                        pobjectStr)
+
+            afterLocalCONameExpansion = afterLabekExpansion[:]
+            jmpMnenmoncs = ["jal", "j", "beq", "bne", "bgt", "blt", "bltu", "bgtu", "bge", "ble"]
+
+            for fname in pobject["allfns"]:
+                for mnemonic in jmpMnenmoncs:
+                    afterLocalCONameExpansion = re.sub("({0}\\s.*){1}".format(mnemonic, fname),
+                                                    "\\1{0}.{1}".format(pobject["name"], fname),
+                                                    afterLocalCONameExpansion)
+            newcontents[pobject["hdrendpos"][0]] = newcontents[pobject["hdrendpos"][0]][
+                                                    :pobject["hdrendpos"][1]] + afterLocalCONameExpansion + \
+                                                    newcontents[pobject["endpos"][0]][(pobject["endpos"][1]):]
+
+            advancepobjectRefs(pobject["endpos"][1], len(afterLocalCONameExpansion) - len(pobjectStr),
+                                pobjects[(i):])
+    return newcontents
+
+
+def replaceCOFctReferences(contents, pobjects) -> []:
+    newcontents = []
+
+    replacements = []
+    for pobject in pobjects:
+        if pobject["type"] == "code":
+            for func in pobject["publicfns"]:
+                replacements.append(
+                    ["(jlib.*)" + "@{0}.{1}".format(pobject["name"], func[0]), "\\1 " + str(func[1] * 4)])
+                replacements.append(
+                    ["(jalr.*)" + "@{0}.{1}".format(pobject["name"], func[0]), "\\1 " + str(func[1] * 4)])
+                replacements.append(["(la.*)@({0})".format(pobject["name"]), "\\1\\2"])
 
     for content in contents:
         for replacement in replacements:
@@ -231,7 +280,7 @@ def __main__() -> None:
 
     sourceFileContents = []
     sourceFileNames = []
-    codeObjectsFileName = None
+    pobjectsFileName = None
 
     for fileName in fileNames:
         extension = "".join(fileName.split(".")[-1:])
@@ -241,29 +290,40 @@ def __main__() -> None:
 
             sourceFileNames.append(fileName)
         if extension == "pobs":
-            codeObjectsFileName = fileName
+            pobjectsFileName = fileName
 
     try:
-        codeObjects = extractPublicFuncs(calcCOregions(findCOs(sourceFileContents), sourceFileContents),
+        pobjects = findCOs(sourceFileContents)
+        doobj = findDOs(sourceFileContents)
+
+        for do in doobj:
+            for i, obj in enumerate(pobjects):
+                if pobjects[i]["hdrstartpos"] > do["hdrstartpos"]:
+                    pobjects.insert(i, do)
+                    break
+
+        pobjects = extractPublicFuncs(calcCOregions(pobjects, sourceFileContents),
                                          sourceFileContents)
 
-        codeObjects = extractAllFuncs(codeObjects, sourceFileContents)
+        
 
-        #checkPubicFNExistance(codeObjects)
+        pobjects = extractAllFuncs(pobjects, sourceFileContents)
 
-        newContents = expandFunctionNames(sourceFileContents, codeObjects)
+        #checkPubicFNExistance(pobjects)
 
-        newContents = insertSectionEndLabels(newContents, codeObjects)
+        newContents = expandFunctionNames(sourceFileContents, pobjects)
 
-        newContents = replaceCOHeaders(newContents, codeObjects)
+        newContents = insertSectionEndLabels(newContents, pobjects)
+
+        newContents = replaceCOHeaders(newContents, pobjects)
+
+        newContents = replaceDataObjHeaders(newContents, pobjects)
 
         newContents = convertComments(newContents)
 
         newContents = applyMacros(newContents)
 
-        newContents = replaceCOFctReferences(newContents, codeObjects)
-
-
+        newContents = replaceCOFctReferences(newContents, pobjects)
     except ParseException as e:
         details = e.args[0]
         lineNbr = sourceFileContents[details["fileIdx"]][:details["location"]].count("\n") + 1
@@ -272,9 +332,9 @@ def __main__() -> None:
         exit()
 
 
-    if codeObjectsFileName is not None:
-        with open(codeObjectsFileName, "w") as codeObjectsFile:
-            codeObjectsFile.write(str(codeObjects))
+    if pobjectsFileName is not None:
+        with open(pobjectsFileName, "w") as pobjectsFile:
+            pobjectsFile.write(str(pobjects))
 
     for i, newContent in enumerate(newContents):
         outFileName = "{0}.s".format("".join(sourceFileNames[i].split(".")[:-1]))

@@ -46,7 +46,8 @@ ENTITY primitive_cache IS
         wreq            : OUT boolean;
         wack            : IN boolean := false;
         waddr           : OUT std_logic_vector(ADDR_WIDTH - 1 downto 0);
-        wdata           : OUT std_logic_vector(BUS_WIDTH - 1 downto 0)
+        wdata           : OUT std_logic_vector(BUS_WIDTH - 1 downto 0);
+        wbyte_ena       : OUT std_logic_vector(BUS_WIDTH/8 - 1 downto 0)
     );
 END ENTITY primitive_cache;
 

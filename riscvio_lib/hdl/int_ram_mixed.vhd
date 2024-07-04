@@ -51,6 +51,7 @@ ARCHITECTURE mixed OF int_ram IS
   -- internal ram signals
   signal addr: std_logic_vector(ADDR_WIDTH - 1 downto 0);
   signal we: std_logic;
+  signal byte_ena: std_logic_vector(BUS_WIDTH/8 - 1 downto 0);
   signal wdata, rdata: std_logic_vector(BUS_WIDTH - 1 downto 0);
   signal ic_rack_int, dc_rack_int, ac_rack_int, dc_wack_int: boolean;
   signal last_dc_wack: boolean;
@@ -76,6 +77,7 @@ BEGIN
   dc_rdata <= rev_words(rdata);--rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
   ac_rdata <= rev_words(rdata);--rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
   we       <= '1' when dc_wack and not last_dc_wack else '0';
+  byte_ena <= dc_wbyte_ena when dc_wack and not last_dc_wack else (others => '0');
   wdata    <= dc_wdata;
   
   -- request handling fsm state memory
@@ -211,13 +213,14 @@ BEGIN
       read_during_write_mode_port_a => "NEW_DATA_NO_NBE_READ",
       widthad_a => ADDR_WIDTH,
       width_a => BUS_WIDTH,
-      width_byteena_a => 1
+      width_byteena_a => BUS_WIDTH/8
     )
     PORT MAP (
       address_a => addr,
       clock0 => clk,
-      data_a => rev_words(wdata),--wdata(31 downto 0) & wdata(63 downto 32) & wdata(95 downto 64) & wdata(127 downto 96),
+      data_a => rev_words(wdata),
       wren_a => we,
+      byteena_a => byte_ena,
       q_a => rdata
     );
 

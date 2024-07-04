@@ -36,6 +36,7 @@ ENTITY int_ram is
     dc_wreq            : IN boolean := false;
     dc_wack            : OUT boolean;
     dc_waddr           : IN std_logic_vector(ADDR_WIDTH - 1 downto 0) := (others => '0');
-    dc_wdata           : IN std_logic_vector(BUS_WIDTH - 1 downto 0) := (others => '0')
+    dc_wdata           : IN std_logic_vector(BUS_WIDTH - 1 downto 0) := (others => '0');
+    dc_wbyte_ena       : IN std_logic_vector(BUS_WIDTH/8 - 1 downto 0)
   );
 END ENTITY int_ram;

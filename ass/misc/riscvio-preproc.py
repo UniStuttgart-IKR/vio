@@ -209,7 +209,7 @@ def replaceDataObjHeaders(contents, pobjects) -> []:
         if pobject["type"] == "data":
             dstexpr = ".align 3\n"
             srcexpr = "\n({}): object\n".format(pobject["name"])
-            dstexpr += '.section {0}\n.word 0 # todo: add ptr support\n.word ({0}.end - {0})\n\n{0}:\n'.format(pobject["name"])
+            dstexpr += '.section {0}\n.word 0 # todo: add ptr support\n.word ({0}.end - {0})\n\n{0}_:\n'.format(pobject["name"])
 
 
             replacements.append([srcexpr, dstexpr])
@@ -237,7 +237,7 @@ def expandFunctionNames(contents, pobjects) -> []:
                                         pobjectStr)
 
             afterLocalCONameExpansion = afterLabekExpansion[:]
-            jmpMnenmoncs = ["jal", "j", "beq", "bne", "bgt", "blt", "bltu", "bgtu", "bge", "ble"]
+            jmpMnenmoncs = ["jal", "j", "beq", "bne", "bgt", "blt", "bltu", "bgtu", "bge", "ble", "la"]
 
             for fname in pobject["allfns"]:
                 for mnemonic in jmpMnenmoncs:

@@ -1,5 +1,5 @@
 
-out/riscViOTest.elf:     file format elf32-littleriscv
+out/riscViOTest.elf:     Dateiformat elf32-littleriscv
 
 
 Disassembly of section core:
@@ -28,7 +28,7 @@ Disassembly of section core:
   28:	00001137          	lui	frame,0x1
   2c:	80510113          	addi	frame,frame,-2043 # 805 <_end+0x68d>
   30:	00000297          	auipc	t0,0x0
-  34:	0ac28293          	addi	t0,t0,172 # dc <exc_handel>
+  34:	0ac28293          	addi	t0,t0,172 # dc <core.exc_handel>
   38:	30529073          	csrrw	zero,mtvec,t0
   3c:	00100313          	addi	t1,zero,1
   40:	00600393          	addi	t2,zero,6
@@ -71,9 +71,9 @@ Disassembly of section core:
   cc:	000400e7          	jalr	ra,0(s0)
   d0:	0001240b          	lp	s0,0(frame)
   d4:	004400e7          	jalr	ra,4(s0)
-  d8:	f71ff06f          	jal	zero,48 <core.loop>
+  d8:	00100073          	ebreak
 
-000000dc <exc_handel>:
+000000dc <core.exc_handel>:
   dc:	00000013          	addi	zero,zero,0
   e0:	00000013          	addi	zero,zero,0
   e4:	00000013          	addi	zero,zero,0
@@ -144,6 +144,25 @@ Disassembly of section hdmi:
  170:	005e8e13          	addi	t3,t4,5
  174:	00008067          	jalr	zero,0(ra)
 
+Disassembly of section cosnt_obj:
+
+00000000 <cosnt_obj_-0x8>:
+   0:	0000                	.insn	2, 0x
+   2:	0000                	.insn	2, 0x
+   4:	00000013          	addi	zero,zero,0
+
+00000008 <cosnt_obj_>:
+   8:	7361                	.insn	2, 0x7361
+   a:	6664                	.insn	2, 0x6664
+   c:	6869                	.insn	2, 0x6869
+   e:	68666f73          	csrrsi	t5,0x686,12
+  12:	          	ecall
+
+00000013 <cosnt_obj.end>:
+  13:	0000                	.insn	2, 0x
+  15:	0000                	.insn	2, 0x
+	...
+
 Disassembly of section .riscv.attributes:
 
 00000000 <.riscv.attributes>:
@@ -151,7 +170,7 @@ Disassembly of section .riscv.attributes:
    2:	0000                	.insn	2, 0x
    4:	7200                	.insn	2, 0x7200
    6:	7369                	.insn	2, 0x7369
-   8:	01007663          	bgeu	zero,a6,14 <core.start+0x4>
+   8:	01007663          	bgeu	zero,a6,14 <cosnt_obj.end+0x1>
    c:	0031                	.insn	2, 0x0031
    e:	0000                	.insn	2, 0x
   10:	7205                	.insn	2, 0x7205

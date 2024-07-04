@@ -19,7 +19,7 @@ core.start:      la      x3, core
 
 core.init:     
             li      frame, 0x805
-            la      t0, exc_handel
+            la      t0, core.exc_handel
             csrw    mtvec, t0
 
             # Device 1
@@ -32,26 +32,26 @@ core.init:
 core.loop:       lw      t0, 0(zero)
             li      t1, 'I'
             sb      t1, 0(s9)
-            li      t1, 'T'
-            sb      t1, 0(s9)
-            li      t1, 'S'
-            sb      t1, 0(s9)
-            li      t1, ' '
-            sb      t1, 0(s9)
-            li      t1, 'A'
-            sb      t1, 0(s9)
-            li      t1, 'L'
-            sb      t1, 0(s9)
-            li      t1, 'I'
-            sb      t1, 0(s9)
-            li      t1, 'V'
-            sb      t1, 0(s9)
-            li      t1, 'E'
-            sb      t1, 0(s9)
-            li      t1, '!'
-            sb      t1, 0(s9)
-            li      t1, 10
-            sb      t1, 0(s9)
+            #li      t1, 'T'
+            #sb      t1, 0(s9)
+            #li      t1, 'S'
+            #sb      t1, 0(s9)
+            #li      t1, ' '
+            #sb      t1, 0(s9)
+            #li      t1, 'A'
+            #sb      t1, 0(s9)
+            #li      t1, 'L'
+            #sb      t1, 0(s9)
+            #li      t1, 'I'
+            #sb      t1, 0(s9)
+            #li      t1, 'V'
+            #sb      t1, 0(s9)
+            #li      t1, 'E'
+            #sb      t1, 0(s9)
+            #li      t1, '!'
+            #sb      t1, 0(s9)
+            #li      t1, 10
+            #sb      t1, 0(s9)
 
             push    1,0
             sp      ra, 0(frame)
@@ -69,10 +69,10 @@ core.loop:       lw      t0, 0(zero)
             lp      s0, 0(frame)
             jalr    ra,  4(s0)
 
-            j       core.loop
+            ebreak
 
 
-exc_handel:
+core.exc_handel:
             nop
             nop
             nop
@@ -121,9 +121,19 @@ usb.c:          push    0,0
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
 
-
-
 usb.end:
+
+.align 3
+.section cosnt_obj
+.word 0 # todo: add ptr support
+.word (cosnt_obj.end - cosnt_obj)
+
+cosnt_obj_:
+            .ascii "asdfihsofhs"
+
+
+
+cosnt_obj.end:
 
 
 .align 3

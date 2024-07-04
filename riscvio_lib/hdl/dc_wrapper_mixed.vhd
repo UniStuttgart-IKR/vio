@@ -52,7 +52,8 @@ BEGIN
         wreq      => wreq,
         wack      => wack,
         waddr     => waddr,
-        wdata     => wdata
+        wdata     => wdata,
+        wbyte_ena => wbyte_ena
     );
 
     stall_bool <= stall_int;

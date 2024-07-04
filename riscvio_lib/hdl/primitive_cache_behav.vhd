@@ -26,6 +26,7 @@ ARCHITECTURE behav OF primitive_cache IS
     constant Q_LOG: integer := maxOf2(integer(ceil(log2(real(BUS_WIDTH) / real(WORDS_IN_LINE * DATA_WIDTH)))), 0);  
     constant WORDS_PER_BUS: positive := BUS_WIDTH / DATA_WIDTH;
     constant WORDS_PER_BUS_LOG: natural := integer(ceil(log2(real(WORDS_PER_BUS))));
+    constant BYTES_PER_WORD: natural := DATA_WIDTH / BYTE_WIDTH;
 
     constant zero_byte_addr: std_logic_vector(ADDR_WIDTH_WORD - 1 downto 0) := (others => '0');
     constant zero_bus_addr: std_logic_vector(WORDS_PER_BUS_LOG - 1 downto 0)  := (others => '0');
@@ -42,19 +43,18 @@ ARCHITECTURE behav OF primitive_cache IS
     signal fill_state: fill_state_T;
     signal line_fill_ctr: natural range 0 to N + 1;
     signal last_line_fill_ctr: natural range 0 to N + 1;
-    signal words_we_fill: std_logic_vector(WORDS_IN_LINE - 1 downto 0);
     signal set_line_tag: std_logic;
-    signal words_to_write_fill: row_selected_words_T;
 
-    type writeback_state_T is (IDLE, WAITING_WR, GOT_DATA);
+
+    type writeback_state_T is (IDLE, WAITING_WR, COLLECT_DATA);
     signal writeback_state: writeback_state_T;
-    signal words_we_write: std_logic_vector(WORDS_IN_LINE - 1 downto 0);
-    signal words_to_write_write: row_selected_words_T;
+    signal bus_word_to_write: std_logic_vector(BUS_WIDTH - 1 downto 0);
     signal last_words_to_write_write: row_selected_words_T;
     signal last_wr_addr: std_logic_vector(addr'range);
     signal burst_addr: std_logic_vector(addr'range);
     signal last_sd: std_logic_vector(sd'range);
     signal write_stall: boolean;
+    signal bytes_to_write: std_logic_vector(BUS_WIDTH/8 - 1 downto 0);
 
     type invalidatiion_state_T is (RESET, IDLE, WAITS, INVALIDATING);
     signal invalidation_state: invalidatiion_state_T;
@@ -67,6 +67,7 @@ ARCHITECTURE behav OF primitive_cache IS
     subtype BUS_WORD_IN_LINE is natural range WORDS_IN_LINE_LOG + ADDR_WIDTH_WORD - 1 downto ADDR_WIDTH_WORD + WORDS_PER_BUS_LOG;
     subtype BUS_WORD_IX_IN_ADDR is natural range ADDR_WIDTH - 1 downto ADDR_WIDTH_WORD + WORDS_PER_BUS_LOG ;
     subtype WORD_IN_BUS_WORD is natural range WORDS_IN_LINE_LOG + ADDR_WIDTH_WORD + WORDS_PER_BUS_LOG - 1downto WORDS_IN_LINE_LOG + ADDR_WIDTH_WORD;
+    subtype BYTE_IN_BUS_WORD is natural range WORDS_IN_LINE_LOG + ADDR_WIDTH_WORD - 1 downto 0;
 
     signal line_ix: std_logic_vector(LINES_LOG - 1 downto 0);
     signal line_valid: std_logic_vector(0 downto 0);
@@ -78,9 +79,6 @@ ARCHITECTURE behav OF primitive_cache IS
     signal valid_bit_to_write: std_logic_vector(0 downto 0);
     
 BEGIN
-     
-    
-
     valid_memory: entity simple_dual_port_ram 
       generic map (
         ADDR_WIDTH => LINES_LOG,
@@ -128,17 +126,12 @@ BEGIN
           );
     end generate;
 
-    words_we <= words_we_fill when fill_state /= IDLE else words_we_write;
-    words_to_write <= words_to_write_fill when fill_state /= IDLE else words_to_write_write;
 
     ld <= row_selected_words(to_integer(unsigned(addr(WORD_IN_ADDR))));
     line_hit <= line_tag_selected = addr(TAG_IN_ADDR) and line_valid = (0 => '1');
 
     stall <= ((not line_hit or fill_state /= IDLE) and rd) or invalidation_state /= IDLE or write_stall;
     
-
-
-
     fill_unit_state_p: process(clk, res_n) is
     begin
         if res_n /= '1' then
@@ -203,12 +196,12 @@ BEGIN
         rreq <= false;
         raddr <= (others => '0');
         set_line_tag <= '0';
-        words_we_fill <= (others => '0');
+        words_we <= (others => '0');
         if (fill_state = LOADING or fill_state = PREPARING) and not rack then used_line_ctr := last_line_fill_ctr; else used_line_ctr := line_fill_ctr; end if;
         if (fill_state = LOADING or fill_state = PREPARING) and not rack then used_addr := last_wr_addr; else used_addr := addr; end if;
 
         
-        if fill_state /= IDLE or (not line_hit and (rd or we) and invalidation_state = IDLE) then
+        if fill_state /= IDLE or (not line_hit and rd and invalidation_state = IDLE) then
             if N /= 0 then
                 raddr <= used_addr(TAG_IN_ADDR) & addr(LINE_IN_ADDR) & std_logic_vector(to_unsigned(used_line_ctr, WORDS_IN_LINE_LOG - WORDS_PER_BUS_LOG)) & zero_byte_addr & zero_bus_addr;
             else
@@ -217,40 +210,35 @@ BEGIN
             rreq <= true;
         end if;
 
-
-
-
         case fill_state is
             when IDLE | PREPARING =>
-                if not line_hit and (rd or we) and invalidation_state = IDLE and fill_state = IDLE  then
+                if not line_hit and rd and invalidation_state = IDLE and fill_state = IDLE  then
                     rreq <= true;
                 end if;
 
             when LOADING | WAITING | ALMOST_DONE =>
-               
                 if (line_fill_ctr = N - 1 or N = 0) and rack then set_line_tag <= '1'; else set_line_tag <= '0'; end if;
                 
                 if rack then
                     if N /= 0 then
                         for i in WORDS_PER_BUS - 1 downto 0 loop
-                            words_we_fill((last_line_fill_ctr) * WORDS_PER_BUS + i) <= '1';
+                            words_we((last_line_fill_ctr) * WORDS_PER_BUS + i) <= '1';
                         end loop;
                     else
-                        words_we_fill(0) <= '1';
+                        words_we(0) <= '1';
                     end if;
                 end if;
         end case;
 
-
-        words_to_write_fill <= (others => (others => '0'));
+        words_to_write <= (others => (others => '0'));
 
         if fill_state /= IDLE then
             if N /= 0 then
                 for i in WORDS_PER_BUS - 1 downto 0 loop
-                    words_to_write_fill((last_line_fill_ctr) * WORDS_PER_BUS + i) <= rdata((i + 1)*DATA_WIDTH - 1 downto i*DATA_WIDTH);
+                    words_to_write((last_line_fill_ctr) * WORDS_PER_BUS + i) <= rdata((i + 1)*DATA_WIDTH - 1 downto i*DATA_WIDTH);
                 end loop;
             else
-                words_to_write_fill(0) <= rdata((to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + 1)*DATA_WIDTH - 1 downto to_integer(unsigned(addr(WORD_IN_BUS_WORD)))*DATA_WIDTH);
+                words_to_write(0) <= rdata((to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + 1)*DATA_WIDTH - 1 downto to_integer(unsigned(addr(WORD_IN_BUS_WORD)))*DATA_WIDTH);
             end if;
         end if;
     end process;
@@ -263,46 +251,58 @@ BEGIN
             last_sd <= (others => '0');
             last_wr_addr <= (others => '0');
             burst_addr <= (others => '0');
-            last_words_to_write_write <= (others => (others => '0'));
+            bytes_to_write <= (others => '0');
+            bus_word_to_write <= (others => '0');
         else
             if clk'event and clk = '1' then
                 case writeback_state is
                     when IDLE => 
-                        if we and (addr /= last_wr_addr or sd /= last_sd) and line_hit and fill_state = IDLE then
+                        if we and (addr /= last_wr_addr or sd /= last_sd) then
                             last_sd <= sd;
                             last_wr_addr <= addr;
-                            if LEVERAGE_BURSTS then writeback_state <= GOT_DATA; else writeback_state <= IDLE; end if;
-                            burst_addr <= addr;
-                            last_words_to_write_write <= words_to_write_write;
+                            
+                            for i in BYTES_PER_WORD - 1 downto 0 loop
+                                bytes_to_write(to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i) <= bytes_to_write(to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i) or byte_ena(i);
+                            end loop;
 
-                            if wreq and not wack then
-                                writeback_state <= WAITING_WR;
-                            end if;
+                            for i in BYTES_PER_WORD - 1 downto 0 loop
+                                if byte_ena(i) = '1' then
+                                    bytes_to_write(to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i) <= '1';
+                                    bus_word_to_write((to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i + 1) * BYTE_WIDTH - 1 downto (to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i) * 8) <= sd((i + 1) * BYTE_WIDTH - 1 downto i * BYTE_WIDTH); 
+                                end if;
+                            end loop;
+
+                            writeback_state <= COLLECT_DATA;
+                            burst_addr <= addr;
                         end if;
                     
-                    when GOT_DATA => 
-                        if we and (addr /= last_wr_addr or sd /= last_sd)  then
+                    when COLLECT_DATA => 
+                        if we then
                             last_sd <= sd;
                             last_wr_addr <= addr;
 
-                            
-                            if wreq and not wack then
-                                writeback_state <= WAITING_WR;
-                            else
-                                last_words_to_write_write <= words_to_write_write;
-                            end if;
+                            for i in BYTES_PER_WORD - 1 downto 0 loop
+                                bytes_to_write(to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i) <= bytes_to_write(to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i) or byte_ena(i);
+                            end loop;
+
+                            for i in BYTES_PER_WORD - 1 downto 0 loop
+                                if byte_ena(i) = '1' then
+                                    bytes_to_write(to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i) <= bytes_to_write(to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i) or byte_ena(i);
+                                    bus_word_to_write((to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i + 1) * BYTE_WIDTH - 1 downto (to_integer(unsigned(addr(WORD_IN_BUS_WORD))) + i) * 8) <= sd((i + 1) * BYTE_WIDTH - 1 downto i * BYTE_WIDTH); 
+                                end if;
+                            end loop;
                         end if;
 
-                        if not we then
-
-                            if wack or not wreq then writeback_state <= IDLE; else writeback_state <= WAITING_WR; end if;
-                        end if;
+                        if addr(BUS_WORD_IX_IN_ADDR) /= burst_addr(BUS_WORD_IX_IN_ADDR) then
+                            writeback_state <= WAITING_WR;
+                        end if; 
                         
                     when WAITING_WR =>
                         if wack then
                             writeback_state <= IDLE;
-                            last_wr_addr <= addr;
-                            last_sd <= sd;
+                            bytes_to_write <= (others => '0');
+                            burst_addr <= (others => '0');
+                            bus_word_to_write <= (others => '0');
                         end if;
                 end case;
             end if;
@@ -310,67 +310,28 @@ BEGIN
     end process;
 
     writeback_unit_output_p: process(all) is
-        variable word_to_write: word_T;
-        variable wreq_int: boolean;
-        variable next_bus_word_to_write_int: bus_word_T;
-        variable words_to_write_write_int: row_selected_words_T;
-        variable used_addr: std_logic_vector(addr'range);
     begin
         waddr <= (others => '0');
         wreq <= false;
-        wreq_int := false;
         wdata <= (others => '0');
-        words_to_write_write <= (others => (others => '0'));
-        words_we_write <= (others => '0');
         write_stall <= false;
-        if not LEVERAGE_BURSTS then used_addr := addr; else used_addr := burst_addr; end if;
-
-        if we or (writeback_state = GOT_DATA and not we) then
-            -- write data to cache line
-            word_to_write := row_selected_words(to_integer(unsigned(addr(WORD_IN_ADDR))));
-            for i in byte_ena'range loop
-                if byte_ena(i) = '1' then
-                    word_to_write((i+1) * BYTE_WIDTH - 1 downto BYTE_WIDTH*i) := sd((i+1) * BYTE_WIDTH - 1 downto BYTE_WIDTH*i);
-                end if;
-            end loop;
-            words_to_write_write_int := row_selected_words;
-            words_to_write_write_int(to_integer(unsigned(addr(WORD_IN_ADDR)))) := word_to_write;
-            words_to_write_write <= words_to_write_write_int;
-            
-            -- activate write enables for cache line words
-            for i in WORDS_PER_BUS - 1 downto 0 loop
-                if we then words_we_write(to_integer(unsigned(addr(WORD_IN_ADDR)))) <= '1'; else words_we_write(to_integer(unsigned(addr(WORD_IN_ADDR)))) <= '0'; end if;
-            end loop;
+        wbyte_ena <= (others => '0');
 
 
-            -- write to memory
-            for i in WORDS_PER_BUS - 1 downto 0 loop
-                if not LEVERAGE_BURSTS then
-                    report integer'image((to_integer(unsigned(used_addr(BUS_WORD_IN_LINE)))) * WORDS_PER_BUS + i);
-                    wdata((i + 1)*DATA_WIDTH - 1 downto i*DATA_WIDTH) <= words_to_write_write_int((to_integer(unsigned(used_addr(BUS_WORD_IN_LINE)))) * WORDS_PER_BUS + i);
-                else
-                    wdata((i + 1)*DATA_WIDTH - 1 downto i*DATA_WIDTH) <= last_words_to_write_write((to_integer(unsigned(burst_addr(BUS_WORD_IN_LINE)))) * WORDS_PER_BUS + i);
-                end if;
-            end loop;
-       
-            if not LEVERAGE_BURSTS and we then 
-                waddr <= addr(addr'left downto WORDS_PER_BUS_LOG + ADDR_WIDTH_WORD) & zero_byte_addr & zero_bus_addr;
-            elsif we or (not we and writeback_state = GOT_DATA) then
-                waddr <= burst_addr(addr'left downto WORDS_PER_BUS_LOG + ADDR_WIDTH_WORD) & zero_byte_addr & zero_bus_addr;
-            else  
-                waddr <= (others => '0');
-            end if;
-
-            wreq_int := writeback_state = WAITING_WR or 
-                        (we and line_hit and 
-                            ((not LEVERAGE_BURSTS and (addr /= last_wr_addr or sd /= last_sd)) or 
-                             (writeback_state /= IDLE and addr(BUS_WORD_IX_IN_ADDR) /= burst_addr(BUS_WORD_IX_IN_ADDR)))) or
-                        
-                        (writeback_state = GOT_DATA and not we);
-
-            write_stall <= (we and (not line_hit  or (not wack and wreq_int))) or writeback_state = WAITING_WR;
-            wreq <= wreq_int and not wack and fill_state = IDLE;
-        end if;                
+        case writeback_state is
+            when IDLE => 
+            when COLLECT_DATA => 
+                wreq <= addr(BUS_WORD_IX_IN_ADDR) /= burst_addr(BUS_WORD_IX_IN_ADDR);
+                wdata <= bus_word_to_write;
+                waddr <= burst_addr(BUS_WORD_IX_IN_ADDR) & zero_byte_addr & zero_bus_addr;
+                wbyte_ena <= bytes_to_write;
+            when WAITING_WR => 
+                write_stall <= not wack;
+                wreq <= not wack;
+                wdata <= bus_word_to_write;
+                waddr <= burst_addr(BUS_WORD_IX_IN_ADDR) & zero_byte_addr & zero_bus_addr;
+                wbyte_ena <= bytes_to_write;
+        end case;             
     end process;
 
 

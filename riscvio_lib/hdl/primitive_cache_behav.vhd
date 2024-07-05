@@ -38,9 +38,19 @@ ARCHITECTURE behav OF primitive_cache IS
     subtype word_T is std_logic_vector(DATA_WIDTH - 1 downto 0);
     type bus_word_T is array(WORDS_PER_BUS - 1 downto 0) of word_T;
 
+    -- cache line memory in/out signals
     type row_selected_bytes_T is array(BYTES_IN_LINE - 1 downto 0) of byte_T;
-    
     signal bytes_to_write: row_selected_bytes_T;
+    signal line_ix: std_logic_vector(LINES_LOG - 1 downto 0);
+    signal line_valid: std_logic_vector(0 downto 0);
+    signal valid_bit_to_write: std_logic_vector(0 downto 0);
+    signal line_valid_bit_we: std_logic;
+
+    -- the tag of the currently selected cache line
+    signal line_tag_selected: std_logic_vector(TAG_WIDTH - 1 downto 0);
+    -- what words in the current cache line we want to write
+    signal bytes_we: std_logic_vector(BYTES_IN_LINE - 1 downto 0);
+
 
     type fill_state_T is (IDLE, PREPARING, LOADING, ALMOST_DONE, WAITING);
     signal fill_state: fill_state_T;
@@ -52,11 +62,16 @@ ARCHITECTURE behav OF primitive_cache IS
     signal row_selected_bytes: row_selected_bytes_T;
     -- input for an entire line
     signal bytes_to_write_fill: row_selected_bytes_T;
+    -- from fill
+    signal bytes_we_fill: std_logic_vector(BYTES_IN_LINE - 1 downto 0);
 
     signal used_line_ctr: natural range 0 to BUS_WORDS_PER_LINE + 1;
     signal used_addr: std_logic_vector(addr'range);
     signal last_used_line_ctr: natural range 0 to BUS_WORDS_PER_LINE + 1; 
     signal last_rd_addr: std_logic_vector(addr'range);
+    signal eff_rdata: std_logic_vector(rdata'range);
+    signal raddr_int: std_logic_vector(raddr'range);
+
 
     type writeback_state_T is (IDLE, WAITING_WR, COLLECT_DATA);
     -- basic mode
@@ -71,15 +86,18 @@ ARCHITECTURE behav OF primitive_cache IS
     -- burst mode
     signal accumulated_byteena: std_logic_vector(BUS_WIDTH/8 - 1 downto 0);
     signal accumulated_bus_word: std_logic_vector(BUS_WIDTH - 1 downto 0);
+    signal accumulated_byteena_d: std_logic_vector(BUS_WIDTH/8 - 1 downto 0);
+    signal accumulated_bus_word_d: std_logic_vector(BUS_WIDTH - 1 downto 0);
     -- the address when the burst started (used to detect when we leave the range of words covered by a single bus line)
     signal burst_addr: std_logic_vector(addr'range);
+    -- from pipeline
+    signal bytes_we_pipe: std_logic_vector(BYTES_IN_LINE - 1 downto 0);
     
 
 
     type invalidatiion_state_T is (RESET, IDLE, WAITS, INVALIDATING);
     signal invalidation_state: invalidatiion_state_T;
     signal invalidation_line_ix: std_logic_vector(LINES_LOG - 1 downto 0);
-    signal line_valid_bit_write: std_logic;
 
 
     -- bits in address which make up the tag
@@ -95,21 +113,10 @@ ARCHITECTURE behav OF primitive_cache IS
     -- bits in address which tell us which byte in the current bus word we want to access
     subtype BYTE_IN_BUS_WORD is natural range WORDS_IN_LINE_LOG + ADDR_WIDTH_WORD - 1 downto 0;
 
-    -- which line we are reading from/writing to
-    signal line_ix: std_logic_vector(LINES_LOG - 1 downto 0);
-    signal line_valid: std_logic_vector(0 downto 0);
-    
-    -- the tag of the currently selected cache line
-    signal line_tag_selected: std_logic_vector(TAG_WIDTH - 1 downto 0);
-    -- what words in the current cache line we want to write
-    signal bytes_we: std_logic_vector(BYTES_IN_LINE - 1 downto 0);
-    -- from fill
-    signal bytes_we_fill: std_logic_vector(BYTES_IN_LINE - 1 downto 0);
-    -- from pipeline
-    signal bytes_we_pipe: std_logic_vector(BYTES_IN_LINE - 1 downto 0);
+
+
 
     signal line_hit: boolean;
-    signal valid_bit_to_write: std_logic_vector(0 downto 0);
     
 BEGIN
     valid_memory: entity simple_dual_port_ram 
@@ -122,7 +129,7 @@ BEGIN
         raddr => line_ix,
         waddr => line_ix,
         wdata => valid_bit_to_write,
-        we    => line_valid_bit_write,
+        we    => line_valid_bit_we,
         rdata => line_valid
       );
     
@@ -169,6 +176,7 @@ BEGIN
     bytes_to_write <= bytes_to_write_fill when fill_state /= IDLE or (not line_hit and rd) else bytes_to_write_pipe;
 
     stall <= ((not line_hit or fill_state /= IDLE) and rd) or invalidation_state /= IDLE or write_stall;
+    raddr <= raddr_int;
     
     fill_unit_state_p: process(clk, res_n) is
     begin
@@ -228,7 +236,8 @@ BEGIN
                 end case;
             end if;
         end if;
-    end process;
+    end process fill_unit_state_p;
+
 
     load_data_p: process(all) is
         variable tmp: byte_T;
@@ -238,18 +247,31 @@ BEGIN
             for bit_i in BYTE_WIDTH - 1 downto 0 loop
                 ld(b * BYTE_WIDTH + bit_i) <= tmp(bit_i);
             end loop;
-
-            -- TODO: test forwarding out of accumulated write data
-            if burst_addr(addr'left downto LINE_RANGE'right + Q_LOG) = addr(addr'left downto LINE_RANGE'right + Q_LOG) then
-                if accumulated_byteena((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + b) = '1' then
-                    for bit_i in BYTE_WIDTH - 1 downto 0 loop
-                        ld(b * BYTE_WIDTH + bit_i) <= accumulated_bus_word(((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + b) *BYTE_WIDTH + bit_i);
-                    end loop;
-                end if;
-            end if;
         end loop;
-    end process;
+    end process load_data_p;
 
+
+    fwd_write_to_rdata_p: process(all) is
+    begin
+        eff_rdata <= rdata;
+
+        -- we need to insert data to be written into rdata to make sure it gets filled into a cache line when it hasnt been written to ram yet  
+
+        -- does the bus  word address we have in the write buffer match the one we are reading?
+        if burst_addr(burst_addr'left downto LINE_RANGE'right + Q_LOG) = raddr_int(raddr_int'left downto LINE_RANGE'right + Q_LOG) then
+            for w in WORDS_PER_BUS - 1 downto 0 loop
+                for b in BYTES_PER_WORD - 1 downto 0 loop
+                        -- is there valid data we can forward?
+                        if accumulated_byteena(to_integer(unsigned(used_addr(WORD_IN_BUS_WORD))) * BYTES_PER_WORD + b) = '1' then
+
+                            for bit_i in BYTE_WIDTH - 1 downto 0 loop
+                                eff_rdata((w * BYTES_PER_WORD + b) *BYTE_WIDTH + bit_i) <= accumulated_bus_word((w * BYTES_PER_WORD + b) *BYTE_WIDTH + bit_i);
+                            end loop;
+                        end if;
+                end loop;
+            end loop;
+        end if;
+    end process fwd_write_to_rdata_p;
 
     used_line_ctr <= last_line_fill_ctr when (fill_state = LOADING or fill_state = PREPARING) and not rack else line_fill_ctr;
     used_addr <= last_rd_addr when (fill_state = LOADING or fill_state = PREPARING) and not rack  else addr;
@@ -257,16 +279,16 @@ BEGIN
     fill_unit_output_p: process(all) is
     begin
         rreq <= false;
-        raddr <= (others => '0');
+        raddr_int <= (others => '0');
         set_line_tag <= '0';
         bytes_we_fill <= (others => '0');
 
         
         if fill_state /= IDLE or (not line_hit and rd and invalidation_state = IDLE) then
-            if BUS_WORDS_PER_LINE /= 0 then
-                raddr <= used_addr(TAG_RANGE) & used_addr(LINE_RANGE) & std_logic_vector(to_unsigned(used_line_ctr, WORDS_IN_LINE_LOG - WORDS_PER_BUS_LOG)) & zero_byte_addr & zero_bus_addr;
+            if BUS_WORDS_PER_LINE > 1 then
+                raddr_int <= used_addr(TAG_RANGE) & used_addr(LINE_RANGE) & std_logic_vector(to_unsigned(used_line_ctr, WORDS_IN_LINE_LOG - WORDS_PER_BUS_LOG)) & zero_byte_addr & zero_bus_addr;
             else
-                raddr <= addr(addr'left downto LINE_RANGE'right + Q_LOG) & zero_byte_addr & zero_bus_addr;
+                raddr_int <= used_addr(addr'left downto LINE_RANGE'right + Q_LOG) & zero_byte_addr & zero_bus_addr;
             end if;
             rreq <= true;
         end if;
@@ -301,17 +323,17 @@ BEGIN
             for i in WORDS_PER_BUS - 1 downto 0 loop
                 for b in BYTES_PER_WORD - 1 downto 0 loop
                     for bit_i in BYTE_WIDTH - 1 downto 0 loop
-                        bytes_to_write_fill(((last_used_line_ctr) * WORDS_PER_BUS + i) * BYTES_PER_WORD + b)(bit_i) <= rdata((i*BYTES_PER_WORD + b) * BYTE_WIDTH + bit_i);
+                        bytes_to_write_fill(((last_used_line_ctr) * WORDS_PER_BUS + i) * BYTES_PER_WORD + b)(bit_i) <= eff_rdata((i*BYTES_PER_WORD + b) * BYTE_WIDTH + bit_i);
                     end loop;
                 end loop;
             end loop;
         else
             for b in BYTES_PER_WORD - 1 downto 0 loop
                 
-                bytes_to_write_fill(b) <= rdata(((to_integer(unsigned(addr(WORD_IN_BUS_WORD)))*BYTES_PER_WORD + b + 1))*BYTE_WIDTH - 1 downto (to_integer(unsigned(addr(WORD_IN_BUS_WORD)))*BYTES_PER_WORD + b) * BYTE_WIDTH);
+                bytes_to_write_fill(b) <= eff_rdata(((to_integer(unsigned(addr(WORD_IN_BUS_WORD)))*BYTES_PER_WORD + b + 1))*BYTE_WIDTH - 1 downto (to_integer(unsigned(addr(WORD_IN_BUS_WORD)))*BYTES_PER_WORD + b) * BYTE_WIDTH);
             end loop;
         end if;
-    end process;
+    end process fill_unit_output_p;
 
     
     writeback_unit_state_p: process(clk, res_n) is
@@ -335,15 +357,8 @@ BEGIN
 
 
                             -- for remembering values byteena/sd when we got the we / for accumulating sd/byteena over multiple writes in a single burst 
-                            for i in BYTES_PER_WORD - 1 downto 0 loop
-                                if byte_ena(i) = '1' then
-                                    accumulated_byteena((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) <= '1';
-
-                                    for bit_i in BYTE_WIDTH - 1 downto 0 loop
-                                        accumulated_bus_word(((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) * BYTE_WIDTH + bit_i) <= sd(i* BYTE_WIDTH + bit_i); 
-                                    end loop;
-                                end if;
-                            end loop;
+                            accumulated_byteena <= accumulated_byteena_d;
+                            accumulated_bus_word <= accumulated_bus_word_d;
 
                                 
                             if not LEVERAGE_BURSTS then
@@ -355,19 +370,14 @@ BEGIN
                         end if;
                     
                     when COLLECT_DATA => 
-                        if we then
-                            last_sd <= sd;
-                            last_wr_addr <= addr;
+                        if we  then
+                            if not wreq then
+                                last_sd <= sd;
+                                last_wr_addr <= addr;
+                            end if;
 
-                            for i in BYTES_PER_WORD - 1 downto 0 loop
-                                if byte_ena(i) = '1' then
-                                    -- we only update the bytes where the byteena was enabled, we leave the rest as is
-                                    accumulated_byteena((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) <= accumulated_byteena((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) or byte_ena(i);
-                                    for bit_i in BYTE_WIDTH - 1 downto 0 loop
-                                        accumulated_bus_word(((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) * BYTE_WIDTH + bit_i) <= sd(i* BYTE_WIDTH + bit_i); 
-                                    end loop;
-                                end if;
-                            end loop;
+                            accumulated_byteena <= accumulated_byteena_d;
+                            accumulated_bus_word <= accumulated_bus_word_d;
                         end if;
 
                         if addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) then
@@ -385,9 +395,11 @@ BEGIN
                 end case;
             end if;
         end if;
-    end process;
+    end process writeback_unit_state_p;
 
     writeback_unit_output_p: process(all) is
+        variable accumulated_byteena_d_int: std_logic_vector(accumulated_byteena'range);
+        variable accumulated_bus_word_d_int: std_logic_vector(accumulated_bus_word'range);
     begin
         waddr <= (others => '0');
         wreq <= false;
@@ -396,6 +408,10 @@ BEGIN
         wbyte_ena <= (others => '0');
         bytes_we_pipe <= (others => '0');
         bytes_to_write_pipe <= (others => (others => '0'));
+        accumulated_byteena_d_int := accumulated_byteena;
+        accumulated_bus_word_d_int := accumulated_bus_word;
+
+
 
         -- always apply sd to all words
         for w in WORDS_IN_LINE - 1 downto 0 loop
@@ -416,6 +432,21 @@ BEGIN
             end if;
         end if;
 
+        -- handle updates of accumulated data, byteenable
+        if we then
+            for i in BYTES_PER_WORD - 1 downto 0 loop
+                if byte_ena(i) = '1' then
+                    -- we only update the bytes where the byteena was enabled, we leave the rest as is
+                    accumulated_byteena_d_int((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) := '1';
+                    for bit_i in BYTE_WIDTH - 1 downto 0 loop
+                        accumulated_bus_word_d_int(((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) * BYTE_WIDTH + bit_i) := sd(i* BYTE_WIDTH + bit_i); 
+                    end loop;
+                end if;
+            end loop;
+        end if;
+        accumulated_byteena_d <= accumulated_byteena_d_int;
+        accumulated_bus_word_d <= accumulated_bus_word_d_int;
+
         if LEVERAGE_BURSTS then 
             case writeback_state is
                 when IDLE => null; -- we just wait for data...
@@ -424,10 +455,11 @@ BEGIN
                     wdata <= accumulated_bus_word;
                     waddr <= burst_addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                     wbyte_ena <= accumulated_byteena;
+                    write_stall <= addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) and we;
     
                 when WAITING_WR => 
                     -- we only stall when we want to wrire although the last write didnt finish
-                    write_stall <= not we;
+                    write_stall <= we;
                     wreq <= not wack;
                     waddr <= burst_addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                     wdata <= accumulated_bus_word;
@@ -461,7 +493,7 @@ BEGIN
     
                 when WAITING_WR => 
                     -- we only stall when we want to wrire although the last write didnt finish
-                    write_stall <= not wack and we;
+                    write_stall <= we;
                     wreq <= not wack;
                     waddr <= burst_addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                     -- we dont actually accumulate anything here - we just remember the data when we got the we in accumulated_bus_word
@@ -470,7 +502,7 @@ BEGIN
             end case;   
         end if;
                   
-    end process;
+    end process writeback_unit_output_p;
 
 
 
@@ -504,19 +536,19 @@ BEGIN
                 end case;
             end if;
         end if;
-    end process;
+    end process invalidation_unit_state_p;
 
     invalidation_unit_output_p: process(all) is
     begin
         line_ix <= (others => '0');
         valid_bit_to_write <= (0 => '0');
-        line_valid_bit_write <= '0';
+        line_valid_bit_we <= '0';
 
         case invalidation_state is
             when RESET => 
                 line_ix <= invalidation_line_ix;
                 valid_bit_to_write <= (0 => '0');
-                line_valid_bit_write <= '1';
+                line_valid_bit_we <= '1';
             
             when WAITS => null;
 
@@ -524,15 +556,15 @@ BEGIN
                 -- for writing we use addr, for reading we use next_addr(we need to compensate one latency cycle)
                 if line_hit and not isAllStd(bytes_we, '0') then line_ix <= addr(LINE_RANGE);  else  line_ix <= next_addr(LINE_RANGE); end if;
                 valid_bit_to_write <= (0 => '1');
-                line_valid_bit_write <= set_line_tag;
+                line_valid_bit_we <= set_line_tag;
 
             when INVALIDATING => 
                 line_ix <= invalidation_line_ix;
                 valid_bit_to_write <= (0 => '0');
-                line_valid_bit_write <= '1';
+                line_valid_bit_we <= '1';
         end case;
 
-    end process;
+    end process invalidation_unit_output_p;
 
 END ARCHITECTURE behav;
 

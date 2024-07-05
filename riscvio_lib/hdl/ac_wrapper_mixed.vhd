@@ -10,18 +10,26 @@
 
 LIBRARY riscvio_lib;
 USE riscvio_lib.pipeline.all;
+USE riscvio_lib.helper.revBytes;
+
 LIBRARY ieee;
 USE ieee.numeric_std.all;
 
 
 ARCHITECTURE mixed OF ac_wrapper IS
     signal ld: std_logic_vector(63 downto 0);
+    signal sd: std_logic_vector(63 downto 0);
     signal stall_int: boolean;
     signal rena: boolean;
+    signal wena: boolean;
 BEGIN
-    lpi <= ld(7 downto 0) & ld(15 downto 8) & ld(23 downto 16) & ld(31 downto 24) when at_mode = load_maybe else (others => '0');
-    ldt <= ld(39 downto 32) & ld(47 downto 40) & ld(55 downto 48) & ld(63 downto 56) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
+    lpi <= revBytes(ld(31 downto 0)) when at_mode = load_maybe else (others => '0');
+    ldt <= revBytes(ld(63 downto 32) srl 32) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
+    sd <=  revBytes(wdt) & revBytes(wpi);
+
     rena <= at_mode = load_maybe or at_mode = load_delta_only;
+    wena <= at_mode = store;
+
     --#TODO: hellooo
     acache: entity riscvio_lib.primitive_cache
         generic map (
@@ -38,13 +46,21 @@ BEGIN
             addr      => addr.val,
             next_addr => next_addr.val,
             rd        => rena,
+            we        => wena,
 
             ld        => ld,
+            sd        => sd,
 
             rreq      => rreq,
             rack      => rack,
             raddr     => raddr,
-            rdata     => rdata
+            rdata     => rdata,
+
+            wreq      => wreq,
+            wack      => wack,
+            waddr     => waddr,
+            wdata     => wdata,
+            wbyte_ena => wbyte_ena
         );
 
     stall <= '1' when stall_int else 'Z';

@@ -42,7 +42,7 @@ BEGIN
                     
                     pc_wb <= pc_me;
                     exc_wb <= exc_me;
-                    --assert ctrl_me.mnemonic /= ebreak report "EBREAK" severity failure;
+                    assert ctrl_me.mnemonic /= ebreak report "EBREAK" severity failure;
                 end if;
             end if;
         end if;

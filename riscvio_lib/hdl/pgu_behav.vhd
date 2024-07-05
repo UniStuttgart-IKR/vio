@@ -33,14 +33,14 @@ BEGIN
     process(all) is
     begin
         ptr_int.pi <= (others => '0');
-        if pgu_mode = pgu_alc   then ptr_int.pi(28 downto 0) <= rdat.val(28 downto 0); elsif
-           pgu_mode = pgu_alcp  then ptr_int.pi(28 downto 0) <=      imm(28 downto 0); elsif
-           pgu_mode = pgu_alcd  then ptr_int.pi(28 downto 0) <= rdat.val(28 downto 0); elsif
-           pgu_mode = pgu_alci  then ptr_int.pi( 4 downto 0) <=      imm( 4 downto 0); elsif
-           pgu_mode = pgu_push  then ptr_int.pi( 4 downto 0) <=      imm( 4 downto 0); elsif
-           pgu_mode = pgu_pusht then ptr_int.pi( 4 downto 0) <=      imm( 4 downto 0); elsif
-           pgu_mode = pgu_pushg then ptr_int.pi( 4 downto 0) <=      imm( 4 downto 0);
-           end if;
+        if    pgu_mode = pgu_alc   then ptr_int.pi(28 downto 0) <= rdat.val(28 downto 0);
+        elsif pgu_mode = pgu_alcp  then ptr_int.pi(28 downto 0) <=      imm(28 downto 0);
+        elsif pgu_mode = pgu_alcd  then ptr_int.pi(28 downto 0) <= rdat.val(28 downto 0);
+        elsif pgu_mode = pgu_alci  then ptr_int.pi( 4 downto 0) <=      imm( 4 downto 0);
+        elsif pgu_mode = pgu_push  then ptr_int.pi( 4 downto 0) <=      imm( 4 downto 0);
+        elsif pgu_mode = pgu_pusht then ptr_int.pi( 4 downto 0) <=      imm( 4 downto 0);
+        elsif pgu_mode = pgu_pushg then ptr_int.pi( 4 downto 0) <=      imm( 4 downto 0);
+        end if;
 
 
         ptr_int.dt <= (others => '0');

@@ -26,6 +26,7 @@ BEGIN
             highest_bit_of_a_as_word(i) := a(a'left);
         end loop;
         
+        alu_out <= (others => '0');
         case mode is 
             when alu_add => 
                 alu_out <= word_T(unsigned(a) + unsigned(b));

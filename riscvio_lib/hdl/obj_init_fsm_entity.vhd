@@ -15,11 +15,12 @@ ENTITY obj_init_fsm IS
       res_ex             : IN     reg_mem_T;
       res_ex_uq          : IN     reg_mem_T;
       res_n              : IN     std_logic;
-      next_obj_init_addr : OUT    word_T;
-      obj_init_addr      : OUT    word_T;
-      obj_init_data      : OUT    dword_T;
+      obj_init_byte_ena  : OUT    std_logic_vector (BUS_WIDTH/8 - 1 DOWNTO 0);
+      obj_init_data      : OUT    buzz_word_T;
       obj_init_wr        : OUT    boolean;
-      stall              : OUT    std_logic
+      stall              : OUT    std_logic;
+      next_obj_init_addr : INOUT  word_T;
+      obj_init_addr      : INOUT  word_T
    );
 
 -- Declarations

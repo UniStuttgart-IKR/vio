@@ -138,7 +138,7 @@ PACKAGE BODY pipeline IS
                         if instruction = NOP_INSTR then res.mnemonic := nop; end if;
                         res.alu_mode := alu_add;
                         res.imm_mode := i_type;
-                        res.at_mode  := maybe;
+                        res.at_mode  := load_maybe;
                     when (F3_SRL_SRA or F3_MINU_ROR_RORI_ORC_REV) =>
                         case instruction(FUNCT7_RANGE) is
                             when F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU =>
@@ -308,7 +308,7 @@ PACKAGE BODY pipeline IS
                 res.alu_a_sel:= DAT;
                 if instruction(FUNCT3_RANGE) = "111" then res.alu_b_sel := AUX; else res.alu_b_sel := IMM; end if;
                 if instruction(FUNCT3_RANGE) = "111" then res.pgu_mode := pgu_dat_r; elsif ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then res.pgu_mode := pgu_rix; else res.pgu_mode := pgu_dat_i; end if;
-                if res.pgu_mode /= pgu_rix then res.at_mode := no; else res.at_mode := delta_only; end if;
+                if res.pgu_mode /= pgu_rix then res.at_mode := no; else res.at_mode := load_delta_only; end if;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := lb_i;
                                      res.me_mode  := lb;
@@ -390,14 +390,17 @@ PACKAGE BODY pipeline IS
                                             res.mnemonic := alc;
                                             res.pgu_mode := pgu_alc;
                                             res.imm_mode := none;
+                                            res.at_mode  := store;
                     when F3_ALCIP  =>       res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.mnemonic := alci_p;
                                             res.pgu_mode := pgu_alcp;
                                             res.imm_mode := i_type;
+                                            res.at_mode  := store;
                     when F3_ALCID  =>       res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.mnemonic := alci_d;
                                             res.pgu_mode := pgu_alcd;
                                             res.imm_mode := i_type;
+                                            res.at_mode  := store;
                     when F3_ALCI_PUSH =>    res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.raux     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.imm_mode := s_type;
@@ -405,15 +408,19 @@ PACKAGE BODY pipeline IS
                                             if instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) /= frame then
                                                 res.mnemonic := alci;
                                                 res.pgu_mode := pgu_alci;
+                                                res.at_mode  := store;
                                             elsif instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then
                                                 res.mnemonic := pusht;
                                                 res.pgu_mode := pgu_pusht;
+                                                res.at_mode  := store;
                                             elsif instruction(RS2_RANGE) = F5_PUSHG then
                                                 res.mnemonic := pushg;
                                                 res.pgu_mode := pgu_pushg;
+                                                res.at_mode  := store;
                                             elsif instruction(RS2_RANGE) = F5_PUSH then
                                                 res.mnemonic := push;
                                                 res.pgu_mode := pgu_push;
+                                                res.at_mode  := store;
                                             else
                                                 res.mnemonic := illegal;
                                                 res.pgu_mode := pgu_nop;
@@ -433,7 +440,7 @@ PACKAGE BODY pipeline IS
                     when F3_LP =>           res.mnemonic := lp_i;
                                             res.imm_mode := i_type;
                                             res.me_mode  := lp;
-                                            res.at_mode  := delta_only;
+                                            res.at_mode  := load_delta_only;
                                             res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                                             res.raux     := ali_T'pos(ra);
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
@@ -441,7 +448,7 @@ PACKAGE BODY pipeline IS
                                             if ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then
                                                 res.pgu_mode := pgu_rcd;
                                                 res.me_mode  := load_rpc;
-                                                res.at_mode  := maybe;
+                                                res.at_mode  := load_maybe;
                                             end if;
                     when F3_JLIB =>         res.mnemonic := jlib;
                                             res.alu_mode := alu_illegal;
@@ -470,7 +477,7 @@ PACKAGE BODY pipeline IS
                             when F7_LPR =>  res.mnemonic := lp_r;
                                             res.imm_mode := none;
                                             res.me_mode  := lp;
-                                            res.at_mode  := maybe;
+                                            res.at_mode  := load_maybe;
                                             res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
                                             res.raux     := 0;
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
@@ -479,7 +486,7 @@ PACKAGE BODY pipeline IS
                             when F7_POP =>  res.mnemonic := pop;
                                             res.imm_mode := none;
                                             res.me_mode  := holiday;
-                                            res.at_mode  := maybe;
+                                            res.at_mode  := load_maybe;
                                             res.rdst     := ali_T'pos(frame);
                                             res.raux     := 0;
                                             res.rptr     := ali_T'pos(frame);
@@ -550,7 +557,7 @@ PACKAGE BODY pipeline IS
                                 res.alu_a_sel:= DAT;
                                 res.alu_b_sel:= AUX;
                                 res.alu_mode := alu_illegal;
-                                res.at_mode  := maybe;
+                                res.at_mode  := load_maybe;
                                 res.me_mode  := holiday;
                                 res.rptr     := 0;
                                 res.rdat     := 0;
@@ -712,7 +719,7 @@ PACKAGE BODY pipeline IS
         pi_scaled := '0' & pi(word_T'high-1 downto 2) & "00";
         offset_scaled := offs(word_T'high-2 downto 0) & "00";
         index_scaled := ix(word_T'high-2 downto 0) & "00";
-        index_space := word_T(unsigned(pi)*INDEX_SIZE+7) and X"FFFFFFFD";
+        index_space := word_T(to_unsigned(to_integer(unsigned(pi))*INDEX_SIZE+7, word_T'length)) and X"FFFFFFFC";
         if rc = '1' and ri = '0' then
             reserved_space := 16;
         elsif rc = '0' and ri = '1' then

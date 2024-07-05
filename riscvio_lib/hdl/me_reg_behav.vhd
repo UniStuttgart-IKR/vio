@@ -35,6 +35,9 @@ BEGIN
                     exc_me <= well_behaved;
                 elsif not (stall = '1') then
                     ctrl_me <= ctrl_ex;
+                    if res_me_u.tag /= POINTER then
+                        ctrl_me.at_mode <= no;
+                    end if;
 
                     rdst_ix_me <= rdst_ix_ex;
                     rdat_me <= rdat_ex;
@@ -50,9 +53,11 @@ BEGIN
         end if;
     end process;
 
-    ld_attr <= ctrl_me.at_mode /= no and res_me.tag = POINTER;
+    at_mode <= ctrl_me.at_mode;
     addr_me_uq <= res_me_u when not (stall = '1') else res_me;
     addr_me <= res_me;
+    wpi_me <= res_me.pi;
+    wdt_me <= res_me.dt;
     allocating_at <= ali_T'val(rptr_me.nbr) = alc_addr;
 END ARCHITECTURE behav;
 

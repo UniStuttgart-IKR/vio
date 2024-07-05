@@ -3,6 +3,7 @@ USE riscvio_lib.isa.all;
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.math_real.all;
 
 PACKAGE pipeline IS
 
@@ -83,7 +84,7 @@ PACKAGE pipeline IS
     type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU, PC_IX);
     type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_pop, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_auipc, pgu_rix, pgu_rcd, pgu_ccp, pgu_ciop, pgu_nop);
     type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store_rpc, load_rpc, load_ix, store_ix, holiday);
-    type at_mode_T is (maybe, no, delta_only);
+    type at_mode_T is (load_maybe, no, load_delta_only, store);
     type branch_mode_T is (jlib, rtlib, jal, jalr, beq, bne, blt, bge, bltu, bgeu, no_branch);
 
     type ctrl_sig_T is record 

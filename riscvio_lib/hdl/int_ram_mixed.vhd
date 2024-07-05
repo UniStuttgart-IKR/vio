@@ -55,6 +55,7 @@ ARCHITECTURE mixed OF int_ram IS
   signal wdata, rdata: std_logic_vector(BUS_WIDTH - 1 downto 0);
   signal ic_rack_int, dc_rack_int, ac_rack_int, dc_wack_int: boolean;
   signal last_dc_wack: boolean;
+  signal dc_wack_reg: boolean;
   
   pure function rev_words(a: std_logic_vector) return std_logic_vector is
     variable tmp: std_logic_vector(BUS_WIDTH - 1 downto 0);
@@ -65,19 +66,35 @@ ARCHITECTURE mixed OF int_ram IS
 
     return tmp;
   end function rev_words;
+
+  pure function rev_bytes(a: std_logic_vector) return std_logic_vector is
+    variable tmp: std_logic_vector(a'length - 1 downto 0);
+  begin
+    for i in a'length/8 - 1 downto 0 loop
+      tmp((i+1) * 8 - 1 downto i*8) := a(a'length - i * 8 - 1 downto a'length - (i + 1) * 8);
+    end loop;
+
+    return tmp;
+  end function rev_bytes;
+
+  pure function rev_bits(a: std_logic_vector) return std_logic_vector is
+    variable tmp: std_logic_vector(a'length - 1 downto 0);
+  begin
+    for i in a'length - 1 downto 0 loop
+      tmp(tmp'left - i) := a(i);
+    end loop;
+
+    return tmp;
+  end function rev_bits;
 BEGIN
   
   -- internal ram controller
   
-  -- concurrent signal assignments
-  --ic_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
-  --dc_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
-  --ac_rdata <= rdata(31 downto 0) & rdata(63 downto 32);
   ic_rdata <= rev_words(rdata);-- rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
   dc_rdata <= rev_words(rdata);--rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
   ac_rdata <= rev_words(rdata);--rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
-  we       <= '1' when dc_wack and not last_dc_wack else '0';
-  byte_ena <= dc_wbyte_ena when dc_wack and not last_dc_wack else (others => '0');
+  we       <= '1' when dc_wack_reg else '0';
+  byte_ena <= dc_wbyte_ena when dc_wack_reg else (others => '0');
   wdata    <= dc_wdata;
   
   -- request handling fsm state memory
@@ -160,16 +177,16 @@ BEGIN
 
       when HANDLINGICREQ => 
         addr       <= conv_addr(ic_raddr);
-        ic_rack_int     <= true;
+        ic_rack_int     <= ic_rreq;
       when HANDLINGDCRREQ => 
         addr       <= conv_addr(dc_raddr);
-        dc_rack_int     <= true;
+        dc_rack_int     <= dc_rreq;
       when HANDLINGDCWREQ => 
         addr       <= conv_addr(dc_waddr);
-        dc_wack_int     <= true;
+        dc_wack_int     <= dc_wreq;
       when HANDLINGACREQ => 
         addr       <= conv_addr(ac_raddr);
-        ac_rack_int     <= true;
+        ac_rack_int     <= ac_rreq;
     end case;
   end process request_fsm_outputs;
 
@@ -191,7 +208,7 @@ BEGIN
         dc_rack <= dc_rack_int;
         ac_rack <= ac_rack_int;
         dc_wack <= dc_wack_int;
-
+        dc_wack_reg <= dc_wack_int;
       end if;
     end if; 
   end process;
@@ -220,7 +237,7 @@ BEGIN
       clock0 => clk,
       data_a => rev_words(wdata),
       wren_a => we,
-      byteena_a => byte_ena,
+      byteena_a => rev_bytes(byte_ena),
       q_a => rdata
     );
 

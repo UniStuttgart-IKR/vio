@@ -12,6 +12,9 @@ USE altera_mf.altera_mf_components.all;
 LIBRARY ieee;
 USE ieee.numeric_std.all;
 use IEEE.math_real.all;
+LIBRARY riscvio_lib;
+USE riscvio_lib.helper.revWords;
+USE riscvio_lib.helper.revNibbles;
 
 ARCHITECTURE mixed OF int_ram IS
   
@@ -20,7 +23,7 @@ ARCHITECTURE mixed OF int_ram IS
   constant BYTE_ADDR_WIDTH : positive := 12;
   constant ADDR_WIDTH: positive := BYTE_ADDR_WIDTH - integer(ceil(log2(real(BUS_WIDTH/8))));
   
-  type requeststateT is (IDLE, HANDLINGICREQ, HANDLINGDCWREQ, HANDLINGDCRREQ, HANDLINGACREQ);
+  type requeststateT is (IDLE, HANDLINGICREQ, HANDLINGDCWREQ, HANDLINGDCRREQ, HANDLINGACRREQ, HANDLINGACWREQ);
 
   signal request_current_state: requeststateT;
   signal request_next_state: requeststateT;
@@ -33,6 +36,10 @@ ARCHITECTURE mixed OF int_ram IS
     return result;
   end function conv_addr;
   
+
+  subtype BUS_WORD_IX_IN_ADDR is natural range BYTE_ADDR_WIDTH - 1 downto BYTE_ADDR_WIDTH - ADDR_WIDTH;
+
+
   component simple_dual_port_ram
     generic (
       ADDR_WIDTH: positive;
@@ -53,49 +60,21 @@ ARCHITECTURE mixed OF int_ram IS
   signal we: std_logic;
   signal byte_ena: std_logic_vector(BUS_WIDTH/8 - 1 downto 0);
   signal wdata, rdata: std_logic_vector(BUS_WIDTH - 1 downto 0);
-  signal ic_rack_int, dc_rack_int, ac_rack_int, dc_wack_int: boolean;
+  signal ic_rack_int, dc_rack_int, ac_rack_int, dc_wack_int, ac_wack_int: boolean;
   signal last_dc_wack: boolean;
-  signal dc_wack_reg: boolean;
-  
-  pure function rev_words(a: std_logic_vector) return std_logic_vector is
-    variable tmp: std_logic_vector(BUS_WIDTH - 1 downto 0);
-  begin
-    for i in BUS_WIDTH/32 - 1 downto 0 loop
-      tmp((i+1) * 32 - 1 downto i*32) := a(BUS_WIDTH - i * 32 - 1 downto BUS_WIDTH - (i + 1) * 32);
-    end loop;
-
-    return tmp;
-  end function rev_words;
-
-  pure function rev_bytes(a: std_logic_vector) return std_logic_vector is
-    variable tmp: std_logic_vector(a'length - 1 downto 0);
-  begin
-    for i in a'length/8 - 1 downto 0 loop
-      tmp((i+1) * 8 - 1 downto i*8) := a(a'length - i * 8 - 1 downto a'length - (i + 1) * 8);
-    end loop;
-
-    return tmp;
-  end function rev_bytes;
-
-  pure function rev_bits(a: std_logic_vector) return std_logic_vector is
-    variable tmp: std_logic_vector(a'length - 1 downto 0);
-  begin
-    for i in a'length - 1 downto 0 loop
-      tmp(tmp'left - i) := a(i);
-    end loop;
-
-    return tmp;
-  end function rev_bits;
+  signal wack_reg: boolean;
+  signal clk_buf: std_logic;
+  signal clk_buff: std_logic;
+  signal clk_bufff: std_logic;
 BEGIN
   
   -- internal ram controller
   
-  ic_rdata <= rev_words(rdata);-- rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
-  dc_rdata <= rev_words(rdata);--rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
-  ac_rdata <= rev_words(rdata);--rdata(31 downto 0) & rdata(63 downto 32) & rdata(95 downto 64) & rdata(127 downto 96);
-  we       <= '1' when dc_wack_reg else '0';
-  byte_ena <= dc_wbyte_ena when dc_wack_reg else (others => '0');
-  wdata    <= dc_wdata;
+
+
+  clk_buf <= clk;
+  clk_buff <= clk_buf;
+  
   
   -- request handling fsm state memory
   request_fsm_state: process(clk, res_n) is
@@ -125,7 +104,7 @@ BEGIN
         elsif dc_wreq then
           request_next_state <= HANDLINGDCWREQ;
         elsif ac_rreq then
-          request_next_state <= HANDLINGACREQ;
+          request_next_state <= HANDLINGACRREQ;
         end if;
 
       when HANDLINGICREQ => 
@@ -143,11 +122,29 @@ BEGIN
           request_next_state <= IDLE;
         end if;
       
-      when HANDLINGACREQ => 
+      when HANDLINGACRREQ => 
         if not ac_rreq then
           request_next_state <= IDLE;
         end if;
+
+      when HANDLINGACWREQ => 
+        if not ac_wreq then
+          request_next_state <= IDLE;
+        end if;
     end case;
+
+    
+
+    ic_rdata <= revWords(rdata);
+    dc_rdata <= revWords(rdata);
+    ac_rdata <= revWords(rdata);
+    we       <= '1' when wack_reg else '0';
+    byte_ena <= ac_wbyte_ena when request_current_state = HANDLINGACWREQ else 
+                dc_wbyte_ena when request_current_state = HANDLINGDCWREQ else
+                (others => '0');
+                
+    wdata    <= dc_wdata when request_current_state = HANDLINGDCWREQ else 
+                ac_wdata;
   end process  request_fsm_transitions;
 
   -- request handling acknoledge and address signal control
@@ -157,36 +154,43 @@ BEGIN
     dc_rack_int     <= false;
     ac_rack_int     <= false;
     dc_wack_int     <= false;
+    ac_wack_int     <= false;
     addr <= (others => '0');
 
     case request_current_state is
       when IDLE => 
         if ic_rreq then
-          addr       <= conv_addr(ic_raddr);
+          addr       <= ic_raddr(BUS_WORD_IX_IN_ADDR);
           ic_rack_int     <= true;
         elsif dc_rreq then
-          addr       <= conv_addr(dc_raddr);
+          addr       <= dc_raddr(BUS_WORD_IX_IN_ADDR);
           dc_rack_int     <= true;
         elsif dc_wreq then
-          addr       <= conv_addr(dc_waddr);
+          addr       <= dc_waddr(BUS_WORD_IX_IN_ADDR);
           dc_wack_int     <= true;
         elsif ac_rreq then
-          addr       <= conv_addr(ac_raddr);
+          addr       <= ac_raddr(BUS_WORD_IX_IN_ADDR);
           ac_rack_int     <= true;
+        elsif ac_wreq then
+          addr       <= ac_waddr(BUS_WORD_IX_IN_ADDR);
+          ac_wack_int     <= true;
         end if;
 
       when HANDLINGICREQ => 
-        addr       <= conv_addr(ic_raddr);
+        addr       <= ic_raddr(BUS_WORD_IX_IN_ADDR);
         ic_rack_int     <= ic_rreq;
       when HANDLINGDCRREQ => 
-        addr       <= conv_addr(dc_raddr);
+        addr       <= dc_raddr(BUS_WORD_IX_IN_ADDR);
         dc_rack_int     <= dc_rreq;
       when HANDLINGDCWREQ => 
-        addr       <= conv_addr(dc_waddr);
+        addr       <= dc_waddr(BUS_WORD_IX_IN_ADDR);
         dc_wack_int     <= dc_wreq;
-      when HANDLINGACREQ => 
-        addr       <= conv_addr(ac_raddr);
+      when HANDLINGACRREQ => 
+        addr       <= ac_raddr(BUS_WORD_IX_IN_ADDR);
         ac_rack_int     <= ac_rreq;
+      when HANDLINGACWREQ => 
+        addr       <= ac_waddr(BUS_WORD_IX_IN_ADDR);
+        ac_wack_int     <= ac_wreq;
     end case;
   end process request_fsm_outputs;
 
@@ -208,11 +212,13 @@ BEGIN
         dc_rack <= dc_rack_int;
         ac_rack <= ac_rack_int;
         dc_wack <= dc_wack_int;
-        dc_wack_reg <= dc_wack_int;
+        ac_wack <= ac_wack_int;
+        wack_reg <= dc_wack_int;
       end if;
     end if; 
   end process;
   
+
   
 	altsyncram_component : altsyncram
     GENERIC MAP (
@@ -227,7 +233,7 @@ BEGIN
       outdata_aclr_a => "NONE",
       outdata_reg_a => "UNREGISTERED",
       power_up_uninitialized => "FALSE",
-      read_during_write_mode_port_a => "NEW_DATA_NO_NBE_READ",
+      read_during_write_mode_port_a => "OLD_DATA",
       widthad_a => ADDR_WIDTH,
       width_a => BUS_WIDTH,
       width_byteena_a => BUS_WIDTH/8
@@ -235,9 +241,9 @@ BEGIN
     PORT MAP (
       address_a => addr,
       clock0 => clk,
-      data_a => rev_words(wdata),
+      data_a => revWords(wdata),
       wren_a => we,
-      byteena_a => rev_bytes(byte_ena),
+      byteena_a => revNibbles(byte_ena),
       q_a => rdata
     );
 

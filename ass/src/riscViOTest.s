@@ -33,13 +33,16 @@ core.init:
             sh      t2, 4(frame)
             sb      t3, 6(frame)
 
-            lbu     a4, 6(frame)
-            lb      a3, 6(frame)
-            lhu     a2, 4(frame)
-            lh      a1, 0(frame)
+            lbu     a5, 6(frame)
+            lb      a4, 6(frame)
+            lhu     a3, 4(frame)
+            lh      a2, 4(frame)
+            lw      a1, 0(frame)
             lp      a0, 0(frame)
             lp      ra, 0(frame)
 
+            nop
+            nop
             ebreak
 
             # Device 1

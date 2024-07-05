@@ -34,7 +34,7 @@ BEGIN
         LINES => DC_LINES,
         ADDR_WIDTH => 32,
         DATA_WIDTH => BUS_WIDTH,
-        LEVERAGE_BURSTS => false
+        LEVERAGE_BURSTS => true
     )
     port map (
         clk       => clk,
@@ -51,6 +51,7 @@ BEGIN
         rack      => rack,
         raddr     => raddr,
         rdata     => rdata,
+
         wreq      => wreq,
         wack      => wack,
         waddr     => waddr,

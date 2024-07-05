@@ -62,5 +62,34 @@ PACKAGE BODY helper IS
         return 0;
     end function;
 
+    pure function revWords(a: std_logic_vector) return std_logic_vector is
+        variable tmp: std_logic_vector(a'length - 1 downto 0);
+    begin
+        for i in a'length/32 - 1 downto 0 loop
+          tmp((i+1) * 32 - 1 downto i*32) := a(a'length - i * 32 - 1 downto a'length - (i + 1) * 32);
+        end loop;
+    
+    return tmp;
+    end function revWords;
+    
+    pure function revBytes(a: std_logic_vector) return std_logic_vector is
+    variable tmp: std_logic_vector(a'length - 1 downto 0);
+    begin
+    for i in a'length/8 - 1 downto 0 loop
+        tmp((i+1) * 8 - 1 downto i*8) := a(a'length - i * 8 - 1 downto a'length - (i + 1) * 8);
+    end loop;
+
+    return tmp;
+    end function revBytes;
+
+    pure function revNibbles(a: std_logic_vector) return std_logic_vector is
+    variable tmp: std_logic_vector(a'length - 1 downto 0);
+begin
+    for i in a'length/4 - 1 downto 0 loop
+      tmp((i+1) * 4 - 1 downto i*4) := a(a'length - i * 4 - 1 downto a'length - (i + 1) * 4);
+    end loop;
+
+return tmp;
+    end function revNibbles;
 
 END helper;

@@ -23,14 +23,15 @@ ARCHITECTURE mixed OF ac_wrapper IS
     signal rena: boolean;
     signal wena: boolean;
 BEGIN
+    --#TODO: swapped ld(63 downto 32) / ld(31 downto 0) since dt was in wrong place. It this correct?
     lpi <= ld(63 downto 32) when at_mode = load_maybe else (others => '0');
-    ldt <= ld(31 downto 0)when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
+    ldt <= ld(31 downto 0) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
     sd <=  wdt & wpi;
 
     rena <= at_mode = load_maybe or at_mode = load_delta_only;
     wena <= at_mode = store;
 
-    --#TODO: hellooo
+    --#TODO: hook up invalidation signal at some point (make sure caches only start filling again when all caches have finisged their flush/invalidation)
     acache: entity riscvio_lib.primitive_cache
         generic map (
             BUS_WIDTH => BUS_WIDTH,

@@ -683,6 +683,7 @@ PACKAGE BODY pipeline IS
                         end case;
 
                     when F3_CSRRW => 
+                        --#TODO: make system registers readable (required for exception handler to detect which exception occured)
                         res.me_mode  := holiday;
                         res.at_mode  := no;
                         res.imm_mode := none;

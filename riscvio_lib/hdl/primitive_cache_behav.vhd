@@ -370,7 +370,7 @@ BEGIN
                         end if;
                     
                     when COLLECT_DATA => 
-                        if we  then
+                        if we then
                             if not wreq then
                                 last_sd <= sd;
                                 last_wr_addr <= addr;
@@ -379,8 +379,8 @@ BEGIN
                             accumulated_byteena <= accumulated_byteena_d;
                             accumulated_bus_word <= accumulated_bus_word_d;
                         end if;
-
-                        if addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) then
+                        -- when we leave the region of a single bus word or we need to invalidate we need to start writing back
+                        if addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) or invalidate then
                             -- we need to commit now
                             writeback_state <= WAITING_WR;
                         end if; 
@@ -543,6 +543,7 @@ BEGIN
         line_ix <= (others => '0');
         valid_bit_to_write <= (0 => '0');
         line_valid_bit_we <= '0';
+        invalidation_active <= true;
 
         case invalidation_state is
             when RESET => 
@@ -557,6 +558,7 @@ BEGIN
                 if line_hit and not isAllStd(bytes_we, '0') then line_ix <= addr(LINE_RANGE);  else  line_ix <= next_addr(LINE_RANGE); end if;
                 valid_bit_to_write <= (0 => '1');
                 line_valid_bit_we <= set_line_tag;
+                invalidation_active <= false;
 
             when INVALIDATING => 
                 line_ix <= invalidation_line_ix;

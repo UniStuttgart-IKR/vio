@@ -47,9 +47,8 @@ core.init:
             li      t1, 1
             # 3 Registers, register capability
             li      t2, 3 * 2 + 0
-            ciop    s9, t1, t2
+            ciop    a1, t1, t2
             
-            mv      a1, s9
             la      a0, hello_world_str
             #TODO: find a nicer way to do this
             addi    a0, a0, -8 
@@ -82,29 +81,75 @@ core.init:
             ebreak
 
 # output string in object a0 via io obj in a1
-core.out_str:    qdtb    t0, a0
+core.out_str:    beq     a0, zero, .done
+            qdtb    t0, a0
+            beq     t0, zero, .done
             li      t1, 0
 .outloop:   lbu.r    t2, t1(a0)
-            #NOTE: change the index back to 0 for output 
+            #TODO: change the index back to 0 for output 
             sb      t2, 2(a1)
             addi    t1, t1, 1
             bne     t1, t0, .outloop
+.done:
             ret
 
 
+# output zero terminated string no a2 in object a0 via io obj in a1
+core.out_str_zero:   beq     a0, zero, .donez
+                qdtb    t0, a0
+                beq     t0, zero, .donez
+                li      t1, 0
+                addi    a2, a2, 1
+
+.srcloop:       lbu.r   t2, t1(a0)
+                bne     t2, zero, .notzero
+                addi    a2, a2, -1 
+                addi    t1, t1, 1
+                beq     a2, zero, .outloop
+                addi    t1, t1, -1
+.notzero:       addi    t1, t1,  1
+                j       .srcloop
+
+
+.outloopz:      lbu.r    t2, t1(a0)
+                #TODO: change the index back to 0 for output 
+                sb      t2, 2(a1)
+                addi    t1, t1, 1
+                bne     t2, zero, .outloopz
+.donez:
+                ret
+
+
 core.exc_handel:
-            nop
-            nop
-            nop
-            nop
-            nop
-            nop 
-            nop
-            nop
-            mret
-            # test instr abort
-            addi    t0, t0, -5
-            addi    t1, t1, -9
+                nop
+                nop
+                nop
+                # Device 1
+                li      t1, 1
+                # 3 Registers, register capability
+                li      t2, 3 * 2 + 0
+                ciop    a1, t1, t2
+
+                la      a0, exception_hdr_str
+                addi    a0, a0, -8 
+                ccp     a0, a0
+                jal     core.out_str
+
+
+                la      a0, exception_strs
+                addi    a0, a0, -8 
+                ccp     a0, a0
+                csrr    a2, mcause
+                jal     core.out_str_zero
+
+                nop
+                nop 
+                nop
+                nop
+                mret
+                # test instr abort
+                addi    t0, t0, -5
+                addi    t1, t1, -9
 
 
 
@@ -143,6 +188,49 @@ usb.c:          push    0,0
 
 
 usb.end:
+
+.align 3
+.section exception_hdr_str, "a"
+.word 0
+.word (exception_hdr_str.end - exception_hdr_str_)
+
+exception_hdr_str_:
+            .ascii "An Exception occured: "
+
+
+exception_hdr_str.end:
+
+.align 3
+.section exception_strs, "a"
+.word 0
+.word (exception_strs.end - exception_strs_)
+
+exception_strs_:
+            .ascii "panic - severe internal error\0"
+            .ascii "illeg - illegal instruction\0"
+            .ascii "sverr - supervisor error\0"
+            .ascii "sterr - state error\0"
+            .ascii "privv - privilegded instruction\0"
+            .ascii "tcoil - target code index\0"
+            .ascii "tciob - target code index out of bound\0"
+            .ascii "endoc - end of code\0"
+            .ascii "rixeq - return index is zero\0"
+            .ascii "rcdnu - return code is null\0"
+            .ascii "rcdnc - return code ptr is not a code ptr\0"
+            .ascii "drfnu - dereferenced null pointer\0"
+            .ascii "drfcd - dereferenced code pointer\0"
+            .ascii "wrptv - wrote using read only pointer\0"
+            .ascii "sealv - wrote to read only object\0"
+            .ascii "ixoob - index out of bounds\0"
+            .ascii "frtyp - frame type\0"
+            .ascii "aperr - ???\0"
+            .ascii "hpovf - heap full\0"
+            .ascii "stovf - stack overflow\0"
+            .ascii "ptari - ???\0"
+
+
+
+exception_strs.end:
 
 .align 3
 .section hello_world_str, "a"

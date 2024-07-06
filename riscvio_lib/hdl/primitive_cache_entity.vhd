@@ -30,6 +30,7 @@ ENTITY primitive_cache IS
         we              : IN boolean := false;
         rd              : IN boolean := true;
         invalidate      : IN boolean := false;
+        invalidation_active    : OUT boolean;
 
 
         sd              : IN std_logic_vector(DATA_WIDTH - 1 downto 0) := (others => '0');

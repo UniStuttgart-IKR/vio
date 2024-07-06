@@ -81,7 +81,7 @@ PACKAGE pipeline IS
     type alu_mode_T is (alu_add, alu_sub, alu_sll, alu_slt, alu_sltu, alu_xor, alu_srl, alu_sra, alu_or, alu_and, 
                         alu_andn, alu_orn, alu_xnor, alu_clz, alu_ctz, alu_cpop, alu_max, alu_maxu, alu_min, alu_minu, alu_sextb, alu_sexth, alu_zexth, alu_rol, alu_ror, alu_orcb, alu_rev8,
                         alu_illegal);
-    type alu_in_sel_T is (DAT, PTRVAL, PTRPI, PTRDT, AUX, IMM, PGU, PC_IX);
+    type alu_in_sel_T is (DAT, PTRVAL, PTRPIR, PTRPI, PTRDTR, PTRDTB, PTRDTH, PTRDTW, PTRDTD, AUX, IMM, PGU, PC_IX);
     type pgu_mode_T is (pgu_alc, pgu_alcp, pgu_alcd, pgu_alci, pgu_push, pgu_pusht, pgu_pushg, pgu_pop, pgu_dat_i, pgu_dat_r, pgu_ptr_i, pgu_ptr_r, pgu_auipc, pgu_rix, pgu_rcd, pgu_ccp, pgu_ciop, pgu_nop);
     type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store_rpc, load_rpc, load_ix, store_ix, holiday);
     type at_mode_T is (load_maybe, no, load_delta_only, store);

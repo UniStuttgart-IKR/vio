@@ -186,7 +186,7 @@ PACKAGE isa IS
                         lb_i, lh_i, lw_i, lbu_i, lhu_i, sb_i, sh_i, sw_i, lb_r, lh_r, lw_r, lbu_r, lhu_r, sb_r, sh_r, sw_r,
                         andn_r, orn_r, xnor_r, clz, ctz, cpop, max, maxu, mins, minu, sext_b, sext_h, zext_h, rol_r, ror_r, ror_i, orcv_b, rev8,
                         sp_r, lp_r, sv, rst, qdtb, qdth, qdtw, qdtd, qpi, gcp, pop, rtlib, cpfc, check, sp_i, lp_i, jlib, alc, alci_p, alci_d, alci, pushg, pusht, push, 
-                        ebreak, ecall, alcb, ciop, ccp, rpr, qpir, qdtr, qptr, seal, unsl,
+                        ebreak, ecall, alcb, ciop, ccp, rpr, qpir, qdtr, qptr, seal, unsl, 
                         csrrw, csrrs, csrrc, mret,
                         illegal);
     type imm_T is (none, i_type, s_type, b_type, u_type, j_type, shamt_type);

@@ -15,7 +15,7 @@ parser.add_argument('-w', '--width', help="width of an output word in bits", typ
 parser.add_argument('-or', '--outradix', type=str, default="HEX")
 parser.add_argument('-ir', '--inradix', help="radix of input file (ignored for binary files)", type=str, default="HEX")
 parser.add_argument('-ar', '--addrradix', type=str, default="HEX")
-parser.add_argument('-rbo', '--reverse', action='store_true', help="Reverse byte order of output file")
+parser.add_argument('-rbo', '--reverse', nargs="?", type=int, help="Reverse byte order of each block with given size (32 for word) output file")
 args = parser.parse_args()
 
 def radixStrToInt(s) -> int:
@@ -64,6 +64,23 @@ def reverseBits(inword) -> str:
 
     return outword
 
+# reverses order of atom characters in each block
+def reverseRegions(indata, atom_size, block_size) -> str:
+    assert len(indata) % block_size == 0, "in data has to be a multiple of block size"
+    assert block_size % atom_size == 0, "block size has to be a multiple of atom size"
+    outdata = ""
+    ind = indata[:]
+    while ind != '':
+        inword = ind[:block_size]
+        ind = ind[block_size:]
+        outword = ""
+        while inword != '':
+            outword = inword[:atom_size] + outword
+            inword = inword[atom_size:]
+
+        outdata += outword
+    return outdata
+
 
 def __main__(args) -> None:
     parsed_content = ''
@@ -94,8 +111,8 @@ def __main__(args) -> None:
         required_digits = len(toBase(2**args.width - 1, radixStrToInt(args.outradix)))
         for word_index in range(0, words_num):
             bits = parsed_content[(word_index*args.width):((word_index+1)*args.width)]
-            if args.reverse:
-                bits = reverseBits(bits)[:]
+            if args.reverse is not None:
+                bits = reverseRegions(bits, 8, args.reverse)[:]
 
             word = int(bits, base=2)
             if word_index != words_num - 1:

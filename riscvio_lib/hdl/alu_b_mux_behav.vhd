@@ -9,12 +9,18 @@
 --
 ARCHITECTURE behav OF alu_b_mux IS
 BEGIN
-    b <= rdat_dc.val when alu_b_in_sel = DAT else
-         rptr_dc.val when alu_b_in_sel = PTRVAL else
-         rptr_dc.pi  when alu_b_in_sel = PTRPI else
-         rptr_dc.dt  when alu_b_in_sel = PTRDT else
-         raux_dc.ix  when alu_b_in_sel = AUX and raux_dc.tag = POINTER else
-         raux_dc.val when alu_b_in_sel = AUX else
+    b <= rdat_dc.val                        when alu_b_in_sel = DAT else
+         rptr_dc.val                        when alu_b_in_sel = PTRVAL else
+         rptr_dc.pi                         when alu_b_in_sel = PTRPIR else
+         "000"   &  rptr_dc.pi(30 downto 2) when alu_b_in_sel = PTRPI  else
+         --#TODO: delta is larger for normal objects
+         rptr_dc.dt                         when alu_b_in_sel = PTRDTR else
+         "00"    &  rptr_dc.dt(29 downto 0) when alu_b_in_sel = PTRDTB else
+         "000"   &  rptr_dc.dt(29 downto 1) when alu_b_in_sel = PTRDTH else
+         "0000"  &  rptr_dc.dt(29 downto 2) when alu_b_in_sel = PTRDTW else
+         "00000" &  rptr_dc.dt(29 downto 3) when alu_b_in_sel = PTRDTD else
+         raux_dc.ix                         when alu_b_in_sel = AUX and raux_dc.tag = POINTER else
+         raux_dc.val                        when alu_b_in_sel = AUX else
          imm_dc;
 END ARCHITECTURE behav;
 

@@ -19,12 +19,12 @@ USE ieee.numeric_std.all;
 ARCHITECTURE mixed OF ac_wrapper IS
     signal ld: std_logic_vector(63 downto 0);
     signal sd: std_logic_vector(63 downto 0);
-    signal stall_int: boolean;
+    signal ac_stall: boolean;
     signal rena: boolean;
     signal wena: boolean;
 BEGIN
     lpi <= revBytes(ld(31 downto 0)) when at_mode = load_maybe else (others => '0');
-    ldt <= revBytes(ld(63 downto 32) srl 32) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
+    ldt <= revBytes(ld(63 downto 32)) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
     sd <=  revBytes(wdt) & revBytes(wpi);
 
     rena <= at_mode = load_maybe or at_mode = load_delta_only;
@@ -42,7 +42,7 @@ BEGIN
         port map (
             clk       => clk,
             res_n     => res_n,
-            stall     => stall_int,
+            stall     => ac_stall,
             addr      => addr.val,
             next_addr => next_addr.val,
             rd        => rena,
@@ -63,6 +63,6 @@ BEGIN
             wbyte_ena => wbyte_ena
         );
 
-    stall <= '1' when stall_int else 'Z';
+    stall <= '1' when ac_stall else 'Z';
 END ARCHITECTURE mixed;
 

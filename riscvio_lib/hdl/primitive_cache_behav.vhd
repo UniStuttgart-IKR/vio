@@ -114,7 +114,7 @@ ARCHITECTURE behav OF primitive_cache IS
     subtype BYTE_IN_BUS_WORD is natural range WORDS_IN_LINE_LOG + ADDR_WIDTH_WORD - 1 downto 0;
 
 
-
+    -- #TODO: purge unnecessesary internal signals
 
     signal line_hit: boolean;
     
@@ -349,7 +349,7 @@ BEGIN
             if clk'event and clk = '1' then
                 case writeback_state is
                     when IDLE => 
-                        if we and (addr /= last_wr_addr or sd /= last_sd) then
+                        if we and (addr /= last_wr_addr or sd /= last_sd) and invalidation_state = IDLE then
                             last_sd <= sd;
                             last_wr_addr <= addr;
 
@@ -421,7 +421,7 @@ BEGIN
         end loop;
 
         -- handle writes to cache lines in case of hit
-        if we and line_hit then
+        if we and line_hit and invalidation_state = IDLE then
             if BYTES_IN_LINE /= 1 then
                 for b in BYTES_PER_WORD - 1 downto 0 loop
                     -- only write the bytes we really want to write
@@ -433,7 +433,7 @@ BEGIN
         end if;
 
         -- handle updates of accumulated data, byteenable
-        if we then
+        if we and invalidation_state = IDLE then
             for i in BYTES_PER_WORD - 1 downto 0 loop
                 if byte_ena(i) = '1' then
                     -- we only update the bytes where the byteena was enabled, we leave the rest as is
@@ -468,7 +468,7 @@ BEGIN
         else
             case writeback_state is
                 when IDLE => 
-                    if we then
+                    if we and invalidation_state = IDLE then
                         wreq <= true;
                         waddr <= addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                         
@@ -479,7 +479,7 @@ BEGIN
                     end if;
 
                     if BUS_WORDS_PER_LINE = 1 then
-                         -- we have one word per bus, no need to demux anything
+                         -- (we have one word per bus, no need to demux anything)
                         wbyte_ena <= byte_ena;
                     else
                         -- but we only byteenable the part we really want to write
@@ -550,7 +550,7 @@ BEGIN
                 valid_bit_to_write <= (0 => '0');
                 line_valid_bit_we <= '1';
             
-            when WAITS => null;
+            when WAITS => null; -- make sure our invalidation went through before we resume regular pipeline operation
 
             when IDLE => 
                 -- for writing we use addr, for reading we use next_addr(we need to compensate one latency cycle)

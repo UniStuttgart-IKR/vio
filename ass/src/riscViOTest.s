@@ -41,40 +41,27 @@ core.init:
             lp      a0, 0(frame)
             lp      ra, 0(frame)
 
-            nop
-            nop
-            ebreak
+
 
             # Device 1
             li      t1, 1
             # 3 Registers, register capability
             li      t2, 3 * 2 + 0
             ciop    s9, t1, t2
+            
+            mv      a1, s9
+            la      a0, hello_world_str
+            #TODO: find a nicer way to do this
+            addi    a0, a0, -8 
+            ccp     a0, a0
+            
+            jal     core.out_str
 
-            # without this lw there is no way to clear t0 pointer tag
-core.loop:       lw      t0, 0(zero)
-            li      t1, 'I'
-            sb      t1, 0(s9)
-            #li      t1, 'T'
-            #sb      t1, 0(s9)
-            #li      t1, 'S'
-            #sb      t1, 0(s9)
-            #li      t1, ' '
-            #sb      t1, 0(s9)
-            #li      t1, 'A'
-            #sb      t1, 0(s9)
-            #li      t1, 'L'
-            #sb      t1, 0(s9)
-            #li      t1, 'I'
-            #sb      t1, 0(s9)
-            #li      t1, 'V'
-            #sb      t1, 0(s9)
-            #li      t1, 'E'
-            #sb      t1, 0(s9)
-            #li      t1, '!'
-            #sb      t1, 0(s9)
-            #li      t1, 10
-            #sb      t1, 0(s9)
+          
+            nop
+            nop
+            ebreak
+
 
             push    1,0
             sp      ra, 0(frame)
@@ -93,6 +80,16 @@ core.loop:       lw      t0, 0(zero)
             jalr    ra,  4(s0)
 
             ebreak
+
+# output string in object a0 via io obj in a1
+core.out_str:    qdtb    t0, a0
+            li      t1, 0
+.outloop:   lbu.r    t2, t1(a0)
+            #NOTE: change the index back to 0 for output 
+            sb      t2, 2(a1)
+            addi    t1, t1, 1
+            bne     t1, t0, .outloop
+            ret
 
 
 core.exc_handel:
@@ -144,19 +141,20 @@ usb.c:          push    0,0
             ret                 #standard risc-v pseudo-instruction for jr zero, 0(ra)
 
 
+
 usb.end:
 
 .align 3
-.section cosnt_obj
-.word 0 # todo: add ptr support
-.word (cosnt_obj.end - cosnt_obj)
+.section hello_world_str, "a"
+.word 0
+.word (hello_world_str.end - hello_world_str_)
 
-cosnt_obj_:
-            .ascii "asdfihsofhs"
+hello_world_str_:
+            .ascii "Hello from RiscViO!\n"
 
 
 
-cosnt_obj.end:
+hello_world_str.end:
 
 
 .align 3

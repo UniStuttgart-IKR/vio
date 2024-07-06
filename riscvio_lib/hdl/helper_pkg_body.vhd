@@ -76,7 +76,7 @@ PACKAGE BODY helper IS
     variable tmp: std_logic_vector(a'length - 1 downto 0);
     begin
     for i in a'length/8 - 1 downto 0 loop
-        tmp((i+1) * 8 - 1 downto i*8) := a(a'length - i * 8 - 1 downto a'length - (i + 1) * 8);
+        tmp((i+1) * 8 - 1 downto i*8) := a(a'length - i * 8 - 1 + a'right downto a'length - (i + 1) * 8 + a'right);
     end loop;
 
     return tmp;

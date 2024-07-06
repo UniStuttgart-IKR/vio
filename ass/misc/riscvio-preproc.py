@@ -3,7 +3,7 @@ import re
 
 HEADERMSG = "# generated from {0} by riscvio-preproc.py by LeyLux Group\n"
 ALLOWEDCOOBJNAMES = "[a-zA-Z0-9_]+"
-ALLOWEDFNEXPR = "[a-zA-Z0-9]+"
+ALLOWEDFNEXPR = "[a-zA-Z0-9_]+"
 
 
 class ParseException(Exception):
@@ -209,7 +209,8 @@ def replaceDataObjHeaders(contents, pobjects) -> []:
         if pobject["type"] == "data":
             dstexpr = ".align 3\n"
             srcexpr = "\n({}): object\n".format(pobject["name"])
-            dstexpr += '.section {0}\n.word 0 # todo: add ptr support\n.word ({0}.end - {0})\n\n{0}_:\n'.format(pobject["name"])
+            #TODO:add pointer support
+            dstexpr += '.section {0}, "a"\n.word 0\n.word ({0}.end - {0}_)\n\n{0}_:\n'.format(pobject["name"])
 
 
             replacements.append([srcexpr, dstexpr])
@@ -241,7 +242,7 @@ def expandFunctionNames(contents, pobjects) -> []:
 
             for fname in pobject["allfns"]:
                 for mnemonic in jmpMnenmoncs:
-                    afterLocalCONameExpansion = re.sub("({0}\\s.*){1}".format(mnemonic, fname),
+                    afterLocalCONameExpansion = re.sub("({0}\\s*){1}".format(mnemonic, fname),
                                                     "\\1{0}.{1}".format(pobject["name"], fname),
                                                     afterLocalCONameExpansion)
             newcontents[pobject["hdrendpos"][0]] = newcontents[pobject["hdrendpos"][0]][

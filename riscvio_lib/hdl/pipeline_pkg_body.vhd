@@ -492,6 +492,75 @@ PACKAGE BODY pipeline IS
                                             res.rptr     := ali_T'pos(frame);
                                             res.rdat     := ali_T'pos(ra);
                                             res.pgu_mode := pgu_pop;
+
+
+
+                            when F7_QDTB => res.mnemonic := qdtb;
+                                            res.alu_mode := alu_add;
+                                            res.imm_mode := none;
+                                            res.me_mode  := holiday;
+                                            res.at_mode  := no;
+                                            res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                            res.raux     := 0;
+                                            res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.rdat     := 0;
+                                            res.pgu_mode := pgu_pop;
+                                            res.alu_a_sel:= PTRDTB;
+                                            res.alu_b_sel:= IMM;
+
+                            when F7_QDTH => res.mnemonic := qdth;
+                                            res.alu_mode := alu_add;
+                                            res.imm_mode := none;
+                                            res.me_mode  := holiday;
+                                            res.at_mode  := no;
+                                            res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                            res.raux     := 0;
+                                            res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.rdat     := 0;
+                                            res.pgu_mode := pgu_pop;
+                                            res.alu_a_sel:= PTRDTH;
+                                            res.alu_b_sel:= IMM;
+                            
+                            when F7_QDTW => res.mnemonic := qdtw;
+                                            res.alu_mode := alu_add;
+                                            res.imm_mode := none;
+                                            res.me_mode  := holiday;
+                                            res.at_mode  := no;
+                                            res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                            res.raux     := 0;
+                                            res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.rdat     := 0;
+                                            res.pgu_mode := pgu_pop;
+                                            res.alu_a_sel:= PTRDTW;
+                                            res.alu_b_sel:= IMM;
+                            
+                            when F7_QDTD => res.mnemonic := qdtd;
+                                            res.alu_mode := alu_add;
+                                            res.imm_mode := none;
+                                            res.me_mode  := holiday;
+                                            res.at_mode  := no;
+                                            res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                            res.raux     := 0;
+                                            res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.rdat     := 0;
+                                            res.pgu_mode := pgu_pop;
+                                            res.alu_a_sel:= PTRDTD;
+                                            res.alu_b_sel:= IMM;
+
+                            
+                            when F7_QPI =>  res.mnemonic := qpi;
+                                            res.alu_mode := alu_add;
+                                            res.imm_mode := none;
+                                            res.me_mode  := holiday;
+                                            res.at_mode  := no;
+                                            res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                            res.raux     := 0;
+                                            res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.rdat     := 0;
+                                            res.pgu_mode := pgu_pop;
+                                            res.alu_a_sel:= PTRPI;
+                                            res.alu_b_sel:= IMM;
+
                             when others =>  res.mnemonic := illegal;
                                             res.pgu_mode := pgu_nop;
                                             res.imm_mode := none;
@@ -519,7 +588,32 @@ PACKAGE BODY pipeline IS
                                     res.alu_b_sel:= AUX;
                                     res.pgu_mode := pgu_nop;
                                 elsif instruction(FUNCT5_RANGE) = F5_ECALL then
-
+                                elsif instruction(FUNCT5_RANGE) = F5_QPTR then
+                                    res.mnemonic := qdtr;
+                                    res.alu_mode := alu_add;
+                                    res.imm_mode := none;
+                                    res.me_mode  := holiday;
+                                    res.at_mode  := no;
+                                    res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                    res.raux     := 0;
+                                    res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                    res.rdat     := 0;
+                                    res.pgu_mode := pgu_pop;
+                                    res.alu_a_sel:= PTRDTR;
+                                    res.alu_b_sel:= IMM;
+                                elsif instruction(FUNCT5_RANGE) = F5_QPIR then
+                                    res.mnemonic := qpir;
+                                    res.alu_mode := alu_add;
+                                    res.imm_mode := none;
+                                    res.me_mode  := holiday;
+                                    res.at_mode  := no;
+                                    res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                    res.raux     := 0;
+                                    res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                    res.rdat     := 0;
+                                    res.pgu_mode := pgu_pop;
+                                    res.alu_a_sel:= PTRPIR;
+                                    res.alu_b_sel:= IMM;
                                 end if;
                             when F7_MRET => 
                                 res.xret := mret;

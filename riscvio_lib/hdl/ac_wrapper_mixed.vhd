@@ -23,9 +23,9 @@ ARCHITECTURE mixed OF ac_wrapper IS
     signal rena: boolean;
     signal wena: boolean;
 BEGIN
-    lpi <= revBytes(ld(31 downto 0)) when at_mode = load_maybe else (others => '0');
-    ldt <= revBytes(ld(63 downto 32)) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
-    sd <=  revBytes(wdt) & revBytes(wpi);
+    lpi <= ld(63 downto 32) when at_mode = load_maybe else (others => '0');
+    ldt <= ld(31 downto 0)when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
+    sd <=  wdt & wpi;
 
     rena <= at_mode = load_maybe or at_mode = load_delta_only;
     wena <= at_mode = store;

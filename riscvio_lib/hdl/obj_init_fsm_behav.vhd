@@ -11,8 +11,6 @@ ARCHITECTURE behav OF obj_init_fsm IS
     signal unit_active: boolean;
     signal unit_activating: boolean;
 
-    signal obj_init_stall: boolean;
-
     signal end_addr_aligned, start_addr_aligned: word_T;
     constant TOP: natural := integer(ceil(log2(real(BUS_WIDTH/8))))-1;
 BEGIN
@@ -66,7 +64,6 @@ BEGIN
     next_obj_init_addr <= word_T(unsigned(obj_init_addr) + BUS_WIDTH/8);
     obj_init_data <= (others => '0');
     obj_init_stall <= unit_active and unsigned(obj_init_addr_int) < unsigned(end_addr_aligned);
-    stall <= '1' when obj_init_stall else 'Z';
     obj_init_wr <= unit_active and unsigned(obj_init_addr_int) < unsigned(end_addr_aligned);
 
     

@@ -19,7 +19,7 @@ BEGIN
             exc_wb <= well_behaved;
         else
             if clk'event and clk = '1' then
-                if not (stall = '1') then
+                if not stall then
                     rd_wb.rf_nbr <= rdst_ix_me;
                     if (ctrl_me.pgu_mode = pgu_alc or  ctrl_me.pgu_mode = pgu_alcp or  ctrl_me.pgu_mode = pgu_alcd or  ctrl_me.pgu_mode = pgu_alci) and rdst_ix_me /= ali_T'pos(frame) then
                         rd_wb.csr_nbr <= ali_T'pos(alc_addr);

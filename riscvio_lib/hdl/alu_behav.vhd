@@ -16,15 +16,11 @@ ARCHITECTURE behav OF alu IS
 BEGIN
     process(a, b, mode) is
         constant one: word_T := (0 => '1', others => '0');
-        variable highest_bit_of_a_as_word: word_T;
         constant zeros: word_T := (others => '0');
         variable tmp: natural;
         variable tmp_b: byte_T;
         constant bytes_in_a: natural := a'length / BYTE_SIZE;
     BEGIN
-        for i in highest_bit_of_a_as_word'range loop
-            highest_bit_of_a_as_word(i) := a(a'left);
-        end loop;
         
         alu_out <= (others => '0');
         case mode is 

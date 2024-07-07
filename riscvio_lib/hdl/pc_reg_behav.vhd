@@ -15,13 +15,13 @@ BEGIN
       pc_current_pc <= (ptr => X"00000000", ix => X"00000000", eoc => (others => '0'));
     else
       if clk'event and clk = '1' then
-        if not ((stall = '1') or insert_nop) or sbt_valid or dbt_valid or cjt_valid then
+        if not stall or insert_nop or sbt_valid or dbt_valid or cjt_valid then
           pc_current_pc <= current_pc_d;
         end if;
       end if;
     end if;
   end process;
 
-  current_pc_uq <= pc_current_pc when (stall = '1') and not (sbt_valid or cjt_valid) else current_pc_d;
+  current_pc_uq <= pc_current_pc when stall and not (sbt_valid or cjt_valid) else current_pc_d;
 END ARCHITECTURE behav;
 

@@ -85,19 +85,18 @@ BEGIN
         end if;
     end process fsm_transistions;
     
-    process(all) is
-    begin
-        obj_init_wr_int <= ((current_state = WRITING or current_state = WAITING) and obj_init_addr /= end_addr_aligned) or (unit_active and current_state = IDLE and not (stack_overflow_int or heap_overflow_int));
-        obj_init_stall <= obj_init_wr_int;
-        obj_init_wr <= obj_init_wr_int;
-        next_obj_init_addr <= clr_addr_int when (current_state = WRITING or current_state = WAITING) and not dc_stall else
-                              start_addr_aligned when dc_stall and current_state = IDLE else 
-                              last_obj_init_addr when dc_stall else 
-                              res_ex.data;
-        obj_init_addr <= start_addr_aligned when current_state = IDLE and unit_active else last_obj_init_addr;
-        obj_init_data <= res_ex.delta & res_ex.pi when clr_addr_int = start_addr_aligned and current_state = WRITING else
-                        (others => '0');
-                    
-    end process;
+
+	 
+	 
+	 obj_init_wr_int <= ((current_state = WRITING or current_state = WAITING) and obj_init_addr /= end_addr_aligned) or (unit_active and current_state = IDLE and not (stack_overflow_int or heap_overflow_int));
+	  obj_init_stall <= obj_init_wr_int;
+	  obj_init_wr <= obj_init_wr_int;
+	  next_obj_init_addr <= clr_addr_int when (current_state = WRITING or current_state = WAITING) and not dc_stall else
+									start_addr_aligned when dc_stall and current_state = IDLE else 
+									last_obj_init_addr when dc_stall else 
+									res_ex.data;
+	  obj_init_addr <= start_addr_aligned when current_state = IDLE and unit_active else last_obj_init_addr;
+	  obj_init_data <= res_ex.delta & res_ex.pi when clr_addr_int = start_addr_aligned and current_state = WRITING else
+							(others => '0');
 END ARCHITECTURE behav;
 

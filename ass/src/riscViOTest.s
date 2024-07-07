@@ -87,7 +87,7 @@ core.out_str:    beq     a0, zero, .done
             li      t1, 0
 .outloop:   lbu.r    t2, t1(a0)
             #TODO: change the index back to 0 for output 
-            sb      t2, 2(a1)
+            sb      t2, 0(a1)
             addi    t1, t1, 1
             bne     t1, t0, .outloop
 .done:
@@ -113,7 +113,7 @@ core.out_str_zero:   beq     a0, zero, .donez
 
 .outloopz:      lbu.r    t2, t1(a0)
                 #TODO: change the index back to 0 for output 
-                sb      t2, 2(a1)
+                sb      t2, 0(a1)
                 addi    t1, t1, 1
                 bne     t2, zero, .outloopz
 .donez:
@@ -226,7 +226,7 @@ exception_strs_:
             .ascii "aperr - ???\0"
             .ascii "hpovf - heap full\0"
             .ascii "stovf - stack overflow\0"
-            .ascii "ptari - ???\0"
+            .asciz "ptari - ???"
 
 
 

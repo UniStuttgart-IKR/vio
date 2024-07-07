@@ -81,7 +81,7 @@ Disassembly of section core:
 
 000000f4 <.outloop>:
   f4:	80657383          	lbu.r	t2,t1(a0)
-  f8:	00758123          	sb	t2,2(a1)
+  f8:	00758023          	sb	t2,0(a1)
   fc:	00130313          	addi	t1,t1,1
  100:	fe531ae3          	bne	t1,t0,f4 <.outloop>
 
@@ -109,7 +109,7 @@ Disassembly of section core:
 
 0000013c <.outloopz>:
  13c:	80657383          	lbu.r	t2,t1(a0)
- 140:	00758123          	sb	t2,2(a1)
+ 140:	00758023          	sb	t2,0(a1)
  144:	00130313          	addi	t1,t1,1
  148:	fe039ae3          	bne	t2,zero,13c <.outloopz>
 

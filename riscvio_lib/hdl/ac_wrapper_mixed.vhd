@@ -19,7 +19,6 @@ USE ieee.numeric_std.all;
 ARCHITECTURE mixed OF ac_wrapper IS
     signal ld: std_logic_vector(63 downto 0);
     signal sd: std_logic_vector(63 downto 0);
-    signal ac_stall: boolean;
     signal rena: boolean;
     signal wena: boolean;
 BEGIN
@@ -43,7 +42,7 @@ BEGIN
         port map (
             clk       => clk,
             res_n     => res_n,
-            stall     => ac_stall,
+            stall     => stall,
             addr      => addr.val,
             next_addr => next_addr.val,
             rd        => rena,
@@ -64,6 +63,5 @@ BEGIN
             wbyte_ena => wbyte_ena
         );
 
-    stall <= '1' when ac_stall else 'Z';
 END ARCHITECTURE mixed;
 

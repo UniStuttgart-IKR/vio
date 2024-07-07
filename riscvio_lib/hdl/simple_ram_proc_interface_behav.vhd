@@ -77,7 +77,11 @@ BEGIN
                
         when sw =>
             wena  <= '1';
-            byteena <= X"F0" when io_addr(2) = '1' else X"0F";
+				if io_addr(2) = '1' then
+					byteena <= X"F0";
+				else 
+					byteena <= X"0F";
+				end if;
             wdata <= io_wdata(WORD0_RANGE) & io_wdata(WORD0_RANGE);
             
         when sd =>

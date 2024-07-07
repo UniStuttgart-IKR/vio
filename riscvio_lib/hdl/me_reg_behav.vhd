@@ -33,7 +33,7 @@ BEGIN
                     res_me <= REG_MEM_NULL;
                     pc_me <= PC_NULL;
                     exc_me <= well_behaved;
-                elsif not (stall = '1') then
+                elsif not stall then
                     ctrl_me <= ctrl_ex;
                     if res_me_u.tag /= POINTER then
                         ctrl_me.at_mode <= no;
@@ -54,7 +54,7 @@ BEGIN
     end process;
 
     at_mode <= ctrl_me.at_mode;
-    addr_me_uq <= res_me_u when not (stall = '1') else res_me;
+    addr_me_uq <= res_me_u when not stall else res_me;
     addr_me <= res_me;
     wpi_me <= res_me.pi;
     wdt_me <= res_me.dt;

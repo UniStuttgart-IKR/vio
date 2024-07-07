@@ -35,7 +35,7 @@ PROJROOTDIR = ../riscvio_lib/
 	@cp $(OUTDIR)/$(basename $@).mif $(PROJROOTDIR)/boot.mif
 
 %.mif: %.o %.bin
-	@python3 misc/dat2mif.py -d 128 -w 246 -p 0000000000000000000000000000000000000000000000000000000000000000 -rbo 32 $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
+	@python3 misc/dat2mif.py -d 128 -w 256 -p 0000000000000000000000000000000000000000000000000000000000000000 -rbo 32 $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
 	@cp $(OUTDIR)/$(basename $@).mif $(PROJROOTDIR)/boot.mif
 
 %.l: %.s %.o %.elf

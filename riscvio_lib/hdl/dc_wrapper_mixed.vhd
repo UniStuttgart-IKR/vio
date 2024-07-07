@@ -24,7 +24,6 @@ ARCHITECTURE mixed OF dc_wrapper IS
     signal rena: boolean;
     signal bena_pipeline: std_logic_vector(BUS_WIDTH/8-1 downto 0);
     signal bena: std_logic_vector(BUS_WIDTH/8-1 downto 0);
-    signal dc_stall: boolean;
     constant TOP: natural := integer(ceil(log2(real(BUS_WIDTH/8))))-1;
 BEGIN
   dcache: entity riscvio_lib.primitive_cache
@@ -39,7 +38,7 @@ BEGIN
     port map (
         clk       => clk,
         res_n     => res_n,
-        stall     => dc_stall,
+        stall     => stall,
         addr      => caddr,
         next_addr => cnext_addr,
         rd        => rena and not addr.io_access,
@@ -59,8 +58,6 @@ BEGIN
         wbyte_ena => wbyte_ena
     );
 
-    stall_bool <= dc_stall;
-    stall <= '1' when dc_stall else 'Z';
     sd <= obj_init_data when obj_init_wr else sd_pipeline;
     caddr <= obj_init_addr when obj_init_wr else addr.addr;
     cnext_addr <= next_obj_init_addr when obj_init_wr else next_addr.addr;

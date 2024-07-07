@@ -15,8 +15,12 @@ BEGIN
     for i in high_bit_extended'range loop
       high_bit_extended(i) := imm(imm_12_bit_T'left);
     end loop;
-    
-    b <= high_bit_extended & imm when use_imm else reg_data;
+	 
+    if use_imm then
+		b <= high_bit_extended & imm;
+	 else 
+		b <= reg_data;
+	 end if;
   end process mux_and_extend;
 END ARCHITECTURE behav;
 

@@ -27,7 +27,7 @@ ENTITY io_interface IS
         next_mode:  in mem_mode_T;
 
         ld:         out word_T;
-        stall:      out std_logic;
+        stall:      out boolean;
 
         io_wdata:   out word_T;
         io_rdata:   in word_T;

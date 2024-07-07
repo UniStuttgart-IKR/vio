@@ -107,13 +107,13 @@ begin
     -- OVERSAMPLE_CLOCK_DIVIDER
     -- generate an oversampled tick (baud * 16)
     ---------------------------------------------------------------------------
-    oversample_clock_divider : process (clock)
+    oversample_clock_divider : process (clock, res_n)
     begin
-        if rising_edge (clock) then
-            if res_n = '0' then
-                rx_baud_counter <= (others => '0');
-                rx_baud_tick <= '0';    
-            else
+        if res_n = '0' then
+            rx_baud_counter <= (others => '0');
+            rx_baud_tick <= '0';    
+        else
+            if clock'event and clock = '1' then
                 if rx_baud_counter = c_rx_div then
                     rx_baud_counter <= (others => '0');
                     rx_baud_tick <= '1';
@@ -128,16 +128,16 @@ begin
     -- RXD_SYNCHRONISE
     -- Synchronise rxd to the oversampled baud
     ---------------------------------------------------------------------------
-    rxd_synchronise : process(clock)
+    rxd_synchronise : process(clock, res_n)
     begin
-        if rising_edge(clock) then
-            if res_n = '0' then
-                uart_rx_data_sr <= (others => '1');
-            else
-                if rx_baud_tick = '1' then
-                    uart_rx_data_sr(0) <= rx;
-                    uart_rx_data_sr(1) <= uart_rx_data_sr(0);
-                end if;
+		  if res_n = '0' then
+			    uart_rx_data_sr <= (others => '1');
+		  else
+			   if clock'event and clock = '1' then
+                    if rx_baud_tick = '1' then
+                        uart_rx_data_sr(1) <= uart_rx_data_sr(0);
+                        uart_rx_data_sr(0) <= rx;
+                    end if;
             end if;
         end if;
     end process rxd_synchronise;
@@ -145,13 +145,14 @@ begin
     -- RXD_FILTER
     -- Filter rxd with a 2 bit counter.
     ---------------------------------------------------------------------------
-    rxd_filter : process(clock)
+    rxd_filter : process(clock, res_n)
     begin
-        if rising_edge(clock) then
-            if res_n = '0' then
-                uart_rx_filter <= (others => '1');
-                uart_rx_bit <= '1';
-            else
+        
+        if res_n = '0' then
+            uart_rx_filter <= (others => '1');
+            uart_rx_bit <= '1';
+        else
+            if clock'event and clock = '1' then
                 if rx_baud_tick = '1' then
                     -- filter rxd.
                     if uart_rx_data_sr(1) = '1' and uart_rx_filter < 3 then
@@ -172,35 +173,40 @@ begin
     ---------------------------------------------------------------------------
     -- RX_BIT_SPACING
     ---------------------------------------------------------------------------
-    rx_bit_spacing : process (clock)
+    rx_bit_spacing : process (clock, res_n)
     begin
-        if rising_edge(clock) then
+        if res_n = '0' then
             uart_rx_bit_tick <= '0';
-            if rx_baud_tick = '1' then       
-                if uart_rx_bit_spacing = 15 then
-                    uart_rx_bit_tick <= '1';
-                    uart_rx_bit_spacing <= (others => '0');
-                else
-                    uart_rx_bit_spacing <= uart_rx_bit_spacing + 1;
+        else
+            if clock'event and clock = '1' then
+                uart_rx_bit_tick <= '0';
+                if rx_baud_tick = '1' then       
+                    if uart_rx_bit_spacing = 15 then
+                        uart_rx_bit_tick <= '1';
+                        uart_rx_bit_spacing <= (others => '0');
+                    else
+                        uart_rx_bit_spacing <= uart_rx_bit_spacing + 1;
+                    end if;
+                    if uart_rx_state = rx_get_start_bit then
+                        uart_rx_bit_spacing <= (others => '0');
+                    end if; 
                 end if;
-                if uart_rx_state = rx_get_start_bit then
-                    uart_rx_bit_spacing <= (others => '0');
-                end if; 
             end if;
         end if;
     end process rx_bit_spacing;
     ---------------------------------------------------------------------------
     -- UART_RECEIVE_DATA
     ---------------------------------------------------------------------------
-    uart_receive_data   : process(clock)
+    uart_receive_data   : process(clock, res_n)
     begin
-        if rising_edge(clock) then
-            if res_n = '0' then
-                uart_rx_state <= rx_get_start_bit;
-                uart_rx_data_vec <= (others => '0');
-                uart_rx_count <= (others => '0');
-                uart_rx_data_out_stb <= '0';
-            else
+        
+        if res_n = '0' then
+            uart_rx_state <= rx_get_start_bit;
+            uart_rx_data_vec <= (others => '0');
+            uart_rx_count <= (others => '0');
+            uart_rx_data_out_stb <= '0';
+        else
+            if clock'event and clock = '1' then
                 uart_rx_data_out_stb <= '0';
                 case uart_rx_state is
                     when rx_get_start_bit =>
@@ -241,13 +247,14 @@ begin
     -- Generate baud ticks at the required rate based on the input clock
     -- frequency and baud rate
     ---------------------------------------------------------------------------
-    tx_clock_divider : process (clock)
+    tx_clock_divider : process (clock, res_n)
     begin
-        if rising_edge (clock) then
-            if res_n = '0' then
-                tx_baud_counter <= (others => '0');
-                tx_baud_tick <= '0';    
-            else
+        
+        if res_n = '0' then
+            tx_baud_counter <= (others => '0');
+            tx_baud_tick <= '0';    
+        else
+            if clock'event and clock = '1' then
                 if tx_baud_counter = c_tx_div then
                     tx_baud_counter <= (others => '0');
                     tx_baud_tick <= '1';
@@ -264,16 +271,17 @@ begin
     -- baud tick. Send data lsb first.
     -- wait 1 tick, send start bit (0), send data 0-7, send stop bit (1)
     ---------------------------------------------------------------------------
-    uart_send_data : process(clock)
+    uart_send_data : process(clock, res_n)
     begin
-        if rising_edge(clock) then
-            if res_n = '0' then
-                uart_tx_data <= '1';
-                uart_tx_data_vec <= (others => '0');
-                uart_tx_count <= (others => '0');
-                uart_tx_state <= tx_send_start_bit;
-                uart_rx_data_in_ack <= '0';
-            else
+        
+        if res_n = '0' then
+            uart_tx_data <= '1';
+            uart_tx_data_vec <= (others => '0');
+            uart_tx_count <= (others => '0');
+            uart_tx_state <= tx_send_start_bit;
+            uart_rx_data_in_ack <= '0';
+        else
+            if clock'event and clock = '1' then
                 uart_rx_data_in_ack <= '0';
                 case uart_tx_state is
                     when tx_send_start_bit =>

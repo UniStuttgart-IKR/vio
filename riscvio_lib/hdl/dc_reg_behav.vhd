@@ -32,7 +32,7 @@ BEGIN
           pc_dc <= PC_NULL;
           branch_mode_dc <= no_branch;
           exc_dc <= well_behaved;
-        elsif not (stall = '1') then
+        elsif not stall then
           if dbt_valid then
             ctrl_dc <= CTRL_NULL;
             branch_mode_dc <= no_branch;

@@ -9,12 +9,12 @@
 --
 ARCHITECTURE behav OF io_interface IS
 BEGIN
-    stall <= '1' when io_stall = '1' else 'Z';
+    stall <= io_stall = '1';
     ld <= io_rdata when addr.io_access else (others => '0');
     io_mode <= mode when addr.io_access else holiday;
     io_ix <= addr.addr;
     io_dev <= sd_rptr.val(31 downto 20);
-    io_wdata <= (others => 'Z') when not addr.io_access else
+    io_wdata <= (others => '0') when not addr.io_access else
                 sd_rdat.val when mode = store_rpc else
                 sd_raux.val;
                 

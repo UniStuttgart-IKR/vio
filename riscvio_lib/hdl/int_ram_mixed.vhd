@@ -15,6 +15,8 @@ use IEEE.math_real.all;
 LIBRARY riscvio_lib;
 USE riscvio_lib.helper.revWords;
 USE riscvio_lib.helper.revNibbles;
+LIBRARY riscvio_lib;
+USE riscvio_lib.all;
 
 ARCHITECTURE mixed OF int_ram IS
   
@@ -61,20 +63,12 @@ ARCHITECTURE mixed OF int_ram IS
   signal byte_ena: std_logic_vector(BUS_WIDTH/8 - 1 downto 0);
   signal wdata, rdata: std_logic_vector(BUS_WIDTH - 1 downto 0);
   signal ic_rack_int, dc_rack_int, ac_rack_int, dc_wack_int, ac_wack_int: boolean;
-  signal last_dc_wack: boolean;
   signal wack_reg: boolean;
-  signal clk_buf: std_logic;
-  signal clk_buff: std_logic;
-  signal clk_bufff: std_logic;
 BEGIN
   
   -- internal ram controller
   
 
-
-  clk_buf <= clk;
-  clk_buff <= clk_buf;
-  
   
   -- request handling fsm state memory
   request_fsm_state: process(clk, res_n) is
@@ -84,7 +78,6 @@ BEGIN
     else
       if clk'event and clk = '1' then
         request_current_state <= request_next_state;
-        last_dc_wack <= dc_wack;
       end if;
     end if; 
   end process request_fsm_state;
@@ -132,23 +125,22 @@ BEGIN
           request_next_state <= IDLE;
         end if;
     end case;
-
-    
-
-    ic_rdata <= revWords(rdata);
-    dc_rdata <= revWords(rdata);
-    ac_rdata <= revWords(rdata);
-    we       <= '1' when wack_reg else '0';
-    byte_ena <= ac_wbyte_ena when request_current_state = HANDLINGACWREQ else 
-                dc_wbyte_ena when request_current_state = HANDLINGDCWREQ else
-                (others => '0');
-                
-    wdata    <= dc_wdata when request_current_state = HANDLINGDCWREQ else 
-                ac_wdata;
   end process  request_fsm_transitions;
+  
+  
+  ic_rdata <= revWords(rdata);
+  dc_rdata <= revWords(rdata);
+  ac_rdata <= revWords(rdata);
+  we       <= '1' when wack_reg else '0';
+  byte_ena <= ac_wbyte_ena when request_current_state = HANDLINGACWREQ else 
+              dc_wbyte_ena when request_current_state = HANDLINGDCWREQ else
+              (others => '0');
+                
+  wdata    <= dc_wdata when request_current_state = HANDLINGDCWREQ else 
+              ac_wdata;
 
   -- request handling acknoledge and address signal control
-  request_fsm_outputs: process(request_current_state, ic_rreq, dc_rreq, dc_wreq, ac_rreq, ic_raddr, dc_raddr, dc_waddr, ac_raddr) is
+  request_fsm_outputs: process(request_current_state, ic_rreq, dc_rreq, dc_wreq, ac_rreq, ic_raddr, dc_raddr, dc_waddr, ac_raddr, ac_wreq, ac_waddr) is
   begin
     ic_rack_int     <= false;
     dc_rack_int     <= false;
@@ -219,7 +211,7 @@ BEGIN
   end process;
   
 
-  
+
 	altsyncram_component : altsyncram
     GENERIC MAP (
       clock_enable_input_a => "BYPASS",
@@ -233,7 +225,7 @@ BEGIN
       outdata_aclr_a => "NONE",
       outdata_reg_a => "UNREGISTERED",
       power_up_uninitialized => "FALSE",
-      read_during_write_mode_port_a => "OLD_DATA",
+      read_during_write_mode_port_a => "NEW_DATA_NO_NBE_READ", --"OLD_DATA",
       widthad_a => ADDR_WIDTH,
       width_a => BUS_WIDTH,
       width_byteena_a => BUS_WIDTH/8
@@ -246,6 +238,6 @@ BEGIN
       byteena_a => revNibbles(byte_ena),
       q_a => rdata
     );
-
+	
 END ARCHITECTURE mixed;
 

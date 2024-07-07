@@ -15,7 +15,7 @@ ARCHITECTURE behav OF simple_dual_port_ram IS
   signal ram: ram_type := (others => (others => '0'));
   
   attribute rw_addr_collision: string;
-  attribute rw_addr_collision of ram: signal is "yes";
+  --attribute rw_addr_collision of ram: signal is "yes";
   
   signal raddr_reg: std_logic_vector(ADDR_WIDTH - 1 downto 0); 
 BEGIN

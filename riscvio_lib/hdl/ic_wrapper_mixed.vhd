@@ -19,7 +19,6 @@ ARCHITECTURE mixed OF ic_wrapper IS
     signal instr_addr: std_logic_vector(31 downto 0);
     signal next_instr_addr: std_logic_vector(31 downto 0);
     signal rd_instr: boolean;
-    signal ic_stall: boolean;
 BEGIN
     instr_addr <= std_logic_vector(unsigned(pc.ix) + unsigned(pc.ptr) + to_unsigned(8, instr_addr'length)); 
     next_instr_addr <= std_logic_vector(unsigned(next_pc.ix) + unsigned(next_pc.ptr) + to_unsigned(8, instr_addr'length)); 
@@ -37,7 +36,7 @@ BEGIN
         port map (
             clk       => clk,
             res_n     => res_n,
-            stall     => ic_stall,
+            stall     => stall,
             addr      => instr_addr,
             next_addr => next_instr_addr,
             rd        => rd_instr,
@@ -50,6 +49,5 @@ BEGIN
             rdata     => ic_rdata
         );
 
-        stall <= '1' when ic_stall else 'Z';
 END ARCHITECTURE mixed;
 

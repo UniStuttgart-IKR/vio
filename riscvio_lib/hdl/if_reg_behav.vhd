@@ -16,7 +16,7 @@ BEGIN
       pc_if <= PC_NULL;
     else
       if clk'event and clk = '1' then
-        if not insert_nop or dbt_valid or sbt_valid or cjt_valid or stall then
+        if not (stall or insert_nop) or dbt_valid or sbt_valid or cjt_valid then
           if sbt_valid or dbt_valid or cjt_valid then
             if_instr <= NOP_INSTR;
           else

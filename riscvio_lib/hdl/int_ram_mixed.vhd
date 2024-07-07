@@ -98,6 +98,8 @@ BEGIN
           request_next_state <= HANDLINGDCWREQ;
         elsif ac_rreq then
           request_next_state <= HANDLINGACRREQ;
+        elsif ac_wreq then
+          request_next_state <= HANDLINGACWREQ;
         end if;
 
       when HANDLINGICREQ => 
@@ -205,7 +207,7 @@ BEGIN
         ac_rack <= ac_rack_int;
         dc_wack <= dc_wack_int;
         ac_wack <= ac_wack_int;
-        wack_reg <= dc_wack_int;
+        wack_reg <= dc_wack_int or ac_wack_int;
       end if;
     end if; 
   end process;
@@ -225,7 +227,7 @@ BEGIN
       outdata_aclr_a => "NONE",
       outdata_reg_a => "UNREGISTERED",
       power_up_uninitialized => "FALSE",
-      read_during_write_mode_port_a => "NEW_DATA_NO_NBE_READ", --"OLD_DATA",
+      read_during_write_mode_port_a => "OLD_DATA", -- this is required for sim to work
       widthad_a => ADDR_WIDTH,
       width_a => BUS_WIDTH,
       width_byteena_a => BUS_WIDTH/8

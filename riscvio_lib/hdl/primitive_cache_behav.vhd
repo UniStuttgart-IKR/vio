@@ -380,7 +380,7 @@ BEGIN
                             accumulated_bus_word <= accumulated_bus_word_d;
                         end if;
                         -- when we leave the region of a single bus word or we need to invalidate we need to start writing back
-                        if addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) or invalidate then
+                        if addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) or invalidate or not we then
                             -- we need to commit now
                             writeback_state <= WAITING_WR;
                         end if; 
@@ -389,7 +389,6 @@ BEGIN
                         if wack then
                             writeback_state <= IDLE;
                             accumulated_byteena <= (others => '0');
-                            burst_addr <= (others => '0');
                             accumulated_bus_word <= (others => '0');
                         end if;
                 end case;
@@ -451,7 +450,7 @@ BEGIN
             case writeback_state is
                 when IDLE => null; -- we just wait for data...
                 when COLLECT_DATA => 
-                    wreq <= addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE);
+                    wreq <= addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) or not we;
                     wdata <= accumulated_bus_word;
                     waddr <= burst_addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                     wbyte_ena <= accumulated_byteena;
@@ -468,7 +467,7 @@ BEGIN
         else
             case writeback_state is
                 when IDLE => 
-                    if we and invalidation_state = IDLE then
+                    if we and invalidation_state = IDLE and (addr /= last_wr_addr or sd /= last_sd) then
                         wreq <= true;
                         waddr <= addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                         

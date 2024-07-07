@@ -45,7 +45,7 @@ init:
             
             la      a0, hello_world_str
             #TODO: find a nicer way to do this
-            addi    a0, a0, -8 
+            addi    a0, a0, -8 #<- This is (or at least should be) done by the ccp instruction
             ccp     a0, a0
             
             jal     out_str
@@ -174,26 +174,26 @@ exception_hdr_str: object
             .ascii "An Exception occured: "
 
 exception_strs: object
-            .ascii "panic - severe internal error\0"
-            .ascii "illeg - illegal instruction\0"
-            .ascii "sverr - supervisor error\0"
-            .ascii "sterr - state error\0"
-            .ascii "privv - privilegded instruction\0"
-            .ascii "tcoil - target code index\0"
-            .ascii "tciob - target code index out of bound\0"
-            .ascii "endoc - end of code\0"
-            .ascii "rixeq - return index is zero\0"
-            .ascii "rcdnu - return code is null\0"
-            .ascii "rcdnc - return code ptr is not a code ptr\0"
-            .ascii "drfnu - dereferenced null pointer\0"
-            .ascii "drfcd - dereferenced code pointer\0"
-            .ascii "wrptv - wrote using read only pointer\0"
-            .ascii "sealv - wrote to read only object\0"
-            .ascii "ixoob - index out of bounds\0"
-            .ascii "frtyp - frame type\0"
-            .ascii "aperr - ???\0"
-            .ascii "hpovf - heap full\0"
-            .ascii "stovf - stack overflow\0"
+            .asciz "panic - severe internal error"
+            .asciz "illeg - illegal instruction"
+            .asciz "sverr - supervisor error"
+            .asciz "sterr - state error"
+            .asciz "privv - privilegded instruction"
+            .asciz "tcoil - target code index"
+            .asciz "tciob - target code index out of bound"
+            .asciz "endoc - end of code"
+            .asciz "rixeq - return index is zero"
+            .asciz "rcdnu - return code is null"
+            .asciz "rcdnc - return code ptr is not a code ptr"
+            .asciz "drfnu - dereferenced null pointer"
+            .asciz "drfcd - dereferenced code pointer"
+            .asciz "wrptv - wrote using read only pointer"
+            .asciz "sealv - wrote to read only object"
+            .asciz "ixoob - index out of bounds"
+            .asciz "frtyp - frame type"
+            .asciz "aperr - ???"
+            .asciz "hpovf - heap full"
+            .asciz "stovf - stack overflow"
             .asciz "ptari - ???"
 
 

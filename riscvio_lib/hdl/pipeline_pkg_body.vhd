@@ -7,6 +7,9 @@ PACKAGE BODY pipeline IS
         res.pgu_mode := pgu_nop;
         res.branch_mode := no_branch;
         res.xret := none;
+        res.fwd_allowed := true;
+        res.csr_mux_sel := NONE;
+        res.ex_res_mux_sel := AUX;
         case instruction(OPC_RANGE) is
             when OPC_ALU_R => 
                 res.imm_mode := none;
@@ -19,6 +22,7 @@ PACKAGE BODY pipeline IS
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= AUX;
                 res.pgu_mode := pgu_nop;
+                res.ex_res_mux_sel := ALU;
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
                         case instruction(FUNCT7_RANGE) is 
@@ -132,6 +136,7 @@ PACKAGE BODY pipeline IS
                 res.alu_a_sel:= AUX;
                 res.alu_b_sel:= IMM;
                 res.pgu_mode := pgu_nop;
+                res.ex_res_mux_sel := ALU;
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
                         res.mnemonic := add_i;
@@ -240,6 +245,7 @@ PACKAGE BODY pipeline IS
                 res.raux     := ali_T'pos(ra);
                 res.pgu_mode := pgu_nop;
                 res.branch_mode := jal;
+                res.ex_res_mux_sel := DBU;
 
             when OPC_JALR =>
                 res.mnemonic := jalr;
@@ -255,6 +261,7 @@ PACKAGE BODY pipeline IS
                 res.alu_b_sel:= IMM;
                 res.pgu_mode := pgu_nop;
                 res.branch_mode := jalr;
+                res.ex_res_mux_sel := DBU;
 
             when OPC_AUIPC => 
                 res.mnemonic := auipc;
@@ -269,6 +276,7 @@ PACKAGE BODY pipeline IS
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= IMM;
                 res.pgu_mode := pgu_auipc;
+                res.ex_res_mux_sel := PGU;
                 res.branch_mode := no_branch;
 
             when OPC_BRANCH =>
@@ -306,6 +314,7 @@ PACKAGE BODY pipeline IS
                 res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                 res.raux     := ali_T'pos(ra);
                 res.alu_a_sel:= DAT;
+                res.ex_res_mux_sel := PGU;
                 if instruction(FUNCT3_RANGE) = "111" then res.alu_b_sel := AUX; else res.alu_b_sel := IMM; end if;
                 if instruction(FUNCT3_RANGE) = "111" then res.pgu_mode := pgu_dat_r; elsif ali_T'val(to_integer(unsigned(instruction(RD_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then res.pgu_mode := pgu_rix; else res.pgu_mode := pgu_dat_i; end if;
                 if res.pgu_mode /= pgu_rix then res.at_mode := no; else res.at_mode := load_delta_only; end if;
@@ -347,6 +356,7 @@ PACKAGE BODY pipeline IS
                 res.rdat     := ali_T'pos(ra);
                 res.alu_a_sel:= DAT;
                 res.alu_b_sel:= IMM;
+                res.ex_res_mux_sel := PGU;
                 if ali_T'val(to_integer(unsigned(instruction(RS2_RANGE)))) = ra and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) = frame then res.pgu_mode := pgu_rix; else res.pgu_mode := pgu_dat_i; end if;
                 case instruction(FUNCT3_RANGE) is
                     when F3_BYTE  => res.mnemonic := sb_i;
@@ -390,21 +400,29 @@ PACKAGE BODY pipeline IS
                                             res.mnemonic := alc;
                                             res.pgu_mode := pgu_alc;
                                             res.imm_mode := none;
+                                            res.csr_mux_sel := PTR;
                                             res.at_mode  := store;
+                                            res.ex_res_mux_sel := PGU;
                     when F3_ALCIP  =>       res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.mnemonic := alci_p;
                                             res.pgu_mode := pgu_alcp;
                                             res.imm_mode := i_type;
                                             res.at_mode  := store;
+                                            res.csr_mux_sel := PTR;
+                                            res.ex_res_mux_sel := PGU;
                     when F3_ALCID  =>       res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.mnemonic := alci_d;
                                             res.pgu_mode := pgu_alcd;
                                             res.imm_mode := i_type;
                                             res.at_mode  := store;
+                                            res.csr_mux_sel := PTR;
+                                            res.ex_res_mux_sel := PGU;
                     when F3_ALCI_PUSH =>    res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.raux     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.imm_mode := s_type;
                                             res.rdst     := to_integer(unsigned(instruction(RS1_RANGE)));
+                                            res.csr_mux_sel := PTR;
+                                            res.ex_res_mux_sel := PGU;
                                             if instruction(RS2_RANGE) = F5_ALCI and ali_T'val(to_integer(unsigned(instruction(RS1_RANGE)))) /= frame then
                                                 res.mnemonic := alci;
                                                 res.pgu_mode := pgu_alci;
@@ -437,6 +455,7 @@ PACKAGE BODY pipeline IS
                                                 res.pgu_mode := pgu_rcd;
                                                 res.me_mode  := store_rpc;
                                             end if;
+                                            res.ex_res_mux_sel := PGU;
                     when F3_LP =>           res.mnemonic := lp_i;
                                             res.imm_mode := i_type;
                                             res.me_mode  := lp;
@@ -450,6 +469,7 @@ PACKAGE BODY pipeline IS
                                                 res.me_mode  := load_rpc;
                                                 res.at_mode  := load_maybe;
                                             end if;
+                                            res.ex_res_mux_sel := PGU;
                     when F3_JLIB =>         res.mnemonic := jlib;
                                             res.alu_mode := alu_illegal;
                                             res.imm_mode := i_type;
@@ -463,6 +483,7 @@ PACKAGE BODY pipeline IS
                                             res.alu_b_sel:= IMM;
                                             res.pgu_mode := pgu_nop;
                                             res.branch_mode := jlib;
+                                            res.ex_res_mux_sel := DBU;
                     when F3_ZEROS =>
                         case instruction(FUNCT7_RANGE) is
                             when F7_SPR =>  res.mnemonic := sp_r;
@@ -474,6 +495,7 @@ PACKAGE BODY pipeline IS
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.rdat     := to_integer(unsigned(instruction(RS2_RANGE)));
                                             res.pgu_mode := pgu_ptr_r;
+                                            res.ex_res_mux_sel := PGU;
                             when F7_LPR =>  res.mnemonic := lp_r;
                                             res.imm_mode := none;
                                             res.me_mode  := lp;
@@ -483,6 +505,7 @@ PACKAGE BODY pipeline IS
                                             res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                                             res.rdat     := to_integer(unsigned(instruction(RS2_RANGE)));
                                             res.pgu_mode := pgu_ptr_r;
+                                            res.ex_res_mux_sel := PGU;
                             when F7_POP =>  res.mnemonic := pop;
                                             res.imm_mode := none;
                                             res.me_mode  := holiday;
@@ -492,10 +515,12 @@ PACKAGE BODY pipeline IS
                                             res.rptr     := ali_T'pos(frame);
                                             res.rdat     := ali_T'pos(ra);
                                             res.pgu_mode := pgu_pop;
+                                            res.ex_res_mux_sel := PGU;
 
 
 
                             when F7_QDTB => res.mnemonic := qdtb;
+                                            res.ex_res_mux_sel := ALU;
                                             res.alu_mode := alu_add;
                                             res.imm_mode := none;
                                             res.me_mode  := holiday;
@@ -509,6 +534,7 @@ PACKAGE BODY pipeline IS
                                             res.alu_b_sel:= IMM;
 
                             when F7_QDTH => res.mnemonic := qdth;
+                                            res.ex_res_mux_sel := ALU;
                                             res.alu_mode := alu_add;
                                             res.imm_mode := none;
                                             res.me_mode  := holiday;
@@ -522,6 +548,7 @@ PACKAGE BODY pipeline IS
                                             res.alu_b_sel:= IMM;
                             
                             when F7_QDTW => res.mnemonic := qdtw;
+                                            res.ex_res_mux_sel := ALU;
                                             res.alu_mode := alu_add;
                                             res.imm_mode := none;
                                             res.me_mode  := holiday;
@@ -535,6 +562,7 @@ PACKAGE BODY pipeline IS
                                             res.alu_b_sel:= IMM;
                             
                             when F7_QDTD => res.mnemonic := qdtd;
+                                            res.ex_res_mux_sel := ALU;
                                             res.alu_mode := alu_add;
                                             res.imm_mode := none;
                                             res.me_mode  := holiday;
@@ -549,6 +577,7 @@ PACKAGE BODY pipeline IS
 
                             
                             when F7_QPI =>  res.mnemonic := qpi;
+                                            res.ex_res_mux_sel := ALU;
                                             res.alu_mode := alu_add;
                                             res.imm_mode := none;
                                             res.me_mode  := holiday;
@@ -590,6 +619,7 @@ PACKAGE BODY pipeline IS
                                 elsif instruction(FUNCT5_RANGE) = F5_ECALL then
                                 elsif instruction(FUNCT5_RANGE) = F5_QPTR then
                                     res.mnemonic := qdtr;
+                                    res.ex_res_mux_sel := ALU;
                                     res.alu_mode := alu_add;
                                     res.imm_mode := none;
                                     res.me_mode  := holiday;
@@ -603,6 +633,7 @@ PACKAGE BODY pipeline IS
                                     res.alu_b_sel:= IMM;
                                 elsif instruction(FUNCT5_RANGE) = F5_QPIR then
                                     res.mnemonic := qpir;
+                                    res.ex_res_mux_sel := ALU;
                                     res.alu_mode := alu_add;
                                     res.imm_mode := none;
                                     res.me_mode  := holiday;
@@ -642,6 +673,7 @@ PACKAGE BODY pipeline IS
                                 res.alu_a_sel:= DAT;
                                 res.alu_b_sel:= AUX;
                                 res.pgu_mode := pgu_ciop;
+                                res.ex_res_mux_sel := PGU;
 
                                 
                             when F7_OR =>
@@ -663,6 +695,7 @@ PACKAGE BODY pipeline IS
                                                     res.alu_mode := alu_illegal;
                                                     res.raux     := to_integer(unsigned(instruction(RS1_RANGE)));
                                                     res.rdst     := to_integer(unsigned(instruction(RD_RANGE)));
+                                                    res.ex_res_mux_sel := PGU;
                                     when others =>  null;
                                 end case;
     
@@ -687,32 +720,26 @@ PACKAGE BODY pipeline IS
                         res.me_mode  := holiday;
                         res.at_mode  := no;
                         res.imm_mode := none;
-                        res.alu_mode := alu_add;
-                        res.rdat     := 0;
+                        res.alu_mode := alu_illegal;
+                        res.ex_res_mux_sel := AUX;
+                        res.rdat     := to_integer(unsigned(instruction(RS1_RANGE)));
                         res.rptr     := to_integer(unsigned(instruction(RS1_RANGE)));
                         res.raux     := to_integer(unsigned(instruction(RS1_RANGE)));
                         res.alu_a_sel:= PTRVAL;
                         res.alu_b_sel:= IMM;
                         res.pgu_mode := pgu_nop;
+                        res.mnemonic := csrw;
                         case instruction(IMM12_RANGE) is
                             when CSR_MEPC_IX =>     res.rdst := ali_T'pos(mepc);
-                                                    res.mnemonic := csrrw;
+                                                    res.ex_res_mux_sel := PTR;
                             when CSR_MISA_IX =>     res.rdst := ali_T'pos(misa);
-                                                    res.mnemonic := csrrw;
                             when CSR_MSTATUS_IX =>  res.rdst := ali_T'pos(mstatus);
-                                                    res.mnemonic := csrrw;
                             when CSR_MCAUSE_IX =>   res.rdst := ali_T'pos(mcause);
-                                                    res.mnemonic := csrrw;
                             when CSR_MTVAL_IX =>    res.rdst := ali_T'pos(mtval);
-                                                    res.mnemonic := csrrw;
                             when CSR_MTVEC_IX =>    res.rdst := ali_T'pos(mtvec);
-                                                    res.mnemonic := csrrw;
                             when CSR_MVENDORID_IX =>res.rdst := ali_T'pos(mvendorid);
-                                                    res.mnemonic := csrrw;
                             when CSR_MARCHID_IX =>  res.rdst := ali_T'pos(marchid);
-                                                    res.mnemonic := csrrw;
                             when CSR_MIMPID_IX =>   res.rdst := ali_T'pos(mimpid);
-                                                    res.mnemonic := csrrw;
                             when others => 
                                 res.mnemonic := illegal;
                                 res.alu_mode := alu_illegal;
@@ -747,6 +774,7 @@ PACKAGE BODY pipeline IS
             when OPC_LUI => 
                 res.mnemonic := lui;
                 res.alu_mode := alu_add;
+                res.ex_res_mux_sel := ALU;
                 res.imm_mode := u_type;
                 res.me_mode  := holiday;
                 res.at_mode  := no;
@@ -814,7 +842,7 @@ PACKAGE BODY pipeline IS
         pi_scaled := '0' & pi(word_T'high-1 downto 2) & "00";
         offset_scaled := offs(word_T'high-2 downto 0) & "00";
         index_scaled := ix(word_T'high-2 downto 0) & "00";
-        index_space := word_T(to_unsigned(to_integer(unsigned(pi))*INDEX_SIZE+7, word_T'length)) and X"FFFFFFFC";
+        index_space := word_T(to_unsigned(to_integer(unsigned(pi))*INDEX_SIZE+7, word_T'length)) and X"FFFFFFF8";
         if rc = '1' and ri = '0' then
             reserved_space := 16;
         elsif rc = '0' and ri = '1' then

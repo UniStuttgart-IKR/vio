@@ -23,7 +23,7 @@ BEGIN
             res_ex <= REG_MEM_NULL;
             me_addr <= MEM_ADDR_NULL;
             pc_ex <= PC_NULL;
-            
+            start_addr <= (others => '0');
             exc_ex <= well_behaved;
         else
             if clk'event and clk = '1' then
@@ -37,7 +37,7 @@ BEGIN
                     res_ex <= REG_MEM_NULL;
                     me_addr <= MEM_ADDR_NULL;
                     pc_ex <= PC_NULL;
-                        
+                    start_addr <= (others => '0');
                     exc_ex <= well_behaved;
                 elsif not stall then
                     ctrl_ex <= ctrl_dc;
@@ -50,6 +50,7 @@ BEGIN
 
                     res_ex <= res_ex_u;
                     me_addr <= me_addr_u;
+                    start_addr <= me_addr_u.addr;
                     
                     pc_ex <= pc_dc;
                     exc_ex <= exc_ex_u;
@@ -60,9 +61,10 @@ BEGIN
 
     me_mode_ex <= ctrl_ex.me_mode;
     me_mode_ex_uq <= ctrl_dc.me_mode;
+    start_addr_uq <= me_addr_u.addr;
     pgu_mode_ex <= ctrl_ex.pgu_mode;
     pgu_mode_dc_uq <= ctrl_dc.pgu_mode;
-    res_ex_uq <= res_ex_u;
+    fwd_allowed_ex  <= ctrl_ex.fwd_allowed;
 
 
     me_addr_uq <= me_addr_u when not stall else me_addr;

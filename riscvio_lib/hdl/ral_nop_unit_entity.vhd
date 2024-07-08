@@ -29,6 +29,8 @@ ENTITY ral_nop_unit IS
 
         sbt_valid       : IN     boolean;
         dbt_valid       : IN     boolean;
+        atomic_swap     : OUT    boolean;
+        insert_atomic   : OUT    boolean;
         insert_nop      : OUT    boolean
     );
 END ENTITY ral_nop_unit;

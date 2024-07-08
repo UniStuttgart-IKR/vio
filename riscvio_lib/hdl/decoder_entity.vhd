@@ -17,12 +17,14 @@ ENTITY decoder IS
    PORT( 
       pc          : IN     pc_T;
       instruction : IN     word_T;
+      atomic_swap : IN     boolean;
 
       rdat_ix     : OUT    reg_nbr_T;
       rptr_ix     : OUT    reg_nbr_T;
       raux_ix     : OUT    reg_nbr_T;
 
       csr_ix      : OUT    csr_nbr_T;
+      csr_mux_sel : OUT    csr_mux_sel_T;
 
       rdst_ix     : OUT    reg_nbr_T;
       imm         : OUT    word_T;

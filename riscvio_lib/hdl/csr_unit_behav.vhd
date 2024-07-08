@@ -49,8 +49,10 @@ BEGIN
         end if;
     end process;
 
+    csr_nbr <=  csr_ix;
     csr_reg <=  (val => csrs(alc_addr), pi => csrs(alc_lim), dt => csrs(frame_lim), ix => X"00000000", tag => POINTER) when ali_T'val(csr_ix) = alc_addr or ali_T'val(csr_ix) = alc_lim or ali_T'val(csr_ix) = frame_lim else
                 (val => mepc_reg.ptr, ix => mepc_reg.ix, pi => X"00000000", dt => mepc_reg.eoc, tag => POINTER) when ali_T'val(csr_ix) = mepc else
+                (val => core_reg.val, ix => csrs(mtvec), pi => core_reg.pi, dt => core_reg.dt, tag => POINTER) when ali_T'val(csr_ix) = mtvec else
                 (val => csrs(ali_T'val(csr_ix)), ix => X"00000000", pi => X"00000000", dt => X"00000000", tag => DATA);
 
     cjt <= (ptr => core_reg.val, ix => csrs(mtvec), eoc => core_reg.dt) when exc_wb /= well_behaved else 

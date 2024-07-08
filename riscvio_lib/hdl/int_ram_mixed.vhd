@@ -227,7 +227,7 @@ BEGIN
       outdata_aclr_a => "NONE",
       outdata_reg_a => "UNREGISTERED",
       power_up_uninitialized => "FALSE",
-      read_during_write_mode_port_a => "OLD_DATA", -- this is required for sim to work
+      read_during_write_mode_port_a => "NEW_DATA_NO_NBE_READ", -- this is required for sim to work
       widthad_a => ADDR_WIDTH,
       width_a => BUS_WIDTH,
       width_byteena_a => BUS_WIDTH/8

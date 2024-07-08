@@ -86,18 +86,22 @@ PACKAGE pipeline IS
     type mem_mode_T is (lb, lbu, lh, lhu, lw, sb, sh, sw, lp, sp, store_rpc, load_rpc, load_ix, store_ix, holiday);
     type at_mode_T is (load_maybe, no, load_delta_only, store);
     type branch_mode_T is (jlib, rtlib, jal, jalr, beq, bne, blt, bge, bltu, bgeu, no_branch);
+    type ex_res_mux_sel_T is (NONE, AUX, PTR, DAT, PGU, ALU, DBU);
+    subtype csr_mux_sel_T is ex_res_mux_sel_T range NONE to DAT;
 
     type ctrl_sig_T is record 
+        mnemonic:       mnemonic_T;
         alu_mode:       alu_mode_T;
         alu_a_sel:      alu_in_sel_T;
         alu_b_sel:      alu_in_sel_T;
-        mnemonic:       mnemonic_T;
+        ex_res_mux_sel: ex_res_mux_sel_T;
         pgu_mode:       pgu_mode_T;
         me_mode:        mem_mode_T;
         at_mode:        at_mode_T;
         branch_mode:    branch_mode_T;
+        fwd_allowed:    boolean;
     end record ctrl_sig_T;
-    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, branch_mode => no_branch, alu_a_sel => DAT, alu_b_sel => DAT, mnemonic => nop, me_mode => holiday, at_mode => no, pgu_mode => pgu_nop);
+    constant CTRL_NULL: ctrl_sig_T := (alu_mode => alu_illegal, branch_mode => no_branch, alu_a_sel => DAT, alu_b_sel => DAT, mnemonic => nop, me_mode => holiday, at_mode => no, pgu_mode => pgu_nop, fwd_allowed => false, ex_res_mux_sel => AUX);
     
     type xret_T is (none, mret);
 
@@ -106,6 +110,8 @@ PACKAGE pipeline IS
         alu_mode:       alu_mode_T;
         alu_a_sel:      alu_in_sel_T;
         alu_b_sel:      alu_in_sel_T;
+        ex_res_mux_sel: ex_res_mux_sel_T;
+        csr_mux_sel:    csr_mux_sel_T;
         pgu_mode:       pgu_mode_T;
         me_mode:        mem_mode_T;
         at_mode:        at_mode_T;
@@ -116,6 +122,7 @@ PACKAGE pipeline IS
         imm_mode:       imm_T;
         branch_mode:    branch_mode_T;
         xret:           xret_T;
+        fwd_allowed:    boolean;
     end record decode_T;
     
     type alu_flags_T is record

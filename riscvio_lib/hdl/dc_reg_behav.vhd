@@ -61,6 +61,8 @@ BEGIN
   alu_mode_dc     <= ctrl_dc.alu_mode; 
   alu_a_in_sel_dc <= ctrl_dc.alu_a_sel;
   alu_b_in_sel_dc <= ctrl_dc.alu_b_sel;
+  res_mux_sel     <= ctrl_dc.ex_res_mux_sel;
   pgu_mode_dc     <= ctrl_dc.pgu_mode;
+  fwd_allowed_dc  <= ctrl_dc.fwd_allowed;
 
 END ARCHITECTURE behav;

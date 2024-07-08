@@ -1,5 +1,5 @@
 
-out/riscViOTest.elf:     Dateiformat elf32-littleriscv
+out/riscViOTest.elf:     file format elf32-littleriscv
 
 
 Disassembly of section core:
@@ -7,7 +7,7 @@ Disassembly of section core:
 00000000 <core.start_-0x8>:
    0:	0008                	.insn	2, 0x0008
    2:	0000                	.insn	2, 0x
-   4:	019c                	.insn	2, 0x019c
+   4:	0190                	.insn	2, 0x0190
 	...
 
 00000008 <core.start_>:
@@ -28,14 +28,14 @@ Disassembly of section core:
   28:	00001137          	lui	frame,0x1
   2c:	80510113          	addi	frame,frame,-2043 # 805 <_end+0x36d>
   30:	00000297          	auipc	t0,0x0
-  34:	12028293          	addi	t0,t0,288 # 150 <core.exc_handel>
+  34:	11c28293          	addi	t0,t0,284 # 14c <core.exc_handel>
   38:	30529073          	csrrw	zero,mtvec,t0
   3c:	01020337          	lui	t1,0x1020
   40:	30430313          	addi	t1,t1,772 # 1020304 <_end+0x101fe6c>
   44:	000083b7          	lui	t2,0x8
   48:	00538393          	addi	t2,t2,5 # 8005 <_end+0x7b6d>
   4c:	08600e13          	addi	t3,zero,134
-  50:	0e31708b          	push	1,7
+  50:	0e31740b          	push	8,7
   54:	0011100b          	sp	ra,0(frame)
   58:	0031100b          	sp	root,0(frame)
   5c:	00612023          	sw	t1,0(frame)
@@ -52,93 +52,95 @@ Disassembly of section core:
   88:	00600393          	addi	t2,zero,6
   8c:	fe7305f3          	ciop	a1,t1,t2
   90:	47800513          	addi	a0,zero,1144
-  94:	ff850513          	addi	a0,a0,-8
-  98:	fd050573          	ccp	a0,a0
-  9c:	048000ef          	jal	ra,e4 <core.out_str>
+  94:	fd050573          	ccp	a0,a0
+  98:	048000ef          	jal	ra,e0 <core.out_str>
+  9c:	00000013          	addi	zero,zero,0
   a0:	00000013          	addi	zero,zero,0
-  a4:	00000013          	addi	zero,zero,0
-  a8:	00100073          	ebreak
-  ac:	0031708b          	push	1,0
-  b0:	0011100b          	sp	ra,0(frame)
-  b4:	00000517          	auipc	a0,0x0
-  b8:	14450513          	addi	a0,a0,324 # 1f8 <usb.end+0x4>
-  bc:	fd050573          	ccp	a0,a0
-  c0:	00000417          	auipc	s0,0x0
-  c4:	0e840413          	addi	s0,s0,232 # 1a8 <core.end>
-  c8:	fd040473          	ccp	s0,s0
-  cc:	00040493          	addi	s1,s0,0
-  d0:	0091100b          	sp	s1,0(frame)
-  d4:	000400e7          	jalr	ra,0(s0)
-  d8:	0001240b          	lp	s0,0(frame)
-  dc:	004400e7          	jalr	ra,4(s0)
-  e0:	00100073          	ebreak
+  a4:	00100073          	ebreak
+  a8:	0031708b          	push	1,0
+  ac:	0011100b          	sp	ra,0(frame)
+  b0:	00000517          	auipc	a0,0x0
+  b4:	14850513          	addi	a0,a0,328 # 1f8 <usb.end+0x4>
+  b8:	fd050573          	ccp	a0,a0
+  bc:	00000417          	auipc	s0,0x0
+  c0:	0ec40413          	addi	s0,s0,236 # 1a8 <core.end+0xc>
+  c4:	fd040473          	ccp	s0,s0
+  c8:	00040493          	addi	s1,s0,0
+  cc:	0091100b          	sp	s1,0(frame)
+  d0:	000400e7          	jalr	ra,0(s0)
+  d4:	0001240b          	lp	s0,0(frame)
+  d8:	004400e7          	jalr	ra,4(s0)
+  dc:	00100073          	ebreak
 
-000000e4 <core.out_str>:
-  e4:	02050063          	beq	a0,zero,104 <.done>
-  e8:	0805028b          	qdtb	t0,a0
-  ec:	00028c63          	beq	t0,zero,104 <.done>
-  f0:	00000313          	addi	t1,zero,0
+000000e0 <core.out_str>:
+  e0:	02050063          	beq	a0,zero,100 <.done>
+  e4:	0805028b          	qdtb	t0,a0
+  e8:	00028c63          	beq	t0,zero,100 <.done>
+  ec:	00000313          	addi	t1,zero,0
 
-000000f4 <.outloop>:
-  f4:	80657383          	lbu.r	t2,t1(a0)
-  f8:	00758023          	sb	t2,0(a1)
-  fc:	00130313          	addi	t1,t1,1
- 100:	fe531ae3          	bne	t1,t0,f4 <.outloop>
+000000f0 <.outloop>:
+  f0:	80657383          	lbu.r	t2,t1(a0)
+  f4:	00758023          	sb	t2,0(a1)
+  f8:	00130313          	addi	t1,t1,1
+  fc:	fe531ae3          	bne	t1,t0,f0 <.outloop>
 
-00000104 <.done>:
- 104:	00008067          	jalr	zero,0(ra)
+00000100 <.done>:
+ 100:	00008067          	jalr	zero,0(ra)
 
-00000108 <core.out_str_zero>:
- 108:	04050263          	beq	a0,zero,14c <.donez>
- 10c:	0805028b          	qdtb	t0,a0
- 110:	02028e63          	beq	t0,zero,14c <.donez>
- 114:	00000313          	addi	t1,zero,0
- 118:	00160613          	addi	a2,a2,1
+00000104 <core.out_str_zero>:
+ 104:	04050263          	beq	a0,zero,148 <.donez>
+ 108:	0805028b          	qdtb	t0,a0
+ 10c:	02028e63          	beq	t0,zero,148 <.donez>
+ 110:	00000313          	addi	t1,zero,0
+ 114:	00160613          	addi	a2,a2,1
 
-0000011c <.srcloop>:
- 11c:	80657383          	lbu.r	t2,t1(a0)
- 120:	00039a63          	bne	t2,zero,134 <.notzero>
- 124:	fff60613          	addi	a2,a2,-1
- 128:	00130313          	addi	t1,t1,1
- 12c:	fc0604e3          	beq	a2,zero,f4 <.outloop>
- 130:	fff30313          	addi	t1,t1,-1
+00000118 <.srcloop>:
+ 118:	80657383          	lbu.r	t2,t1(a0)
+ 11c:	00039a63          	bne	t2,zero,130 <.notzero>
+ 120:	fff60613          	addi	a2,a2,-1
+ 124:	00130313          	addi	t1,t1,1
+ 128:	fc0604e3          	beq	a2,zero,f0 <.outloop>
+ 12c:	fff30313          	addi	t1,t1,-1
 
-00000134 <.notzero>:
- 134:	00130313          	addi	t1,t1,1
- 138:	fe5ff06f          	jal	zero,11c <.srcloop>
+00000130 <.notzero>:
+ 130:	00130313          	addi	t1,t1,1
+ 134:	fe5ff06f          	jal	zero,118 <.srcloop>
 
-0000013c <.outloopz>:
- 13c:	80657383          	lbu.r	t2,t1(a0)
- 140:	00758023          	sb	t2,0(a1)
- 144:	00130313          	addi	t1,t1,1
- 148:	fe039ae3          	bne	t2,zero,13c <.outloopz>
+00000138 <.outloopz>:
+ 138:	80657383          	lbu.r	t2,t1(a0)
+ 13c:	00758023          	sb	t2,0(a1)
+ 140:	00130313          	addi	t1,t1,1
+ 144:	fe039ae3          	bne	t2,zero,138 <.outloopz>
 
-0000014c <.donez>:
- 14c:	00008067          	jalr	zero,0(ra)
+00000148 <.donez>:
+ 148:	00008067          	jalr	zero,0(ra)
 
-00000150 <core.exc_handel>:
+0000014c <core.exc_handel>:
+ 14c:	00000013          	addi	zero,zero,0
  150:	00000013          	addi	zero,zero,0
  154:	00000013          	addi	zero,zero,0
- 158:	00000013          	addi	zero,zero,0
- 15c:	00100313          	addi	t1,zero,1
- 160:	00600393          	addi	t2,zero,6
- 164:	fe7305f3          	ciop	a1,t1,t2
- 168:	21000513          	addi	a0,zero,528
- 16c:	ff850513          	addi	a0,a0,-8
- 170:	fd050573          	ccp	a0,a0
- 174:	f71ff0ef          	jal	ra,e4 <core.out_str>
- 178:	23000513          	addi	a0,zero,560
- 17c:	ff850513          	addi	a0,a0,-8
- 180:	fd050573          	ccp	a0,a0
- 184:	34202673          	csrrs	a2,mcause,zero
- 188:	f81ff0ef          	jal	ra,108 <core.out_str_zero>
+ 158:	00100313          	addi	t1,zero,1
+ 15c:	00600393          	addi	t2,zero,6
+ 160:	fe7305f3          	ciop	a1,t1,t2
+ 164:	21000513          	addi	a0,zero,528
+ 168:	fd050573          	ccp	a0,a0
+ 16c:	f75ff0ef          	jal	ra,e0 <core.out_str>
+ 170:	23000513          	addi	a0,zero,560
+ 174:	fd050573          	ccp	a0,a0
+ 178:	34202673          	csrrs	a2,mcause,zero
+ 17c:	f89ff0ef          	jal	ra,104 <core.out_str_zero>
+ 180:	00000013          	addi	zero,zero,0
+ 184:	00000013          	addi	zero,zero,0
+ 188:	00000013          	addi	zero,zero,0
  18c:	00000013          	addi	zero,zero,0
- 190:	00000013          	addi	zero,zero,0
- 194:	00000013          	addi	zero,zero,0
- 198:	00000013          	addi	zero,zero,0
- 19c:	30200073          	mret
- 1a0:	ffb28293          	addi	t0,t0,-5
- 1a4:	ff730313          	addi	t1,t1,-9
+ 190:	30200073          	mret
+ 194:	ffb28293          	addi	t0,t0,-5
+ 198:	ff730313          	addi	t1,t1,-9
+
+0000019c <core.end>:
+ 19c:	00000013          	addi	zero,zero,0
+ 1a0:	0000                	.insn	2, 0x
+	...
 
 Disassembly of section usb:
 

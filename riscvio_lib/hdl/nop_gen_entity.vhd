@@ -13,6 +13,7 @@ ENTITY nop_gen IS
       exc_dc_dec   : IN     exc_cause_T;
       exc_dc_u     : OUT    exc_cause_T;
       insert_nop   : IN     boolean;
+      insert_atomic : IN    boolean;
       rdst_ix_dc_u : OUT    reg_nbr_T;
       rdst_ix_dec  : IN     reg_nbr_T
    );

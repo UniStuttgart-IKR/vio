@@ -22,10 +22,10 @@ ARCHITECTURE mixed OF ac_wrapper IS
     signal rena: boolean;
     signal wena: boolean;
 BEGIN
-    --#TODO: swapped ld(63 downto 32) / ld(31 downto 0) since dt was in wrong place. It this correct?
-    lpi <= ld(63 downto 32) when at_mode = load_maybe else (others => '0');
-    ldt <= ld(31 downto 0) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
-    sd <=  wdt & wpi;
+    lpi <= ld(BYTE4_RANGE) & ld(BYTE5_RANGE) & ld(BYTE6_RANGE) & ld(BYTE7_RANGE) when at_mode = load_maybe else (others => '0');
+    ldt <= ld(BYTE0_RANGE) & ld(BYTE1_RANGE) & ld(BYTE2_RANGE) & ld(BYTE3_RANGE) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
+    sd <=  wdt(BYTE0_RANGE) & wdt(BYTE1_RANGE) & wdt(BYTE2_RANGE) & wdt(BYTE3_RANGE) &
+           wpi(BYTE0_RANGE) & wpi(BYTE1_RANGE) & wpi(BYTE2_RANGE) & wpi(BYTE3_RANGE);
 
     rena <= at_mode = load_maybe or at_mode = load_delta_only;
     wena <= at_mode = store;

@@ -9,10 +9,14 @@
 --
 ARCHITECTURE behav OF ex_res_mux IS
 BEGIN
-    res_ex_u <= dbu_out_ex_u when branch_mode_dc = jal or branch_mode_dc = jalr or branch_mode_dc = jlib else
-                (val => alu_out_ex_u, tag => DATA, ix => (others => '0'), pi => (others => '0'), dt => (others => '0')) when alu_mode_dc /= alu_illegal and raux_dc.tag = DATA else
-                (val => rptr_dc.val, tag => POINTER, ix => alu_out_ex_u, pi => rptr_dc.pi, dt => rptr_dc.dt) when alu_mode_dc /= alu_illegal and raux_dc.tag = POINTER else
-                pgu_ptr_ex_u;
+    res_ex_u <= dbu_out_ex_u when res_mux_sel = DBU else
+                pgu_ptr_ex_u when res_mux_sel = PGU else
+                (val => alu_out_ex_u,    tag => DATA,        ix => (others => '0'), pi => (others => '0'), dt => (others => '0')) when res_mux_sel = ALU and raux_dc.tag = DATA else
+                (val => rptr_dc.val,     tag => POINTER,     ix => alu_out_ex_u,    pi => rptr_dc.pi,      dt => rptr_dc.dt)      when res_mux_sel = ALU and raux_dc.tag = POINTER else
+                (val => rdat_dc.val,     tag => DATA,        ix => (others => '0'), pi => (others => '0'), dt => (others => '0')) when res_mux_sel = DAT else
+                (val => raux_dc.val,     tag => raux_dc.tag, ix => raux_dc.ix,      pi => (others => '0'), dt => (others => '0')) when res_mux_sel = AUX else
+                (val => rptr_dc.val,     tag => POINTER,     ix => rptr_dc.ix,      pi => rptr_dc.pi,      dt => rptr_dc.dt)      when res_mux_sel = PTR else
+                (val => (others => '0'), tag => DATA,        ix => (others => '0'), pi => (others => '0'), dt => (others => '0'));
 
     mux_exc <= ptari when isPointerArithException(alu_mode_dc, raux_dc) else well_behaved;
 END ARCHITECTURE behav;

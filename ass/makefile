@@ -31,11 +31,11 @@ PROJROOTDIR = ../riscvio_lib/
 	@hexdump -C -v $(basename $^).elf | cut -c 10-58  | tr -d "\n\r" | tr -d ' ' | sed 's/.\{2\}/& ,0x/g' | head -n 64 > $(basename $^).dat
 
 %.mif: %.s %.o %.bin
-	@python3 misc/dat2mif.py -d 128 -w 256 -p 0000000000000000000000000000000000000000000000000000000000000000 -rbo 32 $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
+	@python3 misc/dat2mif.py -d 128 -w 256 -p 0000000000000000000000000000000000000000000000000000000000000000 $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
 	@cp $(OUTDIR)/$(basename $@).mif $(PROJROOTDIR)/boot.mif
 
 %.mif: %.o %.bin
-	@python3 misc/dat2mif.py -d 128 -w 256 -p 0000000000000000000000000000000000000000000000000000000000000000 -rbo 32 $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
+	@python3 misc/dat2mif.py -d 128 -w 256 -p 0000000000000000000000000000000000000000000000000000000000000000 $(OUTDIR)/$(basename $@).bin $(OUTDIR)/$(basename $@).mif
 	@cp $(OUTDIR)/$(basename $@).mif $(PROJROOTDIR)/boot.mif
 
 %.l: %.s %.o %.elf

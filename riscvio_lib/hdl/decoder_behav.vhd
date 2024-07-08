@@ -19,7 +19,7 @@ ARCHITECTURE behav OF decoder IS
 BEGIN
 
     decoded_inst <= decodeOpc(instruction);
-    ctr_sig.mnemonic    <= decoded_inst.mnemonic;
+    ctr_sig.mnemonic    <= decoded_inst.mnemonic when not atomic_swap else csrr when decoded_inst.mnemonic = csrw or decoded_inst.mnemonic = csrs or decoded_inst.mnemonic = csrc;
     ctr_sig.alu_mode    <= decoded_inst.alu_mode;
     ctr_sig.me_mode     <= decoded_inst.me_mode;
     ctr_sig.at_mode     <= decoded_inst.at_mode;
@@ -27,6 +27,12 @@ BEGIN
     ctr_sig.alu_b_sel   <= decoded_inst.alu_b_sel;
     ctr_sig.pgu_mode    <= decoded_inst.pgu_mode;
     ctr_sig.branch_mode <= decoded_inst.branch_mode;
+    ctr_sig.fwd_allowed <= decoded_inst.fwd_allowed when not atomic_swap else false;
+    ctr_sig.ex_res_mux_sel <= decoded_inst.ex_res_mux_sel;
+    csr_mux_sel         <= decoded_inst.csr_mux_sel when not atomic_swap else
+                           decoded_inst.ex_res_mux_sel when atomic_swap and (decoded_inst.mnemonic = csrw or decoded_inst.mnemonic = csrs or decoded_inst.mnemonic = csrc) else
+                           NONE;
+
 
     exc <= illeg when ctr_sig.mnemonic = illegal else well_behaved;
     xret <= decoded_inst.xret;
@@ -63,11 +69,12 @@ BEGIN
     sbt.eoc <= pc.eoc;
 
 
-    rdst_ix <= decoded_inst.rdst;
-    rdat_ix <= decoded_inst.rdat;
-    rptr_ix <= decoded_inst.rptr;
-    raux_ix <= decoded_inst.raux;
-    csr_ix <= decoded_inst.rptr when decoded_inst.rptr >= ali_T'pos(alc_addr) else ali_T'pos(alc_addr);
+    rdst_ix <= decoded_inst.rdst when not atomic_swap else decoded_inst.rptr;
+    rdat_ix <= decoded_inst.rdat when not atomic_swap else decoded_inst.rdst;
+    rptr_ix <= decoded_inst.rptr when not atomic_swap else decoded_inst.rdst;
+    raux_ix <= decoded_inst.raux when not atomic_swap else decoded_inst.rdst;
+    csr_ix  <= rptr_ix when csr_mux_sel = PTR else
+               rdat_ix when csr_mux_sel = DAT else
+               raux_ix when csr_mux_sel = AUX else
+               ali_T'pos(alc_addr);
 END ARCHITECTURE behav;
-
-

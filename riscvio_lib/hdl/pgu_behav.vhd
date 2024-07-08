@@ -26,7 +26,14 @@ BEGIN
                     calculateMemoryAddress(rptr.pi, rptr.ix, imm,      rptr.val, rptr.dt(31), rptr.dt(30))          when pgu_mode = pgu_dat_i else
                     calculateMemoryAddress(rptr.pi, rptr.ix, imm,      rptr.val, rptr.dt(31), rptr.dt(30), true)    when pgu_mode = pgu_ptr_i else
                     calculateMemoryAddress(rptr.pi, rptr.ix, rdat.val, rptr.val, rptr.dt(31), rptr.dt(30))          when pgu_mode = pgu_dat_r else
-                    calculateMemoryAddress(rptr.pi, rptr.ix, rdat.val, rptr.val, rptr.dt(31), rptr.dt(30), true)    when pgu_mode = pgu_ptr_r else 
+                    calculateMemoryAddress(rptr.pi, rptr.ix, rdat.val, rptr.val, rptr.dt(31), rptr.dt(30), true)    when pgu_mode = pgu_ptr_r else
+                    allocateNewObject(rptr.val, ptr_int.pi, ptr_int.dt)                                             when pgu_mode = pgu_alc  else
+                    allocateNewObject(rptr.val, ptr_int.pi, ptr_int.dt)                                             when pgu_mode = pgu_alcp else
+                    allocateNewObject(rptr.val, ptr_int.pi, ptr_int.dt)                                             when pgu_mode = pgu_alcd  else
+                    allocateNewObject(rptr.val, ptr_int.pi, ptr_int.dt)                                             when pgu_mode = pgu_alci  else
+                    allocateNewObject(raux.val, ptr_int.pi, ptr_int.dt)                                             when pgu_mode = pgu_pusht else
+                    allocateNewObject(raux.val, ptr_int.pi, ptr_int.dt)                                             when pgu_mode = pgu_push  else
+                    allocateNewObject(raux.val, ptr_int.pi, ptr_int.dt)                                             when pgu_mode = pgu_pushg else
                     (others => '0');
     
 
@@ -69,7 +76,8 @@ BEGIN
                 allocateNewObject(raux.val, ptr_int.pi, ptr_int.dt) when pgu_mode = pgu_pushg else
                 allocateNewObject(rptr.val, rptr.pi, rptr.dt, true) when pgu_mode = pgu_pop else
                 rdat.val(11 downto 0) & raux.val(16 downto 0) & IO_POINTER_TAG when pgu_mode = pgu_ciop else
-                word_T(unsigned(raux.val) + unsigned(raux.ix) + 8) when pgu_mode = pgu_ccp else
+                word_T(unsigned(raux.val) + unsigned(raux.ix) + 8)  when pgu_mode = pgu_ccp and raux.tag = POINTER else
+                raux.val                                            when pgu_mode = pgu_ccp and raux.tag = DATA else
                 pc.ptr when pgu_mode = pgu_auipc else 
                 (others => '0');
 

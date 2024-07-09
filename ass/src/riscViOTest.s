@@ -42,23 +42,33 @@ core.init:
             lp      ra, 0(frame)
 
 
+            # Device 1
+            li      t1, 2
+            # 3 Registers, register capability
+            li      t2, 5 * 2 + 0
+            ciop    s2, t1, t2
+            li      s3, 1
+            li      s4, 0x100
 
             # Device 1
             li      t1, 1
             # 3 Registers, register capability
             li      t2, 3 * 2 + 0
-            ciop    a1, t1, t2
+            ciop    s1, t1, t2            
             
             la      a0, hello_world_str
-            ccp     a0, a0
+            ccp     s0, a0
             
+core.loop:       sb      s3, 0(s2)
+            slli    s3, s3,1
+            blt     s3,s4,core.byteOk
+            li      s3, 1
+core.byteOk:
+            mv      a0, s0
+            mv      a1, s1
             jal     core.out_str
 
-          
-            nop
-            nop
-            ebreak
-
+            j       core.loop
 
             push    1,0
             sp      ra, 0(frame)
@@ -83,7 +93,7 @@ core.out_str:    beq     a0, zero, .done
             qdtb    t0, a0
             beq     t0, zero, .done
             li      t1, 0
-.outloop:   lbu.r    t2, t1(a0)
+.outloop:   lbu.r    t2, t1(a0) #TODO: resolve local labels as codeobj.subroutine.local
             #TODO: change the index back to 0 for output 
             sb      t2, 0(a1)
             addi    t1, t1, 1

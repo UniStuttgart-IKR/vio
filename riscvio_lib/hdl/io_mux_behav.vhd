@@ -14,6 +14,7 @@ USE ieee.numeric_std.all;
 
 ARCHITECTURE behav OF io_mux IS
     constant UART_DEV: std_logic_vector(11 downto 0) := std_logic_vector(to_unsigned(1, 12));
+    constant LEDS_DEV: std_logic_vector(11 downto 0) := std_logic_vector(to_unsigned(2, 12));
     signal uart_rx_data: byte_T;
     signal uart_tx_data: byte_T;
     signal uart_rx_data_avail: std_logic;
@@ -21,9 +22,13 @@ ARCHITECTURE behav OF io_mux IS
     signal uart_tx_ready: std_logic;
     signal uart_send_data: boolean;
     signal uart_sending: std_logic;
+
+    type boolean_vector is array(natural range <>) of boolean;
+
+    signal segments_we: boolean_vector(3 downto 0);
+    signal write_led_data: boolean;
 BEGIN
     uart_regs_p: process(clk, res_n) is
-
     begin
         if res_n = '0' then
             uart_rx_data <= (others => '0');
@@ -63,13 +68,49 @@ BEGIN
 
 
     data_stream_in <= uart_tx_data;
+
+
+    leds_reg: process(clk, res_n) is 
+    begin
+        if res_n = '0' then
+            leds <= (others => '0');
+            seven_seg_0 <= (others => '0');
+            seven_seg_1 <= (others => '0');
+            seven_seg_2 <= (others => '0');
+            seven_seg_3 <= (others => '0');
+        else
+            if clk'event and clk = '1' then
+                if write_led_data then
+                    leds <= io_wdata(BYTE0_RANGE);
+                end if;
+
+                if segments_we(0) then
+                    seven_seg_0 <= io_wdata(BYTE0_RANGE);
+                end if;
+
+                if segments_we(1) then
+                    seven_seg_1 <= io_wdata(BYTE0_RANGE);
+                end if;
+
+                if segments_we(2) then
+                    seven_seg_2 <= io_wdata(BYTE0_RANGE);
+                end if;
+
+                if segments_we(3) then
+                    seven_seg_3 <= io_wdata(BYTE0_RANGE);
+                end if;
+            end if;
+        end if;
+    end process;
     
     process(all) is
     begin
         clear_uart_rx_avail <= false;
         io_rdata <= (others => '0');
         uart_send_data <= false;
+        write_led_data <= false;
         io_stall <= '0';
+        segments_we <= (others => false);
 
         case io_dev is
             when UART_DEV => 
@@ -98,6 +139,27 @@ BEGIN
                         end case;
                     when others =>
                         null;
+                end case;
+
+
+            when LEDS_DEV => 
+                case io_mode is
+                    when sb => 
+                        case to_integer(unsigned(io_ix)) is
+                            when 0 => 
+                                write_led_data <= true;
+                            when 1 => 
+                                segments_we(0) <= true;
+                            when 2 => 
+                                segments_we(1) <= true;
+                            when 3 => 
+                                segments_we(2) <= true;
+                            when 4 => 
+                                segments_we(3) <= true;
+                            when others => null;
+                        end case;
+                        
+                    when others => null;
                 end case;
             when others => null;
         end case;

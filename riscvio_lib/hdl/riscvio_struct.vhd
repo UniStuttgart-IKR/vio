@@ -46,6 +46,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL dc_stall           : boolean;
    SIGNAL dt_at_u            : word_T;
    SIGNAL end_addr           : word_T;
+   SIGNAL end_addr_uq        : word_T;
    SIGNAL exc_dc             : exc_cause_T;
    SIGNAL exc_dc_dec         : exc_cause_T;
    SIGNAL exc_dc_u           : exc_cause_T;
@@ -68,6 +69,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL imm_ex_reg         : word_T;
    SIGNAL imm_me             : word_T;
    SIGNAL incremented_pc     : pc_T;
+   SIGNAL init_end_addr_u    : word_T;
    SIGNAL insert_atomic      : boolean;
    SIGNAL insert_nop         : boolean;
    SIGNAL io_out_me_u        : word_T;
@@ -233,14 +235,6 @@ ARCHITECTURE struct OF riscvio IS
       res_at_u : OUT    reg_mem_T 
    );
    END COMPONENT;
-   COMPONENT clr_ptr_end_addr_mux
-   PORT (
-      raux_ex    : IN     raux_T ;
-      rdst_ix_ex : IN     reg_nbr_T ;
-      rptr_ex    : IN     rptr_T ;
-      end_addr   : OUT    word_T 
-   );
-   END COMPONENT;
    COMPONENT csr_rf_mux
    PORT (
       csr_mux_sel : IN     csr_mux_sel_T ;
@@ -376,39 +370,42 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT ex_reg
    PORT (
-      clk            : IN     std_logic ;
-      ctrl_dc        : IN     ctrl_sig_T ;
-      exc_ex_u       : IN     exc_cause_T ;
-      imm_dc         : IN     word_T ;
-      me_addr_u      : IN     mem_addr_T ;
-      pc_dc          : IN     pc_T ;
-      pipe_flush     : IN     boolean ;
-      raux_dc        : IN     raux_T ;
-      rdat_dc        : IN     rdat_T ;
-      rdst_ix_dc     : IN     reg_nbr_T ;
-      res_ex_u       : IN     reg_mem_T ;
-      res_n          : IN     std_logic ;
-      rptr_dc        : IN     rptr_T ;
-      stall          : IN     boolean ;
-      allocating_me  : OUT    boolean ;
-      ctrl_ex        : OUT    ctrl_sig_T ;
-      exc_ex         : OUT    exc_cause_T ;
-      fwd_allowed_ex : OUT    boolean ;
-      imm_ex_reg     : OUT    word_T ;
-      me_addr        : OUT    mem_addr_T ;
-      me_addr_uq     : OUT    mem_addr_T ;
-      me_mode_ex     : OUT    mem_mode_T ;
-      me_mode_ex_uq  : OUT    mem_mode_T ;
-      pc_ex          : OUT    pc_T ;
-      pgu_mode_dc_uq : OUT    pgu_mode_T ;
-      pgu_mode_ex    : OUT    pgu_mode_T ;
-      raux_ex_reg    : OUT    raux_T ;
-      rdat_ex_reg    : OUT    rdat_T ;
-      rdst_ix_ex_reg : OUT    reg_nbr_T ;
-      res_ex         : OUT    reg_mem_T ;
-      rptr_ex_reg    : OUT    rptr_T ;
-      start_addr     : OUT    word_T ;
-      start_addr_uq  : OUT    word_T 
+      clk             : IN     std_logic ;
+      ctrl_dc         : IN     ctrl_sig_T ;
+      exc_ex_u        : IN     exc_cause_T ;
+      imm_dc          : IN     word_T ;
+      init_end_addr_u : IN     word_T ;
+      me_addr_u       : IN     mem_addr_T ;
+      pc_dc           : IN     pc_T ;
+      pipe_flush      : IN     boolean ;
+      raux_dc         : IN     raux_T ;
+      rdat_dc         : IN     rdat_T ;
+      rdst_ix_dc      : IN     reg_nbr_T ;
+      res_ex_u        : IN     reg_mem_T ;
+      res_n           : IN     std_logic ;
+      rptr_dc         : IN     rptr_T ;
+      stall           : IN     boolean ;
+      allocating_me   : OUT    boolean ;
+      ctrl_ex         : OUT    ctrl_sig_T ;
+      end_addr        : OUT    word_T ;
+      end_addr_uq     : OUT    word_T ;
+      exc_ex          : OUT    exc_cause_T ;
+      fwd_allowed_ex  : OUT    boolean ;
+      imm_ex_reg      : OUT    word_T ;
+      me_addr         : OUT    mem_addr_T ;
+      me_addr_uq      : OUT    mem_addr_T ;
+      me_mode_ex      : OUT    mem_mode_T ;
+      me_mode_ex_uq   : OUT    mem_mode_T ;
+      pc_ex           : OUT    pc_T ;
+      pgu_mode_dc_uq  : OUT    pgu_mode_T ;
+      pgu_mode_ex     : OUT    pgu_mode_T ;
+      raux_ex_reg     : OUT    raux_T ;
+      rdat_ex_reg     : OUT    rdat_T ;
+      rdst_ix_ex_reg  : OUT    reg_nbr_T ;
+      res_ex          : OUT    reg_mem_T ;
+      rptr_ex_reg     : OUT    rptr_T ;
+      start_addr      : OUT    word_T ;
+      start_addr_uq   : OUT    word_T 
    );
    END COMPONENT;
    COMPONENT ex_res_mux
@@ -575,9 +572,9 @@ ARCHITECTURE struct OF riscvio IS
       clk                : IN     std_logic ;
       dc_stall           : IN     boolean ;
       end_addr           : IN     word_T ;
+      end_addr_uq        : IN     word_T ;
       pgu_mode_dc_uq     : IN     pgu_mode_T ;
       pgu_mode_ex        : IN     pgu_mode_T ;
-      rdst_ix_ex         : IN     reg_nbr_T ;
       res_n              : IN     std_logic ;
       start_addr         : IN     word_T ;
       start_addr_uq      : IN     word_T ;
@@ -612,16 +609,17 @@ ARCHITECTURE struct OF riscvio IS
    END COMPONENT;
    COMPONENT pgu
    PORT (
-      imm      : IN     word_T ;
-      pc       : IN     pc_T ;
-      pgu_mode : IN     pgu_mode_T ;
-      raux     : IN     raux_T ;
-      rdat     : IN     rdat_T ;
-      rdst_ix  : IN     reg_nbr_T ;
-      rptr     : IN     rptr_T ;
-      me_addr  : OUT    mem_addr_T ;
-      pgu_exc  : OUT    exc_cause_T ;
-      ptr      : OUT    reg_mem_T 
+      imm           : IN     word_T ;
+      pc            : IN     pc_T ;
+      pgu_mode      : IN     pgu_mode_T ;
+      raux          : IN     raux_T ;
+      rdat          : IN     rdat_T ;
+      rdst_ix       : IN     reg_nbr_T ;
+      rptr          : IN     rptr_T ;
+      init_end_addr : OUT    word_T ;
+      me_addr       : OUT    mem_addr_T ;
+      pgu_exc       : OUT    exc_cause_T ;
+      ptr           : OUT    reg_mem_T 
    );
    END COMPONENT;
    COMPONENT ral_nop_unit
@@ -675,7 +673,6 @@ ARCHITECTURE struct OF riscvio IS
    FOR ALL : alu_b_mux USE ENTITY riscvio_lib.alu_b_mux;
    FOR ALL : at_reg USE ENTITY riscvio_lib.at_reg;
    FOR ALL : at_res_mux USE ENTITY riscvio_lib.at_res_mux;
-   FOR ALL : clr_ptr_end_addr_mux USE ENTITY riscvio_lib.clr_ptr_end_addr_mux;
    FOR ALL : csr_rf_mux USE ENTITY riscvio_lib.csr_rf_mux;
    FOR ALL : csr_unit USE ENTITY riscvio_lib.csr_unit;
    FOR ALL : dc_reg USE ENTITY riscvio_lib.dc_reg;
@@ -789,13 +786,6 @@ BEGIN
          pi_at_u  => pi_at_u,
          res_me   => res_me,
          res_at_u => res_at_u
-      );
-   clr_ptr_end_addr_mux_i : clr_ptr_end_addr_mux
-      PORT MAP (
-         raux_ex    => raux_ex,
-         rdst_ix_ex => rdst_ix_ex,
-         rptr_ex    => rptr_ex,
-         end_addr   => end_addr
       );
    csr_rf_mux_i : csr_rf_mux
       PORT MAP (
@@ -925,39 +915,42 @@ BEGIN
       );
    ex_reg_i : ex_reg
       PORT MAP (
-         clk            => clk,
-         ctrl_dc        => ctrl_dc,
-         exc_ex_u       => exc_ex_u,
-         imm_dc         => imm_dc,
-         me_addr_u      => me_addr_u,
-         pc_dc          => pc_dc,
-         pipe_flush     => pipe_flush,
-         raux_dc        => raux_dc,
-         rdat_dc        => rdat_dc,
-         rdst_ix_dc     => rdst_ix_dc,
-         res_ex_u       => res_ex_u,
-         res_n          => res_n,
-         rptr_dc        => rptr_dc,
-         stall          => stall,
-         allocating_me  => allocating_me,
-         ctrl_ex        => ctrl_ex,
-         exc_ex         => exc_ex,
-         fwd_allowed_ex => fwd_allowed_ex,
-         imm_ex_reg     => imm_ex_reg,
-         me_addr        => me_addr,
-         me_addr_uq     => me_addr_uq,
-         me_mode_ex     => me_mode_ex,
-         me_mode_ex_uq  => me_mode_ex_uq,
-         pc_ex          => pc_ex,
-         pgu_mode_dc_uq => pgu_mode_dc_uq,
-         pgu_mode_ex    => pgu_mode_ex,
-         raux_ex_reg    => raux_ex_reg,
-         rdat_ex_reg    => rdat_ex_reg,
-         rdst_ix_ex_reg => rdst_ix_ex_reg,
-         res_ex         => res_ex,
-         rptr_ex_reg    => rptr_ex_reg,
-         start_addr     => start_addr,
-         start_addr_uq  => start_addr_uq
+         clk             => clk,
+         ctrl_dc         => ctrl_dc,
+         exc_ex_u        => exc_ex_u,
+         imm_dc          => imm_dc,
+         init_end_addr_u => init_end_addr_u,
+         me_addr_u       => me_addr_u,
+         pc_dc           => pc_dc,
+         pipe_flush      => pipe_flush,
+         raux_dc         => raux_dc,
+         rdat_dc         => rdat_dc,
+         rdst_ix_dc      => rdst_ix_dc,
+         res_ex_u        => res_ex_u,
+         res_n           => res_n,
+         rptr_dc         => rptr_dc,
+         stall           => stall,
+         allocating_me   => allocating_me,
+         ctrl_ex         => ctrl_ex,
+         end_addr        => end_addr,
+         end_addr_uq     => end_addr_uq,
+         exc_ex          => exc_ex,
+         fwd_allowed_ex  => fwd_allowed_ex,
+         imm_ex_reg      => imm_ex_reg,
+         me_addr         => me_addr,
+         me_addr_uq      => me_addr_uq,
+         me_mode_ex      => me_mode_ex,
+         me_mode_ex_uq   => me_mode_ex_uq,
+         pc_ex           => pc_ex,
+         pgu_mode_dc_uq  => pgu_mode_dc_uq,
+         pgu_mode_ex     => pgu_mode_ex,
+         raux_ex_reg     => raux_ex_reg,
+         rdat_ex_reg     => rdat_ex_reg,
+         rdst_ix_ex_reg  => rdst_ix_ex_reg,
+         res_ex          => res_ex,
+         rptr_ex_reg     => rptr_ex_reg,
+         start_addr      => start_addr,
+         start_addr_uq   => start_addr_uq
       );
    ex_res_mux_i : ex_res_mux
       PORT MAP (
@@ -1137,9 +1130,9 @@ BEGIN
          clk                => clk,
          dc_stall           => dc_stall,
          end_addr           => end_addr,
+         end_addr_uq        => end_addr_uq,
          pgu_mode_dc_uq     => pgu_mode_dc_uq,
          pgu_mode_ex        => pgu_mode_ex,
-         rdst_ix_ex         => rdst_ix_ex,
          res_n              => res_n,
          start_addr         => start_addr,
          start_addr_uq      => start_addr_uq,
@@ -1171,16 +1164,17 @@ BEGIN
       );
    pgu_i : pgu
       PORT MAP (
-         imm      => imm_dc,
-         pc       => pc_dc,
-         pgu_mode => pgu_mode_dc,
-         raux     => raux_dc,
-         rdat     => rdat_dc,
-         rdst_ix  => rdst_ix_dc,
-         rptr     => rptr_dc,
-         me_addr  => me_addr_u,
-         pgu_exc  => pgu_exc,
-         ptr      => pgu_ptr_ex_u
+         imm           => imm_dc,
+         pc            => pc_dc,
+         pgu_mode      => pgu_mode_dc,
+         raux          => raux_dc,
+         rdat          => rdat_dc,
+         rdst_ix       => rdst_ix_dc,
+         rptr          => rptr_dc,
+         init_end_addr => init_end_addr_u,
+         me_addr       => me_addr_u,
+         pgu_exc       => pgu_exc,
+         ptr           => pgu_ptr_ex_u
       );
    ral_nop_i : ral_nop_unit
       PORT MAP (

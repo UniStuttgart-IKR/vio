@@ -36,6 +36,9 @@ BEGIN
                     allocateNewObject(raux.val, ptr_int.pi, ptr_int.dt)                                             when pgu_mode = pgu_pushg else
                     (others => '0');
     
+    init_end_addr <= raux.val when pgu_mode = pgu_pusht or pgu_mode = pgu_push or pgu_mode = pgu_pushg else
+                     rptr.val when pgu_mode = pgu_alc or pgu_mode = pgu_alcp or pgu_mode = pgu_alcd or pgu_mode = pgu_alci else
+                     (others => '0');
 
     process(all) is
     begin

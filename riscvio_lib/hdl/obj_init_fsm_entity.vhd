@@ -9,9 +9,9 @@ ENTITY obj_init_fsm IS
       clk                : IN     std_logic;
       dc_stall           : IN     boolean;
       end_addr           : IN     word_T;
+      end_addr_uq        : IN     word_T;
       pgu_mode_dc_uq     : IN     pgu_mode_T;
       pgu_mode_ex        : IN     pgu_mode_T;
-      rdst_ix_ex         : IN     reg_nbr_T;
       res_n              : IN     std_logic;
       start_addr         : IN     word_T;
       start_addr_uq      : IN     word_T;

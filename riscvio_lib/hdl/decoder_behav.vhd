@@ -19,7 +19,7 @@ ARCHITECTURE behav OF decoder IS
 BEGIN
 
     decoded_inst <= decodeOpc(instruction);
-    ctr_sig.mnemonic    <= decoded_inst.mnemonic when not atomic_swap else csrr when decoded_inst.mnemonic = csrw or decoded_inst.mnemonic = csrs or decoded_inst.mnemonic = csrc;
+    ctr_sig.mnemonic    <= csrr when (decoded_inst.mnemonic = csrw or decoded_inst.mnemonic = csrs or decoded_inst.mnemonic = csrc) and atomic_swap else decoded_inst.mnemonic;
     ctr_sig.alu_mode    <= decoded_inst.alu_mode;
     ctr_sig.me_mode     <= decoded_inst.me_mode;
     ctr_sig.at_mode     <= decoded_inst.at_mode;

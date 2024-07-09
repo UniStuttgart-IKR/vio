@@ -21,7 +21,12 @@ ENTITY io_mux IS
       data_stream_in      : OUT    std_logic_vector (7 DOWNTO 0);
       data_stream_in_stb  : OUT    std_logic;
       io_rdata            : OUT    word_T;
-      io_stall            : OUT    std_logic
+      io_stall            : OUT    std_logic;
+      leds                : OUT    std_logic_vector (7 DOWNTO 0);
+      seven_seg_0         : OUT    std_logic_vector (7 DOWNTO 0);
+      seven_seg_1         : OUT    std_logic_vector (7 DOWNTO 0);
+      seven_seg_2         : OUT    std_logic_vector (7 DOWNTO 0);
+      seven_seg_3         : OUT    std_logic_vector (7 DOWNTO 0)
    );
 
 -- Declarations

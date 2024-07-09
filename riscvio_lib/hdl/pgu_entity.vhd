@@ -6,16 +6,17 @@ USE riscvio_lib.pipeline.all;
 
 ENTITY pgu IS
    PORT( 
-      imm      : IN     word_T;
-      pc       : IN     pc_T;
-      pgu_mode : IN     pgu_mode_T;
-      raux     : IN     raux_T;
-      rdat     : IN     rdat_T;
-      rdst_ix  : IN     reg_nbr_T;
-      rptr     : IN     rptr_T;
-      me_addr  : OUT    mem_addr_T;
-      pgu_exc  : OUT    exc_cause_T;
-      ptr      : OUT    reg_mem_T
+      imm           : IN     word_T;
+      pc            : IN     pc_T;
+      pgu_mode      : IN     pgu_mode_T;
+      raux          : IN     raux_T;
+      rdat          : IN     rdat_T;
+      rdst_ix       : IN     reg_nbr_T;
+      rptr          : IN     rptr_T;
+      init_end_addr : OUT    word_T;
+      me_addr       : OUT    mem_addr_T;
+      pgu_exc       : OUT    exc_cause_T;
+      ptr           : OUT    reg_mem_T
    );
 
 -- Declarations

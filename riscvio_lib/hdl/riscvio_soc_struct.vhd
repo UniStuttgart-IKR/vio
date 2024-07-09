@@ -92,7 +92,12 @@ ARCHITECTURE struct OF riscvio_soc IS
       data_stream_in      : OUT    std_logic_vector (7 DOWNTO 0);
       data_stream_in_stb  : OUT    std_logic ;
       io_rdata            : OUT    word_T ;
-      io_stall            : OUT    std_logic 
+      io_stall            : OUT    std_logic ;
+      leds                : OUT    std_logic_vector (7 DOWNTO 0);
+      seven_seg_0         : OUT    std_logic_vector (7 DOWNTO 0);
+      seven_seg_1         : OUT    std_logic_vector (7 DOWNTO 0);
+      seven_seg_2         : OUT    std_logic_vector (7 DOWNTO 0);
+      seven_seg_3         : OUT    std_logic_vector (7 DOWNTO 0)
    );
    END COMPONENT;
    COMPONENT riscvio
@@ -202,7 +207,12 @@ BEGIN
          data_stream_in      => data_stream_in,
          data_stream_in_stb  => data_stream_in_stb,
          io_rdata            => io_rdata,
-         io_stall            => io_stall
+         io_stall            => io_stall,
+         leds                => leds,
+         seven_seg_0         => seven_seg_0,
+         seven_seg_1         => seven_seg_1,
+         seven_seg_2         => seven_seg_2,
+         seven_seg_3         => seven_seg_3
       );
    riscvio_i : riscvio
       PORT MAP (

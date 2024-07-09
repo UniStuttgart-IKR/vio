@@ -73,7 +73,7 @@ BEGIN
     leds_reg: process(clk, res_n) is 
     begin
         if res_n = '0' then
-            leds <= (others => '0');
+            leds <= (0 => '1', others => '0');
             seven_seg_0 <= (others => '0');
             seven_seg_1 <= (others => '0');
             seven_seg_2 <= (others => '0');
@@ -84,6 +84,9 @@ BEGIN
                     leds <= io_wdata(BYTE0_RANGE);
                 end if;
 
+                seven_seg_0 <= std_logic_vector(unsigned(seven_seg_0) + 1);
+
+                
                 if segments_we(0) then
                     seven_seg_0 <= io_wdata(BYTE0_RANGE);
                 end if;

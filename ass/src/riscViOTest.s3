@@ -54,10 +54,11 @@ init:
             ccp     s0, a0
             
 loop:       sb      s3, 0(s2)
-            slli    s3, s3,1
-            blt     s3,s4,byteOk
-            li      s3, 1
-byteOk:
+            #slli    s3, s3,1
+            #blt     s3,s4,byteOk
+            #li      s3, 1
+#byteOk:    
+            rori    s3, s3, 1
             mv      a0, s0
             mv      a1, s1
             jal     out_str

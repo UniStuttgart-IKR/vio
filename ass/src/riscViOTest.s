@@ -60,10 +60,11 @@ core.init:
             ccp     s0, a0
             
 core.loop:       sb      s3, 0(s2)
-            slli    s3, s3,1
-            blt     s3,s4,core.byteOk
-            li      s3, 1
-core.byteOk:
+            #slli    s3, s3,1
+            #blt     s3,s4,byteOk
+            #li      s3, 1
+#byteOk:    
+            rori    s3, s3, 1
             mv      a0, s0
             mv      a1, s1
             jal     core.out_str
@@ -93,7 +94,7 @@ core.out_str:    beq     a0, zero, .done
             qdtb    t0, a0
             beq     t0, zero, .done
             li      t1, 0
-.outloop:   lbu.r    t2, t1(a0) #TODO: resolve local labels as codeobj.subroutine.local
+.outloop:   lbu.r    t2, t1(a0)
             #TODO: change the index back to 0 for output 
             sb      t2, 0(a1)
             addi    t1, t1, 1

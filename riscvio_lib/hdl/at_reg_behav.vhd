@@ -13,7 +13,7 @@ BEGIN
     begin
         if res_n = '0' then
             rd_wb <= REG_WB_NULL;
-            rd_wb.csr_nbr <= (others => '0');
+            rd_wb.csr_nbr <= ali_T'pos(no_csr);
             res_at <= REG_MEM_NULL;
             rdst_ix_at <= ali_T'pos(zero);
             pc_wb <= PC_NULL;

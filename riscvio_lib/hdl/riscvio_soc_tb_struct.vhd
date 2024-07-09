@@ -34,7 +34,7 @@ ARCHITECTURE struct OF riscvio_soc_tb IS
    COMPONENT riscvio_soc
    PORT (
       clk         : IN     std_logic ;
-      res_n       : IN     std_logic ;
+      res_n_raw   : IN     std_logic ;
       rx          : IN     std_logic ;
       leds        : OUT    std_logic_vector (7 DOWNTO 0);
       seven_seg_0 : OUT    std_logic_vector (7 DOWNTO 0);
@@ -73,7 +73,7 @@ BEGIN
    soc_i : riscvio_soc
       PORT MAP (
          clk         => clk,
-         res_n       => res_n,
+         res_n_raw   => res_n,
          rx          => rx,
          leds        => leds,
          seven_seg_0 => seven_seg_0,

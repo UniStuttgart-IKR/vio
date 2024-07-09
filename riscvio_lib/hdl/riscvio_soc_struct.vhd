@@ -5,6 +5,8 @@ USE riscvio_lib.pipeline.all;
 USE riscvio_lib.ISA.all;
 USE ieee.numeric_std.all;
 USE ieee.math_real.all;
+LIBRARY altera_lnsim;
+USE altera_lnsim.altera_lnsim_components.all;
 
 
 ARCHITECTURE struct OF riscvio_soc IS
@@ -21,6 +23,7 @@ ARCHITECTURE struct OF riscvio_soc IS
    SIGNAL ac_wbyte_ena        : std_logic_vector(BUS_WIDTH/8 - 1 DOWNTO 0);
    SIGNAL ac_wdata            : buzz_word_T;
    SIGNAL ac_wreq             : boolean;
+   SIGNAL clk                 : std_logic;
    SIGNAL data_stream_in      : std_logic_vector(7 DOWNTO 0);
    SIGNAL data_stream_in_ack  : std_logic;
    SIGNAL data_stream_in_done : std_logic;
@@ -46,6 +49,9 @@ ARCHITECTURE struct OF riscvio_soc IS
    SIGNAL io_rdata            : word_T;
    SIGNAL io_stall            : std_logic;
    SIGNAL io_wdata            : word_T;
+   SIGNAL locked              : STD_LOGIC;
+   SIGNAL res_n               : std_logic;
+   SIGNAL res_raw             : std_logic;
 
 
    -- Component Declarations
@@ -100,6 +106,14 @@ ARCHITECTURE struct OF riscvio_soc IS
       seven_seg_3         : OUT    std_logic_vector (7 DOWNTO 0)
    );
    END COMPONENT;
+   COMPONENT res_n_sync
+   PORT (
+      clk       : IN     std_logic ;
+      locked    : IN     STD_LOGIC ;
+      res_n_raw : IN     std_logic ;
+      res_n     : OUT    std_logic 
+   );
+   END COMPONENT;
    COMPONENT riscvio
    PORT (
       ac_rack      : IN     boolean ;
@@ -134,6 +148,14 @@ ARCHITECTURE struct OF riscvio_soc IS
       io_wdata     : OUT    word_T 
    );
    END COMPONENT;
+   COMPONENT soc_pll
+   PORT (
+      refclk   : IN     STD_LOGIC;
+      rst      : IN     STD_LOGIC;
+      locked   : OUT    STD_LOGIC;
+      outclk_0 : OUT    STD_LOGIC
+   );
+   END COMPONENT;
    COMPONENT uart
    GENERIC (
       baud            : positive;
@@ -157,12 +179,17 @@ ARCHITECTURE struct OF riscvio_soc IS
    -- pragma synthesis_off
    FOR ALL : int_ram USE ENTITY riscvio_lib.int_ram;
    FOR ALL : io_mux USE ENTITY riscvio_lib.io_mux;
+   FOR ALL : res_n_sync USE ENTITY riscvio_lib.res_n_sync;
    FOR ALL : riscvio USE ENTITY riscvio_lib.riscvio;
+   FOR ALL : soc_pll USE ENTITY riscvio_lib.soc_pll;
    FOR ALL : uart USE ENTITY riscvio_lib.uart;
    -- pragma synthesis_on
 
 
 BEGIN
+
+   -- ModuleWare code(v1.12) for instance 'res_raw_inv_i' of 'inv'
+   res_raw <= NOT(res_n_raw);
 
    -- Instance port mappings.
    int_ram_i : int_ram
@@ -214,6 +241,13 @@ BEGIN
          seven_seg_2         => seven_seg_2,
          seven_seg_3         => seven_seg_3
       );
+   res_n_sync_i : res_n_sync
+      PORT MAP (
+         clk       => clk,
+         locked    => locked,
+         res_n_raw => res_n_raw,
+         res_n     => res_n
+      );
    riscvio_i : riscvio
       PORT MAP (
          ac_rack      => ac_rack,
@@ -246,6 +280,13 @@ BEGIN
          io_ix        => io_ix,
          io_mode      => io_mode,
          io_wdata     => io_wdata
+      );
+   soc_pll_i : soc_pll
+      PORT MAP (
+         locked   => locked,
+         outclk_0 => clk,
+         refclk   => clk_raw,
+         rst      => res_raw
       );
    uart_if_i : uart
       GENERIC MAP (

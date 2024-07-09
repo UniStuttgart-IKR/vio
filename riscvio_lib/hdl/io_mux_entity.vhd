@@ -5,6 +5,8 @@ USE riscvio_lib.pipeline.all;
 USE riscvio_lib.ISA.all;
 USE ieee.numeric_std.all;
 USE ieee.math_real.all;
+LIBRARY altera_lnsim;
+USE altera_lnsim.altera_lnsim_components.all;
 
 ENTITY io_mux IS
    PORT( 
@@ -32,3 +34,4 @@ ENTITY io_mux IS
 -- Declarations
 
 END io_mux ;
+

@@ -3,7 +3,7 @@ import re
 
 HEADERMSG = "# generated from {0} by riscvio-preproc.py by LeyLux Group\n"
 ALLOWEDCOOBJNAMES = "[a-zA-Z0-9_]+"
-ALLOWEDFNEXPR = "[a-zA-Z0-9_]+"
+ALLOWEDFNEXPR = "[.a-zA-Z0-9_]+"
 
 
 class ParseException(Exception):
@@ -225,6 +225,19 @@ def replaceDataObjHeaders(contents, pobjects) -> []:
 
     return newcontents
 
+def findMainFctName(coobj, fname) -> str:
+    fnamei = None
+    for i, fn in enumerate(coobj["allfns"]):
+        if fn == fname:
+            fnamei = i
+            break
+    assert fnamei != None, "internal error"
+
+    for i in range(fnamei, -1, -1):
+        if coobj["allfns"][i][0] != ".":
+            return coobj["allfns"][i]
+        
+    return None
 
 def expandFunctionNames(contents, pobjects) -> []:
     newcontents = contents[:]
@@ -234,9 +247,18 @@ def expandFunctionNames(contents, pobjects) -> []:
             pobjectStr = newcontents[pobject["hdrendpos"][0]][pobject["hdrendpos"][1]:pobject["endpos"][1]]
 
             afterLabekExpansion = pobjectStr
-            afterLabekExpansion = re.sub("\n(" + ALLOWEDCOOBJNAMES + ":)", "\n" + pobject["name"] + ".\\1",
+            for fname in pobject["allfns"]:
+                if fname[0] == '.':
+                    mainfctname = findMainFctName(pobject, fname)
+                    afterLabekExpansion = re.sub("\n{0}:".format(fname), "\n{0}.{1}{2}:".format(pobject["name"], mainfctname, fname),
                                         pobjectStr)
+                    print("\n{0}:".format(fname), "\n{0}.{1}{2}:".format(pobject["name"], mainfctname, fname))
+                else:
+                    afterLabekExpansion = re.sub("\n{0}:".format(fname), "\n{0}.{1}:".format(pobject["name"], fname),
+                                        pobjectStr)
+                    print("\n{0}:".format(fname), "\n{0}.{1}:".format(pobject["name"], fname))
 
+            print(afterLabekExpansion)
             afterLocalCONameExpansion = afterLabekExpansion[:]
             jmpMnenmoncs = ["jal", "j", "beq", "bne", "bgt", "blt", "bltu", "bgtu", "bge", "ble", "la"]
 

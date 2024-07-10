@@ -117,6 +117,7 @@ ARCHITECTURE behav OF primitive_cache IS
     -- #TODO: purge unnecessesary internal signals
 
     signal line_hit: boolean;
+    signal stall_int: boolean;
     
 BEGIN
     valid_memory: entity simple_dual_port_ram 
@@ -175,7 +176,8 @@ BEGIN
     bytes_we <= bytes_we_fill or bytes_we_pipe;
     bytes_to_write <= bytes_to_write_fill when fill_state /= IDLE or (not line_hit and rd) else bytes_to_write_pipe;
 
-    stall <= ((not line_hit or fill_state /= IDLE) and rd) or invalidation_state /= IDLE or write_stall;
+    stall_int <= ((not line_hit or fill_state /= IDLE) and rd) or invalidation_state /= IDLE or write_stall;
+    stall <= stall_int;
     
     
     fill_unit_state_p: process(clk, res_n) is
@@ -274,7 +276,7 @@ BEGIN
     end process fwd_write_to_rdata_p;
 
     used_line_ctr <= last_line_fill_ctr when (fill_state = LOADING or fill_state = PREPARING) and not rack else line_fill_ctr;
-    used_addr <= last_rd_addr when (fill_state = LOADING or fill_state = PREPARING) and not rack  else addr;
+    used_addr <= next_addr;
     raddr <= raddr_int;
     
     fill_unit_output_p: process(all) is
@@ -569,5 +571,43 @@ BEGIN
 
     end process invalidation_unit_output_p;
 
+
+
+
+    -- synthesis off
+    if_check: process(clk, res_n, stall_int) is
+        variable last_stall: boolean := false; 
+        variable stall_we: boolean;
+        variable stall_rd: boolean;
+        variable stall_byteena: std_logic_vector(byte_ena'range);
+        variable stall_sd: std_logic_vector(sd'range);
+        variable stall_addr: std_logic_vector(addr'range);
+        variable stall_next_addr: std_logic_vector(next_addr'range);
+    begin
+        if res_n = '0' then
+            last_stall := false;
+        else
+            if (clk'event and clk = '0') then  
+                if not (last_stall and stall)  or not stall_int then
+                    stall_we := we;
+                    stall_rd := rd;
+                    stall_byteena := byte_ena;
+                    stall_sd := sd;
+                    stall_addr := addr;
+                    stall_next_addr := next_addr;
+                end if;
+
+                assert  not stall_int or stall_we = we report "WE CHANGED DURING STALL!" severity failure;
+                assert  not stall_int or stall_rd = rd report "RD CHANGED DURING STALL!" severity failure;
+                assert  not stall_int or stall_sd = sd report "SD CHANGED DURING STALL!" severity failure;
+                assert  not stall_int or stall_byteena = byte_ena  report "BYTE ENA CHANGED DURING STALL!" severity failure;
+                assert  not stall_int or stall_addr = addr  report "ADDR CHANGED DURING STALL!" severity failure;
+                assert  not stall_int or stall_next_addr = next_addr report "NEXT_ADDR CHANGED DURING STALL!" severity failure;
+
+                last_stall := stall;
+            end if;
+        end if;
+    end process;
+    -- synthesis on
 END ARCHITECTURE behav;
 

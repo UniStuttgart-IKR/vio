@@ -13,9 +13,6 @@ LIBRARY ieee;
 USE ieee.numeric_std.all;
 use IEEE.math_real.all;
 LIBRARY riscvio_lib;
-USE riscvio_lib.helper.revWords;
-USE riscvio_lib.helper.revNibbles;
-LIBRARY riscvio_lib;
 USE riscvio_lib.all;
 
 ARCHITECTURE mixed OF int_ram IS
@@ -130,9 +127,9 @@ BEGIN
   end process  request_fsm_transitions;
   
   
-  ic_rdata <= revWords(rdata);
-  dc_rdata <= revWords(rdata);
-  ac_rdata <= revWords(rdata);
+  ic_rdata <= rdata;
+  dc_rdata <= rdata;
+  ac_rdata <= rdata;
   we       <= '1' when wack_reg else '0';
   byte_ena <= ac_wbyte_ena when request_current_state = HANDLINGACWREQ else 
               dc_wbyte_ena when request_current_state = HANDLINGDCWREQ else
@@ -235,9 +232,9 @@ BEGIN
     PORT MAP (
       address_a => addr,
       clock0 => clk,
-      data_a => revWords(wdata),
+      data_a => wdata,
       wren_a => we,
-      byteena_a => revNibbles(byte_ena),
+      byteena_a => byte_ena,
       q_a => rdata
     );
 	

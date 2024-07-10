@@ -20,6 +20,7 @@ BEGIN
       pc_dc <= PC_NULL;
       branch_mode_dc <= no_branch;
       exc_dc <= well_behaved;
+      ebreak_stall <= false;
     else
       if clk'event and clk = '1' then
         if pipe_flush then
@@ -32,6 +33,7 @@ BEGIN
           pc_dc <= PC_NULL;
           branch_mode_dc <= no_branch;
           exc_dc <= well_behaved;
+          ebreak_stall <= false;
         elsif not stall then
           if dbt_valid then
             ctrl_dc <= CTRL_NULL;
@@ -42,6 +44,7 @@ BEGIN
             raux_dc_reg <= RAUX_NULL;
             imm_dc_reg  <= (others => '0');
             exc_dc <= well_behaved;
+            ebreak_stall <= false;
           else
             ctrl_dc <= ctrl_dc_u;
             branch_mode_dc <= ctrl_dc_u.branch_mode;
@@ -51,8 +54,11 @@ BEGIN
             raux_dc_reg <= raux_dc_u;
             imm_dc_reg  <= imm_dc_u;
             exc_dc <= exc_dc_u;
+            ebreak_stall <= ctrl_dc_u.mnemonic = ebreak;
           end if;
           pc_dc <= pc_if;
+        elsif ebreak_release then
+          ebreak_stall <= false;
         end if;
       end if;
     end if;

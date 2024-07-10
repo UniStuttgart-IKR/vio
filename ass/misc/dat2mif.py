@@ -93,7 +93,7 @@ def __main__(args) -> None:
                 parsed_content = bin(int(bin_content.read().hex(), base=16))[2:]
                 fsize = os.path.getsize(args.infile)
                 parsed_content = "0" * (fsize * 8 - len(parsed_content)) + parsed_content
-
+                parsed_content = parsed_content + "0" * (((args.width - (len(parsed_content) % args.width))))
 
     assert len(parsed_content) <= args.depth * args.width, "ERROR: input size does not fit given depth!"
 

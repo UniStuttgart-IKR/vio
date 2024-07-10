@@ -8,15 +8,16 @@ ARCHITECTURE struct OF riscvio_soc_tb IS
    -- Architecture declarations
 
    -- Internal signal declarations
-   SIGNAL clk         : std_logic;
-   SIGNAL leds        : std_logic_vector(7 DOWNTO 0);
-   SIGNAL res_n       : std_logic;
-   SIGNAL rx          : std_logic;
-   SIGNAL seven_seg_0 : std_logic_vector(7 DOWNTO 0);
-   SIGNAL seven_seg_1 : std_logic_vector(7 DOWNTO 0);
-   SIGNAL seven_seg_2 : std_logic_vector(7 DOWNTO 0);
-   SIGNAL seven_seg_3 : std_logic_vector(7 DOWNTO 0);
-   SIGNAL tx          : std_logic;
+   SIGNAL clk           : std_logic;
+   SIGNAL ebreak_button : std_logic;
+   SIGNAL leds          : std_logic_vector(7 DOWNTO 0);
+   SIGNAL res_n         : std_logic;
+   SIGNAL rx            : std_logic;
+   SIGNAL seven_seg_0   : std_logic_vector(6 DOWNTO 0);
+   SIGNAL seven_seg_1   : std_logic_vector(6 DOWNTO 0);
+   SIGNAL seven_seg_2   : std_logic_vector(6 DOWNTO 0);
+   SIGNAL seven_seg_3   : std_logic_vector(6 DOWNTO 0);
+   SIGNAL tx            : std_logic;
 
 
    -- Component Declarations
@@ -33,15 +34,16 @@ ARCHITECTURE struct OF riscvio_soc_tb IS
    END COMPONENT;
    COMPONENT riscvio_soc
    PORT (
-      clk         : IN     std_logic ;
-      res_n_raw   : IN     std_logic ;
-      rx          : IN     std_logic ;
-      leds        : OUT    std_logic_vector (7 DOWNTO 0);
-      seven_seg_0 : OUT    std_logic_vector (7 DOWNTO 0);
-      seven_seg_1 : OUT    std_logic_vector (7 DOWNTO 0);
-      seven_seg_2 : OUT    std_logic_vector (7 DOWNTO 0);
-      seven_seg_3 : OUT    std_logic_vector (7 DOWNTO 0);
-      tx          : OUT    std_logic 
+      clk_raw       : IN     std_logic ;
+      ebreak_button : IN     std_logic ;
+      res_n_raw     : IN     std_logic ;
+      rx            : IN     std_logic ;
+      leds          : OUT    std_logic_vector (7 DOWNTO 0);
+      seven_seg_0   : OUT    std_logic_vector (6 DOWNTO 0);
+      seven_seg_1   : OUT    std_logic_vector (6 DOWNTO 0);
+      seven_seg_2   : OUT    std_logic_vector (6 DOWNTO 0);
+      seven_seg_3   : OUT    std_logic_vector (6 DOWNTO 0);
+      tx            : OUT    std_logic 
    );
    END COMPONENT;
 
@@ -72,15 +74,16 @@ BEGIN
       );
    soc_i : riscvio_soc
       PORT MAP (
-         clk         => clk,
-         res_n_raw   => res_n,
-         rx          => rx,
-         leds        => leds,
-         seven_seg_0 => seven_seg_0,
-         seven_seg_1 => seven_seg_1,
-         seven_seg_2 => seven_seg_2,
-         seven_seg_3 => seven_seg_3,
-         tx          => tx
+         clk_raw       => clk,
+         ebreak_button => ebreak_button,
+         res_n_raw     => res_n,
+         rx            => rx,
+         leds          => leds,
+         seven_seg_0   => seven_seg_0,
+         seven_seg_1   => seven_seg_1,
+         seven_seg_2   => seven_seg_2,
+         seven_seg_3   => seven_seg_3,
+         tx            => tx
       );
 
 END struct;

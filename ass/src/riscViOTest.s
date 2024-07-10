@@ -11,13 +11,13 @@ core.start_: j core.start
 core.init_: j core.init
 core.trampEnd:
 
-start:      la      x3, core
+core.start:      la      x3, core
             ccp     x3, x3
             jalr    ra,  4(x3)
             nop
             nop
 
-init:     
+core.init:     
             li      frame, 0x805
             la      t0, core.exc_handel
             csrw    mtvec, t0
@@ -59,16 +59,17 @@ init:
             la      a0, hello_world_str
             ccp     s0, a0
             
-loop:       sb      s3, 0(s2)
+core.loop:       sb      s3, 0(s2)
             #slli    s3, s3,1
             #blt     s3,s4,byteOk
             #li      s3, 1
-#byteOk:    #TODO: add .label expansion (to coobj.subroutine.label)
+#byteOk:    
             rori    s3, s3, 1
             mv      a0, s0
             mv      a1, s1
             jal     core.out_str
 
+            ebreak
             j       core.loop
 
             push    1,0
@@ -90,7 +91,7 @@ loop:       sb      s3, 0(s2)
             ebreak
 
 # output string in object a0 via io obj in a1
-out_str:    beq     a0, zero, .done
+core.out_str:    beq     a0, zero, .done
             qdtb    t0, a0
             beq     t0, zero, .done
             li      t1, 0
@@ -104,7 +105,7 @@ out_str:    beq     a0, zero, .done
 
 
 # output zero terminated string no a2 in object a0 via io obj in a1
-out_str_zero:   beq     a0, zero, .donez
+core.out_str_zero:   beq     a0, zero, .donez
                 qdtb    t0, a0
                 beq     t0, zero, .donez
                 li      t1, 0
@@ -117,7 +118,7 @@ out_str_zero:   beq     a0, zero, .donez
                 beq     a2, zero, .outloop
                 addi    t1, t1, -1
 .notzero:       addi    t1, t1,  1
-                j       core..srcloop
+                j       .srcloop
 
 
 .outloopz:      lbu.r    t2, t1(a0)
@@ -174,11 +175,11 @@ usb.b_: j usb.b
 usb.trampEnd:
 
 
-af:         addi    t0, t1,2
+usb.af:         addi    t0, t1,2
             addi    t3, t4,5
             ret                 #standard risc-v pseudo-instruction for jalr zero, 0(ra)
 
-b:          push    0,0
+usb.b:          push    0,0
             sp      ra, 0(frame)
             jal     usb.c
             lp      ra, 0(frame)
@@ -245,7 +246,7 @@ exception_strs.end:
 .word (hello_world_str.end - hello_world_str_)
 
 hello_world_str_:
-            .ascii "Hello from RiscViO!\n"
+            .ascii "Hello from RiscViO!\n\r"
 
 
 

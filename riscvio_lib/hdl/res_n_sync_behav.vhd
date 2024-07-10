@@ -8,12 +8,15 @@
 -- using Mentor Graphics HDL Designer(TM) 2022.3 Built on 14 Jul 2022 at 13:56:12
 --
 ARCHITECTURE behav OF res_n_sync IS
+    signal res_n_int : std_logic := '0';
 BEGIN
-    process(clk, res_n) is
+    process(clk, locked) is
     begin
         if clk'event and clk = '1' then
-            res_n <= locked;
+            res_n_int <= locked;
         end if;
     end process;
+
+    res_n <= res_n_int;
 END ARCHITECTURE behav;
 

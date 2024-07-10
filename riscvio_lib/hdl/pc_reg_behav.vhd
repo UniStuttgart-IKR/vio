@@ -22,6 +22,6 @@ BEGIN
     end if;
   end process;
 
-  current_pc_uq <= pc_current_pc; --when stall and not (sbt_valid or cjt_valid) else current_pc_d;
+  current_pc_uq <= current_pc_d; --when stall and not (sbt_valid or cjt_valid) else current_pc_d;
 END ARCHITECTURE behav;
 

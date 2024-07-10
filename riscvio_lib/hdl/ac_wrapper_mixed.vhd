@@ -10,7 +10,8 @@
 
 LIBRARY riscvio_lib;
 USE riscvio_lib.pipeline.all;
-USE riscvio_lib.helper.revBytes;
+USE riscvio_lib.helper.revNibbles;
+USE riscvio_lib.helper.revWords;
 
 LIBRARY ieee;
 USE ieee.numeric_std.all;
@@ -22,10 +23,14 @@ ARCHITECTURE mixed OF ac_wrapper IS
     signal rena: boolean;
     signal wena: boolean;
 BEGIN
-    lpi <= ld(BYTE4_RANGE) & ld(BYTE5_RANGE) & ld(BYTE6_RANGE) & ld(BYTE7_RANGE) when at_mode = load_maybe else (others => '0');
-    ldt <= ld(BYTE0_RANGE) & ld(BYTE1_RANGE) & ld(BYTE2_RANGE) & ld(BYTE3_RANGE) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
-    sd <=  wdt(BYTE0_RANGE) & wdt(BYTE1_RANGE) & wdt(BYTE2_RANGE) & wdt(BYTE3_RANGE) &
-           wpi(BYTE0_RANGE) & wpi(BYTE1_RANGE) & wpi(BYTE2_RANGE) & wpi(BYTE3_RANGE);
+    --lpi <= ld(BYTE4_RANGE) & ld(BYTE5_RANGE) & ld(BYTE6_RANGE) & ld(BYTE7_RANGE) when at_mode = load_maybe else (others => '0');
+    --ldt <= ld(BYTE0_RANGE) & ld(BYTE1_RANGE) & ld(BYTE2_RANGE) & ld(BYTE3_RANGE) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
+    --sd <=  wdt(BYTE0_RANGE) & wdt(BYTE1_RANGE) & wdt(BYTE2_RANGE) & wdt(BYTE3_RANGE) &
+    --       wpi(BYTE0_RANGE) & wpi(BYTE1_RANGE) & wpi(BYTE2_RANGE) & wpi(BYTE3_RANGE);
+
+    lpi <= ld(WORD1_RANGE) when at_mode = load_maybe else (others => '0');
+    ldt <= ld(WORD0_RANGE) when at_mode = load_maybe or at_mode = load_delta_only else (others => '0');
+    sd <=  wpi & wdt;
 
     rena <= at_mode = load_maybe or at_mode = load_delta_only;
     wena <= at_mode = store;
@@ -54,13 +59,16 @@ BEGIN
             rreq      => rreq,
             rack      => rack,
             raddr     => raddr,
+            --rdata     => revWords(rdata),
             rdata     => rdata,
 
             wreq      => wreq,
             wack      => wack,
             waddr     => waddr,
+            --revWords(wdata)     => wdata,
+            --revNibbles(wbyte_ena) => wbyte_ena
             wdata     => wdata,
-            wbyte_ena => wbyte_ena
+            revNibbles(wbyte_ena) => wbyte_ena
         );
 
 END ARCHITECTURE mixed;

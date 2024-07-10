@@ -88,30 +88,29 @@ BEGIN
             bena_pipeline(IX) <= '1';
         when lhu =>
             IX := to_integer(unsigned(addr.addr(TOP downto 1)&'0'));
-            ld(HWORD0_RANGE) <= ld_cache(IX*8+7 downto IX*8) & ld_cache(IX*8+15 downto IX*8+8);
+            ld(HWORD0_RANGE) <= ld_cache(IX*8+15 downto IX*8);
         when lh =>
             IX := to_integer(unsigned(addr.addr(TOP downto 1)&'0'));
-            ld <= (others => ld_cache(IX*8+7));
-            ld(HWORD0_RANGE) <= ld_cache(IX*8+7 downto IX*8) & ld_cache(IX*8+15 downto IX*8+8);
+            ld <= (others => ld_cache(IX*8+15));
+            ld(HWORD0_RANGE) <= ld_cache(IX*8+15 downto IX*8);
         when sh =>
             IX := to_integer(unsigned(addr.addr(TOP downto 1)&'0'));
-            sd_pipeline((IX+2)*8-1 downto IX*8) <= sd_raux.val(BYTE0_RANGE) & sd_raux.val(BYTE1_RANGE);
+            sd_pipeline((IX+2)*8-1 downto IX*8) <= sd_raux.val(HWORD0_RANGE);
             bena_pipeline(IX+1 downto IX) <= (others => '1');
         when lw | lp =>
             IX := to_integer(unsigned(addr.addr(TOP downto 2)&"00"));
-            ld(WORD0_RANGE) <= ld_cache(IX*8+7 downto IX*8) & ld_cache(IX*8+15 downto IX*8+8) & ld_cache(IX*8+23 downto IX*8+16) & ld_cache(IX*8+31 downto IX*8+24);
+            ld(WORD0_RANGE) <= ld_cache(IX*8+31 downto IX*8);
         when sw | sp =>
             IX := to_integer(unsigned(addr.addr(TOP downto 2)&"00"));
-            sd_pipeline((IX+4)*8-1 downto IX*8) <= sd_raux.val(BYTE0_RANGE) & sd_raux.val(BYTE1_RANGE) & sd_raux.val(BYTE2_RANGE) & sd_raux.val(BYTE3_RANGE);
+            sd_pipeline((IX+4)*8-1 downto IX*8) <= sd_raux.val(WORD0_RANGE);
             bena_pipeline(IX+3 downto IX) <= (others => '1');
         when load_rpc =>
             IX := to_integer(unsigned(addr.addr(TOP downto 3)&"000"));
-            ld(63 downto 0) <= ld_cache(IX*8+7 downto IX*8)     & ld_cache(IX*8+15 downto IX*8+8)  & ld_cache(IX*8+23 downto IX*8+16) & ld_cache(IX*8+31 downto IX*8+24)
-                             & ld_cache(IX*8+39 downto IX*8+32) & ld_cache(IX*8+47 downto IX*8+40) & ld_cache(IX*8+55 downto IX*8+48) & ld_cache(IX*8+63 downto IX*8+56);
+            ld(63 downto 0) <= ld_cache(IX*8+63 downto IX*8);
         when store_rpc =>
             IX := to_integer(unsigned(addr.addr(TOP downto 3)&"000"));
-            sd_pipeline((IX+8)*8-1 downto IX*8) <= sd_raux.val(BYTE0_RANGE) & sd_raux.val(BYTE1_RANGE) & sd_raux.val(BYTE2_RANGE) & sd_raux.val(BYTE3_RANGE)
-                                                 & sd_raux.ix(BYTE0_RANGE)  & sd_raux.ix(BYTE1_RANGE)  & sd_raux.ix(BYTE2_RANGE)  & sd_raux.ix(BYTE3_RANGE);
+            sd_pipeline((IX+8)*8-1 downto IX*8) <= sd_raux.val(WORD0_RANGE)
+                                                 & sd_raux.ix(WORD0_RANGE);
             bena_pipeline(IX+8-1 downto IX) <= (others => '1');
         when others =>
             IX  := 0;

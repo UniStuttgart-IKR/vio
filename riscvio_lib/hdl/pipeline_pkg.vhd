@@ -30,8 +30,8 @@ PACKAGE pipeline IS
     -- core object size is as large as possible at startup to make sure ic cache will load the instructions
     constant PC_NULL: pc_T := (ptr => (others => '0'), ix => (others => '0'), eoc => (others => '0'));
 
-    type ali_T is (zero, ra, frame, core, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t3, t4, t5, t6, imm, mtvec, misa, mstatus, mcause, mtval, mepc, mvendorid, marchid, mimpid,  alc_lim, alc_addr, frame_lim, root, no_csr);
-    subtype csr_nbr_T is natural range ali_T'pos(mtvec) to ali_T'pos(no_csr);
+    type ali_T is (zero, ra, frame, core, ctxt, t0, t1, t2, s0, s1, a0, a1, a2, a3, a4, a5, a6, a7, s2, s3, s4, s5, s6, s7, s8, s9, bm, cnst, t3, t4, t5, t6, imm, no_csr, mtvec, misa, mstatus, mcause, mtval, mepc, mvendorid, marchid, mimpid, alc_lim, alc_addr, frame_lim, root);
+    subtype csr_nbr_T is natural range ali_T'pos(no_csr) to ali_T'pos(root);
     subtype reg_nbr_T is natural range 0 to ali_T'pos(root);
     type reg_T is record
         ali: ali_T;

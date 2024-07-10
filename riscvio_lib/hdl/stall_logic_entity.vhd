@@ -17,6 +17,7 @@ ENTITY stall_logic IS
       ac_stall       : IN     boolean;
       clk            : IN     std_logic;
       dc_stall       : IN     boolean;
+      ebreak_stall   : IN     boolean;
       ic_stall       : IN     boolean;
       io_stall_int   : IN     boolean;
       obj_init_stall : IN     boolean;

@@ -73,35 +73,35 @@ BEGIN
     leds_reg: process(clk, res_n) is 
     begin
         if res_n = '0' then
-            leds <= (0 => '1', others => '0');
-            seven_seg_0 <= (others => '0');
-            seven_seg_1 <= (others => '0');
-            seven_seg_2 <= (others => '0');
-            seven_seg_3 <= (others => '0');
+            leds <= (others => '0');
+            -- seven_seg_0 <= (others => '0');
+            -- seven_seg_1 <= (others => '0');
+            -- seven_seg_2 <= (others => '0');
+            -- seven_seg_3 <= (others => '0');
         else
             if clk'event and clk = '1' then
                 if write_led_data then
                     leds <= io_wdata(BYTE0_RANGE);
                 end if;
 
-                seven_seg_0 <= std_logic_vector(unsigned(seven_seg_0) + 1);
+                -- seven_seg_0 <= std_logic_vector(unsigned(seven_seg_0) + 1);
 
                 
-                if segments_we(0) then
-                    seven_seg_0 <= io_wdata(BYTE0_RANGE);
-                end if;
+                -- if segments_we(0) then
+                --     seven_seg_0 <= io_wdata(BYTE0_RANGE);
+                -- end if;
 
-                if segments_we(1) then
-                    seven_seg_1 <= io_wdata(BYTE0_RANGE);
-                end if;
+                -- if segments_we(1) then
+                --     seven_seg_1 <= io_wdata(BYTE0_RANGE);
+                -- end if;
 
-                if segments_we(2) then
-                    seven_seg_2 <= io_wdata(BYTE0_RANGE);
-                end if;
+                -- if segments_we(2) then
+                --     seven_seg_2 <= io_wdata(BYTE0_RANGE);
+                -- end if;
 
-                if segments_we(3) then
-                    seven_seg_3 <= io_wdata(BYTE0_RANGE);
-                end if;
+                -- if segments_we(3) then
+                --     seven_seg_3 <= io_wdata(BYTE0_RANGE);
+                -- end if;
             end if;
         end if;
     end process;

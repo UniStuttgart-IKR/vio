@@ -45,6 +45,7 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL dbu_out_ex_u       : reg_mem_T;
    SIGNAL dc_stall           : boolean;
    SIGNAL dt_at_u            : word_T;
+   SIGNAL ebreak_stall       : boolean;
    SIGNAL end_addr           : word_T;
    SIGNAL end_addr_uq        : word_T;
    SIGNAL exc_dc             : exc_cause_T;
@@ -90,7 +91,6 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL pc_current_pc      : pc_T;
    SIGNAL pc_dc              : pc_T;
    SIGNAL pc_ex              : pc_T;
-   SIGNAL pc_if              : pc_T;
    SIGNAL pc_me              : pc_T;
    SIGNAL pc_wb              : pc_T;
    SIGNAL pgu_exc            : exc_cause_T;
@@ -149,6 +149,9 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL wpi_me             : word_T;
    SIGNAL xret               : xret_T;
    SIGNAL zero_reg_ix        : reg_nbr_T := 0;
+
+   -- Implicit buffer signal declarations
+   SIGNAL pc_if_internal : pc_T;
 
 
    -- Component Declarations
@@ -268,6 +271,7 @@ ARCHITECTURE struct OF riscvio IS
       clk             : IN     std_logic ;
       ctrl_dc_u       : IN     ctrl_sig_T ;
       dbt_valid       : IN     boolean ;
+      ebreak_release  : IN     boolean ;
       exc_dc_u        : IN     exc_cause_T ;
       imm_dc_u        : IN     word_T ;
       pc_if           : IN     pc_T ;
@@ -283,6 +287,7 @@ ARCHITECTURE struct OF riscvio IS
       alu_mode_dc     : OUT    alu_mode_T ;
       branch_mode_dc  : OUT    branch_mode_T ;
       ctrl_dc         : OUT    ctrl_sig_T ;
+      ebreak_stall    : OUT    boolean ;
       exc_dc          : OUT    exc_cause_T ;
       fwd_allowed_dc  : OUT    boolean ;
       imm_dc_reg      : OUT    word_T ;
@@ -657,6 +662,7 @@ ARCHITECTURE struct OF riscvio IS
       ac_stall       : IN     boolean ;
       clk            : IN     std_logic ;
       dc_stall       : IN     boolean ;
+      ebreak_stall   : IN     boolean ;
       ic_stall       : IN     boolean ;
       io_stall_int   : IN     boolean ;
       obj_init_stall : IN     boolean ;
@@ -818,9 +824,10 @@ BEGIN
          clk             => clk,
          ctrl_dc_u       => ctrl_dc_u,
          dbt_valid       => dbt_valid,
+         ebreak_release  => ebreak_release,
          exc_dc_u        => exc_dc_u,
          imm_dc_u        => imm_dc_u,
-         pc_if           => pc_if,
+         pc_if           => pc_if_internal,
          pipe_flush      => pipe_flush,
          raux_dc_u       => raux_dc_u,
          rdat_dc_u       => rdat_dc_u,
@@ -833,6 +840,7 @@ BEGIN
          alu_mode_dc     => alu_mode_dc,
          branch_mode_dc  => branch_mode_dc,
          ctrl_dc         => ctrl_dc,
+         ebreak_stall    => ebreak_stall,
          exc_dc          => exc_dc,
          fwd_allowed_dc  => fwd_allowed_dc,
          imm_dc_reg      => imm_dc_reg,
@@ -874,7 +882,7 @@ BEGIN
       );
    decoder_i : decoder
       PORT MAP (
-         pc          => pc_if,
+         pc          => pc_if_internal,
          instruction => if_instr,
          atomic_swap => atomic_swap,
          rdat_ix     => rdat_ix,
@@ -1040,7 +1048,7 @@ BEGIN
          sbt_valid     => sbt_valid,
          stall         => stall,
          if_instr      => if_instr,
-         pc_if         => pc_if
+         pc_if         => pc_if_internal
       );
    io_if_i : io_interface
       PORT MAP (
@@ -1209,11 +1217,15 @@ BEGIN
          ac_stall       => ac_stall,
          clk            => clk,
          dc_stall       => dc_stall,
+         ebreak_stall   => ebreak_stall,
          ic_stall       => ic_stall,
          io_stall_int   => io_stall_int,
          obj_init_stall => obj_init_stall,
          res_n          => res_n,
          stall          => stall
       );
+
+   -- Implicit buffered output assignments
+   pc_if <= pc_if_internal;
 
 END struct;

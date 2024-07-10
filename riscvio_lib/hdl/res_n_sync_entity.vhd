@@ -19,4 +19,3 @@ ENTITY res_n_sync IS
 -- Declarations
 
 END res_n_sync ;
-

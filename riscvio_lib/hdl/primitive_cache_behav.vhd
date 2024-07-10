@@ -176,7 +176,7 @@ BEGIN
     bytes_to_write <= bytes_to_write_fill when fill_state /= IDLE or (not line_hit and rd) else bytes_to_write_pipe;
 
     stall <= ((not line_hit or fill_state /= IDLE) and rd) or invalidation_state /= IDLE or write_stall;
-    raddr <= raddr_int;
+    
     
     fill_unit_state_p: process(clk, res_n) is
     begin
@@ -275,7 +275,8 @@ BEGIN
 
     used_line_ctr <= last_line_fill_ctr when (fill_state = LOADING or fill_state = PREPARING) and not rack else line_fill_ctr;
     used_addr <= last_rd_addr when (fill_state = LOADING or fill_state = PREPARING) and not rack  else addr;
-
+    raddr <= raddr_int;
+    
     fill_unit_output_p: process(all) is
     begin
         rreq <= false;
@@ -283,13 +284,14 @@ BEGIN
         set_line_tag <= '0';
         bytes_we_fill <= (others => '0');
 
+        if BUS_WORDS_PER_LINE > 1 then
+            raddr_int <= used_addr(TAG_RANGE) & used_addr(LINE_RANGE) & std_logic_vector(to_unsigned(used_line_ctr, WORDS_IN_LINE_LOG - WORDS_PER_BUS_LOG)) & zero_byte_addr & zero_bus_addr;
+        else
+            raddr_int <= used_addr(addr'left downto LINE_RANGE'right + Q_LOG) & zero_byte_addr & zero_bus_addr;
+        end if;
         
         if fill_state /= IDLE or (not line_hit and rd and invalidation_state = IDLE) then
-            if BUS_WORDS_PER_LINE > 1 then
-                raddr_int <= used_addr(TAG_RANGE) & used_addr(LINE_RANGE) & std_logic_vector(to_unsigned(used_line_ctr, WORDS_IN_LINE_LOG - WORDS_PER_BUS_LOG)) & zero_byte_addr & zero_bus_addr;
-            else
-                raddr_int <= used_addr(addr'left downto LINE_RANGE'right + Q_LOG) & zero_byte_addr & zero_bus_addr;
-            end if;
+            
             rreq <= true;
         end if;
 
@@ -349,7 +351,6 @@ BEGIN
             if clk'event and clk = '1' then
                 case writeback_state is
                     when IDLE => 
-                        write_stall <= false;
                         if we and (addr /= last_wr_addr or sd /= last_sd) and invalidation_state = IDLE then
                             last_sd <= sd;
                             last_wr_addr <= addr;
@@ -365,15 +366,12 @@ BEGIN
                             if not LEVERAGE_BURSTS then
                                 -- we immediately write the data
                                 writeback_state <= WAITING_WR;
-                                write_stall <= we;
                             else
                                 writeback_state <= COLLECT_DATA;       
-                                write_stall <= addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) and we;
                             end if;
                         end if;
                     
                     when COLLECT_DATA => 
-                        write_stall <= addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) and we;
                         if we then
                             if not wreq then
                                 last_sd <= sd;
@@ -390,8 +388,6 @@ BEGIN
                         end if; 
                         
                     when WAITING_WR =>
-                        -- we only stall when we want to wrire although the last write didnt finish
-                        write_stall <= we;
                         if wack then
                             writeback_state <= IDLE;
                             accumulated_byteena <= (others => '0');
@@ -409,6 +405,7 @@ BEGIN
         waddr <= (others => '0');
         wreq <= false;
         wdata <= (others => '0');
+        write_stall <= false;
         wbyte_ena <= (others => '0');
         bytes_we_pipe <= (others => '0');
         bytes_to_write_pipe <= (others => (others => '0'));
@@ -459,8 +456,11 @@ BEGIN
                     wdata <= accumulated_bus_word;
                     waddr <= burst_addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                     wbyte_ena <= accumulated_byteena;
+                    write_stall <= addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) and we;
     
                 when WAITING_WR => 
+                    -- we only stall when we want to wrire although the last write didnt finish
+                    write_stall <= we;
                     wreq <= not wack;
                     waddr <= burst_addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                     wdata <= accumulated_bus_word;
@@ -493,6 +493,8 @@ BEGIN
                 when COLLECT_DATA => null; -- we will never get here
     
                 when WAITING_WR => 
+                    -- we only stall when we want to wrire although the last write didnt finish
+                    write_stall <= we;
                     wreq <= not wack;
                     waddr <= burst_addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                     -- we dont actually accumulate anything here - we just remember the data when we got the we in accumulated_bus_word

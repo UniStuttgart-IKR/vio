@@ -11,13 +11,13 @@ core.start_: j core.start
 core.init_: j core.init
 core.trampEnd:
 
-core.start:      la      x3, core
+start:      la      x3, core
             ccp     x3, x3
             jalr    ra,  4(x3)
             nop
             nop
 
-core.init:     
+init:     
             li      frame, 0x805
             la      t0, core.exc_handel
             csrw    mtvec, t0
@@ -59,11 +59,11 @@ core.init:
             la      a0, hello_world_str
             ccp     s0, a0
             
-core.loop:       sb      s3, 0(s2)
+loop:       sb      s3, 0(s2)
             #slli    s3, s3,1
             #blt     s3,s4,byteOk
             #li      s3, 1
-#byteOk:    
+#byteOk:    #TODO: add .label expansion (to coobj.subroutine.label)
             rori    s3, s3, 1
             mv      a0, s0
             mv      a1, s1
@@ -90,7 +90,7 @@ core.loop:       sb      s3, 0(s2)
             ebreak
 
 # output string in object a0 via io obj in a1
-core.out_str:    beq     a0, zero, .done
+out_str:    beq     a0, zero, .done
             qdtb    t0, a0
             beq     t0, zero, .done
             li      t1, 0
@@ -104,7 +104,7 @@ core.out_str:    beq     a0, zero, .done
 
 
 # output zero terminated string no a2 in object a0 via io obj in a1
-core.out_str_zero:   beq     a0, zero, .donez
+out_str_zero:   beq     a0, zero, .donez
                 qdtb    t0, a0
                 beq     t0, zero, .donez
                 li      t1, 0
@@ -117,7 +117,7 @@ core.out_str_zero:   beq     a0, zero, .donez
                 beq     a2, zero, .outloop
                 addi    t1, t1, -1
 .notzero:       addi    t1, t1,  1
-                j       .srcloop
+                j       core..srcloop
 
 
 .outloopz:      lbu.r    t2, t1(a0)
@@ -174,11 +174,11 @@ usb.b_: j usb.b
 usb.trampEnd:
 
 
-usb.af:         addi    t0, t1,2
+af:         addi    t0, t1,2
             addi    t3, t4,5
             ret                 #standard risc-v pseudo-instruction for jalr zero, 0(ra)
 
-usb.b:          push    0,0
+b:          push    0,0
             sp      ra, 0(frame)
             jal     usb.c
             lp      ra, 0(frame)

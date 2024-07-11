@@ -32,8 +32,11 @@ ENTITY io_interface IS
         io_wdata:   out word_T;
         io_rdata:   in word_T;
         io_ix:      out word_T;
+        io_ix_u:    out word_T;
         io_dev:     out std_logic_vector(11 downto 0);
+        io_dev_u:   out std_logic_vector(11 downto 0);
         io_mode:    out mem_mode_T;
+        io_mode_u:  out mem_mode_T;
         io_stall:   in std_logic
     );
 END ENTITY io_interface;

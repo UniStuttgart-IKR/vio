@@ -140,10 +140,13 @@ PACKAGE BODY pipeline IS
                 case instruction(FUNCT3_RANGE) is
                     when F3_ADD_SUB =>
                         res.mnemonic := add_i;
-                        if instruction = NOP_INSTR then res.mnemonic := nop; end if;
                         res.alu_mode := alu_add;
                         res.imm_mode := i_type;
                         res.at_mode  := load_maybe;
+                        if instruction = NOP_INSTR then
+                            res.mnemonic := nop;
+                            res.at_mode  := no;
+                        end if;
                     when (F3_SRL_SRA or F3_MINU_ROR_RORI_ORC_REV) =>
                         case instruction(FUNCT7_RANGE) is
                             when F7_ADD_SRL_SLL_XOR_OR_AND_SLT_SLTU =>

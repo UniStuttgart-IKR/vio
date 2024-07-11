@@ -45,7 +45,6 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL dbu_out_ex_u       : reg_mem_T;
    SIGNAL dc_stall           : boolean;
    SIGNAL dt_at_u            : word_T;
-   SIGNAL ebreak_stall       : boolean;
    SIGNAL end_addr           : word_T;
    SIGNAL end_addr_uq        : word_T;
    SIGNAL exc_dc             : exc_cause_T;
@@ -151,7 +150,8 @@ ARCHITECTURE struct OF riscvio IS
    SIGNAL zero_reg_ix        : reg_nbr_T := 0;
 
    -- Implicit buffer signal declarations
-   SIGNAL pc_if_internal : pc_T;
+   SIGNAL ebreak_stall_internal : boolean;
+   SIGNAL pc_if_internal        : pc_T;
 
 
    -- Component Declarations
@@ -457,6 +457,7 @@ ARCHITECTURE struct OF riscvio IS
       dbranch    : IN     boolean;
       ic_rack    : IN     boolean;
       ic_rdata   : IN     std_logic_vector (BUS_WIDTH - 1 DOWNTO 0);
+      insert_nop : IN     boolean;
       next_pc    : IN     pc_T;
       pc         : IN     pc_T;
       pipe_flush : IN     boolean;
@@ -496,8 +497,11 @@ ARCHITECTURE struct OF riscvio IS
       sd_rdat   : IN     rdat_T;
       sd_rptr   : IN     rptr_T;
       io_dev    : OUT    std_logic_vector (11 DOWNTO 0);
+      io_dev_u  : OUT    std_logic_vector (11 DOWNTO 0);
       io_ix     : OUT    word_T;
+      io_ix_u   : OUT    word_T;
       io_mode   : OUT    mem_mode_T;
+      io_mode_u : OUT    mem_mode_T;
       io_wdata  : OUT    word_T;
       ld        : OUT    word_T;
       stall     : OUT    boolean
@@ -840,7 +844,7 @@ BEGIN
          alu_mode_dc     => alu_mode_dc,
          branch_mode_dc  => branch_mode_dc,
          ctrl_dc         => ctrl_dc,
-         ebreak_stall    => ebreak_stall,
+         ebreak_stall    => ebreak_stall_internal,
          exc_dc          => exc_dc,
          fwd_allowed_dc  => fwd_allowed_dc,
          imm_dc_reg      => imm_dc_reg,
@@ -1030,6 +1034,7 @@ BEGIN
          sbranch    => sbt_valid,
          dbranch    => dbt_valid,
          pipe_flush => pipe_flush,
+         insert_nop => insert_nop,
          ic_rreq    => ic_rreq,
          ic_rack    => ic_rack,
          ic_raddr   => ic_raddr,
@@ -1064,8 +1069,11 @@ BEGIN
          io_wdata  => io_wdata,
          io_rdata  => io_rdata,
          io_ix     => io_ix,
+         io_ix_u   => io_ix_u,
          io_dev    => io_dev,
+         io_dev_u  => io_dev_u,
          io_mode   => io_mode,
+         io_mode_u => io_mode_u,
          io_stall  => io_stall
       );
    me_reg_i : me_reg
@@ -1217,7 +1225,7 @@ BEGIN
          ac_stall       => ac_stall,
          clk            => clk,
          dc_stall       => dc_stall,
-         ebreak_stall   => ebreak_stall,
+         ebreak_stall   => ebreak_stall_internal,
          ic_stall       => ic_stall,
          io_stall_int   => io_stall_int,
          obj_init_stall => obj_init_stall,
@@ -1226,6 +1234,7 @@ BEGIN
       );
 
    -- Implicit buffered output assignments
-   pc_if <= pc_if_internal;
+   ebreak_stall <= ebreak_stall_internal;
+   pc_if        <= pc_if_internal;
 
 END struct;

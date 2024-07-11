@@ -55,6 +55,9 @@ BEGIN
             imm_dc_reg  <= imm_dc_u;
             exc_dc <= exc_dc_u;
             ebreak_stall <= ctrl_dc_u.mnemonic = ebreak;
+            --synthesis off
+            assert ctrl_dc_u.mnemonic /= ebreak report "EBREAK" severity failure;
+            --synthesis on
           end if;
           pc_dc <= pc_if;
         elsif ebreak_release then

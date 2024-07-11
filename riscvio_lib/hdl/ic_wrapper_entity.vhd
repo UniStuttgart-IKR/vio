@@ -28,6 +28,7 @@ ENTITY ic_wrapper IS
         sbranch    : IN boolean;
         dbranch    : IN boolean;
         pipe_flush : IN boolean;
+        insert_nop : IN boolean;
 
         ic_rreq            : OUT boolean;
         ic_rack            : IN boolean;

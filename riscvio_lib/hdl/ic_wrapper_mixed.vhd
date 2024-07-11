@@ -24,7 +24,7 @@ ARCHITECTURE mixed OF ic_wrapper IS
 BEGIN
     instr_addr <= std_logic_vector(unsigned(pc.ix) + unsigned(pc.ptr) + to_unsigned(8, instr_addr'length)); 
     next_instr_addr <= std_logic_vector(unsigned(next_pc.ix) + unsigned(next_pc.ptr) + to_unsigned(8, instr_addr'length)); 
-    rd_instr <= not(sbranch or dbranch or pipe_flush); --todo: fix core delta and unsigned(pc.ix) <= unsigned(pc.dt);
+    rd_instr <= not (sbranch or dbranch or pipe_flush or insert_nop); --todo: fix core delta and unsigned(pc.ix) <= unsigned(pc.dt);
     --instr <= instr_int(BYTE0_RANGE) & instr_int(BYTE1_RANGE) & instr_int(BYTE2_RANGE) & instr_int(BYTE3_RANGE);
 
 

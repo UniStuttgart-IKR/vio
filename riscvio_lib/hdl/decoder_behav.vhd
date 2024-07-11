@@ -39,28 +39,24 @@ BEGIN
 
     extend: process(all) is
     begin
-        if decoded_inst.mnemonic /= jal then
-            case decoded_inst.imm_mode is
-                when i_type => 
-                    imm <= (others => instruction(IMM12_RANGE'high));
-                    imm(11 downto 0) <= instruction(IMM12_RANGE);
-                when s_type => 
-                    imm <= extractSTypeImm(instruction);
-                when b_type => 
-                    imm <= extractBTypeImm(instruction);
-                when u_type => 
-                    imm <= (others => '0');
-                    imm(31 downto 12) <= instruction(IMM20_RANGE);
-                when j_type =>
-                    imm <= extractJTypeImm(instruction);
-                when shamt_type => 
-                    imm <= (others => '0');
-                    imm(4 downto 0) <= instruction(RS2_RANGE);
-                when none => imm <= (others => '0');
-            end case;
-        else
-            imm <= X"00000000";
-        end if;
+        case decoded_inst.imm_mode is
+            when i_type => 
+                imm <= (others => instruction(IMM12_RANGE'high));
+                imm(11 downto 0) <= instruction(IMM12_RANGE);
+            when s_type => 
+                imm <= extractSTypeImm(instruction);
+            when b_type => 
+                imm <= extractBTypeImm(instruction);
+            when u_type => 
+                imm <= (others => '0');
+                imm(31 downto 12) <= instruction(IMM20_RANGE);
+            when j_type =>
+                imm <= extractJTypeImm(instruction);
+            when shamt_type => 
+                imm <= (others => '0');
+                imm(4 downto 0) <= instruction(RS2_RANGE);
+            when none => imm <= (others => '0');
+        end case;
     end process extend;
 
     sbt_valid <= decoded_inst.branch_mode = jal;

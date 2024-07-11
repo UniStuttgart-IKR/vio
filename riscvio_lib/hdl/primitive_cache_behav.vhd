@@ -15,7 +15,7 @@ LIBRARY ieee;
 use IEEE.math_real.all;
 use ieee.numeric_std.all;
 
---'TODO: remove addr input port, not required anymore
+
 ARCHITECTURE behav OF primitive_cache IS
     constant BYTE_WIDTH: positive := 8;
     subtype byte_T is std_logic_vector(BYTE_WIDTH - 1 downto 0);
@@ -118,7 +118,6 @@ ARCHITECTURE behav OF primitive_cache IS
 
     signal line_hit: boolean;
     signal stall_int: boolean;
-    signal last_next_addr: std_logic_vector(next_addr'range);
     
 BEGIN
     valid_memory: entity simple_dual_port_ram 
@@ -171,17 +170,9 @@ BEGIN
         end generate;
     end generate;
 
-    addr_p: process(clk, res_n) is
-    begin
-        if res_n = '0' then
-        else
-            if clk'event and clk = '1' then
-                last_next_addr <= next_addr;
-            end if;
-        end if;
-    end process;
+
     
-    line_hit <= line_tag_selected = last_next_addr(TAG_RANGE) and line_valid = (0 => '1');
+    line_hit <= line_tag_selected = addr(TAG_RANGE) and line_valid = (0 => '1');
     bytes_we <= bytes_we_fill or bytes_we_pipe;
     bytes_to_write <= bytes_to_write_fill when fill_state /= IDLE or (not line_hit and rd) else bytes_to_write_pipe;
 
@@ -201,7 +192,7 @@ BEGIN
             if clk'event and clk = '1' then
                 last_line_fill_ctr <= line_fill_ctr;
                 last_used_line_ctr <= used_line_ctr;
-                last_rd_addr <= last_next_addr;
+                last_rd_addr <= addr;
                 
                 case fill_state is
                     when IDLE => 
@@ -254,7 +245,7 @@ BEGIN
         variable tmp: byte_T;
     begin
         for b in BYTES_PER_WORD - 1 downto 0 loop
-            tmp := row_selected_bytes(to_integer(unsigned(last_next_addr(WORD_RANGE))) * BYTES_PER_WORD + b);
+            tmp := row_selected_bytes(to_integer(unsigned(addr(WORD_RANGE))) * BYTES_PER_WORD + b);
             for bit_i in BYTE_WIDTH - 1 downto 0 loop
                 ld(b * BYTE_WIDTH + bit_i) <= tmp(bit_i);
             end loop;
@@ -285,7 +276,7 @@ BEGIN
     end process fwd_write_to_rdata_p;
 
     used_line_ctr <= last_line_fill_ctr when (fill_state = LOADING or fill_state = PREPARING) and not rack else line_fill_ctr;
-    used_addr <= next_addr;
+    used_addr <= last_rd_addr when (fill_state = LOADING or fill_state = PREPARING) and not rack  else addr;
     raddr <= raddr_int;
     
     fill_unit_output_p: process(all) is
@@ -298,11 +289,10 @@ BEGIN
         if BUS_WORDS_PER_LINE > 1 then
             raddr_int <= used_addr(TAG_RANGE) & used_addr(LINE_RANGE) & std_logic_vector(to_unsigned(used_line_ctr, WORDS_IN_LINE_LOG - WORDS_PER_BUS_LOG)) & zero_byte_addr & zero_bus_addr;
         else
-            raddr_int <= used_addr(last_next_addr'left downto LINE_RANGE'right + Q_LOG) & zero_byte_addr & zero_bus_addr;
+            raddr_int <= used_addr(addr'left downto LINE_RANGE'right + Q_LOG) & zero_byte_addr & zero_bus_addr;
         end if;
         
         if fill_state /= IDLE or (not line_hit and rd and invalidation_state = IDLE) then
-            
             rreq <= true;
         end if;
 
@@ -343,7 +333,7 @@ BEGIN
         else
             for b in BYTES_PER_WORD - 1 downto 0 loop
                 
-                bytes_to_write_fill(b) <= eff_rdata(((to_integer(unsigned(last_next_addr(WORD_IN_BUS_WORD)))*BYTES_PER_WORD + b + 1))*BYTE_WIDTH - 1 downto (to_integer(unsigned(last_next_addr(WORD_IN_BUS_WORD)))*BYTES_PER_WORD + b) * BYTE_WIDTH);
+                bytes_to_write_fill(b) <= eff_rdata(((to_integer(unsigned(addr(WORD_IN_BUS_WORD)))*BYTES_PER_WORD + b + 1))*BYTE_WIDTH - 1 downto (to_integer(unsigned(addr(WORD_IN_BUS_WORD)))*BYTES_PER_WORD + b) * BYTE_WIDTH);
             end loop;
         end if;
     end process fill_unit_output_p;
@@ -362,11 +352,11 @@ BEGIN
             if clk'event and clk = '1' then
                 case writeback_state is
                     when IDLE => 
-                        if we and (last_next_addr /= last_wr_addr or sd /= last_sd) and invalidation_state = IDLE then
+                        if we and (addr /= last_wr_addr or sd /= last_sd) and invalidation_state = IDLE then
                             last_sd <= sd;
-                            last_wr_addr <= last_next_addr;
+                            last_wr_addr <= addr;
 
-                            burst_addr <= last_next_addr;
+                            burst_addr <= addr;
 
 
                             -- for remembering values byteena/sd when we got the we / for accumulating sd/byteena over multiple writes in a single burst 
@@ -386,14 +376,14 @@ BEGIN
                         if we then
                             if not wreq then
                                 last_sd <= sd;
-                                last_wr_addr <= last_next_addr;
+                                last_wr_addr <= addr;
                             end if;
 
                             accumulated_byteena <= accumulated_byteena_d;
                             accumulated_bus_word <= accumulated_bus_word_d;
                         end if;
                         -- when we leave the region of a single bus word or we need to invalidate we need to start writing back
-                        if last_next_addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) or invalidate or not we then
+                        if addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) or invalidate or not we then
                             -- we need to commit now
                             writeback_state <= WAITING_WR;
                         end if; 
@@ -437,7 +427,7 @@ BEGIN
             if BYTES_IN_LINE /= 1 then
                 for b in BYTES_PER_WORD - 1 downto 0 loop
                     -- only write the bytes we really want to write
-                    bytes_we_pipe(to_integer(unsigned(last_next_addr(WORD_RANGE))) * BYTES_PER_WORD + b) <= byte_ena(b);
+                    bytes_we_pipe(to_integer(unsigned(addr(WORD_RANGE))) * BYTES_PER_WORD + b) <= byte_ena(b);
                 end loop;
             else
                 bytes_we_pipe(0) <= '1';
@@ -449,9 +439,9 @@ BEGIN
             for i in BYTES_PER_WORD - 1 downto 0 loop
                 if byte_ena(i) = '1' then
                     -- we only update the bytes where the byteena was enabled, we leave the rest as is
-                    accumulated_byteena_d_int((WORDS_PER_BUS - to_integer(unsigned(last_next_addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) := '1';
+                    accumulated_byteena_d_int((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) := '1';
                     for bit_i in BYTE_WIDTH - 1 downto 0 loop
-                        accumulated_bus_word_d_int(((WORDS_PER_BUS - to_integer(unsigned(last_next_addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) * BYTE_WIDTH + bit_i) := sd(i* BYTE_WIDTH + bit_i); 
+                        accumulated_bus_word_d_int(((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + i) * BYTE_WIDTH + bit_i) := sd(i* BYTE_WIDTH + bit_i); 
                     end loop;
                 end if;
             end loop;
@@ -463,11 +453,11 @@ BEGIN
             case writeback_state is
                 when IDLE => null; -- we just wait for data...
                 when COLLECT_DATA => 
-                    wreq <= last_next_addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) or not we;
+                    wreq <= addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) or not we;
                     wdata <= accumulated_bus_word;
                     waddr <= burst_addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                     wbyte_ena <= accumulated_byteena;
-                    write_stall <= last_next_addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) and we;
+                    write_stall <= addr(BUS_WORD_RANGE) /= burst_addr(BUS_WORD_RANGE) and we;
     
                 when WAITING_WR => 
                     -- we only stall when we want to wrire although the last write didnt finish
@@ -480,9 +470,9 @@ BEGIN
         else
             case writeback_state is
                 when IDLE => 
-                    if we and invalidation_state = IDLE and (last_next_addr /= last_wr_addr or sd /= last_sd) then
+                    if we and invalidation_state = IDLE and (addr /= last_wr_addr or sd /= last_sd) then
                         wreq <= true;
-                        waddr <= last_next_addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
+                        waddr <= addr(BUS_WORD_RANGE) & zero_byte_addr & zero_bus_addr;
                         
                         -- we apply the sd everywhere
                         for w in WORDS_PER_BUS - 1 downto 0 loop
@@ -497,7 +487,7 @@ BEGIN
                         -- but we only byteenable the part we really want to write
                         for b in BYTES_PER_WORD - 1 downto 0 loop
                             -- only write the bytes we really want to write
-                            wbyte_ena((WORDS_PER_BUS - to_integer(unsigned(last_next_addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + b) <= byte_ena(b);
+                            wbyte_ena((WORDS_PER_BUS - to_integer(unsigned(addr(WORD_IN_BUS_WORD))) - 1) * BYTES_PER_WORD + b) <= byte_ena(b);
                         end loop;
                     end if;
     
@@ -566,8 +556,8 @@ BEGIN
             when WAITS => null; -- make sure our invalidation went through before we resume regular pipeline operation
 
             when IDLE => 
-                -- for writing we use last_next_addr, for reading we use next_addr(we need to compensate one latency cycle)
-                if line_hit and not isAllStd(bytes_we, '0') then line_ix <= last_next_addr(LINE_RANGE);  else  line_ix <= next_addr(LINE_RANGE); end if;
+                -- for writing we use addr, for reading we use next_addr(we need to compensate one latency cycle)
+                if line_hit and not isAllStd(bytes_we, '0') then line_ix <= addr(LINE_RANGE);  else  line_ix <= next_addr(LINE_RANGE); end if;
                 valid_bit_to_write <= (0 => '1');
                 line_valid_bit_we <= set_line_tag;
                 invalidation_active <= false;
@@ -580,9 +570,6 @@ BEGIN
 
     end process invalidation_unit_output_p;
 
-
-
-
     -- synthesis off
     if_check: process(clk, res_n, stall_int) is
         variable last_stall: boolean := false; 
@@ -590,7 +577,7 @@ BEGIN
         variable stall_rd: boolean;
         variable stall_byteena: std_logic_vector(byte_ena'range);
         variable stall_sd: std_logic_vector(sd'range);
-        variable stall_addr: std_logic_vector(last_next_addr'range);
+        variable stall_addr: std_logic_vector(addr'range);
         variable stall_next_addr: std_logic_vector(next_addr'range);
     begin
         if res_n = '0' then
@@ -602,7 +589,7 @@ BEGIN
                     stall_rd := rd;
                     stall_byteena := byte_ena;
                     stall_sd := sd;
-                    stall_addr := last_next_addr;
+                    stall_addr := addr;
                     stall_next_addr := next_addr;
                 end if;
 

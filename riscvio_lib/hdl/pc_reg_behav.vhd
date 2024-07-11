@@ -12,7 +12,7 @@ BEGIN
   process(clk, res_n) is
   begin
     if res_n = '0' then
-      pc_current_pc <= (ptr => X"00000000", ix => X"00000000", eoc => (others => '0'));
+      pc_current_pc <= PC_NULL;
     else
       if clk'event and clk = '1' then
         if not (stall or insert_nop) or sbt_valid or dbt_valid or cjt_valid then
@@ -22,6 +22,6 @@ BEGIN
     end if;
   end process;
 
-  current_pc_uq <= current_pc_d; --when stall and not (sbt_valid or cjt_valid) else current_pc_d;
+  current_pc_uq <= pc_current_pc when insert_nop else current_pc_d;
 END ARCHITECTURE behav;
 

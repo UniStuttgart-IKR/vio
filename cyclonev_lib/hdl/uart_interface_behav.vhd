@@ -18,17 +18,18 @@ BEGIN
             uart_rx_data <= (others => '0');
             uart_tx_data <= (others => '0');
             uart_sending <= '0';
+            uart_rx_data_avail <= '0';
         else
             if clk'event and clk = '1' then
 
                 -- data received via uart
                 if data_stream_out_stb then
                     uart_rx_data <= data_stream_out;
-                    uart_rx_data_avail <= '0';
+                    uart_rx_data_avail <= '1';
                 end if;
 
-                if clear_uart_rx_avail then
-                    uart_rx_data_avail <= '1';
+                if clear_uart_rx_avail and uart_rx_data_avail = '1' then
+                    uart_rx_data_avail <= '0';
                 end if;
 
                 -- data sent via uart

@@ -41,7 +41,7 @@ core.init:
             lp      a0, 0(frame)
             lp      ra, 0(frame)
 
-
+            lp      a0, 346(frame)
             # Device 1
             li      t1, 2
             # 3 Registers, register capability
@@ -68,7 +68,12 @@ core.loop:       sb      s3, 0(s2)
             mv      a0, s0
             mv      a1, s1
             jal     core.out_str
-
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
             ebreak
             j       core.loop
 
@@ -98,6 +103,8 @@ core.out_str:    beq     a0, zero, .done
 .outloop:   lbu.r    t2, t1(a0)
             #TODO: change the index back to 0 for output 
             sb      t2, 0(a1)
+            #TODO: remove this rx test
+            lb      t3, 0(a1)
             addi    t1, t1, 1
             bne     t1, t0, .outloop
 .done:

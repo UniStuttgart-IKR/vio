@@ -86,7 +86,8 @@ architecture rtl of uart is
     type uart_rx_states is ( 
         rx_get_start_bit, 
         rx_get_data, 
-        rx_get_stop_bit
+        rx_get_stop_bit,
+        wait_start_bit
     );            
     signal uart_rx_state : uart_rx_states := rx_get_start_bit;
     signal uart_rx_bit : std_logic := '1';
@@ -114,7 +115,7 @@ begin
             rx_baud_tick <= '0';    
         else
             if clock'event and clock = '1' then
-                if rx_baud_counter = c_rx_div then
+                if rx_baud_counter = c_rx_div - 1 then
                     rx_baud_counter <= (others => '0');
                     rx_baud_tick <= '1';
                 else
@@ -134,10 +135,8 @@ begin
 			    uart_rx_data_sr <= (others => '1');
 		  else
 			   if clock'event and clock = '1' then
-                    if rx_baud_tick = '1' then
-                        uart_rx_data_sr(1) <= uart_rx_data_sr(0);
-                        uart_rx_data_sr(0) <= rx;
-                    end if;
+                    uart_rx_data_sr(1) <= uart_rx_data_sr(0);
+                    uart_rx_data_sr(0) <= rx;
             end if;
         end if;
     end process rxd_synchronise;
@@ -181,16 +180,20 @@ begin
             if clock'event and clock = '1' then
                 uart_rx_bit_tick <= '0';
                 if rx_baud_tick = '1' then       
-                    if uart_rx_bit_spacing = 15 then
-                        uart_rx_bit_tick <= '1';
+                    if uart_rx_bit_spacing = 15 then     
                         uart_rx_bit_spacing <= (others => '0');
-                    else
+                    elsif uart_rx_bit_spacing = 7 then
+                        uart_rx_bit_tick <= '1';
+                        uart_rx_bit_spacing <= uart_rx_bit_spacing + 1;
+                    else                   
                         uart_rx_bit_spacing <= uart_rx_bit_spacing + 1;
                     end if;
                     if uart_rx_state = rx_get_start_bit then
                         uart_rx_bit_spacing <= (others => '0');
                     end if; 
                 end if;
+
+                
             end if;
         end if;
     end process rx_bit_spacing;
@@ -211,6 +214,10 @@ begin
                 case uart_rx_state is
                     when rx_get_start_bit =>
                         if rx_baud_tick = '1' and uart_rx_bit = '0' then
+                            uart_rx_state <= wait_start_bit;
+                        end if;
+                    when wait_start_bit => 
+                        if uart_rx_bit_tick = '1' then
                             uart_rx_state <= rx_get_data;
                         end if;
                     when rx_get_data =>

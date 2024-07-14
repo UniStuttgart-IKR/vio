@@ -36,14 +36,6 @@ ARCHITECTURE struct OF riscvio_soc_tb IS
       tx            : OUT    std_logic 
    );
    END COMPONENT;
-   COMPONENT uart_loop
-   PORT (
-      clk   : IN     std_logic ;
-      res_n : IN     std_logic ;
-      tx    : IN     std_logic ;
-      rx    : OUT    std_logic 
-   );
-   END COMPONENT;
    COMPONENT clk_res_gen_var
    GENERIC (
       ONTIME    : time := 10 ns;
@@ -60,11 +52,15 @@ ARCHITECTURE struct OF riscvio_soc_tb IS
    -- pragma synthesis_off
    FOR ALL : clk_res_gen_var USE ENTITY riscvio_lib.clk_res_gen_var;
    FOR ALL : riscvio_soc USE ENTITY cyclonev_lib.riscvio_soc;
-   FOR ALL : uart_loop USE ENTITY cyclonev_lib.uart_loop;
    -- pragma synthesis_on
 
 
 BEGIN
+   -- Architecture concurrent statements
+   -- HDL Embedded Text Block 1 eb1
+   -- eb1 1        
+   rx <= '1';                               
+
 
    -- Instance port mappings.
    soc_i : riscvio_soc
@@ -79,13 +75,6 @@ BEGIN
          seven_seg_2   => seven_seg_2,
          seven_seg_3   => seven_seg_3,
          tx            => tx
-      );
-   uart_loop_i : uart_loop
-      PORT MAP (
-         clk   => clk,
-         res_n => res_n,
-         tx    => tx,
-         rx    => rx
       );
    U_1 : clk_res_gen_var
       GENERIC MAP (

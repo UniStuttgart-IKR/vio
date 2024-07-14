@@ -5,10 +5,8 @@ USE riscvio_lib.pipeline.all;
 USE riscvio_lib.ISA.all;
 USE ieee.numeric_std.all;
 USE ieee.math_real.all;
-LIBRARY cyclonev_lib;
-USE cyclonev_lib.soc.all;
 
-LIBRARY io_comp_lib;
+LIBRARY cyclonev_lib;
 
 ARCHITECTURE struct OF io IS
 
@@ -148,6 +146,7 @@ ARCHITECTURE struct OF io IS
    FOR ALL : key_debounce USE ENTITY cyclonev_lib.key_debounce;
    FOR ALL : seven_seg USE ENTITY cyclonev_lib.seven_seg;
    FOR ALL : seven_seg_interface USE ENTITY cyclonev_lib.seven_seg_interface;
+   FOR ALL : uart USE ENTITY riscvio_lib.uart;
    FOR ALL : uart_interface USE ENTITY cyclonev_lib.uart_interface;
    -- pragma synthesis_on
 
@@ -233,57 +232,22 @@ BEGIN
          uart_rdata          => uart_rdata,
          uart_stall          => uart_stall
       );
-
-   uart_i: IF UART_SIM GENERATE
-   -- Optional embedded configurations
-   -- pragma synthesis_off
-   FOR uart_sim_i : uart USE ENTITY io_comp_lib.uart;
-   -- pragma synthesis_on
-
-   BEGIN
-      uart_sim_i : uart
-         GENERIC MAP (
-            baud            => UART_BAUD_SIM,
-            clock_frequency => SYSCLK
-         )
-         PORT MAP (
-            clock               => clk,
-            res_n               => res_n,
-            data_stream_in      => data_stream_in,
-            data_stream_in_stb  => data_stream_in_stb,
-            data_stream_in_ack  => data_stream_in_ack,
-            data_stream_in_done => data_stream_in_done,
-            data_stream_out     => data_stream_out,
-            data_stream_out_stb => data_stream_out_stb,
-            tx                  => tx,
-            rx                  => rx
-         );
-   END;
-   ELSE GENERATE
-   -- Optional embedded configurations
-   -- pragma synthesis_off
-   FOR uart_syn_i : uart USE ENTITY io_comp_lib.uart;
-   -- pragma synthesis_on
-
-   BEGIN
-      uart_syn_i : uart
-         GENERIC MAP (
-            baud            => UART_BAUD_SYNTH,
-            clock_frequency => SYSCLK
-         )
-         PORT MAP (
-            clock               => clk,
-            res_n               => res_n,
-            data_stream_in      => data_stream_in,
-            data_stream_in_stb  => data_stream_in_stb,
-            data_stream_in_ack  => data_stream_in_ack,
-            data_stream_in_done => data_stream_in_done,
-            data_stream_out     => data_stream_out,
-            data_stream_out_stb => data_stream_out_stb,
-            tx                  => tx,
-            rx                  => rx
-         );
-   END;
-   END GENERATE uart_i;
+   iuart : uart
+      GENERIC MAP (
+         baud            => 19_200,
+         clock_frequency => 50_000_000
+      )
+      PORT MAP (
+         clock               => clk,
+         res_n               => res_n,
+         data_stream_in      => data_stream_in,
+         data_stream_in_stb  => data_stream_in_stb,
+         data_stream_in_ack  => data_stream_in_ack,
+         data_stream_in_done => data_stream_in_done,
+         data_stream_out     => data_stream_out,
+         data_stream_out_stb => data_stream_out_stb,
+         tx                  => tx,
+         rx                  => rx
+      );
 
 END struct;

@@ -8,6 +8,10 @@ library "ieee"
 unitName "std_logic_1164"
 )
 (DmPackageRef
+library "ieee"
+unitName "numeric_std"
+)
+(DmPackageRef
 library "riscvio_lib"
 unitName "isa"
 )
@@ -213,7 +217,7 @@ font "courier,10,0"
 )
 emptyMRCItem *25 (MRCItem
 litem &1
-pos 7
+pos 10
 dimension 20
 )
 uid 96,0
@@ -566,7 +570,7 @@ value "/u/home/stud/leylknci/Documents/FP/RiscViO/riscvio_lib/hds/ex_res_mux"
 )
 (vvPair
 variable "date"
-value "07/08/24"
+value "07/15/24"
 )
 (vvPair
 variable "day"
@@ -578,7 +582,7 @@ value "Monday"
 )
 (vvPair
 variable "dd"
-value "08"
+value "15"
 )
 (vvPair
 variable "entity_name"
@@ -606,7 +610,7 @@ value "leylknci"
 )
 (vvPair
 variable "graphical_source_date"
-value "07/08/24"
+value "07/15/24"
 )
 (vvPair
 variable "graphical_source_group"
@@ -618,7 +622,7 @@ value "pc024"
 )
 (vvPair
 variable "graphical_source_time"
-value "14:15:17"
+value "16:28:39"
 )
 (vvPair
 variable "group"
@@ -651,6 +655,10 @@ value "$HDS_PROJECT_DIR/riscvio_lib/qis"
 (vvPair
 variable "library_downstream_QISPGMInvoke"
 value "$HDS_PROJECT_DIR/riscvio_lib/qis"
+)
+(vvPair
+variable "library_downstream_QuartusPrimeImport"
+value "$HDS_PROJECT_DIR/QuartusIPSimLibs"
 )
 (vvPair
 variable "library_downstream_QuestaSimCompiler"
@@ -738,7 +746,7 @@ value "interface"
 )
 (vvPair
 variable "time"
-value "14:15:17"
+value "16:28:39"
 )
 (vvPair
 variable "unit"
@@ -805,8 +813,7 @@ va (VaSet
 font "lucida,8,0"
 )
 xt "44000,2000,58300,2900"
-st "alu_mode_dc  : IN     alu_mode_T  ;
-"
+st "alu_mode_dc  : IN     alu_mode_T  ;"
 )
 thePort (LogicalPort
 lang 11
@@ -851,8 +858,7 @@ va (VaSet
 font "lucida,8,0"
 )
 xt "44000,2900,56400,3800"
-st "alu_out_ex_u : IN     word_T  ;
-"
+st "alu_out_ex_u : IN     word_T  ;"
 )
 thePort (LogicalPort
 lang 11
@@ -897,8 +903,7 @@ va (VaSet
 font "lucida,8,0"
 )
 xt "44000,3800,58300,4700"
-st "dbu_out_ex_u : IN     reg_mem_T  ;
-"
+st "dbu_out_ex_u : IN     reg_mem_T  ;"
 )
 thePort (LogicalPort
 lang 11
@@ -944,8 +949,7 @@ va (VaSet
 font "lucida,8,0"
 )
 xt "44000,9200,58800,10100"
-st "mux_exc      : OUT    exc_cause_T  ;
-"
+st "mux_exc      : OUT    exc_cause_T  ;"
 )
 thePort (LogicalPort
 lang 11
@@ -991,8 +995,7 @@ va (VaSet
 font "lucida,8,0"
 )
 xt "44000,4700,58100,5600"
-st "pgu_ptr_ex_u : IN     reg_mem_T  ;
-"
+st "pgu_ptr_ex_u : IN     reg_mem_T  ;"
 )
 thePort (LogicalPort
 lang 11
@@ -1037,8 +1040,7 @@ va (VaSet
 font "lucida,8,0"
 )
 xt "44000,5600,55700,6500"
-st "raux_dc      : IN     raux_T  ;
-"
+st "raux_dc      : IN     raux_T  ;"
 )
 thePort (LogicalPort
 lang 11
@@ -1083,8 +1085,7 @@ va (VaSet
 font "lucida,8,0"
 )
 xt "44000,6500,55300,7400"
-st "rdat_dc      : IN     rdat_T  ;
-"
+st "rdat_dc      : IN     rdat_T  ;"
 )
 thePort (LogicalPort
 lang 11
@@ -1130,8 +1131,7 @@ va (VaSet
 font "lucida,8,0"
 )
 xt "44000,10100,57400,11000"
-st "res_ex_u     : OUT    reg_mem_T 
-"
+st "res_ex_u     : OUT    reg_mem_T "
 )
 thePort (LogicalPort
 lang 11
@@ -1177,8 +1177,7 @@ va (VaSet
 font "lucida,8,0"
 )
 xt "44000,7400,60300,8300"
-st "res_mux_sel  : IN     ex_res_mux_sel_T  ;
-"
+st "res_mux_sel  : IN     ex_res_mux_sel_T  ;"
 )
 thePort (LogicalPort
 lang 11
@@ -1223,8 +1222,7 @@ va (VaSet
 font "lucida,8,0"
 )
 xt "44000,8300,55100,9200"
-st "rptr_dc      : IN     rptr_T  ;
-"
+st "rptr_dc      : IN     rptr_T  ;"
 )
 thePort (LogicalPort
 lang 11
@@ -1653,9 +1651,10 @@ blo "0,800"
 uid 50,0
 va (VaSet
 )
-xt "0,1000,14400,6500"
+xt "0,1000,14400,7600"
 st "LIBRARY ieee;
 USE ieee.std_logic_1164.all;
+USE ieee.numeric_std.all;
 LIBRARY riscvio_lib;
 USE riscvio_lib.isa.all;
 USE riscvio_lib.pipeline.all;"
@@ -1663,11 +1662,11 @@ tm "PackageList"
 )
 ]
 )
-windowSize "1144,445,2159,1135"
-viewArea "-30112,-20924,35516,22082"
-cachedDiagramExtent "-119750,-10100,64500,51000"
+windowSize "1136,458,2151,1148"
+viewArea "-30397,-21075,35759,22276"
+cachedDiagramExtent "-120500,-6956,60300,51000"
 hasePageBreakOrigin 1
-pageBreakOrigin "-120000,-11000"
+pageBreakOrigin "-189000,-11000"
 defaultCommentText (CommentText
 shape (Rectangle
 layer 0
@@ -1929,6 +1928,6 @@ xt "42000,0,42000,0"
 tm "SyDeclarativeTextMgr"
 )
 )
-lastUid 2068,0
+lastUid 2091,0
 activeModelName "Symbol:GEN"
 )

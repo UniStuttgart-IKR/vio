@@ -148,7 +148,7 @@ PACKAGE pipeline IS
     constant MEM_ADDR_NULL: mem_addr_T := (io_access => false, addr => (others => '0'));
 
     pure function allocateNewObject(current_alc_addr: word_T; pi: word_T; dt: word_T; dalc: boolean := false) return word_T;
-    pure function calculateMemoryAddress(pi: word_T; ix: word_T; offs: word_T; base: word_T; rc: std_logic; ri: std_logic; ptr_access: boolean := false) return word_T;
+    pure function calculateMemoryAddress(pi: word_T; ix: word_T; offs: word_T; base: word_T; inter: std_logic; ptr_access: boolean := false) return word_T;
 
 
 --------------------------------------------------------------------------------------

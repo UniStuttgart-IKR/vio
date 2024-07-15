@@ -44,7 +44,8 @@ BEGIN
     raux.ix   <= rd_wb.mem.ix when raux_ix = rd_wb.rf_nbr and raux_ix /= 0 else
                  registers(raux_ix).ix when raux_ix <= ali_T'pos(t6) else 
                  (others => '0');
-    raux.tag  <= rd_wb.mem.tag when raux_ix = rd_wb.rf_nbr and raux_ix /= 0 else
+    raux.tag  <= POINTER when raux_ix = ali_T'pos(frame) or raux_ix = ali_T'pos(ra) else
+                 rd_wb.mem.tag when raux_ix = rd_wb.rf_nbr and raux_ix /= 0 else
                  registers(raux_ix).tag when raux_ix <= ali_T'pos(t6) else
                  DATA;
     
@@ -62,6 +63,9 @@ BEGIN
         if clk'event and clk = '1' then
           if rd_wb.rf_nbr /= 0 and rd_wb.rf_nbr <= ali_T'pos(t6) then
             registers(rd_wb.rf_nbr) <= rd_wb.mem;
+            if rd_wb.rf_nbr = ali_T'pos(frame) or rd_wb.rf_nbr = ali_T'pos(ra) then
+              registers(rd_wb.rf_nbr).tag <= POINTER;
+            end if;
           end if;
         end if;
       end if;

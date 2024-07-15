@@ -8,7 +8,7 @@ USE ieee.math_real.all;
 LIBRARY cyclonev_lib;
 USE cyclonev_lib.soc.all;
 
-LIBRARY io_comp_lib;
+LIBRARY peripherals;
 
 ARCHITECTURE struct OF io IS
 
@@ -237,11 +237,11 @@ BEGIN
    uart_i: IF UART_SIM GENERATE
    -- Optional embedded configurations
    -- pragma synthesis_off
-   FOR uart_sim_i : uart USE ENTITY io_comp_lib.uart;
+   FOR iuart_sim : uart USE ENTITY peripherals.uart;
    -- pragma synthesis_on
 
    BEGIN
-      uart_sim_i : uart
+      iuart_sim : uart
          GENERIC MAP (
             baud            => UART_BAUD_SIM,
             clock_frequency => SYSCLK
@@ -262,11 +262,11 @@ BEGIN
    ELSE GENERATE
    -- Optional embedded configurations
    -- pragma synthesis_off
-   FOR uart_syn_i : uart USE ENTITY io_comp_lib.uart;
+   FOR iuart : uart USE ENTITY peripherals.uart;
    -- pragma synthesis_on
 
    BEGIN
-      uart_syn_i : uart
+      iuart : uart
          GENERIC MAP (
             baud            => UART_BAUD_SYNTH,
             clock_frequency => SYSCLK

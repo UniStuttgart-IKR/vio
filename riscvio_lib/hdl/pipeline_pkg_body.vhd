@@ -835,38 +835,38 @@ PACKAGE BODY pipeline IS
         return addr(word_T'high downto 3) & new_tag;
     end function allocateNewObject;
 
-    pure function calculateMemoryAddress(pi: word_T; ix: word_T; offs: word_T; base: word_T; rc: std_logic; ri: std_logic; ptr_access: boolean := false) return word_T is
+    pure function calculateMemoryAddress(pi: word_T; ix: word_T; offs: word_T; base: word_T; inter: std_logic; ptr_access: boolean := false) return word_T is
         variable pi_scaled: word_T;
         variable offset_scaled: word_T;
         variable index_scaled: word_T;
         variable index_space: word_T;
+        variable base_aligned: word_T;
         variable reserved_space: natural range 8 to 16;
     begin
+        base_aligned := base(word_T'high downto 3) & "000";
         pi_scaled := '0' & pi(word_T'high-1 downto 2) & "00";
         offset_scaled := offs(word_T'high-2 downto 0) & "00";
         index_scaled := ix(word_T'high-2 downto 0) & "00";
         index_space := word_T(to_unsigned(to_integer(unsigned(pi))*INDEX_SIZE+7, word_T'length)) and X"FFFFFFF8";
-        if rc = '1' and ri = '0' then
+        if inter = '1' and base(2) = '1' then
             reserved_space := 16;
-        elsif rc = '0' and ri = '1' then
+        elsif base(2) = '1' then
             reserved_space := 12;
         else
             reserved_space := 8;
         end if;
 
         if ptr_access then
-            return std_logic_vector(unsigned(base) + unsigned(offset_scaled) + unsigned(index_scaled) + reserved_space);
+            return std_logic_vector(unsigned(base_aligned) + unsigned(offset_scaled) + unsigned(index_scaled) + reserved_space);
         else
-            return std_logic_vector(unsigned(base) + unsigned(pi_scaled) + unsigned(index_space) + unsigned(offs) + unsigned(ix) + reserved_space);
+            return std_logic_vector(unsigned(base_aligned) + unsigned(pi_scaled) + unsigned(index_space) + unsigned(offs) + unsigned(ix) + reserved_space);
         end if;
     end function calculateMemoryAddress;
 
     pure function isFrameTypeException(rdst_nbr: reg_nbr_T; frame: rptr_T; pgu_mode: pgu_mode_T) return boolean is
     begin
         return  (ali_T'val(rdst_nbr) = ra and pgu_mode = pgu_dat_r and pgu_mode = pgu_ptr_r) or                                                                         --try loading/storing ra with index addressing
-                (ali_T'val(rdst_nbr) = ra and frame.val(2 downto 0) /= "100" and frame.val(2 downto 0) /= "101" and pgu_mode = pgu_dat_r and pgu_mode = pgu_ptr_r) or   --try loading/storing ra from non stack frame object (TODO: could we allow this?)
-                (pgu_mode = pgu_rix and frame.dt(31 downto 30) /= "10" and frame.dt(31 downto 30) /= "01") or                                                           --try loading/storing rix from terminal frame
-                (pgu_mode = pgu_rcd and frame.dt(31 downto 30) /= "10" and frame.dt(31 downto 30) /= "01");                                                             --try loading/storing ra from terminal frame
+                (ali_T'val(rdst_nbr) = ra and frame.val(2 downto 0) /= "100" and frame.val(2 downto 0) /= "101" and pgu_mode = pgu_dat_r and pgu_mode = pgu_ptr_r);     --try loading/storing ra from non stack frame object (#TODO: could we allow this?)
     end function isFrameTypeException;
 
     pure function isIndexOutOfBoundsException(rdst_nbr: reg_nbr_T; rptr: rptr_T; raux: raux_T; rdat: rdat_T; imm: word_T; pgu_mode: pgu_mode_T) return boolean is

@@ -1,33 +1,27 @@
-# generated from src/riscViOTest.s3 by riscvio-preproc.py by LeyLux Group
 .globl core.start
 
 
-.section core, "xa"
-.word core.trampEnd - core.trampStart
-.word (core.end - core.trampStart - 4)
-
-core.trampStart:
-core.start_: j core.start
-core.init_: j core.init
-core.trampEnd:
-
-core.start:      la      x3, core
+@core>
+start
+init
+private
+start:      la      x3, @core
             ccp     x3, x3
-            jalr    ra,  4(x3)
+            jalr    ra, @core.init(x3)
             nop
             nop
 
-core.init:     
+init:     
             li      frame, 0x805
-            la      t0, core.exc_handel
+            la      t0, @core.exc_handel
             csrw    mtvec, t0
             
-            la      t0, uart
+            la      t0, @uart
             ccp     t0, t0
             la      a0, exceptionStrs
             ccp     a0, a0
             li      a1, 4
-            jalr    ra,  0(t0)
+            jalr    ra, @uart.stringElOut(t0)
 
             ebreak
 
@@ -49,22 +43,22 @@ core.init:
             la      a0, hello_world_str
             ccp     s0, a0
             
-core.init.loop:      sb      s3, 0(s2)
+.loop:      sb      s3, 0(s2)
             slli    s3, s3,1
-            blt     s3,s4,core.init.byteOk
+            blt     s3,s4,.byteOk
             li      s3, 1
-core.init.byteOk:    #TODO: add .label expansion (to coobj.subroutine.label)
+.byteOk:    #TODO: add .label expansion (to coobj.subroutine.label)
             #rori    s3, s3, 1
-            la      t0, uart
+            la      t0, @uart
             mv      a0, s0
             mv      a1, s1
-            jalr    ra,  4(t0)
+            jalr    ra, @uart.stringOut(t0)
             ebreak
 
-            j       core.init.loop
+            j       .loop
 
 
-core.exc_handel:
+exc_handel:
                 nop
                 nop
                 nop
@@ -74,17 +68,17 @@ core.exc_handel:
                 li      t2, 3 * 2 + 0
                 ciop    a1, t1, t2
 
-                la      s0, uart
+                la      s0, @uart
 
                 la      a0, exception_hdr_str
                 ccp     a0, a0
-                jalr    ra,  4(s0)
+                jalr    ra, @uart.stringOut(s0)
 
 
                 la      a0, exceptionStrs
                 ccp     a0, a0
                 csrr    a2, mcause
-                jalr    ra,  4(s0)
+                jalr    ra, @uart.stringOut(s0)
 
                 nop
                 nop 
@@ -95,26 +89,10 @@ core.exc_handel:
                 addi    t0, t0, -5
                 addi    t1, t1, -9
 
-
-core.end:
-
-.align 3
-.section exception_hdr_str, "a"
-.word 0
-.word (exception_hdr_str.end - exception_hdr_str_)
-
-exception_hdr_str_:
+exception_hdr_str: object
             .ascii "An Exception occured: "
 
-
-exception_hdr_str.end:
-
-.align 3
-.section exceptionStrs, "a"
-.word 0
-.word (exceptionStrs.end - exceptionStrs_)
-
-exceptionStrs_:
+exceptionStrs: object
             .asciz "panic - severe internal error"
             .asciz "illeg - illegal instruction"
             .asciz "sverr - supervisor error"
@@ -139,90 +117,68 @@ exceptionStrs_:
             .word  0
 
 
-
-exceptionStrs.end:
-
-.align 3
-.section hello_world_str, "a"
-.word 0
-.word (hello_world_str.end - hello_world_str_)
-
-hello_world_str_:
+hello_world_str: object
             .ascii "Hello from RiscViO!\n\r"
 
+@uart>
+stringElOut
+stringOut
+private
 
-hello_world_str.end:
-
-
-.section uart, "xa"
-.align 3
-.word uart.trampEnd - uart.trampStart
-.word (uart.end - uart.trampStart - 4)
-
-uart.trampStart:
-uart.stringElOut_: j uart.stringElOut
-uart.stringOut_: j uart.stringOut
-uart.trampEnd:
-
-
-uart.charOut:    li      t1, 1
+charOut:    li      t1, 1
             li      t2, 3 * 2 + 0
             ciop    t0, t1, t2
             sb      a0, 0(t0)
             ret
 
-uart.charIn:     li      t1, 1
+charIn:     li      t1, 1
             li      t2, 3 * 2 + 0
             ciop    t0, t1, t2
             lbu     a0, 0(t0)
             ret
 
 
-uart.stringElOut:
+stringElOut:
             mv      a7, a0
             qdtb    a6, a7
             li      a5, -4
             li      a4, 0
 
-uart.stringElOut.next:      addi    a5, a5,4
-            bge     a5,a6,uart.stringElOut.oob
-            lw.r    t1, a5(a7)  #CAFFE0AFF
-            orc.b   t1, t1      #BBBBB0BBB
-            not     t1, t1      #00000B000
-uart.stringElOut.again:     beqz    t1, uart.stringElOut.next
+.next:      addi    a5, a5,4
+            bge     a5,a6,.oob
+            lw.r    t1, a5(a7)  #CAFFE00FF
+            orc.b   t1, t1      #BBBBB00BB
+            not     t1, t1      #00000BB00
+.again:     beqz    t1, .next
             #found a chunk with at leat one zero byte
             ctz     t2, t1
             addi    t2, t2,8
             srl     t1, t1,t2
             addi    a4, a4,1
-            bne     a4,a1,uart.stringElOut.again
+            bne     a4,a1,.again
             srli    t2, t2,3
             add     a1, a5,t2
-            j       uart.stringOutInt
+            j       stringOutInt
 
 
-uart.stringElOut.oob:       li      a1, -1
+.oob:       li      a1, -1
             ret
 
-uart.stringOut:  li      a1, 0
+stringOut:  li      a1, 0
             mv      a7, a0
             qdtb    a6, a7
 
-uart.stringOutInt:
+stringOutInt:
             push    0,0
             sp      ra, 0(frame)
 
-uart.stringOutInt.nxt:       beq     a1,a6,uart.stringOutInt.end
+.nxt:       beq     a1,a6,.end
             lbu.r   a0, a1(a7)
-            beqz    a0, uart.stringOutInt.end
-            jal     uart.charOut
+            beqz    a0, .end
+            jal     charOut
             addi    a1, a1,1
-            j       uart.stringOutInt.nxt
+            j       .nxt
 
-uart.stringOutInt.end:       lp      ra, 0(frame)
+.end:       lp      ra, 0(frame)
             pop
             ret
-uart.end:
-
-
-

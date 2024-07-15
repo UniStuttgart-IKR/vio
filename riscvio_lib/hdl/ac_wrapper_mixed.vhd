@@ -48,8 +48,8 @@ BEGIN
             clk       => clk,
             res_n     => res_n,
             stall     => stall,
-            addr      => addr.val,
-            next_addr => next_addr.val,
+            addr      => addr.val(word_T'high downto 3) & "000",
+            next_addr => next_addr.val(word_T'high downto 3) & "000",
             rd        => rena,
             we        => wena,
 

@@ -8,7 +8,9 @@
 -- using Mentor Graphics HDL Designer(TM) 2021.1 Built on 14 Jan 2021 at 15:11:42
 --
 ARCHITECTURE behav OF ex_res_mux IS
+    signal new_pointer: word_T;
 BEGIN
+
     res_ex_u <= dbu_out_ex_u when res_mux_sel = DBU else
                 pgu_ptr_ex_u when res_mux_sel = PGU else
                 (val => alu_out_ex_u,    tag => DATA,        ix => (others => '0'), pi => (others => '0'), dt => (others => '0')) when res_mux_sel = ALU and raux_dc.tag = DATA else

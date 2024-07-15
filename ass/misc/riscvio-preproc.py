@@ -127,7 +127,7 @@ def extractAllFuncs(pobjects, contents) -> [{}]:
             labelMatches = re.finditer("\n({}):".format(ALLOWEDFNEXPR), cofnregion)
 
             for match in labelMatches:
-                coobj["allfns"].append(match.group(1))
+                coobj["allfns"].append([match.group(1), [coobj["hdrendpos"][0], match.span(1)[0]]])
 
     return coobjectsnew
 
@@ -172,18 +172,18 @@ def replaceCOHeaders(contents, pobjects) -> [str]:
     hdrReplacements = []
     for pobject in pobjects:
         if pobject["type"] == "code":
-            dstexpr = ""
+            alignexpr = ""
             if pobject["name"] != "core":
-                dstexpr += ".align 3\n"
+                alignexpr = ".align 3\n"
                 
             if pobject["super"]:
                 srcexpr = "(@{}>)([\\S\n\t\v]*)private\n".format(pobject["name"])
-                dstexpr += '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word ({0}.end - {0}.trampStart - 4)\n\n{0}.trampStart:\n'.format(
-                    pobject["name"])
+                dstexpr = '.section {0}, "xa"\n{1}.word {0}.trampEnd - {0}.trampStart\n.word ({0}.end - {0}.trampStart - 4)\n\n{0}.trampStart:\n'.format(
+                    pobject["name"], alignexpr)
             else:
                 srcexpr = "(@{}:)([\\S\n\t\v]*)private\n".format(pobject["name"])
-                dstexpr += '.section {0}, "xa"\n.word {0}.trampEnd - {0}.trampStart\n.word {0}.end - {0}.trampStart - 4\n\n{0}.trampStart:\n'.format(
-                    pobject["name"])
+                dstexpr = '.section {0}, "xa"\n{1}.word {0}.trampEnd - {0}.trampStart\n.word {0}.end - {0}.trampStart - 4\n\n{0}.trampStart:\n'.format(
+                    pobject["name"], alignexpr)
 
             for fct in pobject["publicfns"]:
                 dstexpr += "{0}.{1}_: j {0}.{1}\n".format(pobject["name"], fct[0])
@@ -228,14 +228,15 @@ def replaceDataObjHeaders(contents, pobjects) -> []:
 def findMainFctName(coobj, fname) -> str:
     fnamei = None
     for i, fn in enumerate(coobj["allfns"]):
-        if fn == fname:
+        if fn[1] == fname[1]:
             fnamei = i
             break
     assert fnamei != None, "internal error"
 
     for i in range(fnamei, -1, -1):
-        if coobj["allfns"][i][0] != ".":
-            return coobj["allfns"][i]
+        if coobj["allfns"][i][0][0] != ".":
+            #print(fname, fnamei, coobj["allfns"], i, coobj["allfns"][i][0])
+            return coobj["allfns"][i][0]
         
     return None
 
@@ -248,25 +249,51 @@ def expandFunctionNames(contents, pobjects) -> []:
 
             afterLabekExpansion = pobjectStr
             for fname in pobject["allfns"]:
-                if fname[0] == '.':
+                #print(fname)
+                if fname[0][0] == '.':
                     mainfctname = findMainFctName(pobject, fname)
-                    afterLabekExpansion = re.sub("\n{0}:".format(fname), "\n{0}.{1}{2}:".format(pobject["name"], mainfctname, fname),
-                                        pobjectStr)
-                    print("\n{0}:".format(fname), "\n{0}.{1}{2}:".format(pobject["name"], mainfctname, fname))
+                    afterLabekExpansion = re.sub("\n{0}:".format(fname[0]), "\n{0}.{1}{2}:".format(pobject["name"], mainfctname, fname[0]),
+                                        afterLabekExpansion)
+                    #print("\n{0}:".format(fname[0]), "\n{0}.{1}{2}:".format(pobject["name"], mainfctname, fname[0]))
                 else:
-                    afterLabekExpansion = re.sub("\n{0}:".format(fname), "\n{0}.{1}:".format(pobject["name"], fname),
-                                        pobjectStr)
-                    print("\n{0}:".format(fname), "\n{0}.{1}:".format(pobject["name"], fname))
+                    afterLabekExpansion = re.sub("\n{0}:".format(fname[0]), "\n{0}.{1}:".format(pobject["name"], fname[0]),
+                                        afterLabekExpansion)
+                    #print("\n{0}:".format(fname[0]), "\n{0}.{1}:".format(pobject["name"], fname[0]))
 
-            print(afterLabekExpansion)
+            #print(afterLabekExpansion)
             afterLocalCONameExpansion = afterLabekExpansion[:]
-            jmpMnenmoncs = ["jal", "j", "beq", "bne", "bgt", "blt", "bltu", "bgtu", "bge", "ble", "la"]
+            jmpMnenmoncs = ["jal", "j"]
+            brncMnenmoncs = ["beq", "bne", "bgt", "blt", "bltu", "bgtu", "bge", "ble", "la"]
 
             for fname in pobject["allfns"]:
+                if fname[0][0] == ".":
+                    mainfctname = findMainFctName(pobject, fname)
+                else:
+                    mainfctname = ""
+
+                    
                 for mnemonic in jmpMnenmoncs:
-                    afterLocalCONameExpansion = re.sub("({0}\\s*){1}".format(mnemonic, fname),
-                                                    "\\1{0}.{1}".format(pobject["name"], fname),
-                                                    afterLocalCONameExpansion)
+                    if fname[0][0] == ".":
+                        mainfctname = findMainFctName(pobject, fname)
+                        afterLocalCONameExpansion = re.sub("({0}\\s*.*){1}\n".format(mnemonic, fname[0]),
+                                                        "\\1{0}.{1}{2}\n".format(pobject["name"], mainfctname, fname[0]),
+                                                        afterLocalCONameExpansion)
+                    else:
+                        afterLocalCONameExpansion = re.sub("({0}\\s*){1}\n".format(mnemonic, fname[0]),
+                                                        "\\1{0}.{1}\n".format(pobject["name"], fname[0]),
+                                                        afterLocalCONameExpansion)
+                for mnemonic in brncMnenmoncs:
+                    if fname[0][0] == ".":
+                        mainfctname = findMainFctName(pobject, fname)
+                        afterLocalCONameExpansion = re.sub("({0}\\s*.*){1}\n".format(mnemonic, fname[0]),
+                                                        "\\1{0}.{1}{2}\n".format(pobject["name"], mainfctname, fname[0]),
+                                                        afterLocalCONameExpansion)
+                    else:
+                        afterLocalCONameExpansion = re.sub("({0}\\s*){1}\n".format(mnemonic, fname[0]),
+                                                        "\\1{0}.{1}\n".format(pobject["name"], fname[0]),
+                                                        afterLocalCONameExpansion)
+
+                            
             newcontents[pobject["hdrendpos"][0]] = newcontents[pobject["hdrendpos"][0]][
                                                     :pobject["hdrendpos"][1]] + afterLocalCONameExpansion + \
                                                     newcontents[pobject["endpos"][0]][(pobject["endpos"][1]):]

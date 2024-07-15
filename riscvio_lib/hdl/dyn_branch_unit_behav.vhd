@@ -56,14 +56,14 @@ BEGIN
                 else
                     rix_int(31) := '0';
                 end if;
-                ra_out <=   (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
+                ra_out <=   (tag => POINTER, val => pc.ptr(word_T'high downto 3) & "111", ix => rix_int, pi => (others => '0'), dt => pc.eoc);
             when jal =>
                 dbt_valid <= false;
-                ra_out <= (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
+                ra_out <= (tag => POINTER, val => pc.ptr(word_T'high downto 3) & "111", ix => rix_int, pi => (others => '0'), dt => pc.eoc);
             when jlib =>
                 dbt_valid <= true;
                 rix_int(31) := '1';
-                ra_out <= (tag => POINTER, val => pc.ptr, ix => rix_int, pi => (others => '0'), dt => pc.eoc);
+                ra_out <= (tag => POINTER, val => pc.ptr(word_T'high downto 3) & "111", ix => rix_int, pi => (others => '0'), dt => pc.eoc);
             when others => 
                 dbt_valid <= false;
         end case;
@@ -74,7 +74,7 @@ BEGIN
                sterr when isStateErrorException(rdst_ix, rptr, raux, rdat, pc, pgu_nop, branch_mode) else
                well_behaved;
 
-    dbt_int.ptr <=  rptr.val when branch_mode = jalr or branch_mode = jlib else pc.ptr;
+    dbt_int.ptr <=  rptr.val(word_T'high downto 3) & "000" when branch_mode = jalr or branch_mode = jlib else pc.ptr;
     dbt_int.ix <=   calcIndex(rptr.ix, imm) when branch_mode = jalr  else
                 imm when branch_mode = jlib else
                 calcIndex(pc.ix, imm);

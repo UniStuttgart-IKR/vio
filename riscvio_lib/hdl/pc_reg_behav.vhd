@@ -22,6 +22,6 @@ BEGIN
     end if;
   end process;
 
-  current_pc_uq <= pc_current_pc when insert_nop else current_pc_d;
+  current_pc_uq <= pc_current_pc when insert_nop or stall else current_pc_d;
 END ARCHITECTURE behav;
 

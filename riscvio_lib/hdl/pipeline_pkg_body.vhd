@@ -718,8 +718,7 @@ PACKAGE BODY pipeline IS
 
                         end case;
 
-                    when F3_CSRRW => 
-                        --#TODO: make system registers readable (required for exception handler to detect which exception occured)
+                    when F3_CSRRW | F3_CSRRS => --#TODO: correctly implement csrrs
                         res.me_mode  := holiday;
                         res.at_mode  := no;
                         res.imm_mode := none;
@@ -871,7 +870,7 @@ PACKAGE BODY pipeline IS
 
     pure function isIndexOutOfBoundsException(rdst_nbr: reg_nbr_T; rptr: rptr_T; raux: raux_T; rdat: rdat_T; imm: word_T; pgu_mode: pgu_mode_T) return boolean is
     begin
-        return  ali_T'val(rdst_nbr) /= ra and raux.ali /= ra and (
+        return  ali_T'val(rdst_nbr) /= ra and (
                     (pgu_mode = pgu_dat_i and unsigned(imm(28 downto 0)) > unsigned(rptr.dt) and rptr.ali = frame) or
                     (pgu_mode = pgu_dat_i and unsigned(imm(30 downto 0)) > unsigned(rptr.dt)) or
                     (pgu_mode = pgu_dat_r and unsigned(rdat.val(28 downto 0)) > unsigned(rptr.dt) and rptr.ali = frame) or

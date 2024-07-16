@@ -19,6 +19,7 @@ BEGIN
             uart_tx_data <= (others => '0');
             uart_sending <= '0';
             uart_rx_data_avail <= '0';
+            data_stream_in_stb <= '0';
         else
             if clk'event and clk = '1' then
 
@@ -69,11 +70,15 @@ BEGIN
                             uart_stall <= uart_sending;
                         when others => null;
                     end case;
-                when lb =>
+                when lb | lbu =>
                     case to_integer(unsigned(uart_ix)) is
                         when 0 => 
                             clear_uart_rx_avail <= true;
-                            uart_rdata <= (others => '0');
+                            if uart_mode = lbu then
+                                uart_rdata <= (others => '0');
+                            else
+                                uart_rdata <= (others => uart_rx_data(byte_T'high));
+                            end if;
                             uart_rdata(byte_T'range) <= uart_rx_data;
 
                             uart_rdata <= (others => '0');
@@ -81,9 +86,12 @@ BEGIN
 
                             uart_stall <= not uart_rx_data_avail;
                         when 1 => 
-                            uart_rdata <= (8 => uart_rx_data_avail, 9 => not uart_sending, others => '0');
+                            uart_rdata <= (0 => uart_rx_data_avail, 1 => not uart_sending, others => '0');
                         when others => null;
                     end case;
+                when lh | lhu | lw =>
+                    uart_rdata <= (others => '0');
+                    uart_rdata(9 downto 0) <= uart_rx_data_avail & not uart_sending & uart_rx_data;
                 when others => null;
                 end case;
 

@@ -76,9 +76,9 @@ BEGIN
 
     dbt_int.ptr <=  rptr.val(word_T'high downto 3) & "000" when branch_mode = jalr or branch_mode = jlib else pc.ptr;
     dbt_int.ix <=   calcIndex(rptr.ix, imm) when branch_mode = jalr  else
-                imm when branch_mode = jlib else
-                calcIndex(pc.ix, imm);
-    dbt_int.eoc <=  rptr.dt when branch_mode = jlib or isAllStd(pc.eoc, '0') else pc.eoc;
+                    imm when branch_mode = jlib else
+                    calcIndex(pc.ix, imm);
+    dbt_int.eoc <=  rptr.dt when branch_mode = jlib or branch_mode = jalr else pc.eoc;
 
     dbt <= dbt_int;
 END ARCHITECTURE behav;

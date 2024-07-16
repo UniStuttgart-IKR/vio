@@ -8,89 +8,133 @@ private
 start:      la      x3, @core
             ccp     x3, x3
             jalr    ra, @core.init(x3)
-            nop
-            nop
 
-init:     
-            li      frame, 0x805
+init:       li      frame, 0x805
             la      t0, @core.exc_handel
             csrw    mtvec, t0
             
-            la      t0, @uart
-            ccp     t0, t0
-            la      a0, exceptionStrs
-            ccp     a0, a0
-            li      a1, 4
-            jalr    ra, @uart.stringElOut(t0)
+            la      s0, @uart
+            ccp     s0, s0
+            la      s1, demo_strings
+            ccp     s1, s1
 
-            ebreak
+            li      s6, 0x08
+            li      s7, '\r'
+            li      s8, 48
+            li      s9, 57
+            la      s10, @util
+            ccp     s10, s10
+            
+            mv      a0, s1
+            jalr    ra, @uart.stringOut(s0)
+
+repeat:     mv      a0, s1
+            li      a1, 1
+            jalr    ra, @uart.stringElOut(s0)
+
+            li      s2, 0
+            li      s3, 0
+.sizeloop:  jalr    ra, @uart.charIn(s0)
+            beq     a0,s7,.sizeEntered
+            blt     a0,s8,.sizeloop
+            bgt     a0,s9,.sizeloop
+            bne     a0,s6,.sizeNotBs
+            
+            beqz    s0,.sizeloop
+            addi    s2, s2,-1
+            li      a0, 0x8
+            jalr    ra, @uart.charOut(s0)
+            li      a0, ' '
+            jalr    ra, @uart.charOut(s0)
+            li      a0, 0x8
+            jalr    ra, @uart.charOut(s0)
+            j       .sizeloop
+            
+.sizeNotBs: jalr    ra, @uart.charOut(s0)
+            sub     a3, a0,s8
+            mv      a0, s3
+            li      a1, 10
+            jalr    ra, @util.mul_(s10)
+            add     s3, a2,a3
+            j       .sizeloop
+
+.sizeEntered:
+            mv      a0, s1
+            li      a1, 2
+            jalr    ra, @uart.stringElOut(s0)
+            slli    s3, s3,2
+            la      s2, fibo_string
+            ccp     s2, s2
+            lbu.r   a0, s3(s2)
+            jalr    ra, @uart.charOut(s0)
+            addi    s3, s3,1
+            lbu.r   a0, s3(s2)
+            jalr    ra, @uart.charOut(s0)
+            addi    s3, s3,1
+            lbu.r   a0, s3(s2)
+            jalr    ra, @uart.charOut(s0)
+            addi    s3, s3,1
+            lbu.r   a0, s3(s2)
+            jalr    ra, @uart.charOut(s0)
+
+doom:       j       repeat
+            
 
 
-            # Device 1
-            li      t1, 2
-            # 3 Registers, register capability
-            li      t2, 5 * 2 + 0
-            ciop    s2, t1, t2
-            li      s3, 1
-            li      s4, 0x100
-
+exc_handel:     
             # Device 1
             li      t1, 1
             # 3 Registers, register capability
             li      t2, 3 * 2 + 0
-            ciop    s1, t1, t2            
-            
-            la      a0, hello_world_str
-            ccp     s0, a0
-            
-.loop:      sb      s3, 0(s2)
-            slli    s3, s3,1
-            blt     s3,s4,.byteOk
-            li      s3, 1
-.byteOk:    #TODO: add .label expansion (to coobj.subroutine.label)
-            #rori    s3, s3, 1
-            la      t0, @uart
-            mv      a0, s0
-            mv      a1, s1
-            jalr    ra, @uart.stringOut(t0)
+            ciop    a1, t1, t2
+            la      s0, @uart
+            ccp     s0, s0
+            la      a0, exception_hdr_str
+            ccp     a0, a0
+            jalr    ra, @uart.stringOut(s0)
+            la      a0, exceptionStrs
+            ccp     a0, a0
+            csrw    mcause, a1
+            jalr    ra, @uart.stringElOut(s0)
+            li      a0, '\n'
+            jalr    ra, @uart.charOut(s0)
+            li      a0, '\r'
+            jalr    ra, @uart.charOut(s0)
+
             ebreak
-
-            j       .loop
-
-
-exc_handel:
-                nop
-                nop
-                nop
-                # Device 1
-                li      t1, 1
-                # 3 Registers, register capability
-                li      t2, 3 * 2 + 0
-                ciop    a1, t1, t2
-
-                la      s0, @uart
-
-                la      a0, exception_hdr_str
-                ccp     a0, a0
-                jalr    ra, @uart.stringOut(s0)
+            j       repeat
+            
+            mret
 
 
-                la      a0, exceptionStrs
-                ccp     a0, a0
-                csrr    a2, mcause
-                jalr    ra, @uart.stringOut(s0)
 
-                nop
-                nop 
-                nop
-                nop
-                mret
-                # test instr abort
-                addi    t0, t0, -5
-                addi    t1, t1, -9
+demo_strings: object
+            .asciz "Fibonacci Example"
+            .asciz "\n\rEnter Index: "
+            .asciz "\n\rValue is: "
+            
+
+fibo_string: object
+            .asciz "000"
+            .asciz "001"
+            .asciz "001"
+            .asciz "002"
+            .asciz "003"
+            .asciz "005"
+            .asciz "008"
+            .asciz "013"
+            .asciz "021"
+            .asciz "034"
+            .asciz "055"
+            .asciz "089"
+            .asciz "144"
+            .asciz "233"
+            .asciz "377"
+            .asciz "610"
+            .asciz "987"
 
 exception_hdr_str: object
-            .ascii "An Exception occured: "
+            .ascii "\n\rAn Exception occured: "
 
 exceptionStrs: object
             .asciz "panic - severe internal error"
@@ -113,7 +157,7 @@ exceptionStrs: object
             .asciz "aperr - ???"
             .asciz "hpovf - heap full"
             .asciz "stovf - stack overflow"
-            .asciz "ptari - ???"
+            .asciz "ptari - arithmetic on pointer register"
             .word  0
 
 
@@ -121,6 +165,8 @@ hello_world_str: object
             .ascii "Hello from RiscViO!\n\r"
 
 @uart>
+charIn
+charOut
 stringElOut
 stringOut
 private
@@ -160,7 +206,6 @@ stringElOut:
             add     a1, a5,t2
             j       stringOutInt
 
-
 .oob:       li      a1, -1
             ret
 
@@ -173,6 +218,7 @@ stringOutInt:
             sp      ra, 0(frame)
 
 .nxt:       beq     a1,a6,.end
+            nop
             lbu.r   a0, a1(a7)
             beqz    a0, .end
             jal     charOut
@@ -182,3 +228,39 @@ stringOutInt:
 .end:       lp      ra, 0(frame)
             pop
             ret
+
+@util>
+mul_
+divu_
+private
+#mul a2, a1,a0
+mul_:       mv      a2, zero
+mul_loop:   beqz    a1, util.mul_end
+            add     a2, a2,a0
+            addi    a1, a1,-1
+            j       mul_loop
+mul_end:    ret
+
+
+#takes:		a0 = dividend, a1 = divisor
+#returns:	a0 = quotient, a1 = rest
+divu_:		beqz	a1,util.divu_end    #TODO: fix this
+			li	    t2, 32			#counter
+			clz		t1, a0			#leading zeros
+			sub		t2, t2,t1   	#remaining counter (may be 0) 
+			sll		a0, a0,t1
+			li      t1, 0           #AC
+			beqz    t2, util.divu_done
+divu_loop:	rori	t0, a0,31
+            and		t0, t0,1		#Bit 31 alter Dividend
+			slli   	a0, a0,1		#Dividend << 1
+            slli   	t1, t1,1		#AC << 1
+			or		t1, t1,t0
+			bltu	t1,a1,util.divu_nope
+			sub		t1, t1,a1
+			addi    a0, a0,1
+divu_nope: 	addi    t2, t2,-1
+			bnez    t2, util.divu_loop
+divu_done:	mv		a1, t1
+divu_end:   ret
+

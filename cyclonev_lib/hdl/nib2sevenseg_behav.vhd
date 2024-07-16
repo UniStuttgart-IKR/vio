@@ -15,7 +15,7 @@ begin
  
     case nib is
         when "0000" =>
-        seven <= "0000001"; ---0
+        seven <= "1000000"; ---0
         when "0001" =>
         seven <= "1111001"; ---1
         when "0010" =>

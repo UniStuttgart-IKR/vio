@@ -418,7 +418,7 @@ BEGIN
         -- always apply sd to all words
         for w in WORDS_IN_LINE - 1 downto 0 loop
             for b in BYTES_PER_WORD - 1 downto 0 loop
-                bytes_to_write_pipe(w) <= sd((b+1) * BYTE_WIDTH - 1 downto b * BYTE_WIDTH);
+                bytes_to_write_pipe(w * BYTES_PER_WORD + b) <= sd((b+1) * BYTE_WIDTH - 1 downto b * BYTE_WIDTH);
             end loop;
         end loop;
 

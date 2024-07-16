@@ -14,89 +14,149 @@ core.trampEnd:
 core.start:      la      x3, core
             ccp     x3, x3
             jalr    ra,  4(x3)
-            nop
-            nop
 
-core.init:     
-            li      frame, 0x805
+core.init:       li      frame, 0x805
             la      t0, core.exc_handel
             csrw    mtvec, t0
             
-            la      t0, uart
-            ccp     t0, t0
-            la      a0, exceptionStrs
-            ccp     a0, a0
-            li      a1, 4
-            jalr    ra,  0(t0)
+            la      s0, uart
+            ccp     s0, s0
+            la      s1, demo_strings
+            ccp     s1, s1
 
-            ebreak
+            li      s6, 0x08
+            li      s7, '\r'
+            li      s8, 48
+            li      s9, 57
+            la      s10, util
+            ccp     s10, s10
+            
+            mv      a0, s1
+            jalr    ra,  12(s0)
+
+core.repeat:     mv      a0, s1
+            li      a1, 1
+            jalr    ra,  8(s0)
+
+            li      s2, 0
+            li      s3, 0
+core.repeat.sizeloop:  jalr    ra,  0(s0)
+            beq     a0,s7,core.repeat.sizeEntered
+            blt     a0,s8,core.repeat.sizeloop
+            bgt     a0,s9,core.repeat.sizeloop
+            bne     a0,s6,core.repeat.sizeNotBs
+            
+            beqz    s0,core.repeat.sizeloop
+            addi    s2, s2,-1
+            li      a0, 0x8
+            jalr    ra,  4(s0)
+            li      a0, ' '
+            jalr    ra,  4(s0)
+            li      a0, 0x8
+            jalr    ra,  4(s0)
+            j       core.repeat.sizeloop
+            
+core.repeat.sizeNotBs: jalr    ra,  4(s0)
+            sub     a3, a0,s8
+            mv      a0, s3
+            li      a1, 10
+            jalr    ra,  0(s10)
+            add     s3, a2,a3
+            j       core.repeat.sizeloop
+
+core.repeat.sizeEntered:
+            mv      a0, s1
+            li      a1, 2
+            jalr    ra,  8(s0)
+            slli    s3, s3,2
+            la      s2, fibo_string
+            ccp     s2, s2
+            lbu.r   a0, s3(s2)
+            jalr    ra,  4(s0)
+            addi    s3, s3,1
+            lbu.r   a0, s3(s2)
+            jalr    ra,  4(s0)
+            addi    s3, s3,1
+            lbu.r   a0, s3(s2)
+            jalr    ra,  4(s0)
+            addi    s3, s3,1
+            lbu.r   a0, s3(s2)
+            jalr    ra,  4(s0)
+
+core.doom:       j       core.repeat
+            
 
 
-            # Device 1
-            li      t1, 2
-            # 3 Registers, register capability
-            li      t2, 5 * 2 + 0
-            ciop    s2, t1, t2
-            li      s3, 1
-            li      s4, 0x100
-
+core.exc_handel:     
             # Device 1
             li      t1, 1
             # 3 Registers, register capability
             li      t2, 3 * 2 + 0
-            ciop    s1, t1, t2            
-            
-            la      a0, hello_world_str
-            ccp     s0, a0
-            
-core.init.loop:      sb      s3, 0(s2)
-            slli    s3, s3,1
-            blt     s3,s4,core.init.byteOk
-            li      s3, 1
-core.init.byteOk:    #TODO: add .label expansion (to coobj.subroutine.label)
-            #rori    s3, s3, 1
-            la      t0, uart
-            mv      a0, s0
-            mv      a1, s1
-            jalr    ra,  4(t0)
+            ciop    a1, t1, t2
+            la      s0, uart
+            ccp     s0, s0
+            la      a0, exception_hdr_str
+            ccp     a0, a0
+            jalr    ra,  12(s0)
+            la      a0, exceptionStrs
+            ccp     a0, a0
+            csrw    mcause, a1
+            jalr    ra,  8(s0)
+            li      a0, '\n'
+            jalr    ra,  4(s0)
+            li      a0, '\r'
+            jalr    ra,  4(s0)
+
             ebreak
-
-            j       core.init.loop
-
-
-core.exc_handel:
-                nop
-                nop
-                nop
-                # Device 1
-                li      t1, 1
-                # 3 Registers, register capability
-                li      t2, 3 * 2 + 0
-                ciop    a1, t1, t2
-
-                la      s0, uart
-
-                la      a0, exception_hdr_str
-                ccp     a0, a0
-                jalr    ra,  4(s0)
+            j       core.repeat
+            
+            mret
 
 
-                la      a0, exceptionStrs
-                ccp     a0, a0
-                csrr    a2, mcause
-                jalr    ra,  4(s0)
-
-                nop
-                nop 
-                nop
-                nop
-                mret
-                # test instr abort
-                addi    t0, t0, -5
-                addi    t1, t1, -9
 
 
 core.end:
+
+.align 3
+.section demo_strings, "a"
+.word 0
+.word (demo_strings.end - demo_strings_)
+
+demo_strings_:
+            .asciz "Fibonacci Example"
+            .asciz "\n\rEnter Index: "
+            .asciz "\n\rValue is: "
+            
+
+
+demo_strings.end:
+
+.align 3
+.section fibo_string, "a"
+.word 0
+.word (fibo_string.end - fibo_string_)
+
+fibo_string_:
+            .asciz "000"
+            .asciz "001"
+            .asciz "001"
+            .asciz "002"
+            .asciz "003"
+            .asciz "005"
+            .asciz "008"
+            .asciz "013"
+            .asciz "021"
+            .asciz "034"
+            .asciz "055"
+            .asciz "089"
+            .asciz "144"
+            .asciz "233"
+            .asciz "377"
+            .asciz "610"
+            .asciz "987"
+
+
+fibo_string.end:
 
 .align 3
 .section exception_hdr_str, "a"
@@ -104,7 +164,7 @@ core.end:
 .word (exception_hdr_str.end - exception_hdr_str_)
 
 exception_hdr_str_:
-            .ascii "An Exception occured: "
+            .ascii "\n\rAn Exception occured: "
 
 
 exception_hdr_str.end:
@@ -135,7 +195,7 @@ exceptionStrs_:
             .asciz "aperr - ???"
             .asciz "hpovf - heap full"
             .asciz "stovf - stack overflow"
-            .asciz "ptari - ???"
+            .asciz "ptari - arithmetic on pointer register"
             .word  0
 
 
@@ -160,6 +220,8 @@ hello_world_str.end:
 .word (uart.end - uart.trampStart - 4)
 
 uart.trampStart:
+uart.charIn_: j uart.charIn
+uart.charOut_: j uart.charOut
 uart.stringElOut_: j uart.stringElOut
 uart.stringOut_: j uart.stringOut
 uart.trampEnd:
@@ -186,9 +248,9 @@ uart.stringElOut:
 
 uart.stringElOut.next:      addi    a5, a5,4
             bge     a5,a6,uart.stringElOut.oob
-            lw.r    t1, a5(a7)  #CAFFE0AFF
-            orc.b   t1, t1      #BBBBB0BBB
-            not     t1, t1      #00000B000
+            lw.r    t1, a5(a7)  #CAFFE00FF
+            orc.b   t1, t1      #BBBBB00BB
+            not     t1, t1      #00000BB00
 uart.stringElOut.again:     beqz    t1, uart.stringElOut.next
             #found a chunk with at leat one zero byte
             ctz     t2, t1
@@ -199,7 +261,6 @@ uart.stringElOut.again:     beqz    t1, uart.stringElOut.next
             srli    t2, t2,3
             add     a1, a5,t2
             j       uart.stringOutInt
-
 
 uart.stringElOut.oob:       li      a1, -1
             ret
@@ -213,6 +274,7 @@ uart.stringOutInt:
             sp      ra, 0(frame)
 
 uart.stringOutInt.nxt:       beq     a1,a6,uart.stringOutInt.end
+            nop
             lbu.r   a0, a1(a7)
             beqz    a0, uart.stringOutInt.end
             jal     uart.charOut
@@ -222,7 +284,53 @@ uart.stringOutInt.nxt:       beq     a1,a6,uart.stringOutInt.end
 uart.stringOutInt.end:       lp      ra, 0(frame)
             pop
             ret
+
+
 uart.end:
+
+
+.section util, "xa"
+.align 3
+.word util.trampEnd - util.trampStart
+.word (util.end - util.trampStart - 4)
+
+util.trampStart:
+util.mul__: j util.mul_
+util.divu__: j util.divu_
+util.trampEnd:
+
+#mul a2, a1,a0
+util.mul_:       mv      a2, zero
+util.mul_loop:   beqz    a1, util.mul_end
+            add     a2, a2,a0
+            addi    a1, a1,-1
+            j       util.mul_loop
+util.mul_end:    ret
+
+
+#takes:		a0 = dividend, a1 = divisor
+#returns:	a0 = quotient, a1 = rest
+util.divu_:		beqz	a1,util.divu_end    #TODO: fix this
+			li	    t2, 32			#counter
+			clz		t1, a0			#leading zeros
+			sub		t2, t2,t1   	#remaining counter (may be 0) 
+			sll		a0, a0,t1
+			li      t1, 0           #AC
+			beqz    t2, util.divu_done
+util.divu_loop:	rori	t0, a0,31
+            and		t0, t0,1		#Bit 31 alter Dividend
+			slli   	a0, a0,1		#Dividend << 1
+            slli   	t1, t1,1		#AC << 1
+			or		t1, t1,t0
+			bltu	t1,a1,util.divu_nope
+			sub		t1, t1,a1
+			addi    a0, a0,1
+util.divu_nope: 	addi    t2, t2,-1
+			bnez    t2, util.divu_loop
+util.divu_done:	mv		a1, t1
+util.divu_end:   ret
+
+util.end:
 
 
 

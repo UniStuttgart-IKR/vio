@@ -1,4 +1,4 @@
 # <div align="center"> ![logo1](img/RiscViO_logoV0.svg)</div>
-![grafik](img/pipeline_shot.png)
+![grafik](img/heap.webp)
 Risc V inspired Objective architecture
 

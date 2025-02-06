@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="style.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RISC-ViO Spec</title>
+</head>
+<body>
+    <h1>RISC-ViO</h1>
+    <h2>Specification</h2>
+
+    <h1>Table of Contents</h1>
+    <ol class="toc-list">
+        <li><a href="#link_to_heading">
+            <span class="title">1. Motivation</span>
+        </a></li>
+        <li><a href="#link_to_heading">
+            <span class="title">2. Anpassungen an der Basisspec</span>
+        </a></li>
+        <li>
+            <a href="#link_to_heading">
+                <span class="title">3. Instruction Description</span>
+            </a>
+            <ol>
+                <a href="#link_to_heading">
+                    <span class="title">3.1 alc/alci/alc.d/alci.d</span>
+                </a>
+            </ol>
+            <ol>
+                <a href="#link_to_heading">
+                    <span class="title">3.2 qsz</span>
+                </a>
+            </ol>
+            <ol>
+                <a href="#link_to_heading">
+                    <span class="title">3.2 qsz</span>
+                </a>
+            </ol>
+        </li>
+    </ol>
+
+    <h1>Page 1</h1>
+    <section>
+        <p>This is the content of page 1.</p>
+    </section>
+
+    <h1>Page 2</h1>
+    <section>
+        <p>This is the content of page 2.</p>
+    </section>
+
+    <h1>Page 3</h1>
+    <section>
+        <p>This is the content of page 3.</p>
+    </section>
+
+    <p>
+        1. Motivation
+        (max halbe seite, 2 bildchen konventionell vs objektorientiert)
+
+        2. Anpassungen an der Basisspec
+        - pointer vs daten (addi vs alci)
+        - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren
+
+        3. Instruction Description
+        3.1 alc/alci/alc.d/alci.d
+        3.2 qsz
+        3.3 dtp/btd/itd
+        3.4 lw.x/sw.x
+
+        4. Objekte
+        4.1 Länge
+        4.2 Pointer bleiben erhalten sowohl im Speicher als auch im RegFile
+
+        5. Linked Frames
+        5.1 Sind Objekte
+        5.2 calling convention
+        5.3 ra-/sp-schutz
+
+        5. GOT-Inderiktionen
+        5.1 gp-abstraktion (dass der immer auf die aktuelle got zeigt)
+        5.2 wie wird auf statische/konstante objekte zugegriffen
+
+        6. Exceptions
+        6.1 mtvec, ... sind pointer
+        6.2 Index Out Of Bounds Exception
+        6.3 IncompatibleTypeException
+        6.4 HeapOverFlowException
+        6.5 StateException
+        6.6 JumpIndexOutOfBoundsException
+
+        --flavors of privileged violations
+        6.7 GPAccessException
+        6.8 ForbiddenSrcException
+        6.9 ForbiddenDstException
+
+        4. Objektstrukturen
+        4.1 Header
+        4.2 Elementtypen
+        4.3 Ordinary Objects
+        4.4 Executables
+        4.5 Sanctuary Objects
+
+        6. Register File
+        6.1 Index and Length fields
+        6.1 sp/ra coloring
+        6.2 flags & tags
+
+        7. Pointer- & Address-Generation
+        7.1 Allocations
+        7.2 loading/storing a pointer
+        7.2 Bounds-Checks on object access
+
+        X. Tabellen
+        5.1 Instructions
+        5.2 Object and Pointer Types
+        5.3 Exceptions
+        5.4 CSRs
+
+        A1. Boot-Prozess
+
+    </p>
+</body>
+</html>

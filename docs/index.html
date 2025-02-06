@@ -1,58 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="ieee.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RISC-ViO Spec</title>
 </head>
 <body>
-    <h1>RISC-ViO</h1>
-    <h2>Specification</h2>
+    <header class="col-span">
+        <h2 class="subtitle counter-skip" style="margin-bottom: 0;"><em>The</em></h2>
+        <h1 class="title counter-skip"><em>RISC-ViO</em></h1>
+        <h2 class="subtitle counter-skip"><em>Specification</em></h2>
+        <div class="authors col-2">
+        <div class="author">
+            <div>Leyla Jazz Ekinci (<em>B.Sc.</em>)</div>
+            <div>University of Stuttgart, IKR</div>
+            <div>Stuttgart, Germany</div>
+            <div>email</div>
+        </div>
+        <div class="author">
+            <div>Robin Lux (<em>B.Sc.</em>)</div>
+            <div>University of Stuttgart, IKR</div>
+            <div>Stuttgart, Germany</div>
+            <div>email</div>
+        </div>
+        </div>
+    </header>
 
     <h1>Table of Contents</h1>
     <ol class="toc-list">
-        <li><a href="#link_to_heading">
-            <span class="title">1. Motivation</span>
-        </a></li>
-        <li><a href="#link_to_heading">
-            <span class="title">2. Anpassungen an der Basisspec</span>
-        </a></li>
-        <li>
-            <a href="#link_to_heading">
-                <span class="title">3. Instruction Description</span>
-            </a>
-            <ol>
-                <a href="#link_to_heading">
-                    <span class="title">3.1 alc/alci/alc.d/alci.d</span>
-                </a>
-            </ol>
-            <ol>
-                <a href="#link_to_heading">
-                    <span class="title">3.2 qsz</span>
-                </a>
-            </ol>
-            <ol>
-                <a href="#link_to_heading">
-                    <span class="title">3.2 qsz</span>
-                </a>
-            </ol>
-        </li>
+        <li style="font-size: 16pt;"><a href="#motivation">Motivation</a></li>
+        <li style="font-size: 16pt;"><a href="#base_spec">Anpassungen an der Basisspec</a></li>
+        <li style="font-size: 16pt;"><a href="#link_to_heading">Instruction Description</a></li>
+        <ol class="toc-list">
+            <li style="font-size: 14pt;"><a href="#link_to_heading">alc/alci/alc.d/alci.d</a></li>
+            <li style="font-size: 14pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
+        </ol>
+        <li style="font-size: 16pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
+        <li style="font-size: 16pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
+        <li style="font-size: 16pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
+        <ol class="toc-list">
+            <li style="font-size: 14pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
+            <li style="font-size: 14pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
+        </ol>
     </ol>
 
-    <h1>Page 1</h1>
+    <h1><a name="motivation">Motivation</a></h1>
     <section>
-        <p>This is the content of page 1.</p>
+      <p>(max halbe seite, 2 bildchen konventionell vs objektorientiert)</p>
     </section>
 
-    <h1>Page 2</h1>
+    <h1><a name="base_spec">Anpassungen an der Basisspec</a></h1>
     <section>
-        <p>This is the content of page 2.</p>
+      <p>- pointer vs daten (addi vs alci)<br>
+         - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren</p>
     </section>
 
-    <h1>Page 3</h1>
+    <h1><a name="instructions">Instruction Description</a></h1>
     <section>
-        <p>This is the content of page 3.</p>
+        <h2><a name="alc">alc/alci/alc.d/alci.d</a></h2>
+        <h2><a name="qsz">qsz</a></h2>
+        <h2><a name="dtp">dtp/btd/itd</a></h2>
+        <h2><a name="lw_x">lw.x/sw.x</a></h2>
+    </section>
+
+    <h1><a name="instructions">Objects</a></h1>
+    <section>
+        <h2><a name="length">Length</a></h2>
+        <h2><a name="pointers">Pointers</a></h2>
+    </section>
+    
+    <h1><a name="frames">Linked Frames</a></h1>
+    <section>
+        <h2><a name="are_obj">Are Objects</a></h2>
+        <h2><a name="cc">calling convention</a></h2>
+        <h2><a name="protection">ra-/sp-protection</a></h2>
+    </section>
+    
+    <h1><a name="got">Global Offset Table</a></h1>
+    <section>
+        <h2><a name="gp">Global Pointer</a></h2>
+        <h2><a name="static">Accessing static objects</a></h2>
     </section>
 
     <p>

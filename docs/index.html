@@ -7,7 +7,7 @@
     <title>RISC-ViO Spec</title>
 </head>
 <body>
-    <header class="col-span">
+    <header class="col-span page-break-after">
         <h2 class="subtitle counter-skip" style="margin-bottom: 0;"><em>The</em></h2>
         <h1 class="title counter-skip"><em>RISC-ViO</em></h1>
         <h2 class="subtitle counter-skip"><em>Specification</em></h2>
@@ -27,23 +27,9 @@
         </div>
     </header>
 
-    <h1>Table of Contents</h1>
-    <ol class="toc-list">
-        <li style="font-size: 16pt;"><a href="#motivation">Motivation</a></li>
-        <li style="font-size: 16pt;"><a href="#base_spec">Anpassungen an der Basisspec</a></li>
-        <li style="font-size: 16pt;"><a href="#link_to_heading">Instruction Description</a></li>
-        <ol class="toc-list">
-            <li style="font-size: 14pt;"><a href="#link_to_heading">alc/alci/alc.d/alci.d</a></li>
-            <li style="font-size: 14pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
-        </ol>
-        <li style="font-size: 16pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
-        <li style="font-size: 16pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
-        <li style="font-size: 16pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
-        <ol class="toc-list">
-            <li style="font-size: 14pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
-            <li style="font-size: 14pt;"><a href="#link_to_heading">Anpassungen an der Basisspec</a></li>
-        </ol>
-    </ol>
+    <h1 class="counter-skip page-break-before">Table of Contents</h1>
+    <ul id="toc" class="toc" style="list-style-type:none; margin-left: 0;">
+    </ul>
 
     <h1><a name="motivation">Motivation</a></h1>
     <section>
@@ -150,4 +136,52 @@
 
     </p>
 </body>
+
+<script>
+    var h1Toc = document.getElementById('toc'); 
+    var headerList = document.querySelectorAll("h1, h2");
+
+    var lastWasH2 = false;
+    var toc = h1Toc;
+    var h1Numbering = 0;
+    var h2Numbering = 0;
+    for (var i = 0; i < headerList.length; i++) {
+        var header = headerList[i];
+        if (header.childNodes.length == 0 || header.childNodes[0].nodeName != "A")
+            continue;
+
+        if (h2Numbering == 0 && header.nodeName == "H2"){
+            const h2Toc = document.createElement("ul");
+            h2Toc.style.listStyleType = "none";
+            h2Toc.style.marginLeft = 0;
+            h1Toc.appendChild(h2Toc);
+            toc = h2Toc;
+        } else if (h2Numbering > 0 && header.nodeName == "H1"){
+            toc = h1Toc;
+            h2Numbering = 0;
+        }
+
+        if (header.nodeName == "H1")
+            h1Numbering++;
+        
+        if (header.nodeName == "H2")
+            h2Numbering++;
+
+        const li = document.createElement("li");
+        li.className = "toc";
+        if (h2Numbering == 0){
+            li.style.fontSize = "14pt";
+            li.appendChild(document.createTextNode(h1Numbering + ". "));
+        } else {
+            li.style.fontSize = "12pt";
+            li.appendChild(document.createTextNode(h1Numbering + "." + h2Numbering + ". "));
+        }
+        const link = header.childNodes[0].cloneNode(true);
+        link.setAttribute("href", "#" + link.getAttribute("name"));
+        link.setAttribute("class", "toc");
+        link.setAttribute("name", null);
+        li.appendChild(link);
+        toc.appendChild(li);
+    }
+</script>
 </html>

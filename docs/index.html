@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="ieee.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="misc/ieee.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +11,9 @@
 </head>
 <body>
     <header class="col-span page-break-after">
-        <h2 class="subtitle counter-skip" style="margin-bottom: 0;"><em>The</em></h2>
-        <h1 class="title counter-skip"><em>RISC-ViO</em></h1>
-        <h2 class="subtitle counter-skip"><em>Specification</em></h2>
+        <div id="title" class="subtitle counter-skip" style="margin-bottom: 0;"><em>The</em></div>
+        <div class="title counter-skip"><em>RISC-ViO</em></div>
+        <div class="subtitle counter-skip"><em>Specification</em></div>
         <div class="authors col-2">
         <div class="author">
             <div>Leyla Jazz Ekinci (<em>B.Sc.</em>)</div>
@@ -27,114 +30,127 @@
         </div>
     </header>
 
-    <h1 class="counter-skip page-break-before">Table of Contents</h1>
-    <ul id="toc" class="toc" style="list-style-type:none; margin-left: 0;">
+    <h1 class="counter-skip page-break-before" style="text-align: center;">Table of Contents</h1>
+    <ul id="toc" class="toc page-break-after" style="list-style-type:none; margin-left: 0;">
     </ul>
 
-    <h1><a name="motivation">Motivation</a></h1>
+    <h1><a id="motivation">Motivation</a></h1>
     <section>
       <p>(max halbe seite, 2 bildchen konventionell vs objektorientiert)</p>
     </section>
 
-    <h1><a name="base_spec">Anpassungen an der Basisspec</a></h1>
+    <h1><a id="base_spec">Changes to the RISC-V base instructions</a></h1>
     <section>
       <p>- pointer vs daten (addi vs alci)<br>
          - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren</p>
     </section>
 
-    <h1><a name="instructions">Instruction Description</a></h1>
+    <h1><a id="instructions">The Zhm Extension</a></h1>
+    <h2><a id="alc">alc/alci/alc.d/alci.d</a></h2>
     <section>
-        <h2><a name="alc">alc/alci/alc.d/alci.d</a></h2>
-        <h2><a name="qsz">qsz</a></h2>
-        <h2><a name="dtp">dtp/btd/itd</a></h2>
-        <h2><a name="lw_x">lw.x/sw.x</a></h2>
+    </section>
+    <h2><a id="qsz">qsz</a></h2>
+    <section>
+    </section>
+    <h2><a id="dtp">dtp/btd/itd</a></h2>
+    <section>
+    </section>
+    <h2><a id="lw_x">lw.x/sw.x</a></h2>
+    <section>
     </section>
 
-    <h1><a name="instructions">Objects</a></h1>
+    <h1><a id="soft_obj">Softwares view on Objects</a></h1>
+    <h2><a id="length">Length</a></h2>
     <section>
-        <h2><a name="length">Length</a></h2>
-        <h2><a name="pointers">Pointers</a></h2>
+    </section>
+    <h2><a id="pointers">Pointers</a></h2>
+    <section>
     </section>
     
-    <h1><a name="frames">Linked Frames</a></h1>
+    <h1><a id="frames">The not so stacked frames</a></h1>
+    <h2><a id="are_obj">Are Objects</a></h2>
     <section>
-        <h2><a name="are_obj">Are Objects</a></h2>
-        <h2><a name="cc">calling convention</a></h2>
-        <h2><a name="protection">ra-/sp-protection</a></h2>
+    </section>
+    <h2><a id="cc">Calling Convention</a></h2>
+    <section>
+    </section>
+    <h2><a id="protection">Protecting ra and sp</a></h2>
+    <section>
     </section>
     
-    <h1><a name="got">Global Offset Table</a></h1>
+    <h1><a id="got">Global Offset Table</a></h1>
+    <h2><a id="gp">Global Pointer</a></h2>
     <section>
-        <h2><a name="gp">Global Pointer</a></h2>
-        <h2><a name="static">Accessing static objects</a></h2>
+    </section>
+    <h2><a id="static">Accessing static objects</a></h2>
+    <section>
+    </section>
+    
+    <h1><a id="exceptions">Exceptions</a></h1>
+    <h2><a id="gen">General</a></h2>
+    <section>
+    </section>
+    <h2><a id="priv">Privilege Violations</a></h2>
+    <section>
     </section>
 
-    <p>
-        1. Motivation
-        (max halbe seite, 2 bildchen konventionell vs objektorientiert)
+    <h1><a id="hard_obj">Hardwares view on Objects</a></h1>
+    <h2><a id="headers">Headers</a></h2>
+    <section>
+    </section>
+    <h2><a id="elements">Elements</a></h2>
+    <section>
+    </section>
+    <h2><a id="ords">Ordinaries</a></h2>
+    <section>
+    </section>
+    <h2><a id="execs">Executables</a></h2>
+    <section>
+    </section>
+    <h2><a id="sancts">Sanctuaries</a></h2>
+    <section>
+    </section>
 
-        2. Anpassungen an der Basisspec
-        - pointer vs daten (addi vs alci)
-        - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren
+    <h1><a id="reg_fl">How a Register File could look like</a></h1>
+    <h2><a id="fields">Fields</a></h2>
+    <section>
+    </section>
+    <h2><a id="coloring">Coloring</a></h2>
+    <section>
+    </section>
+    <h2><a id="flgs_tgs">Flags and Tags</a></h2>
+    <section>
+    </section>
 
-        3. Instruction Description
-        3.1 alc/alci/alc.d/alci.d
-        3.2 qsz
-        3.3 dtp/btd/itd
-        3.4 lw.x/sw.x
+    <h1><a id="ptr_addr">Pointer and Address generation</a></h1>
+    <h2><a id="alcs">Allocations</a></h2>
+    <section>
+    </section>
+    <h2><a id="load_store">Loading and Storing a Pointer</a></h2>
+    <section>
+    </section>
+    <h2><a id="bounds">Bounds Checks</a></h2>
+    <section>
+    </section>
 
-        4. Objekte
-        4.1 Länge
-        4.2 Pointer bleiben erhalten sowohl im Speicher als auch im RegFile
-
-        5. Linked Frames
-        5.1 Sind Objekte
-        5.2 calling convention
-        5.3 ra-/sp-schutz
-
-        5. GOT-Inderiktionen
-        5.1 gp-abstraktion (dass der immer auf die aktuelle got zeigt)
-        5.2 wie wird auf statische/konstante objekte zugegriffen
-
-        6. Exceptions
-        6.1 mtvec, ... sind pointer
-        6.2 Index Out Of Bounds Exception
-        6.3 IncompatibleTypeException
-        6.4 HeapOverFlowException
-        6.5 StateException
-        6.6 JumpIndexOutOfBoundsException
-
-        --flavors of privileged violations
-        6.7 GPAccessException
-        6.8 ForbiddenSrcException
-        6.9 ForbiddenDstException
-
-        4. Objektstrukturen
-        4.1 Header
-        4.2 Elementtypen
-        4.3 Ordinary Objects
-        4.4 Executables
-        4.5 Sanctuary Objects
-
-        6. Register File
-        6.1 Index and Length fields
-        6.1 sp/ra coloring
-        6.2 flags & tags
-
-        7. Pointer- & Address-Generation
-        7.1 Allocations
-        7.2 loading/storing a pointer
-        7.2 Bounds-Checks on object access
-
-        X. Tabellen
-        5.1 Instructions
-        5.2 Object and Pointer Types
-        5.3 Exceptions
-        5.4 CSRs
-
-        A1. Boot-Prozess
-
-    </p>
+    <h1><a id="tables">Tables</a></h1>
+    <h2><a id="t_inst">Instructions</a></h2>
+    <section>
+    </section>
+    <h2><a id="t_op">Object and Pointer Types</a></h2>
+    <section>
+    </section>
+    <h2><a id="t_exc">Exceptions</a></h2>
+    <section>
+    </section>
+    <h2><a id="t_csr">CSRs</a></h2>
+    <section>
+    </section>
+    
+    <h1><a id="appendix">Appendix</a></h1>
+    <h2><a id="boot">Boot Process</a></h2>
+    <section>
+    </section>
 </body>
 
 <script>
@@ -152,6 +168,7 @@
 
         if (h2Numbering == 0 && header.nodeName == "H2"){
             const h2Toc = document.createElement("ul");
+            h2Toc.style.paddingInlineStart = "28pt";
             h2Toc.style.listStyleType = "none";
             h2Toc.style.marginLeft = 0;
             h1Toc.appendChild(h2Toc);
@@ -171,15 +188,17 @@
         li.className = "toc";
         if (h2Numbering == 0){
             li.style.fontSize = "14pt";
+            li.style.fontWeight = "bold";
             li.appendChild(document.createTextNode(h1Numbering + ". "));
         } else {
             li.style.fontSize = "12pt";
-            li.appendChild(document.createTextNode(h1Numbering + "." + h2Numbering + ". "));
+            li.style.fontWeight = "normal";
+            //li.appendChild(document.createTextNode(h1Numbering + "." + h2Numbering + ". "));
         }
         const link = header.childNodes[0].cloneNode(true);
-        link.setAttribute("href", "#" + link.getAttribute("name"));
-        link.setAttribute("class", "toc");
-        link.setAttribute("name", null);
+        link.setAttribute("href", "#" + link.getAttribute("id"));
+        link.setAttribute("class", "toc-link");
+        link.setAttribute("id", null);
         li.appendChild(link);
         toc.appendChild(li);
     }

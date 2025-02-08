@@ -57,7 +57,7 @@
         Indexing of an objects content is achieved by providing an offset inside the object via an additional value from a register.
         Accesses to data inside of objects in O-RISCV therefore is a process with two steps.
         This in consequence makes O-RISC incompatible to the influental C programming language, reducing the amount of programs being source code compatible with this architecture. 
-        RISC-ViO aims to provide both the pointer unambiguity as well as the bounds checks which O-RISC provides while still allowing for pointers inside of objects, improving C compatibility.
+        RISC-ViO aims to provide both the pointer unambiguity as well as the bounds checks which O-RISC provides while still allowing for pointers inside of objects, enabling C compatibility.
         Furthermore, while O-RISC is a fully custom architecture with fully custom instruction format, RISC-ViO is based upon the open RISC-V architecture which allows for easier integration and expansion of this new architecture. 
         </p>
     </section>
@@ -221,10 +221,19 @@
     
     <h1><a id="exceptions">Exceptions</a></h1>
     <h2><a id="gen">General</a></h2>
+        <p>Since RISC-ViO allows both pointers as well as regular data to be stored in the registers and also organizes code using objects, some CSR also need to be able to hold pointers.
+            This is the case for <em>xtvec</em> and <em>xepc</em> due to code objects and for <em>xtval</em> and <em>xscratch</em> due to pointers in general.
+            To access the components of these registers, the <em>csrw</em> instruction may be used in conjunction with the <em>dtp</em>/<em>btd</em>/<em>itd</em> instructions.
+            All other CSR are not affected in their size or function and may only hold data.
+        </p>
     <section>
+
     </section>
     <h2><a id="priv">Privilege Violations</a></h2>
     <section>
+    <p><a href="#t_csr">Table XX</a> provides an overview of the exceptions corresponding to the protection schemes introduced by RISC-ViO.
+        In order to allow higher priviledge modes to gain the access required for system management, some exceptions are supressed in certain privilege modes.</p>
+        
     </section>
 
     <h1><a id="hard_obj">Hardwares view on Objects</a></h1>
@@ -278,6 +287,85 @@
     </section>
     <h2><a id="t_csr">CSRs</a></h2>
     <section>
+        <table summary="Exceptions and their numbers for privilege modes" style="margin-bottom: 0;">
+            <thead>
+            <tr>
+                <th rowspan="2">
+                    <em>xcause</em>
+                </th>
+                <th rowspan="2">
+                    <em>Exception</em>
+                </th>
+                <th colspan="3">
+                    <em>may be raised in priv mode</em>
+                </th>
+            </tr>
+            <tr>
+                <th><em>user</em></th>
+                <th><em>supervisor</em></th>
+                <th><em>machine</em></th>
+            </tr>
+            <tr>
+                <th>16</th>
+                <th>JumpIndexOutBoundsException</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✓</th>
+            </tr>
+            <tr>
+                <th>17</th>
+                <th>GPAccessException</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✖</th>
+            </tr>
+            <tr>
+                <th>18</th>
+                <th>IndexOutBoundsException</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✖</th>
+            </tr>
+            <tr>
+                <th>19</th>
+                <th>HeapOverflowException</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✖</th>
+            </tr>
+            <tr>
+                <th>20</th>
+                <th>StateException</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✖</th>
+            </tr>
+            <tr>
+                <th>21</th>
+                <th>ForbiddenSrcException</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✖</th>
+                <th style="color: #c6afe9">✖</th>
+            </tr>
+            <tr>
+                <th>22</th>
+                <th>ForbiddenDstException</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✖</th>
+                <th style="color: #c6afe9">✖</th>
+            </tr>
+            <tr>
+                <th>23</th>
+                <th>IncompatibleTypeException</th>
+                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✖</th>
+                <th style="color: #c6afe9">✖</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+        </table>
     </section>
     
     <h1><a id="appendix">Appendix</a></h1>

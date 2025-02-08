@@ -37,10 +37,32 @@
 
     <h1><a id="motivation">Motivation</a></h1>
     <section>
-      <p>(max halbe seite, 2 bildchen konventionell vs objektorientiert)</p>
+        <p>
+        In conventional computer architectures, the hardware has no information about the location and size of programming language level objects like strings, structs and so on.
+        It is therefore the duty of the runtime of the used programming language to determine whether an access to one such object still lies within the bounds of this object and prohibit the access in case of a malformed access.
+        This leads to an runtime overhead which reduces program efficiency.
+        Also, in languages like C, those objects are identified using their address in form of a value only, the hardware therefore cannot distinguish between a reference to a high level object and some data value which might by chance have the value at which one such object lies.
+        This ambiguity between pointers and values makes it impossible to garbage collect unused objects in memory which is why in C it is necessary for the programmer to manually manage, ie allocate and free memory.
+        Being a difficult task to get right, this often leads to memory leaks. For this reason, other programming languages like Go store additional type information for every piece of data to distinguish between data and pointers.
+        Since the hardware doesn't know about this additional information that the runtime has access to, it is not possible to accelerate the task of garbage collection in hardware and therefore reduce the incurred runtime penalties.
+        </p>
+        <p>
+        To solve both of those problems, the inspiration for RISC-ViO, the experimental O-RISC architecture //cit here// introduces data type information to identify pointers as well as object size information on the ISA level.
+        This enables both bounds checks and garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
+        </p>
+        (2 bildchen konventionell vs objektbasiert)
+        <p>
+        While the O-RISC architecture provides a solution to the problems identified above by providing a new perspective on the cooperation of hardware and software, it comes with some drawbacks.
+        One of those drawbacks lies in the fact that O-RISC only allows pointers to the beginning of an object. 
+        Indexing of an objects content is achieved by providing an offset inside the object via an additional value from a register.
+        Accesses to data inside of objects in O-RISCV therefore is a process with two steps.
+        This in consequence makes O-RISC incompatible to the influental C programming language, reducing the amount of programs being source code compatible with this architecture. 
+        RISC-ViO aims to provide both the pointer unambiguity as well as the bounds checks which O-RISC provides while still allowing for pointers inside of objects, improving C compatibility.
+        Furthermore, while O-RISC is a fully custom architecture with fully custom instruction format, RISC-ViO is based upon the open RISC-V architecture which allows for easier integration and expansion of this new architecture. 
+        </p>
     </section>
 
-    <h1><a id="base_spec">Changes to the RISC-V base instructions</a></h1>
+    <h1><a id="base_spec">The RISC-V I' ISA</a></h1>
     <section>
       <p>- pointer vs daten (addi vs alci)<br>
          - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren
@@ -50,14 +72,15 @@
 
     <h1><a id="instructions">The Zhm Extension</a></h1>
         <p>In addition to the modifications of already existing instructions which are part of the RISC-V I base ISA, RISC-ViO introduces several instructions as an interface between software and hardware regarding objects.
-            Those instructions are all part of the zhm extension.
+            Those instructions are all part of the zhm ("heap management") extension.
         </p>
     <section>
         <h2><a name="unpriv_instructions">Unprivileged Instructions</a></h2>
         <h3><a name="alc_fam">Allocation: alc/alci/alc.d/alci.d</a></h3>
         Since RISC-ViO manages objects on the ISA level, the ISA has to provide a means to create new objects and their corresponding pointers.
         This creation of ISA level objects is achieved by the alc-Instruction family which comes in four flavours. 
-        The next section provides an short description with those instructions alongside their bit encodings.
+        In fact the alc instruction family is the only way to obtain new pointers in user mode.
+        The next section provides an short description of those instructions alongside their bit encodings.
 
         <h4><a name="alci">alci-Instruction</a></h4>
         The alci instruction is the most basic form in its family. This instruction allows the allocation of a regular object
@@ -104,7 +127,6 @@
         <h2><a name="cc">Calling Convention</a></h2>
         <section>
             <h2><a name="protection">Frame Ownership</a></h2>
-                <p>//trivia about how accesses beyond stack frames are bad//</p>
                 <p>In order to protect the stack frame of a function from modification by other functions, RISC-ViO introduces a scheme to protect these frames.
                 This requires access management for those frames, which RISC-ViO implements in form of adding colour tags to both the sp as well as the ra register.
                 By updating those colours at critical points such as function entries and frame allocations, the processor always knows whether the stack frame pointed to by the
@@ -115,7 +137,7 @@
                 Also, when storing/loading ra or sp using sw/lw, the colour is also stored/retrieved to/from the given memory location.
                     An overview of the transition between those colours is given in Figure 1.
                     On every function entry, the processor flips the colour of ra from white to black or vice-versa. For sp, this takes place on every stack frame allocation.
-                    Whether the processor is currently in the regular state is given by the equality of the colours of ra and sp. 
+                    Whether the processor is currently in the regular state (light blue), is given by the equality of the colours of ra and sp. 
                     If the colours of sp and ra both were black for example, the processor would be in the regular state.
                 </p>
             <figure>
@@ -130,7 +152,8 @@
             </figure>
                 <p>
                     Figure 2 provides two sample program flows for which the colour and therefore state transitions are shown. 
-                    Figure 2a) shows the behaviour of the colour mechanism during the execution of a correct stream of instructions while figure 2b) highlights how this mechanism catches bad program behaviour and the subsequent raising of the StateException. 
+                    Figure 2a) shows the behaviour of the colour mechanism during the execution of a correct stream of instructions while figure 2b) highlights how this mechanism catches bad program behaviour. 
+                    In 2b) the colour mechanism spots the function b trying to access function a's stack frame, which leads to the processor raising a StateException.
                 </p>
             <figure>
                 <figcaption>State transitions for examplatory instruction streams</figcaption>

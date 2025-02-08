@@ -64,8 +64,8 @@
             <h2><a name="protection">Frame Ownership</a></h2>
             <div style="position: relative; right: -5%; width: 90%">
                 <p>//trivia about how accesses beyond stack frames are bad//</p>
-                <p>In order to protect the stack frame of a function from modification by other functions, ORISC introduces a scheme to protect these frames.
-                This requires access management for those frames, which ORISC implements in form of adding colour tags to both the sp as well as the ra register.
+                <p>In order to protect the stack frame of a function from modification by other functions, RISC-ViO introduces a scheme to protect these frames.
+                This requires access management for those frames, which RISC-ViO implements in form of adding colour tags to both the sp as well as the ra register.
                 By updating those colours at critical points such as function entries and frame allocations, the processor always knows whether the stack frame pointed to by the
                 sp register is owned by the currently executed function. 
                 This state is called "regular", while the current function not being the owner of the current stack frame is denoted as the "irregular" state.

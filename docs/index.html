@@ -36,13 +36,13 @@
       <p>(max halbe seite, 2 bildchen konventionell vs objektorientiert)</p>
     </section>
 
-    <h1><a name="base_spec">Anpassungen an der Basisspec</a></h1>
+    <h1><a name="base_spec">I' Instruction set</a></h1>
     <section>
       <p>- pointer vs daten (addi vs alci)<br>
          - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren</p>
     </section>
 
-    <h1><a name="instructions">Instruction Description</a></h1>
+    <h1><a name="instructions">zhm Extension Instructions</a></h1>
     <section>
         <h2><a name="alc">alc/alci/alc.d/alci.d</a></h2>
         <h2><a name="qsz">qsz</a></h2>
@@ -57,11 +57,61 @@
     </section>
     
     <h1><a name="frames">Linked Frames</a></h1>
-    <section>
-        <h2><a name="are_obj">Are Objects</a></h2>
-        <h2><a name="cc">calling convention</a></h2>
-        <h2><a name="protection">ra-/sp-protection</a></h2>
-    </section>
+
+        <h2><a name="are_obj">Structure</a></h2>
+        <h2><a name="cc">Calling Convention</a></h2>
+        <section>
+            <h2><a name="protection">Frame Ownership</a></h2>
+            <div style="position: relative; right: -5%; width: 90%">
+                <p>//trivia about how accesses beyond stack frames are bad//</p>
+                <p>In order to protect the stack frame of a function from modification by other functions, ORISC introduces a scheme to protect these frames.
+                This requires access management for those frames, which ORISC implements in form of adding colour tags to both the sp as well as the ra register.
+                By updating those colours at critical points such as function entries and frame allocations, the processor always knows whether the stack frame pointed to by the
+                sp register is owned by the currently executed function. 
+                This state is called "regular", while the current function not being the owner of the current stack frame is denoted as the "irregular" state.
+                </p>
+                <p>For sp aswell as for ra, there are two colours: black and white. Those colours are an integral part of those registers and cannot be read or modified seperately from their registers.
+                Also, when storing/loading ra or sp using sw/lw, the colour is also stored/retrieved to/from the given memory location.
+                    An overview of the transition between those colours is given in Figure 1.
+                    On every function entry, the processor flips the colour of ra from white to black or vice-versa. For sp, this takes place on every stack frame allocation.
+                    Whether the processor is currently in the regular state is given by the equality of the colours of ra and sp. 
+                    If the colours of sp and ra both were black for example, the processor would be in the regular state.
+                </p>
+            </div>
+            <figure>
+                <figcaption>Colour transitions</figcaption>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap;">
+                        <div style="margin: 0px auto" >
+                            <img src="svg/vio_stack_colors_transitions.drawio.svg" id="svg2" style="width: 20rem; margin: 0px auto; background-color: #FFFFFF;">
+                        </div>
+                    </div>
+                </div>
+            </figure>
+            <div style="position: relative; right: -5%; width: 90%">
+                <p>
+                    Figure 2 provides two sample program flows for which the colour and therefore state transitions are also shown. 
+                    Figure 2a) shows the behaviour of the colour mechanism during the execution of a correct stream of instructions while figure 2b) highlights how this mechanism catches bad program behaviour and the subsequent raising of the StateException. 
+                </p>
+            </div>
+            <figure>
+                <figcaption>Example state transitions</figcaption>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap;">
+                        <div style="margin: 0px auto" >
+                            <img src="svg/vio_stack_colors.drawio.svg" id="svg1" style="margin: 0px auto; background-color: #FFFFFF;">
+                            <p>a) Transitions during normal program flow</p>
+                        </div>
+
+                        <div style="margin: 0px auto" >
+                            <img src="svg/vio_stack_colors_exception.drawio.svg" id="svg2" style="margin: 0px auto; background-color: #FFFFFF;">
+                            <p>b) Transitions during abnormal program flow with exception</p>
+                        </div>
+                    </div>
+                </div>
+            </figure>
+
+        </section>
     
     <h1><a name="got">Global Offset Table</a></h1>
     <section>

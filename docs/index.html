@@ -47,15 +47,15 @@
         Since the hardware doesn't know about this additional information that the runtime has access to, it is not possible to accelerate the task of garbage collection in hardware and therefore reduce the incurred runtime penalties.
         </p>
         <p>
-        To solve both of those problems, the inspiration for RISC-ViO, the experimental O-RISC architecture //cit here// introduces data type information to identify pointers as well as object size information on the ISA level.
-        This enables both bounds checks and garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
+        To solve both of those problems, the inspiration for RISC-ViO, the experimental O-RISC architecture //cit here// introduces data type information to identify pointers as well as object size information on the ISA level while abstaining from tag bits.
+        This enables both the enforcement of bounds checks as well as garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
         </p>
         (2 bildchen konventionell vs objektbasiert)
         <p>
         While the O-RISC architecture provides a solution to the problems identified above by providing a new perspective on the cooperation of hardware and software, it comes with some drawbacks.
         One of those drawbacks lies in the fact that O-RISC only allows pointers to the beginning of an object. 
         Indexing of an objects content is achieved by providing an offset inside the object via an additional value from a register.
-        Accesses to data inside of objects in O-RISCV therefore is a process with two steps.
+        Accesses to data inside of objects in O-RISCV therefore are a two-step process.
         This in consequence makes O-RISC incompatible to the influental C programming language, reducing the amount of programs being source code compatible with this architecture. 
         RISC-ViO aims to provide both the pointer unambiguity as well as the bounds checks which O-RISC provides while still allowing for pointers inside of objects, enabling C compatibility.
         Furthermore, while O-RISC is a fully custom architecture with fully custom instruction format, RISC-ViO is based upon the open RISC-V architecture which allows for easier integration and expansion of this new architecture. 
@@ -64,17 +64,34 @@
 
     <h1><a id="base_spec">The RISC-V I' ISA</a></h1>
     <section>
-      <p>- pointer vs daten (addi vs alci)<br>
-         - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren
+        In order to enforce the usage of bounds checks and pointer unambiguity measures, RISC-ViO modifies some of the instructions which are part of the RISC-V I base instruction set.
+        This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA.
+        <h2><a id="data_vs_pointers">Values vs pointers</a></h2>
+        <p>
+
+        </p>
+        <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
+        <p>
+        The most obviuos change is necessary in regard to load and store instructions. The main change for those instruction families lies in them requiring pointers to be used to select memory locations.
+        Offsets from those pointers using the 12 bit immediates present in those instructions are still allowed. Arithmetic operations of those pointes like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation.
+        The base address information as well as the size information are not influenced by those operations however.    
+        </p>
+        <p>
+        To enforce this new addressing scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use a address value to access memory. Since the object attributes for every object referenced by a pointer are known, the processor is able to raise a <em>IndexOutBoundsException</em> when a out of bound load or store instruction is executed.
+
+        - pointer vs daten (addi vs alci)<br>
+         - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren<br>
         - regular vs data only objects
-    </p>
+        - code objects (jalr vs jal)
+        </p>
     </section>
 
+    <section>
     <h1><a id="instructions">The Zhm Extension</a></h1>
         <p>In addition to the modifications of already existing instructions which are part of the RISC-V I base ISA, RISC-ViO introduces several instructions as an interface between software and hardware regarding objects.
             Those instructions are all part of the zhm ("heap management") extension.
         </p>
-    <section>
+
         <h2><a name="unpriv_instructions">Unprivileged Instructions</a></h2>
         <h3><a name="alc_fam">Allocation: alc/alci/alc.d/alci.d</a></h3>
         Since RISC-ViO manages objects on the ISA level, the ISA has to provide a means to create new objects and their corresponding pointers.
@@ -224,7 +241,6 @@
         <p>Since RISC-ViO allows both pointers as well as regular data to be stored in the registers and also organizes code using objects, some CSR also need to be able to hold pointers.
             This is the case for <em>xtvec</em> and <em>xepc</em> due to code objects and for <em>xtval</em> and <em>xscratch</em> due to pointers in general.
             To access the components of these registers, the <em>csrw</em> instruction may be used in conjunction with the <em>dtp</em>/<em>btd</em>/<em>itd</em> instructions.
-            All other CSR are not affected in their size or function and may only hold data.
         </p>
     <section>
 
@@ -284,20 +300,17 @@
     </section>
     <h2><a id="t_exc">Exceptions</a></h2>
     <section>
-    </section>
-    <h2><a id="t_csr">CSRs</a></h2>
-    <section>
         <table summary="Exceptions and their numbers for privilege modes" style="margin-bottom: 0;">
             <thead>
             <tr>
                 <th rowspan="2">
-                    <em>xcause</em>
+                    <em>xcause index</em>
                 </th>
                 <th rowspan="2">
-                    <em>Exception</em>
+                    <em>Name</em>
                 </th>
                 <th colspan="3">
-                    <em>may be raised in priv mode</em>
+                    <em>may be raised in privilege mode</em>
                 </th>
             </tr>
             <tr>
@@ -308,59 +321,97 @@
             <tr>
                 <th>16</th>
                 <th>JumpIndexOutBoundsException</th>
-                <th style="color: #c6afe9">✓</th>
-                <th style="color: #c6afe9">✓</th>
-                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✔</th>
+                <th style="color: #c6afe9">✔</th>
+                <th style="color: #c6afe9">✔</th>
             </tr>
             <tr>
                 <th>17</th>
                 <th>GPAccessException</th>
-                <th style="color: #c6afe9">✓</th>
-                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✔</th>
+                <th style="color: #c6afe9">✔</th>
                 <th style="color: #c6afe9">✖</th>
             </tr>
             <tr>
                 <th>18</th>
                 <th>IndexOutBoundsException</th>
-                <th style="color: #c6afe9">✓</th>
-                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✔</th>
+                <th style="color: #c6afe9">✔</th>
                 <th style="color: #c6afe9">✖</th>
             </tr>
             <tr>
                 <th>19</th>
                 <th>HeapOverflowException</th>
-                <th style="color: #c6afe9">✓</th>
-                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✔</th>
+                <th style="color: #c6afe9">✔</th>
                 <th style="color: #c6afe9">✖</th>
             </tr>
             <tr>
                 <th>20</th>
                 <th>StateException</th>
-                <th style="color: #c6afe9">✓</th>
-                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✔</th>
+                <th style="color: #c6afe9">✔</th>
                 <th style="color: #c6afe9">✖</th>
             </tr>
             <tr>
                 <th>21</th>
                 <th>ForbiddenSrcException</th>
-                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✔</th>
                 <th style="color: #c6afe9">✖</th>
                 <th style="color: #c6afe9">✖</th>
             </tr>
             <tr>
                 <th>22</th>
                 <th>ForbiddenDstException</th>
-                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✔</th>
                 <th style="color: #c6afe9">✖</th>
                 <th style="color: #c6afe9">✖</th>
             </tr>
             <tr>
                 <th>23</th>
                 <th>IncompatibleTypeException</th>
-                <th style="color: #c6afe9">✓</th>
+                <th style="color: #c6afe9">✔</th>
                 <th style="color: #c6afe9">✖</th>
                 <th style="color: #c6afe9">✖</th>
             </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+        </table>
+    </section>
+    <h2><a id="t_csr">CSRs</a></h2>
+    <section>
+        <table summary="CSR added by zhm extension" style="margin-bottom: 0;">
+            <thead>
+            <tr>
+                <th rowspan="2">
+                    <em>CSR index</em>
+                </th>
+                <th rowspan="2">
+                    <em>Name</em>
+                </th>
+                <th colspan="2">
+                    <em>subfields</em>
+                </th>
+            </tr>
+            <tr>
+                <th><em>ptr</em></th>
+                <th><em>index</em></th>
+            </tr>
+            <tr>
+                <th>0xBC0</th>
+                <th>MALC</th>
+                <th>current allocation address</th>
+                <th>heap end adress</th>
+            </tr>
+            <tr>
+                <th>0xBC1</th>
+                <th>MSAD</th>
+                <th>free index in sanctuary object</th>
+                <th>address of current sanctuary object</th>
+            </tr>
+           
         </thead>
         <tbody>
 

@@ -50,7 +50,19 @@
         To solve both of those problems, the inspiration for RISC-ViO, the experimental O-RISC architecture //cit here// introduces data type information to identify pointers as well as object size information on the ISA level while abstaining from tag bits.
         This enables both the enforcement of bounds checks as well as garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
         </p>
-        (2 bildchen konventionell vs objektbasiert)
+        <figure>
+            <figcaption>View of the different architectures on programming language level objects in memory</figcaption>
+            <div style="display: flex; margin-top: 14pt; margin-bottom: 28pt;">
+                <img src="svg/conv_obj_view.drawio.svg" id="svg2" style="flex: 33%; margin: 10pt; height: 20rem">
+                <img src="svg/oriscv_obj_view.drawio.svg" id="svg3" style="flex: 33%; margin: 10pt; height: 20rem">
+                <img src="svg/vio_obj_view.drawio.svg" id="svg4" style="flex: 33%; margin: 10pt; height: 20rem">
+            </div>
+            <div style="display: flex;">
+                <p style="flex: 33%; margin: 10pt;">a) Conventional architectures</p>
+                <p style="flex: 33%; margin: 10pt;">b) O-RISC</p>
+                <p style="flex: 33%; margin: 10pt;">c) RISC-ViO</p>
+            </div>
+        </figure>
         <p>
         While the O-RISC architecture provides a solution to the problems identified above by providing a new perspective on the cooperation of hardware and software, it comes with some drawbacks.
         One of those drawbacks lies in the fact that O-RISC only allows pointers to the beginning of an object. 

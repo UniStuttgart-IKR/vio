@@ -78,11 +78,12 @@
         </p>
         <p>
         To enforce this new addressing scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use a address value to access memory. Since the object attributes for every object referenced by a pointer are known, the processor is able to raise a <em>IndexOutBoundsException</em> when a out of bound load or store instruction is executed.
-
+        <br>
         - pointer vs daten (addi vs alci)<br>
          - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren<br>
-        - regular vs data only objects
-        - code objects (jalr vs jal)
+        - regular vs data only objects<br>
+        - code objects (jalr vs jal)<br>
+        - frame growth by allocation<br>
         </p>
     </section>
 
@@ -109,8 +110,8 @@
         </div>
         The alci instruction may trigger the following exceptions for the given events:
         <ul>
-            <li>HeapOverflowException: Allocating the specified object would overflow the heap.</li>
-            <li>GPAccessException: rd is forbidden gp</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp</li>
         </ul>
 
         <h4><a name="alc">alc-Instruction</a></h4>
@@ -124,9 +125,9 @@
         </div>
         The alc instruction may trigger the following exceptions for the given events:
         <ul>
-            <li>HeapOverflowException: Allocating the specified object would overflow the heap.</li>
-            <li>IncompatibleTypeException: rs1 contains a pointer, not a value</li>
-            <li>GPAccessException: rd is forbidden gp</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
+            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp</li>
         </ul>
         <h4><a name="alcid">alcid-Instruction</a></h4>
             The alcid instruction is a specialisation of the alci instruction. While alci allocates an object which may hold both pointers and data, objects created using alcid may only hold data.
@@ -138,9 +139,9 @@
         </div>
         The alcid instruction may trigger the following exceptions for the given events:
         <ul>
-            <li>HeapOverflowException: Allocating the specified object would overflow the heap.</li>
-            <li>ForbiddenDstException: rd is forbidden sp</li>
-            <li>GPAccessException: rd is forbidden gp</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
+            <li><em>ForbiddenDstException</em>: rd is forbidden sp</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp</li>
         </ul>
         <h4><a name="alcd">alcd-Instruction</a></h4>
             The alcd instruction is the analogous form of alc regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocting frames.
@@ -151,10 +152,10 @@
         </div>
         The alcd instruction may trigger the following exceptions for the given events:
         <ul>
-            <li>HeapOverflowException: Allocating the specified object would overflow the heap.</li>
-            <li>IncompatibleTypeException: rs1 contains a pointer, not a value</li>
-            <li>ForbiddenDstException: rd is forbidden sp</li>
-            <li>GPAccessException: rd is forbidden gp</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
+            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value</li>
+            <li><em>ForbiddenDstException</em>: rd is forbidden sp</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp</li>
         </ul>
         <h3><a name="qsz">Attribute Query: qsz</a></h3>
         The qsz instruction proviodes a means of reading an objects size as specified at its allocation time in bytes. For this, the source register has to contain a pointer.
@@ -165,9 +166,9 @@
         </div>
         The qsz instruction may trigger the following exceptions for the given events:
         <ul>
-            <li>IncompatibleTypeException: rs1 contains a pointer, not a value</li>
-            <li>ForbiddenDstException: rd is sp which only takes pointers</li>
-            <li>GPAccessException: rd is forbidden gp</li>
+            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value</li>
+            <li><em>ForbiddenDstException</em>: rd is sp which only takes pointers</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp</li>
         </ul>
         <h2><a name="priv_instructions">Privileged Instructions</a></h2>
         <h3><a name="dtp">Raw Pointer Access: dtp/btd/itd</a></h3>
@@ -198,7 +199,7 @@
                     If the colours of sp and ra both were black for example, the processor would be in the regular state.
                 </p>
                 <p>
-                    Any access to the current frame while in irregular state leads to an exception indicating access to a foreign frame.
+                    Any access to the current frame while in irregular state leads to a <em>StateException</em> indicating access to a foreign frame.
                 </p>
             <figure>
                 <figcaption>Colour transitions</figcaption>
@@ -213,7 +214,7 @@
                 <p>
                     Figure 2 provides two sample program flows for which the colour and therefore state transitions are shown. 
                     Figure 2a) shows the behaviour of the colour mechanism during the execution of a correct stream of instructions while figure 2b) highlights how this mechanism catches bad program behaviour. 
-                    In 2b) the colour mechanism spots function b trying to access function a's frame, which leads to the processor raising a StateException.
+                    In 2b) the colour mechanism spots function b trying to access function a's frame, which leads to the processor raising a <em>StateException</em>.
                 </p>
             <figure>
                 <figcaption>State transitions for examplatory instruction streams</figcaption>

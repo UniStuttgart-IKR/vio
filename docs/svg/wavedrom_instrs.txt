@@ -81,3 +81,24 @@ itd
   	{bits: 5,  name: 'func5', attr: 0},
     {bits: 7, name: '', attr: 111, type: 4}
 ], config: {bits: 32}}
+
+lw.x
+{reg: [
+  {bits: 7,  name: 'opcode',    attr: 73, type: 4},
+    {bits: 5,  name: 'rd',        attr: 'dest'},
+    {bits: 3,  name: 'func3',       attr: 0, type: 4},
+    {bits: 5,  name: 'rs1',       attr: 'addr'},
+  	{bits: 5,  name: 'func5', attr: 0},
+    {bits: 7, name: '', attr: 119, type: 4}
+], config: {bits: 32}}
+
+
+sw.x
+{reg: [
+  {bits: 7,  name: 'opcode',    attr: 73, type: 4},
+    {bits: 5,  name: 'rd',        attr: 0},
+    {bits: 3,  name: 'func3',       attr: 0, type: 4},
+    {bits: 5,  name: 'rs1',       attr: 'addr'},
+  	{bits: 5,  name: 'rs2', attr: 'value'},
+    {bits: 7, name: '', attr: 123, type: 4}
+], config: {bits: 32}}

@@ -127,6 +127,7 @@
                 </div>
             </div>
         </figure>
+        <p>When the alci instruction is used to allocate a frame by specifying sp as the destination register, its semantic is extended. In this case alci not only allocates a new frame object but also stores the old sp at index zero of the new frame object.</p>
         The alci instruction may trigger the following exceptions for the given events:
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
@@ -241,7 +242,29 @@
             <h4><a name="lw_x">lw.x-Instruction</a></h4>
             This instruction enables the software to force the hardware to load a word from a given access given by rs1. This address may either be a pointer as well as an address value. 
             After the execution of this instruction, the register selected by rd contains the value of the memory at address rs1.
+            <figure>
+                <figcaption>lw.x instruction encoding</figcaption>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                        <img src="svg/lwx_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
+                    </div>
+                </div>
+            </figure>
             <h4><a name="sw_x">sw.x-Instruction</a></h4>
+            This instruction enables the software to force the hardware to write a word to a given access given by rs1. This address may either be a pointer as well as an address value. 
+            The register rs2 which provides the store data has to contain a value.
+            <figure>
+                <figcaption>sw.x instruction encoding</figcaption>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                        <img src="svg/swx_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
+                    </div>
+                </div>
+            </figure>
+            The sw.x instruction may trigger the following exceptions for the given events:
+            <ul>
+                <li><em>IncompatibleTypeException</em>: rs2 contains a pointer, not a value</li>
+            </ul>
     </section>
 
     <h1><a name="objects">Objects</a></h1>
@@ -306,7 +329,7 @@
     <section>
     </section>
     
-    <h1><a id="exceptions"  style="color: #176b6e">Exceptions</a></h1>
+    <h1><a id="exceptions">Exceptions</a></h1>
     <h2><a id="gen">General</a></h2>
         <p>Since RISC-ViO allows both pointers and regular data to be stored in the registers and also organizes code using objects, some CSR also need to be able to hold pointers.
             This is the case for <em>xtvec</em> and <em>xepc</em> due to code objects and for <em>xtval</em> and <em>xscratch</em> due to pointers in general.

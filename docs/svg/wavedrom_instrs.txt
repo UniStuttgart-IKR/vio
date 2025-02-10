@@ -48,3 +48,36 @@ qsz
     {bits: 5,  name: 'rs1',       attr: 'src'},
     {bits: 12, name: '', attr: 0, type: 4}
 ], config: {bits: 32}}
+
+
+
+dtp
+{reg: [
+  {bits: 7,  name: 'opcode',    attr: 73, type: 4},
+    {bits: 5,  name: 'rd',        attr: 'dest'},
+    {bits: 3,  name: 'func3',       attr: 0, type: 4},
+    {bits: 5,  name: 'rs1',       attr: 'value'},
+  	{bits: 5,  name: 'rs2',       attr: 'index'},
+    {bits: 7, name: '', attr: 63, type: 4}
+], config: {bits: 32}}
+
+
+btd
+{reg: [
+  {bits: 7,  name: 'opcode',    attr: 73, type: 4},
+    {bits: 5,  name: 'rd',        attr: 'dest'},
+    {bits: 3,  name: 'func3',       attr: 0, type: 4},
+    {bits: 5,  name: 'rs1',       attr: 'value'},
+  	{bits: 5,  name: 'func5', attr: 0},
+    {bits: 7, name: '', attr: 95, type: 4}
+], config: {bits: 32}}
+
+itd
+{reg: [
+  {bits: 7,  name: 'opcode',    attr: 73, type: 4},
+    {bits: 5,  name: 'rd',        attr: 'dest'},
+    {bits: 3,  name: 'func3',       attr: 0, type: 4},
+    {bits: 5,  name: 'rs1',       attr: 'value'},
+  	{bits: 5,  name: 'func5', attr: 0},
+    {bits: 7, name: '', attr: 111, type: 4}
+], config: {bits: 32}}

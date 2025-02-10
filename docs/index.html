@@ -67,7 +67,7 @@
         While the O-RISC architecture provides a solution to the problems identified above by providing a new perspective on the cooperation of hardware and software, it comes with some drawbacks.
         One of those drawbacks lies in the fact that O-RISC only allows pointers to the beginning of an object. 
         Indexing of an objects content is achieved by providing an offset inside the object via an additional value from a register.
-        Accesses to data inside of objects in O-RISCV therefore are a two-step process.
+        Accesses to data inside of objects in O-RISC therefore are a two-step process.
         This in consequence makes O-RISC incompatible to the influental C programming language, reducing the amount of programs being source code compatible with this architecture. 
         RISC-ViO aims to provide both the pointer unambiguity and the bounds checks which O-RISC provides while still allowing for pointers inside of objects, enabling C compatibility.
         Furthermore, while O-RISC is a fully custom architecture with fully custom instruction format, RISC-ViO is based upon the open RISC-V architecture which allows for easier integration and expansion of this new architecture. 
@@ -76,7 +76,7 @@
 
     <h1><a id="base_spec">The RISC-V I' ISA</a></h1>
     <section>
-        In order to enforce the usage of bounds checks and pointer unambiguity measures, RISC-ViO modifies some of the instructions which are part of the RISC-V I base instruction set.
+        In order to enforce the usage of bounds checks and pointer unambiguity measures, RISC-ViO alters the semantics of some of the instructions which are part of the RISC-V I base instruction set.
         This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA.
         <h2><a id="data_vs_pointers">Values vs pointers</a></h2>
         <p>
@@ -119,11 +119,14 @@
         <h4><a name="alci">alci-Instruction</a></h4>
         The alci instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is given by the 12 bit wide immediate.
         This immediate specifies the amount of pointers which can fit inside the object.
-        <div style="width: 100%; display: flex; justify-content: center;">
-            <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 30px">
-                <img src="svg/alci_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto;">
+        <figure>
+            <figcaption>alci instruction encoding</figcaption>
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                    <img src="svg/alci_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto;  background-color: #FFFFFF;">
+                </div>
             </div>
-        </div>
+        </figure>
         The alci instruction may trigger the following exceptions for the given events:
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
@@ -134,11 +137,15 @@
             The alc instruction is a variation of the alci instruction. In contrast to alci, the size of the new object is given by the content of register rs1.
             The size is given in bytes as per the value in rs1.
             Apart from the source of the object size, alc only differs from alci in that alc cannot be used to allocate a frame. 
-        <div style="width: 100%; display: flex; justify-content: center;">
-            <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 30px">
-                <img src="svg/alc_instr_bitmap.svg" id="svg3" style="width: 80%; margin: 0px auto; color-scheme: light;">
-            </div>
-        </div>
+            <figure>
+                <figcaption>alc instruction encoding</figcaption>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                        <img src="svg/alc_instr_bitmap.svg" id="svg3" style="width: 80%; margin: 0px auto;  background-color: #FFFFFF;">
+                    </div>
+                </div>
+            </figure>
+
         The alc instruction may trigger the following exceptions for the given events:
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
@@ -148,11 +155,14 @@
         <h4><a name="alcid">alcid-Instruction</a></h4>
             The alcid instruction is a specialisation of the alci instruction. While alci allocates an object which may hold both pointers and data, objects created using alcid may only hold data.
             Also, using alcid to create a new frame is forbidden.
-        <div style="width: 100%; display: flex; justify-content: center;">
-            <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 30px">
-                <img src="svg/alcid_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto; background-color: #FFFFFF;">
-            </div>
-        </div>
+            <figure>
+                <figcaption>alcid instruction encoding</figcaption>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                        <img src="svg/alcid_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto; background-color: #FFFFFF;">
+                    </div>
+                </div>
+            </figure>
         The alcid instruction may trigger the following exceptions for the given events:
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
@@ -161,11 +171,14 @@
         </ul>
         <h4><a name="alcd">alcd-Instruction</a></h4>
             The alcd instruction is the analogous form of alc regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocting frames.
-        <div style="width: 100%; display: flex; justify-content: center;">
-            <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 30px">
-                <img src="svg/alcd_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto; background-color: #FFFFFF;">
-            </div>
-        </div>
+            <figure>
+                <figcaption>alcd instruction encoding</figcaption>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                        <img src="svg/alcd_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto; background-color: #FFFFFF;">
+                    </div>
+                </div>
+            </figure>
         The alcd instruction may trigger the following exceptions for the given events:
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
@@ -175,11 +188,14 @@
         </ul>
         <h3><a name="qsz">Attribute Query: qsz</a></h3>
         The qsz instruction proviodes a means of reading an objects size as specified at its allocation time in bytes. For this, the source register has to contain a pointer.
-        <div style="width: 100%; display: flex; justify-content: center;">
-            <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 30px">
-                <img src="svg/qsz_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto; background-color: #FFFFFF;">
+        <figure>
+            <figcaption>qsz instruction encoding</figcaption>
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                    <img src="svg/qsz_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto; background-color: #FFFFFF;">
+                </div>
             </div>
-        </div>
+        </figure>
         The qsz instruction may trigger the following exceptions for the given events:
         <ul>
             <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value</li>
@@ -187,8 +203,45 @@
             <li><em>GPAccessException</em>: rd is forbidden gp</li>
         </ul>
         <h2><a name="priv_instructions">Privileged Instructions</a></h2>
+            With the instructions described above, it is impossible to break out of the restrictions given by the bounds check and pointer integrity safety measures. To enable the management of the processor system additional instructions are available for all privilege modes above the user mode.
         <h3><a name="dtp">Raw Pointer Access: dtp/btd/itd</a></h3>
+            In order to be able to create and inspect pointers a total of three instructions are provided. These allow for both reading out the integral parts of a pointer as well as creating arbitrary pointers.
+            <h4><a name="dtp">dtp-Instruction</a></h4>
+            The dtp "data to pointer" instruction allows the assembly of arbitrary pointers. Both the index as well as the raw pointer value are set according the values in registers rs1 and rs2 respectively. The result is stored in rd.
+            <figure>
+                <figcaption>dtp instruction encoding</figcaption>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                        <img src="svg/dtp_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto; background-color: #FFFFFF;">
+                    </div>
+                </div>
+            </figure>
+            <h4><a name="btd">btd-Instruction</a></h4>
+            The btd "base to data" instruction allows for reading out a pointers raw pointer value. This value is written into rd for the pointer given in rs1.
+            <figure>
+                <figcaption>btd instruction encoding</figcaption>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                        <img src="svg/btd_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto; background-color: #FFFFFF;">
+                    </div>
+                </div>
+            </figure>
+            <h4><a name="itd">itd-Instruction</a></h4>
+            The itd "index to data" instruction allows for reading out a pointers raw pointer index. This value is written into rd for the pointer given in rs1.
+            <figure>
+                <figcaption>itd instruction encoding</figcaption>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                        <img src="svg/itd_instr_bitmap.svg" id="svg2" style="width: 80%; margin: 0px auto; background-color: #FFFFFF;">
+                    </div>
+                </div>
+            </figure>
         <h3><a name="lw_x">Raw Memory Access: lw.x/sw.x</a></h3>
+            Since the I' ISA abstracts the memory access on ISA level from the actual memory access the hardware performs, it is not guaranteed that a store or load instruction accesses the given memory location or stores the given register data in unmodified form. 
+            <h4><a name="lw_x">lw.x-Instruction</a></h4>
+            This instruction enables the software to force the hardware to load a word from a given access given by rs1. This address may either be a pointer as well as an address value. 
+            After the execution of this instruction, the register selected by rd contains the value of the memory at address rs1.
+            <h4><a name="sw_x">sw.x-Instruction</a></h4>
     </section>
 
     <h1><a name="objects">Objects</a></h1>

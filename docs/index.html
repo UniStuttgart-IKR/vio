@@ -80,7 +80,8 @@
         This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA.
         <h2><a id="data_vs_pointers">Values vs pointers</a></h2>
         <p>
-
+            In order to restrict access of a program to the memory which contains the objects the program has pointers to, the I' differentiates between values and pointer.
+            Only pointers may be used to access memory. Those pointer can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes.
         </p>
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
@@ -95,7 +96,10 @@
          - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren<br>
         - regular vs data only objects<br>
         - code objects (jalr vs jal)<br>
-        - frame growth by allocation<br>
+
+        Apart from objects for regular data storage the I' ISA also manages the stack as a series of objects. This partition of the stack in a single frame per function allows for further security mechanisms but also requires cooperation by the program.
+        Most notably, the stack is not grown by arithmetically modifying the stack pointer. Instead, the program has to manually allocate new frame object. Once this frame object has been allocated, accesses to inside of this object behave just the way the stack frame in RISC-V behaves.
+        Due to the stack pointer register now containing a pointer however, in I' it is impossible to access older frame objects by arithmetically modifying sp.
         </p>
     </section>
 

@@ -39,16 +39,16 @@
     <section>
         <p>
         In conventional computer architectures, the hardware has no information about the location and size of programming language level objects like strings, structs and so on.
-        It is therefore the duty of the runtime of the used programming language to determine whether an access to one such object still lies within the bounds of this object and prohibit the access in case of a malformed access.
-        This leads to an runtime overhead which reduces program efficiency.
+        It is therefore the duty of the runtime of the used programming language to determine whether access to one such object still lies within the bounds of this object and prohibit the access in case of malformed access.
+        This leads to a runtime overhead which reduces program efficiency.
         Also, in languages like C, those objects are identified using their address in form of a value only, the hardware therefore cannot distinguish between a reference to a high level object and some data value which might by chance have the value at which one such object lies.
         This ambiguity between pointers and values makes it impossible to garbage collect unused objects in memory which is why in C it is necessary for the programmer to manually manage, ie allocate and free memory.
         Being a difficult task to get right, this often leads to memory leaks. For this reason, other programming languages like Go store additional type information for every piece of data to distinguish between data and pointers.
         Since the hardware doesn't know about this additional information that the runtime has access to, it is not possible to accelerate the task of garbage collection in hardware and therefore reduce the incurred runtime penalties.
         </p>
         <p>
-        To solve both of those problems, the inspiration for RISC-ViO, the experimental O-RISC architecture //cit here// introduces data type information to identify pointers as well as object size information on the ISA level while abstaining from tag bits.
-        This enables both the enforcement of bounds checks as well as garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
+        To solve both of those problems, the inspiration for RISC-ViO, the experimental O-RISC architecture //cit here// introduces data type information to identify pointers and object size information on the ISA level while abstaining from tag bits.
+        This enables both the enforcement of bounds checks and garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
         </p>
         <figure>
             <figcaption>View of the different architectures on programming language level objects in memory</figcaption>
@@ -69,7 +69,7 @@
         Indexing of an objects content is achieved by providing an offset inside the object via an additional value from a register.
         Accesses to data inside of objects in O-RISCV therefore are a two-step process.
         This in consequence makes O-RISC incompatible to the influental C programming language, reducing the amount of programs being source code compatible with this architecture. 
-        RISC-ViO aims to provide both the pointer unambiguity as well as the bounds checks which O-RISC provides while still allowing for pointers inside of objects, enabling C compatibility.
+        RISC-ViO aims to provide both the pointer unambiguity and the bounds checks which O-RISC provides while still allowing for pointers inside of objects, enabling C compatibility.
         Furthermore, while O-RISC is a fully custom architecture with fully custom instruction format, RISC-ViO is based upon the open RISC-V architecture which allows for easier integration and expansion of this new architecture. 
         </p>
     </section>
@@ -81,16 +81,16 @@
         <h2><a id="data_vs_pointers">Values vs pointers</a></h2>
         <p>
             In order to restrict access of a program to the memory which contains the objects the program has pointers to, the I' differentiates between values and pointer.
-            Only pointers may be used to access memory. Those pointer can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes.
+            Only pointers may be used to access memory. Those pointers can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes.
         </p>
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
-        The most obviuos change is necessary in regard to load and store instructions. The main change for those instruction families lies in them requiring pointers to be used to select memory locations.
-        Offsets from those pointers using the 12 bit immediates present in those instructions are still allowed. Arithmetic operations of those pointes like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation.
-        The base address information as well as the size information are not influenced by those operations however.    
+        The most obvious change is necessary in regard to load and store instructions. The main change for those instruction families lies in them requiring pointers to be used to select memory locations.
+        Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed. Arithmetic operations of those pointers like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation.
+        The base address information as well as the size information are not influenced by those operations, however.    
         </p>
         <p>
-        To enforce this new addressing scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use a address value to access memory. Since the object attributes for every object referenced by a pointer are known, the processor is able to raise a <em>IndexOutBoundsException</em> when a out of bound load or store instruction is executed.
+        To enforce this new addressing scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use an address value to access memory. Since the object attributes for every object referenced by a pointer are known, the processor is able to raise a <em>IndexOutBoundsException</em> when an out of bound load or store instruction is executed.
         <br>
         - pointer vs daten (addi vs alci)<br>
          - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren<br>
@@ -98,7 +98,7 @@
         - code objects (jalr vs jal)<br>
 
         Apart from objects for regular data storage the I' ISA also manages the stack as a series of objects. This partition of the stack in a single frame per function allows for further security mechanisms but also requires cooperation by the program.
-        Most notably, the stack is not grown by arithmetically modifying the stack pointer. Instead, the program has to manually allocate new frame object. Once this frame object has been allocated, accesses to inside of this object behave just the way the stack frame in RISC-V behaves.
+        Most notably, the stack is not grown by arithmetically modifying the stack pointer. Instead, the program has to manually allocate new frame object. Once this frame object has been allocated, accesses to inside this object behave just the way the stack frame in RISC-V behaves.
         Due to the stack pointer register now containing a pointer however, in I' it is impossible to access older frame objects by arithmetically modifying sp.
         </p>
     </section>
@@ -202,7 +202,7 @@
         <section>
             <h2><a name="protection">Frame Ownership</a></h2>
                 <p>In order to protect the frame of a function from modification by other functions, RISC-ViO introduces a scheme to protect these frames.
-                This requires access management for those frames, which RISC-ViO implements in form of adding colour tags to both the sp as well as the ra register.
+                This requires access management for those frames, which RISC-ViO implements in form of adding colour tags to both the sp and the ra register.
                 By updating those colours at critical points such as function entries and frame allocations, the processor always knows whether the frame pointed to by the
                 sp register is owned by the currently executed function. 
                 This state is called "regular", while the current function not being the owner of the current frame is denoted as the "irregular" state.
@@ -210,7 +210,7 @@
                 <p>For sp as well as for ra, there are two colours: black and white. Those colours are an integral part of those registers and cannot be read or modified seperately from their registers.
                 Also, when storing/loading ra or sp using sw/lw, the colour is also stored/retrieved to/from the given memory location.
                     An overview of the transition between those colours is given in Figure 1.
-                    On every function entry, the processor flips the colour of ra from white to black or vice-versa. For sp, this takes place on every frame allocation.
+                    On every function entry, the processor flips the colour of ra from white to black or vice versa. For sp, this takes place on every frame allocation.
                     Whether the processor is currently in the regular state (light blue), is given by the equality of the colours of ra and sp. 
                     If the colours of sp and ra both were black for example, the processor would be in the regular state.
                 </p>
@@ -233,7 +233,7 @@
                     In 2b) the colour mechanism spots function b trying to access function a's frame, which leads to the processor raising a <em>StateException</em>.
                 </p>
             <figure>
-                <figcaption>State transitions for examplatory instruction streams</figcaption>
+                <figcaption>State transitions for examplary instruction streams</figcaption>
                 <div style="display: flex; margin-top: 14pt; margin-bottom: 28pt;">
                     <img src="svg/vio_stack_colors.drawio.svg" id="svg1" style="flex: 50%; margin-right: 10pt;">
                     <img src="svg/vio_stack_colors_exception.drawio.svg" id="svg2" style="flex: 50%; margin-left: 10pt; align-self: baseline;">
@@ -255,7 +255,7 @@
     
     <h1><a id="exceptions">Exceptions</a></h1>
     <h2><a id="gen">General</a></h2>
-        <p>Since RISC-ViO allows both pointers as well as regular data to be stored in the registers and also organizes code using objects, some CSR also need to be able to hold pointers.
+        <p>Since RISC-ViO allows both pointers and regular data to be stored in the registers and also organizes code using objects, some CSR also need to be able to hold pointers.
             This is the case for <em>xtvec</em> and <em>xepc</em> due to code objects and for <em>xtval</em> and <em>xscratch</em> due to pointers in general.
             To access the components of these registers, the <em>csrw</em> instruction may be used in conjunction with the <em>dtp</em>/<em>btd</em>/<em>itd</em> instructions.
         </p>
@@ -265,7 +265,7 @@
     <h2><a id="priv">Privilege Violations</a></h2>
     <section>
     <p><a href="#t_csr">Table XX</a> provides an overview of the exceptions corresponding to the protection schemes introduced by RISC-ViO.
-        In order to allow higher priviledge modes to gain the access required for system management, some exceptions are supressed in certain privilege modes.</p>
+        In order to allow higher privilege modes to gain the access required for system management, some exceptions are suppressed in certain privilege modes.</p>
         
     </section>
 

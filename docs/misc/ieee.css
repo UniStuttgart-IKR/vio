@@ -2,6 +2,10 @@
 @font-face { font-family: Helvetica; src: url('fonts/Helvetica.otf'); } 
 @font-face { font-family: Consolas; src: url('fonts/Consolas.otf'); }
 
+:root {
+  color-scheme: light dark;
+}
+
 a[href^="#"] {
   color: inherit;
   content: target-counter(attr(href, url), reference);
@@ -359,8 +363,11 @@ header {
   column-span: all;
   margin-bottom: 22pt; }
 
-table {
-  font-size: 11pt; }
+table, th, td {
+  font-size: 11pt; 
+  color: light-dark(#1a1a1aff, #ccccccff);
+  background-color: light-dark(#f5f5f5, #1a1a1aff);
+  border-color: light-dark(#1a1a1aff, rgb(105, 105, 105));}
 
 caption,
 figcaption {
@@ -427,21 +434,21 @@ cite {
       margin: auto;
   }
   body { 
-    color: #ccccccff; 
-    background: #1a1a1aff;
+    color: light-dark(#1a1a1aff, #ccccccff); 
+    background: light-dark(#f5f5f5, #1a1a1aff);
     display: table-cell;
     vertical-align: middle;
     width: 70rem;
   }
 
-  h1, h2, h3, h4, h5 { color: #c6afe9;}
+  h1, h2, h3, h4, h5 { color: light-dark(#674a93, #c6afe9);}
   h1 {font-size: 28pt;}
 
   #title {
     margin-top: 50pt;
   }
-  .title {color: #c6afe9;}
-  .subtitle {color: #c6afe9;}
+  .title {color: light-dark(#674a93, #c6afe9);}
+  .subtitle {color: light-dark(#674a93, #c6afe9);}
   .authors {
     margin-top: 50pt;
   }

@@ -119,7 +119,7 @@
         <h2><a name="unpriv_instructions">Unprivileged Instructions</a></h2>
         <h3><a name="alc_fam">Allocation: alc/alci/alc.d/alci.d</a></h3>
         Since RISC-ViO manages objects on the ISA level, the ISA has to provide a means to create new objects and their corresponding pointers.
-        This creation of ISA level objects is achieved by the alc-Instruction family which comes in four flavours. 
+        In contrast to the automatic freeing of unnecessary objects, this creation of ISA level objects is achieved by the alc-Instruction family which comes in four flavours. 
         In fact the alc instruction family is the only way to obtain new pointers in user mode.
         The next section provides a short description of those instructions alongside their bit encodings.
 
@@ -401,6 +401,10 @@
     <h1><a id="ptr_addr">Pointer and Address generation</a></h1>
     <h2><a id="alcs">Allocations</a></h2>
     <section>
+        <p>All members of the alc instruction family place both regular data objects as well as frames objects on the heap. 
+            There the objects lie in allocation order until a garbage collection cycle occurs. 
+            In the process of such a cycle, objects may be moved or overwritten in case of not being required anymore.
+        </p>
         <figure>
             <figcaption>Heap limits and growth.</figcaption>
             <div style="display: flex; margin-top: 14pt; margin-bottom: 28pt; height: 25rem">

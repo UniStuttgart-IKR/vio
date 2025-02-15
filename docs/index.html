@@ -82,7 +82,7 @@
         <p>
             In order to restrict access of a program to the memory which contains the objects the program has pointers to, the I' ISA differentiates between values and pointers.
             Only pointers may be used to access memory. Those pointers can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes.
-            In this specification, pointers are written in the form x.y where x is a pointers value and y is the index of the pointer. Values are not denoted in any special way.
+            In this specification, pointers are written in the form x.y where x is a pointers value (base address + tag) and y is the index of the pointer. Values are not denoted in any special way.
         </p>
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
@@ -588,7 +588,9 @@
     <section>
         <p>
             After system reset, all registers are initialised with the value zero. Also, both <em>malc</em> and <em>msad</em> contain the value 0x0.0x0.
-            The subarchitectural register that contain the current code object length are also zero. To set up this register as well as gp, a system software should start with the following instruction sequence:
+            The subarchitectural register that contain the current code object length and index are also zero.
+            The code object initially executed is 0x7, so its header should be located at address zero and instructions should start at address 0xC. 
+            To set up this register as well as gp, a system software should start with the following instruction sequence:
         </p>
 
         <code><br>

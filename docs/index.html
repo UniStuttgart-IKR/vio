@@ -77,11 +77,12 @@
     <h1><a id="base_spec">The RISC-V I' ISA</a></h1>
     <section>
         In order to enforce the usage of bounds checks and pointer unambiguity measures, RISC-ViO alters the semantics of some of the instructions which are part of the RISC-V I base instruction set.
-        This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA.
+        This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA. 
         <h2><a id="data_vs_pointers">Values vs pointers</a></h2>
         <p>
             In order to restrict access of a program to the memory which contains the objects the program has pointers to, the I' ISA differentiates between values and pointers.
             Only pointers may be used to access memory. Those pointers can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes.
+            In this specification, pointers are written in the form x.y where x is a pointers value and y is the index of the pointer. Values are not denoted in any special way.
         </p>
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
@@ -90,16 +91,22 @@
         The base address information as well as the size information are not influenced by those operations, however.    
         </p>
         <p>
-        To enforce this new addressing scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use an address value to access memory. Since the object attributes for every object referenced by a pointer are known, the processor is able to raise a <em>IndexOutBoundsException</em> when an out of bound load or store instruction is executed.
-        <br>
-        - pointer vs daten (addi vs alci)<br>
-         - Wie unterscheiden sich load/store befehle von herkömmlichen risc-v prozessoren<br>
-        - regular vs data only objects<br>
-        - code objects (jalr vs jal)<br>
-
+        To enforce this new addressing scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use an address value to access memory. 
+        Since the object attributes for every object referenced by a pointer are known, the processor is able to raise a <em>IndexOutBoundsException</em> when an out of bound load or store instruction is executed.
+        In case of such an exception, <em>xtval</em> will contain the base pointer as well as the index which was beyond the object bounds.
+        </p>
+        <p>
         Apart from objects for regular data storage the I' ISA also manages the stack as a series of objects. This partition of the stack in a single frame per function allows for further security mechanisms but also requires cooperation by the program.
-        Most notably, the stack is not grown by arithmetically modifying the stack pointer. Instead, the program has to manually allocate new frame object. Once this frame object has been allocated, accesses to inside this object behave just the way the stack frame in RISC-V behaves.
-        Due to the stack pointer register now containing a pointer however, in I' it is impossible to access older frame objects by arithmetically modifying sp.
+        Most notably, the stack is not grown by arithmetically modifying the stack pointer. Instead, the program has to manually allocate new frame object. Once this frame object has been allocated, accesses to inside this object behave just the way the stack frame in RISC-V behaves.<br>
+        Due to the stack pointer register now containing a pointer, I' is able to protect older frame objects from accesses by arithmetical modification of sp.
+        The implications for passing of function arguments between functions are outlined in the <a href="#chap_calling_convention">calling convention</a> chapter.
+        </p>
+        <p>
+        Just as data on the stack and heap is organised by means of objects, instructions are also encapsulated in objects. This means that the <em>auipc</em> instruction will emit a pointer instead of a value. 
+        Due to the access to those executable objects being limited as described in the <a href="#objs_execs">executable objects</a> chapter however, access to constant data is not possible using  this pointer.
+        The encapsulation of instructions also means that the <em>jalr</em> instructions expects a pointer to a object containing instructions as a jump target.
+        If the pointer provided does not reference such an object, the processor raises a <em>IncompatibleTypeException</em> with <em>xtval</em> containing the target pointer.
+        This is also the case when the target provided is a value instead of a pointer.
         </p>
     </section>
 
@@ -128,10 +135,10 @@
             </div>
         </figure>
         <p>When the alci instruction is used to allocate a frame by specifying sp as the destination register, its semantic is extended. In this case alci not only allocates a new frame object but also stores the old sp at index zero of the new frame object.</p>
-        The alci instruction may trigger the following exceptions for the given events:
+        The alci instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
-            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
-            <li><em>GPAccessException</em>: rd is forbidden gp</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size)</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
 
         <h4><a name="alc">alc-Instruction</a></h4>
@@ -147,11 +154,11 @@
                 </div>
             </figure>
 
-        The alc instruction may trigger the following exceptions for the given events:
+        The alc instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
-            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
-            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value</li>
-            <li><em>GPAccessException</em>: rd is forbidden gp</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size)</li>
+            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
         <h4><a name="alcid">alcid-Instruction</a></h4>
             The alcid instruction is a specialisation of the alci instruction. While alci allocates an object which may hold both pointers and data, objects created using alcid may only hold data.
@@ -164,11 +171,11 @@
                     </div>
                 </div>
             </figure>
-        The alcid instruction may trigger the following exceptions for the given events:
+        The alcid instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
-            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
-            <li><em>ForbiddenDstException</em>: rd is forbidden sp</li>
-            <li><em>GPAccessException</em>: rd is forbidden gp</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size)</li>
+            <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
         <h4><a name="alcd">alcd-Instruction</a></h4>
             The alcd instruction is the analogous form of alc regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocting frames.
@@ -180,12 +187,12 @@
                     </div>
                 </div>
             </figure>
-        The alcd instruction may trigger the following exceptions for the given events:
+        The alcd instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
-            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap.</li>
-            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value</li>
-            <li><em>ForbiddenDstException</em>: rd is forbidden sp</li>
-            <li><em>GPAccessException</em>: rd is forbidden gp</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size)</li>
+            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
+            <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
         <h3><a name="qsz">Attribute Query: qsz</a></h3>
         The qsz instruction proviodes a means of reading an objects size as specified at its allocation time in bytes. For this, the source register has to contain a pointer.
@@ -197,11 +204,11 @@
                 </div>
             </div>
         </figure>
-        The qsz instruction may trigger the following exceptions for the given events:
+        The qsz instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
-            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value</li>
-            <li><em>ForbiddenDstException</em>: rd is sp which only takes pointers</li>
-            <li><em>GPAccessException</em>: rd is forbidden gp</li>
+            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
+            <li><em>ForbiddenDstException</em>: rd is sp which only takes pointers (-)</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
         <h2><a name="priv_instructions">Privileged Instructions</a></h2>
             With the instructions described above, it is impossible to break out of the restrictions given by the bounds check and pointer integrity safety measures. To enable the management of the processor system additional instructions are available for all privilege modes above the user mode.
@@ -217,6 +224,10 @@
                     </div>
                 </div>
             </figure>
+            The dtp instruction may trigger the following exceptions for the given events (xtval content):
+            <ul>
+                <li><em>IncompatibleTypeException</em>: rs1 or rs2 contains a pointer, not a value (rs1 or rs2 with rs1 being prioritised)</li>
+            </ul>
             <h4><a name="btd">btd-Instruction</a></h4>
             The btd "base to data" instruction allows for reading out a pointers raw pointer value. This value is written into rd for the pointer given in rs1.
             <figure>
@@ -227,6 +238,10 @@
                     </div>
                 </div>
             </figure>
+            The btd instruction may trigger the following exceptions for the given events (xtval content):
+            <ul>
+                <li><em>IncompatibleTypeException</em>: rs1 contains a value, not a pointer (rs1)</li>
+            </ul>
             <h4><a name="itd">itd-Instruction</a></h4>
             The itd "index to data" instruction allows for reading out a pointers raw pointer index. This value is written into rd for the pointer given in rs1.
             <figure>
@@ -237,6 +252,10 @@
                     </div>
                 </div>
             </figure>
+            The itd instruction may trigger the following exceptions for the given events (xtval content):
+            <ul>
+                <li><em>IncompatibleTypeException</em>: rs1 contains a value, not a pointer (rs1)</li>
+            </ul>
         <h3><a name="lw_x">Raw Memory Access: lw.x/sw.x</a></h3>
             Since the I' ISA abstracts the memory access on ISA level from the actual memory access the hardware performs, it is not guaranteed that a store or load instruction accesses the given memory location or stores the given register data in unmodified form. 
             <h4><a name="lw_x">lw.x-Instruction</a></h4>
@@ -261,22 +280,28 @@
                     </div>
                 </div>
             </figure>
-            The sw.x instruction may trigger the following exceptions for the given events:
+            The sw.x instruction may trigger the following exceptions for the given events (xtval content):
             <ul>
-                <li><em>IncompatibleTypeException</em>: rs2 contains a pointer, not a value</li>
+                <li><em>IncompatibleTypeException</em>: rs2 contains a pointer, not a value (rs2)</li>
             </ul>
     </section>
 
-    <h1><a name="objects">Objects</a></h1>
+    <h1><a name="chap_objects">Objects</a></h1>
     <section>
+        <h2><a id="objs_ords">Ordinaries</a></h2>
+        <section>
+        </section>
+        <h2><a id="objs_execs">Executables</a></h2>
+        <section>
+        </section>
     </section>
     
     <h1><a name="frames">The not so stacked frames</a></h1>
 
-        <h2><a name="are_obj">Structure</a></h2>
-        <h2><a name="cc">Calling Convention</a></h2>
+        <h2><a id="are_obj">Structure</a></h2>
+        <h2><a id="chap_calling_convention">Calling Convention</a></h2>
         <section>
-            <h2><a name="protection">Frame Ownership</a></h2>
+            <h2><a id="protection">Frame Ownership</a></h2>
                 <p>In order to protect the frame of a function from modification by other functions, RISC-ViO introduces a scheme to protect these frames.
                 This requires access management for those frames, which RISC-ViO implements in form of adding colour tags to both the sp and the ra register.
                 By updating those colours at critical points such as function entries and frame allocations, the processor always knows whether the frame pointed to by the
@@ -376,6 +401,17 @@
     <h1><a id="ptr_addr">Pointer and Address generation</a></h1>
     <h2><a id="alcs">Allocations</a></h2>
     <section>
+        <figure>
+            <figcaption>Heap limits and growth.</figcaption>
+            <div style="display: flex; margin-top: 14pt; margin-bottom: 28pt; height: 25rem">
+                <img src="svg/vio_heap_growth.drawio.svg" id="svg1" style="flex: 50%; margin-right: 10pt;">
+                <img src="svg/vio_heap_overflow.drawio.svg" id="svg1" style="flex: 50%; margin-right: 10pt;">
+            </div>
+            <div style="display: flex;">
+                <p style="flex: 50%; ">a) Regular heap growth </p>
+                <p style="flex: 50%; ">b) Heap overflow</p>
+            </div>
+        </figure>
     </section>
     <h2><a id="load_store">Loading and Storing a Pointer</a></h2>
     <section>

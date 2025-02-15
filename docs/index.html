@@ -47,7 +47,7 @@
         Since the hardware doesn't know about this additional information that the runtime has access to, it is not possible to accelerate the task of garbage collection in hardware and therefore reduce the incurred runtime penalties.
         </p>
         <p>
-        To solve both of those problems, the inspiration for RISC-ViO, the experimental O-RISC architecture //cit here// introduces data type information to identify pointers and object size information on the ISA level while abstaining from tag bits.
+        To solve both of those problems, the inspiration for RISC-ViO, the experimental <a href="#meyer_orisc">O-RISC architecture</a> introduces data type information to identify pointers and object size information on the ISA level while abstaining from tag bits.
         This enables both the enforcement of bounds checks and garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
         </p>
         <figure>
@@ -405,6 +405,32 @@
             There the objects lie in allocation order until a garbage collection cycle occurs. 
             In the process of such a cycle, objects may be moved or overwritten in case of not being required anymore.
         </p>
+        <p>
+            The allocation process starts by calculating the address of the address of the new object header. 
+            This is given by rounding down the value given by the expression
+        </p>
+        <div class="equation">
+            <math>
+                <mtable>
+                    <mtr>
+                        <mtd>
+                            <mi>malc.ix</mi>
+                            <mo>-</mo>
+                            <mo>(</mo>
+                            <mi>8</mi>
+                            <mo>+</mo>
+                            <mi>size</mi>
+                            <mo>)</mo>
+                        </mtd>
+                    </mtr>
+                </mtable>
+            </math>
+        </div>
+        <p>
+            down to next number divisible by 16. If this value is larger than malc.ptr the new object fits inside the heap and malc.ix is updated to this value.
+            In this case, a pointer tag is added to the newly calculated address and the resulting pointer value is written to the target register.
+            The initial index is set to zero. Additionally, the object header is written to memory via the attribute cache.
+        </p>
         <figure>
             <figcaption>Heap limits and growth.</figcaption>
             <div style="display: flex; margin-top: 14pt; margin-bottom: 28pt; height: 25rem">
@@ -552,9 +578,29 @@
         </table>
     </section>
     
+    <h1><a id="chap_refs">References</a></h1>
+    <div class="references">
+        <cite id="meyer_orisc">M.Meyer: "A Novel Processor Architecture with Exact Tag-Free Pointers" in Proceedings of the 2nd Workshop on Application Specific Processors., 2003.</cite>
+    </div>
+
     <h1><a id="appendix">Appendix</a></h1>
     <h2><a id="boot">Boot Process</a></h2>
     <section>
+        <p>
+            After system reset, all registers are initialised with the value zero. Also, both <em>malc</em> and <em>msad</em> contain the value 0x0.0x0.
+            The subarchitectural register that contain the current code object length are also zero. To set up this register as well as gp, a system software should start with the following instruction sequence:
+        </p>
+
+        <code><br>
+            0x7.0x0:  li      t0, 0b111 # create pointer to codeobject at address zero<br>
+            0x7.0x4:  dtp     t0, t0, zero # turn the value into a pointer <br>
+            0x7.0x8:  jalr    zero, t0, 12  # jump in there (should jump to the instruction just after this jalr)<br>
+        </code>
+
+        <p>
+            After this, it is recommended to set both <em>malc</em> as well as <em>msad</em> to reasonable values using the csrw isntruction.
+            Since the processor starts up in the irregular state, this should be followed by an alc or alci instruction to get intoregular state and be able to call functions.
+        </p>
     </section>
 </body>
 

@@ -94,6 +94,7 @@
         To enforce this new addressing scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use an address value to access memory. 
         Since the object attributes for every object referenced by a pointer are known, the processor is able to raise a <em>IndexOutBoundsException</em> when an out of bound load or store instruction is executed.
         In case of such an exception, <em>xtval</em> will contain the base pointer as well as the index which was beyond the object bounds.
+        The processor is also able to detect whether the destination object is compatible with the current access type. In consequence, <em>LoadAccessFault</em>, <em>StoreAccessFault</em> or <em>IncompatibleTypeException</em> will be raised accordingly as per <a href="#objs_ords">ordinary objects</a>. 
         </p>
         <p>
         Apart from objects for regular data storage the I' ISA also manages the stack as a series of objects. This partition of the stack in a single frame per function allows for further security mechanisms but also requires cooperation by the program.

@@ -3,7 +3,7 @@
 
 <svg
     width="32.4"
-    height="32"
+    height="35"
     version="1.1"
     id="data-svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -49,6 +49,7 @@
         path.purple     { stroke: #000000ff; stroke-width:0.25; }
         rect.light-pink { fill: #ffaaeeff; }
         path.light-pink { stroke: #000000ff; stroke-width:0.25; }
+        rect.yellow     { fill: #e5ff80ff; }
 
         @media (prefers-color-scheme: dark) {
             
@@ -70,6 +71,8 @@
             text.light-pink { fill: #ffaaeeff; }
             rect.light-pink { fill: #ffaaee40; stroke: #291f27; }
             path.light-pink { stroke: #291f27; }
+            rect.yellow     { fill: #e5ff8040; stroke: #262919; }
+            text.yellow     { fill: #e5ff80ff; }
         }
     </style>
 
@@ -151,7 +154,7 @@
                 <text
                     class="green"
                     x="5.4"
-                    y="2.9">rw00</text>
+                    y="2.9">0010</text>
                 <path
                     d="M 12.2,0.2 V 3.9"
                     class="green" />
@@ -161,7 +164,7 @@
                 <text
                     class="green"
                     x="18.4"
-                    y="2.9">cf</text>
+                    y="2.9">00</text>
                 <path
                     d="M 22.4,0.2 V 3.9"
                     class="green" />
@@ -189,78 +192,7 @@
                     y="2.9">00</text>
             </g>
         </g>
-
-        <g id="data" transform="translate(0 10.5)">
-            <rect
-                id="background-rect"
-                width="32"
-                height="4"
-                x="0.2"
-                y="0"
-                class="blue" />
-
-            <g transform="translate(0.2 0.1)">
-                <text
-                    class="blue"
-                    x="5"
-                    y="2.7">integer(30:0)</text>
-                <path
-                    d="M 28.6,0.1 V 3.8"
-                    id="path12"
-                    class="blue" />
-                <text
-                    class="blue"
-                    x="29.5"
-                    y="2.7">0</text>
-            </g>
-        </g>
-        <g id="disp_prim" transform="translate(0 14.5)">
-            <rect
-                id="background-rect"
-                width="32"
-                height="4"
-                x="0.2"
-                y="0.0"
-                class="purple" />
-
-            <g id="pointer" transform="translate(0.2 0.0)">
-                <text
-                    class="purple"
-                    x="7.2"
-                    y="2.9">ptr(31:2)</text>
-                <path
-                    d="M 27.0,0.2 V 3.8"
-                    class="purple" />
-                <text
-                    class="purple"
-                    x="28"
-                    y="2.9">01</text>
-            </g>
-        </g>
-        <g id="disp_ptr" transform="translate(0 18.5)">
-            <rect
-                id="background-rect"
-                width="32"
-                height="4"
-                x="0.2"
-                y="0.0"
-                class="light-pink" />
-
-            <g id="pointer" transform="translate(0.2 0.0)">
-                <text
-                    class="light-pink"
-                    x="6.2"
-                    y="2.9">ptr(31:3)</text>
-                <path
-                    d="M 25.4,0.2 V 3.8"
-                    class="light-pink" />
-                <text
-                    class="light-pink"
-                    x="26.5"
-                    y="2.9">011</text>
-            </g>
-        </g>
-        <g id="ord_ptr" transform="translate(0 22.5)">
+        <g id="got_ptr" transform="translate(0 10.5)">
             <rect
                 id="background-rect"
                 width="32"
@@ -272,8 +204,8 @@
             <g id="pointer" transform="translate(0.2 0.0)">
                 <text
                     class="pink"
-                    x="5.6"
-                    y="2.9">ptr(31:4)</text>
+                    x="10.0"
+                    y="2.9">GOT</text>
                 <path
                     d="M 23.9,0.2 V 3.8"
                     id="path12"
@@ -284,28 +216,18 @@
                     y="2.9">0111</text>
             </g>
         </g>
-        <g id="io_ptr" transform="translate(0 26.5)">
+        <g id="code" transform="translate(0 14.5)">
             <rect
                 id="background-rect"
                 width="32"
-                height="4"
+                height="20"
                 x="0.2"
                 y="0.0"
-                class="pink" />
-
-            <g id="pointer" transform="translate(0.2 0.0)">
-                <text
-                    class="pink"
-                    x="6.6"
-                    y="2.9">device</text>
-                <path
-                    d="M 22.4,0.2 V 3.8"
-                    class="pink" />
-                <text
-                    class="pink"
-                    x="23.6"
-                    y="2.9">01111</text>
-            </g>
+                class="yellow" />
+            <text
+                class="yellow"
+                x="13"
+                y="10.9">CODE</text>
         </g>
     </g>
 

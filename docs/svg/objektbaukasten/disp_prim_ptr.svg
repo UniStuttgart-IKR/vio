@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created by Leyla :3 -->
+
+<svg
+    width="32.4"
+    height="7.2"
+    version="1.1"
+    id="data-svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg">
+
+    <style id="pretty-colors">
+        @font-face {
+            font-family: DejaVu Sans Mono;
+            src: local(DejaVu Sans Mono);
+            size-adjust: 91.6%
+        }
+        @font-face {
+            font-family: Lucida Sans Typewriter;
+            src: local(Lucida Sans Typewriter);
+            size-adjust: 91.6%
+        }
+        @font-face {
+            font-family: monospace;
+            src: local(monospace);
+            size-adjust: 91.6%
+        }
+
+        text {
+            font-family: Consolas, DejaVu Sans Mono, Lucida Sans Typewriter, monospace;
+            font-style:  normal;
+            font-weight: bold;
+            font-size:   2pt;
+        }
+        rect { stroke: #000000ff; fill-opacity:1; stroke-width:0.4; stroke-linejoin:round; stroke-dasharray:none; stroke-opacity:1; }
+
+        text   { fill: #000000ff; }
+        text.foreground { font-size:1.2pt; font-weight:normal; }
+        rect.purple   { fill: #ccaaffff; }
+        path.purple   { stroke: #000000ff; stroke-width:0.25; }
+
+        @media (prefers-color-scheme: dark) {
+            rect { stroke: #231f29; }
+            .foreground { fill: #888888ff; }
+
+            text.purple      { fill: #ccaaffff; }
+            rect.purple      { fill: #ccaaff40; }
+            path.purple      { stroke: #231f29; }
+        }
+    </style>
+
+    
+    <g id="layer1">
+        
+        <rect
+            id="background-rect"
+            width="32"
+            height="4"
+            x="0.2"
+            y="2.5"
+            class="purple" />
+
+        <g id="pointer" transform="translate(0.2 2.5)">
+            <text
+                class="purple"
+                x="7.2"
+                y="2.9">ptr(31:2)</text>
+            <path
+                d="M 27.0,0.2 V 3.8"
+                id="path12"
+                class="purple" />
+            <text
+                class="purple"
+                x="28"
+                y="2.9">01</text>
+        </g>
+
+        <g id="bit-labels" transform="translate(0 1.7)">
+
+            <text
+                class="foreground"
+                x="29.9"
+                y="0">0</text>
+            <text
+                class="foreground"
+                x="28.3"
+                y="0">1</text>
+            <text
+                class="foreground"
+                x="25.1"
+                y="0">2</text>
+            <text
+                class="foreground"
+                x="0.5"
+                y="0">31</text>
+        </g>
+    </g>
+
+</svg>

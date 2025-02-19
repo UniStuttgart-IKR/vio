@@ -44,11 +44,13 @@
         Also, in languages like C, those objects are identified using their address in form of a value only, the hardware therefore cannot distinguish between a reference to a high level object and some data value which might by chance have the value at which one such object lies.
         This ambiguity between pointers and values makes it impossible to garbage collect unused objects in memory which is why in C it is necessary for the programmer to manually manage, ie allocate and free memory.
         Being a difficult task to get right, this often leads to memory leaks. For this reason, other programming languages like Go store additional type information for every piece of data to distinguish between data and pointers.
+        This enables the removal of unused object from memory by the runtime with this process being called garbage collection.
         Since the hardware doesn't know about this additional information that the runtime has access to, it is not possible to accelerate the task of garbage collection in hardware and therefore reduce the incurred runtime penalties.
         </p>
         <p>
         To solve both of those problems, the inspiration for RISC-ViO, the experimental O-RISC architecture //cit here// introduces data type information to identify pointers and object size information on the ISA level while abstaining from tag bits.
         This enables both the enforcement of bounds checks and garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
+        O-RISC also introduces mechanisms to enforce pointer integrity to ensure memory access is limited to regions to which a program has pointers.
         </p>
         <figure>
             <figcaption>View of the different architectures on programming language level objects in memory</figcaption>
@@ -69,25 +71,26 @@
         Indexing of an objects content is achieved by providing an offset inside the object via an additional value from a register.
         Accesses to data inside of objects in O-RISC therefore are a two-step process.
         This in consequence makes O-RISC incompatible to the influental C programming language, reducing the amount of programs being source code compatible with this architecture. 
-        RISC-ViO aims to provide both the pointer unambiguity and the bounds checks which O-RISC provides while still allowing for pointers inside of objects, enabling C compatibility.
+        RISC-ViO aims to provide the pointer unambiguity, the pointer integrity and the bounds checks which O-RISC provides while still allowing for pointers inside of objects, enabling compatibility to the programming language C and others.
         Furthermore, while O-RISC is a fully custom architecture with fully custom instruction format, RISC-ViO is based upon the open RISC-V architecture which allows for easier integration and expansion of this new architecture. 
         </p>
     </section>
 
     <h1><a id="base_spec">The RISC-V I' ISA</a></h1>
     <section>
-        In order to enforce the usage of bounds checks and pointer unambiguity measures, RISC-ViO alters the semantics of some of the instructions which are part of the RISC-V I base instruction set.
+        In order to enforce the usage of bounds checks and make use of the pointer unambiguity and integrity measures, RISC-ViO alters the semantics of some of the instructions which are part of the RISC-V I base instruction set.
         This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA.
         <h2><a id="data_vs_pointers">Values vs pointers</a></h2>
         <p>
-            In order to restrict access of a program to the memory which contains the objects the program has pointers to, the I' ISA differentiates between values and pointers.
-            Only pointers may be used to access memory. Those pointers can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes.
+            To enable the goal of pointer integrity, the I' ISA differentiates between values and pointers.
+            Only pointers may be used to access memory to enforce bounds checks at all times. 
+            Those pointers can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes.
         </p>
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
-        The most obvious change is necessary in regard to load and store instructions. The main change for those instruction families lies in them requiring pointers to be used to select memory locations.
+        The most obvious change to the base ISA is necessary in regard to load and store instructions. The main change for those instruction families lies in them requiring pointers to be used to select memory locations.
         Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed. Arithmetic operations of those pointers like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation.
-        The base address information as well as the size information are not influenced by those operations, however.    
+        The base address information as well as the size information are not influenced by those operations, however, achieving the required pointer integrity.    
         </p>
         <p>
         To enforce this new addressing scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use an address value to access memory. Since the object attributes for every object referenced by a pointer are known, the processor is able to raise a <em>IndexOutBoundsException</em> when an out of bound load or store instruction is executed.
@@ -252,7 +255,8 @@
             </figure>
             <h4><a name="sw_x">sw.x-Instruction</a></h4>
             This instruction enables the software to force the hardware to write a word to a given access given by rs1. This address may either be a pointer as well as an address value. 
-            The register rs2 which provides the store data has to contain a value.
+            The register rs2 which provides the store data has to contain a value. Please note that although the theoretical order of the registers is sw.x rs1, rs2, the value to be stored comes first in assembly files. 
+            This makes the argument order of sw.x analogous to the regular memory access instructions to avoid confusion regarding this order.
             <figure>
                 <figcaption>sw.x instruction encoding</figcaption>
                 <div style="width: 100%; display: flex; justify-content: center;">
@@ -269,6 +273,7 @@
 
     <h1><a name="objects">Objects</a></h1>
     <section>
+        L.
     </section>
     
     <h1><a name="frames">The not so stacked frames</a></h1>
@@ -322,6 +327,7 @@
         </section>
     
     <h1><a id="got">Global Offset Table</a></h1>
+    L.
     <h2><a id="gp">Global Pointer</a></h2>
     <section>
     </section>
@@ -346,6 +352,7 @@
     </section>
 
     <h1><a id="hard_obj">Hardwares view on Objects</a></h1>
+    L.
     <h2><a id="headers">Headers</a></h2>
     <section>
     </section>
@@ -363,6 +370,7 @@
     </section>
 
     <h1><a id="reg_fl">How a Register File could look like</a></h1>
+    R.
     <h2><a id="fields">Fields</a></h2>
     <section>
     </section>
@@ -374,6 +382,7 @@
     </section>
 
     <h1><a id="ptr_addr">Pointer and Address generation</a></h1>
+    R.?
     <h2><a id="alcs">Allocations</a></h2>
     <section>
     </section>
@@ -514,6 +523,7 @@
     
     <h1><a id="appendix">Appendix</a></h1>
     <h2><a id="boot">Boot Process</a></h2>
+    R.
     <section>
     </section>
 </body>

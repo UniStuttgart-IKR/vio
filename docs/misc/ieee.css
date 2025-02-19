@@ -77,9 +77,12 @@ cite {
 
 code {
   font-family: Consolas, Courier, monospace;
-  font-size: 8pt;
+  font-size: 11pt;
   font-weight: 400;
-  white-space: nowrap; }
+  white-space: nowrap; 
+  margin: 30pt;
+  text-align: left
+}
 
 figure {
   counter-increment: figure;
@@ -447,6 +450,9 @@ cite {
   #title {
     margin-top: 50pt;
   }
+  #title-spec {
+    margin-bottom: 10pt;
+  }
   .title {color: light-dark(#674a93, #c6afe9);}
   .subtitle {color: light-dark(#674a93, #c6afe9);}
   .authors {
@@ -455,6 +461,8 @@ cite {
   h1 {
     margin-top: 50pt;
   }
+
+  #heap { width: 85%; }
 }
 
 @media print {
@@ -491,6 +499,13 @@ cite {
     margin-bottom: 20pt;
   }
 
+  #version {
+    position: absolute; 
+    width:100%;
+    bottom:0;
+    margin-bottom: 160pt;
+  }
+
   #title {
     margin-top: 200pt;
   }
@@ -499,4 +514,6 @@ cite {
     text-align: start;
     page-break-before: always;
   }
+
+  #heap { height: 350mm; }
 }

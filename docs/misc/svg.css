@@ -1,0 +1,75 @@
+      @font-face {
+        font-family: DejaVu Sans Mono;
+        src: local(DejaVu Sans Mono);
+        size-adjust: 91.6%
+      }
+      @font-face {
+        font-family: Lucida Sans Typewriter;
+        src: local(Lucida Sans Typewriter);
+        size-adjust: 91.6%
+      }
+      @font-face {
+        font-family: monospace;
+        src: local(monospace);
+        size-adjust: 91.6%
+      }
+
+      text {
+        font-family: Consolas, DejaVu Sans Mono, Lucida Sans Typewriter, monospace;
+        font-style:  normal;
+        font-weight: bold;
+        font-size:   2.82222px;
+      }
+      rect { stroke: #000000ff; fill-opacity:1; stroke-width:0.2; stroke-linejoin:round; stroke-dasharray:none; stroke-opacity:1; }
+      .background { fill: #ffffffff; }
+      .foreground { fill: #1a1a1aff; }
+
+      rect.background { stroke: #00000000; }
+      text.foreground { font-style: italic; font-weight: normal; font-size: 2.11667px; }
+      ellipse.black, circle.black, path.black { stroke: #1a1a1aff; fill: #ffffffff; }
+      ellipse.black { stroke-width:0.8; stroke-linecap:square; stroke-dasharray:none; }
+      circle.black { fill-opacity:1; stroke-width:0.4; stroke-linecap:square; stroke-dasharray:none; }
+      path.black { stroke-width:0.4; stroke-linecap:square; stroke-dasharray:none; marker-start:url(#Dot); marker-end:url(#RoundedArrow); }
+      text.black { fill: #000000ff; }
+
+      text.purple,
+      text.blue,
+      text.green,
+      text.cyan,
+      text.light-pink,
+      text.pink,
+      text.yellow     { fill: #1a1a1aff; }
+
+      rect.purple     { fill: #ccaaffff; }
+      rect.blue       { fill: #80e5ffff; }
+      rect.green      { fill: #55ff99ff; }
+      rect.cyan       { fill: #55ffddff; }
+      rect.light-pink { fill: #ffaaeeff; }
+      rect.pink       { fill: #ff55ddff; }
+      rect.yellow     { fill: #e5ff80ff; }
+
+      @media (prefers-color-scheme: dark) {
+         rect { stroke: #00000080; }
+         .background { fill: #1a1a1aff; }
+         .foreground { fill: #888888ff; }
+
+         rect.background, rect.none { stroke: #00000000; }
+         ellipse.black, circle.black { stroke: #666666ff; fill: #444444ff }
+         text.black { fill: #aaaaaaff }
+         path.black { stroke: #888888ff }
+
+         rect.purple     { fill: #ccaaff40; }
+         text.purple     { fill: #ccaaffff; }
+         rect.blue       { fill: #80e5ff40; }
+         text.blue       { fill: #80e5ffff; }
+         rect.green      { fill: #55ff9940; }
+         text.green      { fill: #55ff99ff; }
+         rect.cyan       { fill: #55ffdd40; }
+         text.cyan       { fill: #55ffddff; }
+         rect.light-pink { fill: #ffaaee40; }
+         text.light-pink { fill: #ffaaeeff; }
+         rect.pink       { fill: #ff55dd40; }
+         text.pink       { fill: #ff55ddff; }
+         rect.yellow     { fill: #e5ff8040; }
+         text.yellow     { fill: #e5ff80ff; }
+      }

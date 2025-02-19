@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created by Leyla :3 -->
+
+<svg
+    width="32.4"
+    height="7.2"
+    version="1.1"
+    id="data-svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg">
+
+    <style id="pretty-colors">
+        @font-face {
+            font-family: DejaVu Sans Mono;
+            src: local(DejaVu Sans Mono);
+            size-adjust: 91.6%
+        }
+        @font-face {
+            font-family: Lucida Sans Typewriter;
+            src: local(Lucida Sans Typewriter);
+            size-adjust: 91.6%
+        }
+        @font-face {
+            font-family: monospace;
+            src: local(monospace);
+            size-adjust: 91.6%
+        }
+
+        text {
+            font-family: Consolas, DejaVu Sans Mono, Lucida Sans Typewriter, monospace;
+            font-style:  normal;
+            font-weight: bold;
+            font-size:   2pt;
+        }
+        rect { stroke: #000000ff; fill-opacity:1; stroke-width:0.4; stroke-linejoin:round; stroke-dasharray:none; stroke-opacity:1; }
+
+        text   { fill: #000000ff; }
+        text.foreground { font-size:1.2pt; font-weight:normal; }
+        rect.light-pink   { fill: #ffaaeeff; }
+        path.light-pink   { stroke: #000000ff; stroke-width:0.25; }
+
+        @media (prefers-color-scheme: dark) {
+            rect { stroke: #291f27; }
+            .foreground { fill: #888888ff; }
+
+            text.light-pink      { fill: #ffaaeeff; }
+            rect.light-pink      { fill: #ffaaee40; }
+            path.light-pink      { stroke: #291f27; }
+        }
+    </style>
+
+    
+    <g id="layer1">
+        
+        <rect
+            id="background-rect"
+            width="32"
+            height="4"
+            x="0.2"
+            y="2.5"
+            class="light-pink" />
+
+        <g id="pointer" transform="translate(0.2 2.5)">
+            <text
+                class="light-pink"
+                x="6.2"
+                y="2.9">ptr(31:3)</text>
+            <path
+                d="M 25.4,0.2 V 3.8"
+                id="path12"
+                class="light-pink" />
+            <text
+                class="light-pink"
+                x="26.5"
+                y="2.9">011</text>
+        </g>
+
+        <g id="bit-labels" transform="translate(0 1.7)">
+
+
+            <text
+                class="foreground"
+                x="29.9"
+                y="0">0</text>
+            <text
+                class="foreground"
+                x="28.4"
+                y="0">1</text>
+            <text
+                class="foreground"
+                x="26.9"
+                y="0">2</text>
+            <text
+                class="foreground"
+                x="23.9"
+                y="0">3</text>
+            <text
+                class="foreground"
+                x="0.5"
+                y="0">31</text>
+        </g>
+    </g>
+
+</svg>

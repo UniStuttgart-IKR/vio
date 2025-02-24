@@ -44,11 +44,13 @@
         Also, in languages like C, those objects are identified using their address in form of a value only, the hardware therefore cannot distinguish between a reference to a high level object and some data value which might by chance have the value at which one such object lies.
         This ambiguity between pointers and values makes it impossible to garbage collect unused objects in memory which is why in C it is necessary for the programmer to manually manage, ie allocate and free memory.
         Being a difficult task to get right, this often leads to memory leaks. For this reason, other programming languages like Go store additional type information for every piece of data to distinguish between data and pointers.
+        This enables the removal of unused object from memory by the runtime with this process being called garbage collection.
         Since the hardware doesn't know about this additional information that the runtime has access to, it is not possible to accelerate the task of garbage collection in hardware and therefore reduce the incurred runtime penalties.
         </p>
         <p>
         To solve both of those problems, the inspiration for RISC-ViO, the experimental <a href="#meyer_orisc">O-RISC architecture</a> introduces data type information to identify pointers and object size information on the ISA level while abstaining from tag bits.
         This enables both the enforcement of bounds checks and garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
+        O-RISC also introduces mechanisms to enforce pointer integrity to ensure memory access is limited to regions to which a program has pointers.
         </p>
         <figure>
             <figcaption>View of the different architectures on programming language level objects in memory</figcaption>
@@ -69,7 +71,7 @@
         Indexing of an objects content is achieved by providing an offset inside the object via an additional value from a register.
         Accesses to data inside of objects in O-RISC therefore are a two-step process.
         This in consequence makes O-RISC incompatible to the influental C programming language, reducing the amount of programs being source code compatible with this architecture. 
-        RISC-ViO aims to provide both the pointer unambiguity and the bounds checks which O-RISC provides while still allowing for pointers inside of objects, enabling C compatibility.
+        RISC-ViO aims to provide the pointer unambiguity, the pointer integrity and the bounds checks which O-RISC provides while still allowing for pointers inside of objects, enabling compatibility to the programming language C and others.
         Furthermore, while O-RISC is a fully custom architecture with fully custom instruction format, RISC-ViO is based upon the open RISC-V architecture which allows for easier integration and expansion of this new architecture. 
         </p>
     </section>
@@ -272,7 +274,8 @@
             </figure>
             <h4><a name="sw_x">sw.x-Instruction</a></h4>
             This instruction enables the software to force the hardware to write a word to a given access given by rs1. This address may either be a pointer as well as an address value. 
-            The register rs2 which provides the store data has to contain a value.
+            The register rs2 which provides the store data has to contain a value. Please note that although the theoretical order of the registers is sw.x rs1, rs2, the value to be stored comes first in assembly files. 
+            This makes the argument order of sw.x analogous to the regular memory access instructions to avoid confusion regarding this order.
             <figure>
                 <figcaption>sw.x instruction encoding</figcaption>
                 <div style="width: 100%; display: flex; justify-content: center;">
@@ -348,6 +351,7 @@
         </section>
     
     <h1><a id="got">Global Offset Table</a></h1>
+    L.
     <h2><a id="gp">Global Pointer</a></h2>
     <section>
     </section>
@@ -372,6 +376,7 @@
     </section>
 
     <h1><a id="hard_obj">Hardwares view on Objects</a></h1>
+    L.
     <h2><a id="headers">Headers</a></h2>
     <section>
     </section>
@@ -389,6 +394,7 @@
     </section>
 
     <h1><a id="reg_fl">How a Register File could look like</a></h1>
+    R.
     <h2><a id="fields">Fields</a></h2>
     <section>
     </section>
@@ -400,6 +406,7 @@
     </section>
 
     <h1><a id="ptr_addr">Pointer and Address generation</a></h1>
+    R.?
     <h2><a id="alcs">Allocations</a></h2>
     <section>
         <p>All members of the alc instruction family place both regular data objects as well as frames objects on the heap. 
@@ -614,6 +621,7 @@
 
     <h1><a id="appendix">Appendix</a></h1>
     <h2><a id="boot">Boot Process</a></h2>
+    R.
     <section>
         <p>
             After system reset, all registers are initialised with the value zero. Also, both <em>malc</em> and <em>msad</em> contain the value 0x0.0x0.

@@ -304,13 +304,13 @@
     </section>
     
     <h1><a name="frames">The not so stacked frames</a></h1>
-        <p>In order to protect the local data as well as control flow data of an function, RISC-ViO alters the concept of what is called a stack in conventional architectures.
-            To protect the stand-ins for this stack, the so called frame objects or frames, from malicious or accidental modification by foreign functions, RISC-ViO introduces additional protection mechanisms for these frame objects.</p>
+        <p>In order to protect the local data as well as control flow data of a function, RISC-ViO alters the concept of what is called a stack in conventional architectures.
+            To protect the stand-ins for this stack, the so-called frame objects or frames, from malicious or accidental modification by foreign functions, RISC-ViO introduces additional protection mechanisms for these frame objects.</p>
         <h2><a id="are_obj">Structure</a></h2>
             <p>
                 Frame objects are based on regular objects but differ in the accesses which are allowed on them. 
-                Frame objects are never data only whic means the data only bit in their header is cleared while the frame bit is set. 
-                To protect both the stack pointer <em>sp</em> as well as the return index <em>ra</em>, in frame objects special slots are reserved. For the 'stack' pointer <em>sp</em>, the pointer to the previuos frame object, the first slot of XLEN size at byte index zero is reserved. 
+                Frame objects are never data only which means the data only bit in their header is cleared while the frame bit is set. 
+                To protect both the stack pointer <em>sp</em> as well as the return index <em>ra</em>, in frame objects special slots are reserved. For the 'stack' pointer <em>sp</em>, the pointer to the previous frame object, the first slot of XLEN size at byte index zero is reserved. 
                 This is immediately followed by the <em>ra</em> slot at byte index four which is also XLEN wide.  
                 In the user mode, these slots of a frame object are only allowed to be used to store or load their respective register. Any other operation on these slots will lead to a <em>ForbiddenDstException</em> or <em>ForbiddenSrcException</em>.
                 Note that it is not only prohibited to store any other register than <em>sp</em> and <em>ra</em> in those slots, but also to store these registers anywhere else when in not in a privileged mode. The same restriction also applies when loading these registers.
@@ -331,7 +331,7 @@
             </p>
         <section>
             <h2><a id="protection">Frame Ownership</a></h2>
-                To achieve protection of frames from foreign accesses RISC-ViO uses so called colour tags for both the <em>sp</em> and the <em>ra</em> register.
+                To achieve protection of frames from foreign accesses RISC-ViO uses so-called colour tags for both the <em>sp</em> and the <em>ra</em> register.
                 By updating those colours at critical points such as function entries and frame allocations, the processor always knows whether the frame pointed to by the
                 sp register is owned by the currently executed function. 
                 This state is called "regular", while the current function not being the owner of the current frame is denoted as the "irregular" state.

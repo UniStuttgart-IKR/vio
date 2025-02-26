@@ -122,13 +122,14 @@
         <h2><a name="unpriv_instructions">Unprivileged Instructions</a></h2>
         <h3><a name="alc_fam">Allocation: alc/alci/alc.d/alci.d</a></h3>
         Since RISC-ViO manages objects on the ISA level, the ISA has to provide a means to create new objects and their corresponding pointers.
-        In contrast to the automatic freeing of unnecessary objects, this creation of ISA level objects is achieved by the alc-Instruction family which comes in four flavours. 
+        In contrast to the automatic freeing of unnecessary objects, this creation of ISA level objects is achieved by the alc-instruction family which comes in four flavours. 
         In fact the alc instruction family is the only way to obtain new pointers in user mode.
         The next section provides a short description of those instructions alongside their bit encodings.
+        The objects allocated by the alc-instruction family are both readable and writeable on allocation. 
 
         <h4><a name="alci">alci-Instruction</a></h4>
         The alci instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is given by the 12 bit wide immediate.
-        This immediate specifies the amount of pointers which can fit inside the object.
+        This immediate specifies the amount of pointers which can fit inside the object. So for a XLEN of 32, it specifies the number of 32 bit words that fit into the object.
         <figure>
             <figcaption>alci instruction encoding</figcaption>
             <div style="width: 100%; display: flex; justify-content: center;">
@@ -140,7 +141,7 @@
         <p>When the alci instruction is used to allocate a frame by specifying sp as the destination register, its semantic is extended. In this case alci not only allocates a new frame object but also stores the old sp at index zero of the new frame object.</p>
         The alci instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
-            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size)</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
 
@@ -159,7 +160,7 @@
 
         The alc instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
-            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size)</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
@@ -176,7 +177,7 @@
             </figure>
         The alcid instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
-            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size)</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
@@ -192,7 +193,7 @@
             </figure>
         The alcd instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
-            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size)</li>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
             <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
@@ -293,6 +294,7 @@
     <h1><a name="chap_objects">Objects</a></h1>
     <section>
         <h2><a id="objs_ords">Ordinaries</a></h2>
+            <p></p>
         <section>
         </section>
         <h2><a id="objs_execs">Executables</a></h2>
@@ -301,13 +303,25 @@
     </section>
     
     <h1><a name="frames">The not so stacked frames</a></h1>
-
+        <p>In order to protect the local data as well as control flow data of an function, RISC-ViO alters the concept of what is called a stack in conventional architectures.
+            To protect the stand-ins for this stack, the so called frame objects or frames, from malicious or accidental modification by foreign functions, RISC-ViO introdues additional protection mechanisms for these frame objects.</p>
         <h2><a id="are_obj">Structure</a></h2>
+            <p>
+                Frame objects are based on regular objects but differ in the accesses which are allowed on them. 
+                Frame objects are never data only. 
+                To protect both the stack pointer <em>sp</em> as well as the return index <em>ra</em>, in frame objects special slots are reserved. For the 'stack' pointer <em>sp</em>, the pointer to the previuos frame object, the first slot of XLEN size is reserved. 
+                This is immediately followed by the <em>ra</em> slot which is also XLEN wide.  
+                In the user mode, these slots of a frame object are only allowed to be used to store or load their respective register. Any other operation which lead to a <em>ForbiddenDstException</em> or <em>ForbiddenSrcException</em>.
+            </p>
         <h2><a id="chap_calling_convention">Calling Convention</a></h2>
+            <p>As described in the introduction to this chapter, RISC-ViO denies foreign access to frame objects. As a consequence, the calling convention has be modified slightly from the convention used by RISC-V.
+                Namely, it is not possible to spill function arguments from registers onto the stack of the receiving function. Instead, the following scheme is employed: 
+                Just as is the case for conventional RISC-V, the arguments are stored in the registers <em>a0</em> to <em>a7</em> given that there are no more than eight XLEN arguments or as many arguments as will fit in those registers.
+                Instead of pushing the additional arguments that will not fit in the argument registers on the stack, a spill object of corresponding size has to be allocated. A pointer to this spill object is placed in <em>a7</em> and the remaining arguments are stored in this object.
+            </p>
         <section>
             <h2><a id="protection">Frame Ownership</a></h2>
-                <p>In order to protect the frame of a function from modification by other functions, RISC-ViO introduces a scheme to protect these frames.
-                This requires access management for those frames, which RISC-ViO implements in form of adding colour tags to both the sp and the ra register.
+                To achieve protection of frames from foreign accesses RISC-ViO uses so called colour tags for both the <em>sp</em> and the <em>ra</em> register.
                 By updating those colours at critical points such as function entries and frame allocations, the processor always knows whether the frame pointed to by the
                 sp register is owned by the currently executed function. 
                 This state is called "regular", while the current function not being the owner of the current frame is denoted as the "irregular" state.

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created by Leyla :3 -->
+
+<svg
+    width="40.4"
+    height="24"
+    version="1.1"
+    id="data-svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg">
+
+    <style id="pretty-colors">
+        @font-face {
+            font-family: DejaVu Sans Mono;
+            src: local(DejaVu Sans Mono);
+            size-adjust: 91.6%
+        }
+        @font-face {
+            font-family: Lucida Sans Typewriter;
+            src: local(Lucida Sans Typewriter);
+            size-adjust: 91.6%
+        }
+        @font-face {
+            font-family: monospace;
+            src: local(monospace);
+            size-adjust: 91.6%
+        }
+
+        text {
+            font-family: Consolas, DejaVu Sans Mono, Lucida Sans Typewriter, monospace;
+            font-style:  normal;
+            font-weight: bold;
+            font-size:   2pt;
+        }
+
+        rect { stroke: #000000ff; stroke-width:0.4; stroke-linejoin:round; }
+        .foreground { fill: #1a1a1aff; }
+        text.foreground { font-size:1.2pt; font-weight:normal; }
+
+        text.green      { fill: #1a1a1aff; }
+        rect.green      { fill: #55ff99ff; }
+        path.green      { stroke: #000000ff; stroke-width:0.25; }
+        rect.blue       { fill: #80e5ffff; }
+        polygon.blue    { fill: #80e5ff40; stroke: #192629; }
+        path.blue       { stroke: #000000ff; stroke-width:0.25; }
+        rect.pink       { fill: #ff55ddff; }
+        path.pink       { stroke: #000000ff; stroke-width:0.25; }
+        rect.purple     { fill: #ccaaffff; }
+        polygon.purple  { stroke: #000000ff; fill: #ccaaffff; stroke-width:0.25; }
+        path.purple     { stroke: #000000ff; stroke-width:0.25; }
+        rect.grey       { fill: #55555588; stroke: #44444488; }
+        path.grey       { stroke: #33333388; stroke-width:0.25; }
+        rect.light-pink { fill: #ffaaeeff; }
+        polgyon.light-pink { fill: #ffaaee40; stroke: #291f27; }
+        path.light-pink { stroke: #000000ff; stroke-width:0.25; }
+
+        @media (prefers-color-scheme: dark) {
+            
+            .foreground     { fill: #888888ff; }
+            text.black      { fill: #80e5ffff; }
+
+            text.green      { fill: #55ff99ff; }
+            rect.green      { fill: #55ff9940; stroke: #14291c; }
+            path.green      { stroke: #14291c; }
+            text.blue       { fill: #80e5ffff; }
+            rect.blue       { fill: #80e5ff40; stroke: #192629; }
+            polygon.blue    { fill: #80e5ff40; stroke: #192629; }
+            path.blue       { stroke: #192629; }
+            text.pink       { fill: #ff55ddff; }
+            rect.pink       { fill: #ff55dd40; stroke: #291425; }
+            polygon.pink    { fill: #ff55dd40; stroke: #291425; }
+            path.pink       { stroke: #291425; }
+            text.purple     { fill: #ccaaffff; }
+            rect.purple     { fill: #ccaaff40; stroke: #231f29; }
+            polygon.purple  { fill: #ccaaff40; stroke: #231f29; }
+            path.purple     { stroke: #231f29; }
+            text.light-pink { fill: #ffaaeeff; }
+            rect.light-pink { fill: #ffaaee40; stroke: #291f27; }
+            polygon.light-pink { fill: #ffaaee40; stroke: #291f27; }
+            path.light-pink { stroke: #291f27; }
+            rect.grey       { fill: #88888888; stroke: #44444488; }
+            path.grey       { stroke: #77777788; stroke-width:0.25; }
+        }
+    </style>
+
+    
+    <g id="layer1">
+        <g id="header">
+            <rect
+                id="background-rect"
+                width="32"
+                height="4"
+                x="2.2"
+                y="2.5"
+                class="green" />
+                <text
+                    class="green"
+                    x="9"
+                    y="5.5">Object Header</text>
+        </g>
+
+        <g id="sp_ptr" transform="translate(0 6.5)">
+            <rect
+                id="background-rect"
+                width="32"
+                height="4"
+                x="2.2"
+                y="0.0"
+                class="pink" />
+
+            <g id="pointer" transform="translate(0.2 0.0)">
+                <text
+                    class="pink"
+                    x="15.6"
+                    y="2.9">sp</text>
+            </g>
+            <g id="index" transform="translate(0.0 0.0)">
+                <text
+                    class="foreground"
+                    x="42"
+                    y="3">0</text>
+            </g>
+             <text
+                class="foreground"
+                x="36"
+                y="3"
+                style="font-size: 2pt">0</text>
+
+        </g>
+        <g id="disp_prim" transform="translate(0 10.5)">
+            <rect
+                id="background-rect"
+                width="32"
+                height="4"
+                x="2.2"
+                y="0.0"
+                class="purple" />
+
+            <g id="pointer" transform="translate(0.2 0.0)">
+                <text
+                    class="purple"
+                    x="15.6"
+                    y="2.9">ra</text>
+            </g>
+            <text
+                class="foreground"
+                x="36"
+                y="3"
+                style="font-size: 2pt">4</text>
+        </g>
+        <g id="some_cont1" transform="translate(0 14.5)">
+            <g id="anytype" transform="translate(2.2, 0)">
+                <polygon points="0,0 10,0 6,4 0,4" class="blue" style="stroke-width: 0.5"/>
+                <text class="blue" x="1" y="3">...</text>
+                <polygon points="10,0 18,0 14,4 6,4" class="purple" style="stroke-width: 0.5"/>
+                <text class="purple" x="9" y="3">...</text>
+                <polygon points="18,0 26,0 22,4 14,4" class="light-pink" style="stroke-width: 0.5"/>
+                <text class="light-pink" x="17.5" y="3">...</text>
+                <polygon points="26,0 32,0 32,4 22,4" class="pink" style="stroke-width: 0.5"/>
+                <text class="pink" x="26" y="3">...</text>
+            </g>
+            <g transform="translate(0.2, 0)">
+                <path d="M 1,2 L 3,1.5" style="stroke: #000000; stroke-width: 0.4"/>
+                <path d="M 1,3 L 3,2.5" style="stroke: #000000; stroke-width: 0.4"/>
+            </g>
+            <g transform="translate(32.2, 0)">
+                <path d="M 1,2 L 3,1.5" style="stroke: #000000; stroke-width: 0.4"/>
+                <path d="M 1,3 L 3,2.5" style="stroke: #000000; stroke-width: 0.4"/>
+            </g>
+            <text
+                class="foreground"
+                x="36"
+                y="3"
+                style="font-size: 2pt">8</text>
+        </g>
+        <text
+            class="foreground"
+            x="15.5"
+            y="21.5"
+            style="font-size: 2pt">...</text>
+
+        <text
+            class="foreground"
+            x="35"
+            y="21.5"
+            style="font-size: 2pt">...</text>
+        
+    </g>
+
+</svg>

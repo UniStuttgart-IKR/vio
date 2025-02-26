@@ -293,6 +293,7 @@
 
     <h1><a name="chap_objects">Objects</a></h1>
     <section>
+        L.
         <h2><a id="objs_ords">Ordinaries</a></h2>
             <p></p>
         <section>
@@ -304,14 +305,23 @@
     
     <h1><a name="frames">The not so stacked frames</a></h1>
         <p>In order to protect the local data as well as control flow data of an function, RISC-ViO alters the concept of what is called a stack in conventional architectures.
-            To protect the stand-ins for this stack, the so called frame objects or frames, from malicious or accidental modification by foreign functions, RISC-ViO introdues additional protection mechanisms for these frame objects.</p>
+            To protect the stand-ins for this stack, the so called frame objects or frames, from malicious or accidental modification by foreign functions, RISC-ViO introduces additional protection mechanisms for these frame objects.</p>
         <h2><a id="are_obj">Structure</a></h2>
             <p>
                 Frame objects are based on regular objects but differ in the accesses which are allowed on them. 
-                Frame objects are never data only. 
-                To protect both the stack pointer <em>sp</em> as well as the return index <em>ra</em>, in frame objects special slots are reserved. For the 'stack' pointer <em>sp</em>, the pointer to the previuos frame object, the first slot of XLEN size is reserved. 
-                This is immediately followed by the <em>ra</em> slot which is also XLEN wide.  
-                In the user mode, these slots of a frame object are only allowed to be used to store or load their respective register. Any other operation which lead to a <em>ForbiddenDstException</em> or <em>ForbiddenSrcException</em>.
+                Frame objects are never data only whic means the data only bit in their header is cleared while the frame bit is set. 
+                To protect both the stack pointer <em>sp</em> as well as the return index <em>ra</em>, in frame objects special slots are reserved. For the 'stack' pointer <em>sp</em>, the pointer to the previuos frame object, the first slot of XLEN size at byte index zero is reserved. 
+                This is immediately followed by the <em>ra</em> slot at byte index four which is also XLEN wide.  
+                In the user mode, these slots of a frame object are only allowed to be used to store or load their respective register. Any other operation on these slots will lead to a <em>ForbiddenDstException</em> or <em>ForbiddenSrcException</em>.
+                Note that it is not only prohibited to store any other register than <em>sp</em> and <em>ra</em> in those slots, but also to store these registers anywhere else when in not in a privileged mode. The same restriction also applies when loading these registers.
+                This restriction is also enforced using <em>ForbiddenDstException</em> and <em>ForbiddenSrcException</em>.
+                <figure style="display:flex; margin-bottom: 0.5rem">
+                    <div style="flex: 30%; margin-bottom: 0.5rem">
+                        <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 0.5rem; margin-bottom: 0.5rem"> A Frame Object</p>
+                        <img src="svg/objektbaukasten/frame_object.svg" id="frame_object_svg" style="width: 35%;margin-bottom: 0.5rem">
+                    </div>
+                </figure>
+                All other slots starting at byte address eight are general purpose and access to them is not restricted in any way.
             </p>
         <h2><a id="chap_calling_convention">Calling Convention</a></h2>
             <p>As described in the introduction to this chapter, RISC-ViO denies foreign access to frame objects. As a consequence, the calling convention has be modified slightly from the convention used by RISC-V.
@@ -378,6 +388,7 @@
         <p>Since RISC-ViO allows both pointers and regular data to be stored in the registers and also organizes code using objects, some CSR also need to be able to hold pointers.
             This is the case for <em>xtvec</em> and <em>xepc</em> due to code objects and for <em>xtval</em> and <em>xscratch</em> due to pointers in general.
             To access the components of these registers, the <em>csrw</em> instruction may be used in conjunction with the <em>dtp</em>/<em>btd</em>/<em>itd</em> instructions.
+            Apart from this slight modification as well as the expansion of available exceptions, exceptions and interrupts behave identical to the way they do in RISC-V.
         </p>
     <section>
 
@@ -655,6 +666,15 @@
             Since the processor starts up in the irregular state, this should be followed by an alc or alci instruction to get into regular state and be able to call functions.
         </p>
     </section>
+    <h2><a id="implemenation_notes_chap">Implementation notes</a></h2>
+    <p>
+        The provided behaviour of the example of an RISC-ViO implementation can be further specified. This list provides a incomplete list of recommendations for such an implementation:
+        <ol>
+            <li></li>The dtp instruction should only load the header of a pointer if a valid pointer is specified via the rs1 register. Otherwise, the header and length fields in the pipeline should be set to 0.</li>
+            <li>Tea</li>
+            <li>Milk</li>
+          </ol> 
+    </p>
 </body>
 
 <script>

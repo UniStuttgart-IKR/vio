@@ -78,8 +78,10 @@
 
     <h1><a id="base_spec">The RISC-V I' ISA</a></h1>
     <section>
-        In order to enforce the usage of bounds checks and pointer unambiguity measures, RISC-ViO alters the semantics of some of the instructions which are part of the RISC-V I base instruction set.
-        This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA. 
+        <p>
+            In order to enforce the usage of bounds checks and pointer unambiguity measures, RISC-ViO alters the semantics of some of the instructions which are part of the RISC-V I base instruction set.
+            This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA. 
+        </p>
         <h2><a id="data_vs_pointers">Values vs pointers</a></h2>
         <p>
             In order to restrict access of a program to the memory which contains the objects the program has pointers to, the I' ISA differentiates between values and pointers.
@@ -109,7 +111,7 @@
         <p>
         Just as data on the stack and heap is organised by means of objects, instructions are also encapsulated in objects. This means that the <em>auipc</em> instruction will emit a pointer instead of a value. 
         Due to the access to those executable objects being limited as described in the <a href="#objs_execs">executable objects</a> chapter however, access to constant data is not possible using  this pointer.
-        The encapsulation of instructions also means that the <em>jalr</em> instructions expects a pointer to a object containing instructions as a jump target.
+        The encapsulation of instructions also means that the <em>jalr</em> instructions expects a pointer to a object containing instructions as a jump target to be written to the program counter.
         If the pointer provided does not reference such an object, the processor raises a <em>IncompatibleTypeException</em> with <em>xtval</em> containing the target pointer.
         This is also the case when the target provided is a value instead of a pointer.
         </p>
@@ -319,7 +321,7 @@
                 This restriction is also enforced using <em>ForbiddenDstException</em> and <em>ForbiddenSrcException</em>.
                 <figure style="display:flex; margin-bottom: 0.5rem">
                     <div style="flex: 30%; margin-bottom: 0.5rem">
-                        <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 0.5rem; margin-bottom: 0.5rem"> A Frame Object for XLEN=32</p>
+                        <figcaption>A Frame Object for XLEN=32</figcaption>
                         <img src="svg/objektbaukasten/frame_object.svg" id="frame_object_svg" style="width: 35%;margin-bottom: 0.5rem">
                     </div>
                 </figure>
@@ -403,7 +405,48 @@
         
     </section>
 
-    <h1><a id="hard_obj">Hardwares view on Objects</a></h1>
+    <h1><a id="reg_fl">Register File Implementation</a></h1>
+    <section>
+    <p>
+        The RISC-ViO architecture requires a register file which is able to hold the following information:
+    </p>
+        <ul>
+            <li>tag (pointer or value?) for each register except zero</li>
+            <li>values (XLEN) for each register except zero</li>
+            <li>pointers (XLEN) with indeces (XLEN) for each register except zero</li>
+            <li>pointer colours for ra and sp</li>
+        </ul>
+    <p>
+        Apart from these requirements, RISC-ViO does not specify how a register file of an implementation of this architecture has to look like.
+        This leaves room for tailoring the implemented register file to the design constraints at hand. 
+    </p>
+    </section>
+    <h2><a id="fields">Fields</a></h2>
+    <section>
+        <p>The implementation offered here is meant only as an example implementation and is focused on higher performance while requiring more hardware resources. The register sections required by the RISC-ViO specification are denoted with 'ISA' while sections introduced by this particular implementations are denoted with 'IMP'.  </p>
+        <figure style="display:flex; margin-bottom: 0.5rem">
+            <div style="flex: 30%; margin-bottom: 0.5rem">
+                <figcaption>An example implementation of a RISC-ViO register file</figcaption>
+                <img src="svg/register_file.drawio.svg" id="register_file_svg" style="width: 100%;margin-bottom: 0.5rem">
+            </div>
+        </figure>
+    </section>
+    <h2><a id="coloring">Colouring</a></h2>
+    <section>
+        <p>As described in the <a href="#frames">frames</a> chapter and as present in the requirements list above, RISC-ViO calls for the ability to hold colours information for both the <em>ra</em> as well as the <em>sp</em> register. 
+            The implementation presented here is able to satisfy this requirement using the fields as shown in the last section only. In this implementation, the colour 'black' is encoded as a cleared bit ('0') while 'white' corresponds to a bit which is set ('1'). 
+            Since the smallest possible instruction size specified by RISC-V is 16 bits or two bytes, the lowest bit of the index of <em>ra</em> always has to be zero.
+            This is why it is possible to use this bit to encode the current colour of <em>ra</em> in this bit. For <em>sp</em>, the same is not true however since its index may be set to any value.
+            The colour of <em>sp</em> is instead stored in the copy of the header of the current frame in the register file. More specifically, the colour-bit in this header is used for the colour storage.
+        </p>
+    </section>
+    <h2><a id="flgs_tgs">Flags and Tags</a></h2>
+    <section>
+        <p>As a pointers flags fit inside its lowest bits in the given implemementation, there are no additional fields required to store</p>
+    </section>
+
+
+    <h1><a id="hard_obj">Values and Pointers in Memory: Objects</a></h1>
     L.
     <h2><a id="headers">Headers</a></h2>
     <section>
@@ -421,32 +464,7 @@
     <section>
     </section>
 
-    <h1><a id="reg_fl">Register File Implementation</a></h1>
-    <section>
-    <p>
-        The RISC-ViO architecture requires a register file which is able to hold the following information:
-    </p>
-        <ul>
-            <li>tag (pointer or value?) for each register except zero</li>
-            <li>values (XLEN) for each register except zero</li>
-            <li>pointers (XLEN) with indeces (XLEN) for each register except zero</li>
-            <li>pointer colours for ra and sp</li>
-        </ul>
-    <p>
-        Apart from these requirements, RISC-ViO does not specify how a register file of an implementation of this architecture has to look like.
-        This leaves room for tailoring the implemented register file to the constraints at hand. The implementation offered here is meant only as an example implementation and is focused on higher performance while requiring more hardware resources.
-    </p>
-    </section>
-    <h2><a id="fields">Fields</a></h2>
-    <section>
-    </section>
-    <h2><a id="coloring">Colouring</a></h2>
-    <section>
-        <p>As described in the <a href="#frames">frames</a> chapter and as present in the requirements list above, RISC-ViO calls for the ability to hold colours information for both the <em>ra</em> as well as the <em>sp</em> register. 
-    </section>
-    <h2><a id="flgs_tgs">Flags and Tags</a></h2>
-    <section>
-    </section>
+
 
     <h1><a id="ptr_addr">Pointer and Address generation</a></h1>
     R.?

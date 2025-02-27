@@ -85,7 +85,7 @@
         <h2><a id="data_vs_pointers">Values vs pointers</a></h2>
         <p>
             In order to restrict access of a program to the memory which contains the objects the program has pointers to, the I' ISA differentiates between values and pointers.
-            Only pointers may be used to access memory. Those pointers can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes.
+            Only pointers may be used to access memory as well as I/O devices. Those pointers can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes.
             In this specification, pointers are written in the form x.y where x is a pointers value (base address + tag) and y is the index of the pointer. To graphically set apart pointers from values, pointers are drawn in various shades of pink and purple.
              Values are not denoted in any special way in text form but drawn in light blue.
 
@@ -101,6 +101,9 @@
         Since the object attributes for every object referenced by a pointer are known, the processor is able to raise a <em>IndexOutBoundsException</em> when an out of bound load or store instruction is executed.
         In case of such an exception, <em>xtval</em> will contain the base pointer as well as the index which was beyond the object bounds.
         The processor is also able to detect whether the destination object is compatible with the current access type. In consequence, <em>LoadAccessFault</em>, <em>StoreAccessFault</em> or <em>IncompatibleTypeException</em> will be raised accordingly as per <a href="#objs_ords">ordinary objects</a>. 
+        While in general, I/O pointers behave the same way as pointers to objects in memory by allowing stores and loads with offsets, there are some restrictions when using them.
+        Most notably, while it is perfectly fine to store a pointer inside an object, the same is not true for I/O devices.
+        Storing a pointer to a I/O device identified by an I/O pointer will lead to an <em>IncompatibleTypeException</em>. This simplification reduces the complexity of the task of garbage collection.
         </p>
         <p>
         Apart from objects for regular data storage the I' ISA also manages the stack as a series of objects. This partition of the stack in a single frame per function allows for further security mechanisms but also requires cooperation by the program.
@@ -413,7 +416,7 @@
         <ul>
             <li>tag (pointer or value?) for each register except zero</li>
             <li>values (XLEN) for each register except zero</li>
-            <li>pointers (XLEN) with indeces (XLEN) for each register except zero</li>
+            <li>pointers with indeces (XLEN) for each register except zero</li>
             <li>pointer colours for ra and sp</li>
         </ul>
     <p>
@@ -423,7 +426,7 @@
     </section>
     <h2><a id="fields">Fields</a></h2>
     <section>
-        <p>The implementation offered here is meant only as an example implementation and is focused on higher performance while requiring more hardware resources. The register sections required by the RISC-ViO specification are denoted with 'ISA' while sections introduced by this particular implementations are denoted with 'IMP'.  </p>
+        <p>The implementation offered here is meant only as an example implementation and is focused on higher performance while requiring more hardware resources. The register sections required by the RISC-ViO specification are denoted with 'ISA' while sections introduced by this particular implementation are denoted with 'IMP'.  </p>
         <figure style="display:flex; margin-bottom: 0.5rem">
             <div style="flex: 30%; margin-bottom: 0.5rem">
                 <figcaption>An example implementation of a RISC-ViO register file</figcaption>
@@ -442,7 +445,10 @@
     </section>
     <h2><a id="flgs_tgs">Flags and Tags</a></h2>
     <section>
-        <p>As a pointers flags fit inside its lowest bits in the given implemementation, there are no additional fields required to store</p>
+        <p>In order to distinguish pointers from values, the provided implementation uses a tag bit for all registers which may hold both type. Values are tagged as '0' while pointers are identified by a '1' bit.
+            Since on ISA level, RISC-ViO only distinguishes between regular an I/O pointers, only a single bit in the register file is required to keep those pointer types apart.
+            This bit is interpreted as part of the pointer and is added to the right of the pointer base address or I/O device number for I/O pointers.
+        </p>
     </section>
 
 
@@ -470,7 +476,7 @@
     R.?
     <h2><a id="alcs">Allocations</a></h2>
     <section>
-        <p>All members of the alc instruction family place both regular data objects as well as frames objects on the heap. 
+        <p>In the presented implementation, all members of the alc instruction family place both regular data objects as well as frames objects on the heap. 
             There the objects lie in allocation order until a garbage collection cycle occurs. 
             In the process of such a cycle, objects may be moved or overwritten in case of not being required anymore.
         </p>

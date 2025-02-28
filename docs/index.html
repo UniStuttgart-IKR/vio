@@ -521,7 +521,17 @@
     </section>
     <h2><a id="load_store">Loading and Storing a Pointer</a></h2>
     <section>
-        <p>As the subarchitectural implementation requires some flag bit from the object header as well as its length or lambda field, those fields also have to be retrieved from memory when loading a pointer. </p>
+        <p>As the subarchitectural implementation requires some flag bit from the object header as well as its length or lambda field, those fields also have to be retrieved from memory when loading a pointer. For this, the example subarchitectural implementation uses an additional pipeline stage called the attribute stage which is located behind the memory stage in the processor pipeline.
+            After the memory stage has loaded a pointer, the attribute stage then loads the header being pointed to by the pointer base address. This header along with the actual pointer value is then handed over to the write-back stage which writes those fields into the register file.
+            In the given subarchitectural implementation, the attribute stage is used to accomplish additional tasks like loading full XLEN wide data or a pointer with non-zero index from an object. 
+            For the task of loading full XLEN wide data, it is the task of the attribute stage to load the actual data from memory instead of the memory stage. This is necessary since the memory stage has to determine where this data is located in memory first by loading the according displacement pointer.
+            For pointers with a non-zero index, the attribute stage also has to become active. Since requiring both the loading of a pointers index as well as the header of the object pointed to, this operation takes two clock cycles however and therefore necessitates stalling the remaining pipeline until both operations have been completed.
+            In this situation, the attributes stage will load the pointer index at first before loading the object header and combining the loaded fields with the pointer value loaded by the memory stage and passing the combined register file entry to the writeback stage.
+        </p>
+        <p>
+            The process of storing register contents is analogous to the process of loading values as well as pointers regarding the fundamental tasks accomplished by the memory and attribute stages. The only difference other than those stages storing instead of loading is that the attribute stage might need to allocate a new 'Sanctuary object' to store XLEN wide values or pointers with non-zero index into.
+            This task is completed by a special subunit, which avoids the attribute stage having to stall the remaining pipeline when storing a XLEN value or pointer with non-zero index while also needing a new Sanctuary Object to be allocated.
+        </p>
     </section>
 
     <h2><a id="bounds">Bounds and Flag Checks</a></h2>

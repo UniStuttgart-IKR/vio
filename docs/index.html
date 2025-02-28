@@ -85,7 +85,7 @@
         <h2><a id="data_vs_pointers">Values vs pointers</a></h2>
         <p>
             In order to restrict access of a program to the memory which contains the objects the program has pointers to, the I' ISA differentiates between values and pointers.
-            Only pointers may be used to access memory as well as I/O devices. Those pointers can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes.
+            Only pointers may be used to access memory as well as I/O devices. Those pointers can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes. Pointers are to be encoded in such a way as to allow for objects to lie in the entire address space of the processor of XLEN bits.
             In this specification, pointers are written in the form x.y where x is a pointers value (base address + tag) and y is the index of the pointer. To graphically set apart pointers from values, pointers are drawn in various shades of pink and purple.
              Values are not denoted in any special way in text form but drawn in light blue.
 
@@ -103,20 +103,20 @@
         The processor is also able to detect whether the destination object is compatible with the current access type. In consequence, <em>LoadAccessFault</em>, <em>StoreAccessFault</em> or <em>IncompatibleTypeException</em> will be raised accordingly as per <a href="#objs_ords">ordinary objects</a>. 
         While in general, I/O pointers behave the same way as pointers to objects in memory by allowing stores and loads with offsets, there are some restrictions when using them.
         Most notably, while it is perfectly fine to store a pointer inside an object, the same is not true for I/O devices.
-        Storing a pointer to a I/O device identified by an I/O pointer will lead to an <em>IncompatibleTypeException</em>. This simplification reduces the complexity of the task of garbage collection.
+        Storing a pointer in a I/O device identified by an I/O pointer will lead to an <em>IncompatibleTypeException</em>. This simplification reduces the complexity of the task of garbage collection.
         </p>
         <p>
         Apart from objects for regular data storage the I' ISA also manages the stack as a series of objects. This partition of the stack in a single frame per function allows for further security mechanisms but also requires cooperation by the program.
-        Most notably, the stack is not grown by arithmetically modifying the stack pointer. Instead, the program has to manually allocate new frame object. Once this frame object has been allocated, accesses to inside this object behave just the way the stack frame in RISC-V behaves.<br>
+        Most notably, the stack is not grown by arithmetically modifying the stack pointer. Instead, the program has to manually allocate a new frame object. Once this frame object has been allocated, accesses to inside this object behave just the way the stack frame in RISC-V behaves.<br>
         Due to the stack pointer register now containing a pointer, I' is able to protect older frame objects from accesses by arithmetical modification of sp.
-        The implications for passing of function arguments between functions are outlined in the <a href="#chap_calling_convention">calling convention</a> chapter.
+        The implications for the passing of function arguments between functions are outlined in the <a href="#chap_calling_convention">calling convention</a> chapter.
         </p>
         <p>
         Just as data on the stack and heap is organised by means of objects, instructions are also encapsulated in objects. This means that the <em>auipc</em> instruction will emit a pointer instead of a value. 
         Due to the access to those executable objects being limited as described in the <a href="#objs_execs">executable objects</a> chapter however, access to constant data is not possible using  this pointer.
         The encapsulation of instructions also means that the <em>jalr</em> instructions expects a pointer to a object containing instructions as a jump target to be written to the program counter.
         If the pointer provided does not reference such an object, the processor raises a <em>IncompatibleTypeException</em> with <em>xtval</em> containing the target pointer.
-        This is also the case when the target provided is a value instead of a pointer.
+        Using a value as a destination for <em>jalr</em> is still allowed though and leads to jumping to the given index inside the currently executed code object.
         </p>
     </section>
 
@@ -403,12 +403,12 @@
     </section>
     <h2><a id="priv">Privilege Violations</a></h2>
     <section>
-    <p><a href="#t_csr">Table XX</a> provides an overview of the exceptions corresponding to the protection schemes introduced by RISC-ViO.
+    <p>The <a href="#t_csr">exception table</a> provides an overview of the exceptions corresponding to the protection schemes introduced by RISC-ViO.
         In order to allow higher privilege modes to gain the access required for system management, some exceptions are suppressed in certain privilege modes.</p>
         
     </section>
 
-    <h1><a id="reg_fl">Register File Implementation</a></h1>
+    <h1><a id="reg_fl">Values and Pointers in the Register File</a></h1>
     <section>
     <p>
         The RISC-ViO architecture requires a register file which is able to hold the following information:
@@ -426,7 +426,7 @@
     </section>
     <h2><a id="fields">Fields</a></h2>
     <section>
-        <p>The implementation offered here is meant only as an example implementation and is focused on higher performance while requiring more hardware resources. The register sections required by the RISC-ViO specification are denoted with 'ISA' while sections introduced by this particular implementation are denoted with 'IMP'.  </p>
+        <p>The subarchitecture implementation offered here is meant only as an example implementation and is focused on higher performance while requiring more hardware resources. The register sections required by the RISC-ViO specification are denoted with 'ISA' while sections introduced by this particular implementation are denoted with 'IMP'. In this implementation, the 'IMP' sections are exclusively made up of object header metadata drawn in green.  </p>
         <figure style="display:flex; margin-bottom: 0.5rem">
             <div style="flex: 30%; margin-bottom: 0.5rem">
                 <figcaption>An example implementation of a RISC-ViO register file</figcaption>
@@ -436,23 +436,23 @@
     </section>
     <h2><a id="coloring">Colouring</a></h2>
     <section>
-        <p>As described in the <a href="#frames">frames</a> chapter and as present in the requirements list above, RISC-ViO calls for the ability to hold colours information for both the <em>ra</em> as well as the <em>sp</em> register. 
+        <p>As described in the <a href="#frames">frames</a> chapter and as present in the requirements list above, RISC-ViO calls for the ability to hold colour information for both the <em>ra</em> as well as the <em>sp</em> register. 
             The implementation presented here is able to satisfy this requirement using the fields as shown in the last section only. In this implementation, the colour 'black' is encoded as a cleared bit ('0') while 'white' corresponds to a bit which is set ('1'). 
             Since the smallest possible instruction size specified by RISC-V is 16 bits or two bytes, the lowest bit of the index of <em>ra</em> always has to be zero.
-            This is why it is possible to use this bit to encode the current colour of <em>ra</em> in this bit. For <em>sp</em>, the same is not true however since its index may be set to any value.
-            The colour of <em>sp</em> is instead stored in the copy of the header of the current frame in the register file. More specifically, the colour-bit in this header is used for the colour storage.
+            This is why it is possible to encode the current colour of <em>ra</em> in this bit. For <em>sp</em>, the same is not true however since its index may be set to any value.
+            The colour of <em>sp</em> is instead stored in the current frames header copy in the register file. More specifically, the colour-bit in this header is used for storing <em>sp</em>'s colour.
         </p>
     </section>
     <h2><a id="flgs_tgs">Flags and Tags</a></h2>
     <section>
-        <p>In order to distinguish pointers from values, the provided implementation uses a tag bit for all registers which may hold both type. Values are tagged as '0' while pointers are identified by a '1' bit.
+        <p>In order to distinguish pointers from values, the provided implementation uses a tag bit for all registers which may hold both values or pointers. Values are tagged as '0' while pointers are identified by a '1' bit.
             Since on ISA level, RISC-ViO only distinguishes between regular an I/O pointers, only a single bit in the register file is required to keep those pointer types apart.
             This bit is interpreted as part of the pointer and is added to the right of the pointer base address or I/O device number for I/O pointers.
         </p>
     </section>
 
 
-    <h1><a id="hard_obj">Values and Pointers in Memory: Objects</a></h1>
+    <h1><a id="hard_obj">Objects in Memory</a></h1>
     L.
     <h2><a id="headers">Headers</a></h2>
     <section>
@@ -473,7 +473,8 @@
 
 
     <h1><a id="ptr_addr">Pointer and Address generation</a></h1>
-    R.?
+        <p>The provided implementation example of the RISC-ViO architecture by using the object structures outline above implies new requirements for a processor pipeline supporting this implementation.
+            In the next sections, a possible subarchitecture meeting those requirements shall be described. </p>
     <h2><a id="alcs">Allocations</a></h2>
     <section>
         <p>In the presented implementation, all members of the alc instruction family place both regular data objects as well as frames objects on the heap. 
@@ -520,9 +521,14 @@
     </section>
     <h2><a id="load_store">Loading and Storing a Pointer</a></h2>
     <section>
+        <p>As the subarchitectural implementation requires some flag bit from the object header as well as its length or lambda field, those fields also have to be retrieved from memory when loading a pointer. </p>
     </section>
-    <h2><a id="bounds">Bounds Checks</a></h2>
+
+    <h2><a id="bounds">Bounds and Flag Checks</a></h2>
     <section>
+        <p>As the outlined subarchitecture keeps the length of the corresponding object for each pointer in the register file, it is possible to check for an out of bound access as soon as the actual access index is available. 
+            This can be the case as early as in the execute stage, which allows for early raising of <em>IndexOutBoundsException</em>s. 
+            Since an objects flags which signify it as being readable, writeable and data only are also available as soon as the pointer to this object is available in the processor, the conditions for <em>LoadAccessFault</em> and <em>StoreAccessFault</em> exceptions can also be tested for just as early.</p>
     </section>
 
     <h1><a id="tables">Tables</a></h1>
@@ -556,10 +562,6 @@
             </div>
         </figure>
     </section>
-    <h2 class="page-break-before"><a id="t_heap">Example of a Heap</a></h2>
-    <figure class="page-break-after">
-        <img src="svg/pretty_heap.svg" id="heap">
-    </figure>
     <h2><a id="t_exc">Exceptions</a></h2>
     <section>
         <table summary="Exceptions and their numbers for privilege modes" style="margin-bottom: 0;">
@@ -680,6 +682,11 @@
         </tbody>
         </table>
     </section>
+    <h2 class="page-break-before"><a id="t_heap">Example of a Heap</a></h2>
+    <figure class="page-break-after">
+        <img src="svg/pretty_heap.svg" id="heap">
+    </figure>
+
     
     <h1><a id="chap_refs">References</a></h1>
     <div class="references">
@@ -688,7 +695,6 @@
 
     <h1><a id="appendix">Appendix</a></h1>
     <h2><a id="boot">Boot Process</a></h2>
-    R.
     <section>
         <p>
             After system reset, all registers are initialised with the value zero. Also, both <em>malc</em> and <em>msad</em> contain the value 0x0.0x0.

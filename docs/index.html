@@ -423,6 +423,15 @@
             <li>pointer colours for ra and sp</li>
         </ul>
     <p>
+        Additionally, the following statements always hold true for the register file:
+        <ul>
+            <li><em>zero</em> contains the value 0x0.</li>
+            <li><em>gp</em> only contains pointers with index zero.</li>
+            <li><em>gp</em> is updated by every jalr to contain the GOT pointer of the jump target code object.</li>
+            <li><em>sp</em> only contains pointers with index zero.</li>
+        </ul>
+    </p>
+    <p>
         Apart from these requirements, RISC-ViO does not specify how a register file of an implementation of this architecture has to look like.
         This leaves room for tailoring the implemented register file to the design constraints at hand. 
     </p>

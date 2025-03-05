@@ -118,6 +118,9 @@
         If the pointer provided does not reference such an object, the processor raises a <em>IncompatibleTypeException</em> with <em>xtval</em> containing the target pointer.
         Using a value as a destination for <em>jalr</em> is still allowed though and leads to jumping to the given index inside the currently executed code object.
         </p>
+        <p>
+        To make sure that a return address cannot be used twice, RISC-ViO mandates that the variant of <em>jalr</em> which realises the <em>ret</em> pseudoinstruction has to null out the register <em>ra</em> except for the zero-bit of its index after updating the program counter.
+        </p>
     </section>
 
     <section>

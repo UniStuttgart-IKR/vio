@@ -94,7 +94,8 @@
         <p>
         The most obvious change is necessary in regard to load and store instructions. The main change for those instruction families lies in them requiring pointers to be used to select memory locations.
         Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed. Arithmetic operations of those pointers like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation.
-        The base address information as well as the size information are not influenced by those operations, however.    
+        The base address information as well as the size information are not influenced by those operations, however. Note that for arithmetic operations on two pointers, rd will take on the pointer, length and header field of that pointer of that object inside of which the operation result lies. 
+        Should the result not fall into either of the input objects, the behavior regarding which input is used for the pointer, length and header fields of the output register is undefined.
         </p>
         <p>
         To enforce this new addressing scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use an address value to access memory. 
@@ -533,7 +534,9 @@
     </section>
     <h2><a id="load_store">Loading and Storing a Pointer</a></h2>
     <section>
-        <p>As the subarchitectural implementation requires some flag bit from the object header as well as its length or lambda field, those fields also have to be retrieved from memory when loading a pointer. For this, the example subarchitectural implementation uses an additional pipeline stage called the attribute stage which is located behind the memory stage in the processor pipeline.
+        <p>As the subarchitectural implementation requires some flag bit from the object header as well as its length or lambda field, those fields also have to be retrieved from memory when loading a pointer. 
+            For this, the example subarchitectural implementation uses an additional pipeline stage called the attribute stage which is located behind the memory stage in the processor pipeline.<br>
+            The <a href="#t_instr_in_pipe">instruction behaviuor table</a> shows how this stage interacts with the stages that come before it, this section looks at this interaction in further detail.
             After the memory stage has loaded a pointer, the attribute stage then loads the header being pointed to by the pointer base address. This header along with the actual pointer value is then handed over to the write-back stage which writes those fields into the register file.
             In the given subarchitectural implementation, the attribute stage is used to accomplish additional tasks like loading full XLEN wide data or a pointer with non-zero index from an object. 
             For the task of loading full XLEN wide data, it is the task of the attribute stage to load the actual data from memory instead of the memory stage. This is necessary since the memory stage has to determine where this data is located in memory first by loading the according displacement pointer.
@@ -1057,7 +1060,7 @@
                     ALU: op=imm12 X rs1
                 </td>
                 <td style="text-align:left; " >
-                    rd: (T:d, P:0, I:val, L:0, H:0)
+                    rd: (T:d, P:rs1.P, I:val, L:rs1.L, H:rs1.H)
                 </td>
                 <td style="text-align:left; " ></td>
                 <td style="text-align:left; " >
@@ -1095,7 +1098,7 @@
                     ALU: op=rs2 X rs1
                 </td>
                 <td style="text-align:left; " >
-                    rd: (T:d, P:0, I:val, L:0, H:0)
+                    rd: (T:d, P:val, I:val, L:val, H:val)*
                 </td>
                 <td style="text-align:left; " ></td>
                 <td style="text-align:left; " >
@@ -1139,7 +1142,7 @@
                     DC: lb/lbu/lh/lhu
                 </td>
                 <td style="text-align:left; " >
-                    Rd:(T:d, P:0, I:val, H:0, L:0)
+                    rd:(T:d, P:0, I:val, H:0, L:0)
                 </td>
                 <td style="text-align:left; " ></td>
                 <td style="text-align:left; " >
@@ -1583,7 +1586,7 @@
                     AGU: addr
                 </td>
                 <td style="text-align:left; " >
-                    Rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
+                    rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
                 </td>
                 <td style="text-align:left; " ></td>
                 <td style="text-align:left; " >
@@ -1623,7 +1626,7 @@
                     AGU: addr
                 </td>
                 <td style="text-align:left; " >
-                    Rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
+                    rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
                 </td>
                 <td style="text-align:left; " ></td>
                 <td style="text-align:left; " >
@@ -1663,7 +1666,7 @@
                     AGU: addr
                 </td>
                 <td style="text-align:left; " >
-                    Rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
+                    rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
                 </td>
                 <td style="text-align:left; " ></td>
                 <td style="text-align:left; " >
@@ -1703,7 +1706,7 @@
                     AGU: addr
                 </td>
                 <td style="text-align:left; " >
-                    Rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
+                    rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
                 </td>
                 <td style="text-align:left; " ></td>
                 <td style="text-align:left; " >
@@ -1903,7 +1906,7 @@
                     DC: load
                 </td>
                 <td style="text-align:left; " >
-                    Rd:(T:d, P:0, I:val, H:0, L:0)
+                    rd:(T:d, P:0, I:val, H:0, L:0)
                 </td>
                 <td style="text-align:left; " ></td>
                 <td style="text-align:left; " >
@@ -1968,6 +1971,7 @@
                 <li>L: object length</li>
                 <li>H: object header</li>
             </ul>
+            *: The values of P, L and H are dependant on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the <a href="#riscv_i_tick">RISC-V I vs I'</a> chapter.
         </p>
     </section>
 

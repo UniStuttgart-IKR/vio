@@ -709,6 +709,1270 @@
         <img src="svg/pretty_heap.svg" id="heap">
     </figure>
 
+    <h2 class="page-break-before"><a id="t_instr_in_pipe">Instructions in a sample Pipeline</a></h2>
+    <p>
+        This table shows how a pipeline-backend implementing the RISC-ViO architecture may look like.
+        For this, the fields of the content to be written to a register is shown in the EXecute, MEmory and the new ATtribute stage.
+        Also, for each stage the units which are active in this stage for the given instruction are listed. A result field value of 'pass' means that this pipeline stage will only pass along the value of rd from the prior stage while '~' means that rd is invalid and this instruction will not write anything to the register file.
+    </p>
+    <section>
+        <table border="0" cellspacing="0" cellpadding="0" class="table-ta1" style="text-align:left">
+            <colgroup>
+                <col width="172"/>
+                <col width="40"/>
+                <col width="40"/>
+                <col width="40"/>
+                <col width="50"/>
+                <col width="300"/>
+                <col width="250"/>
+                <col width="200"/>
+                <col width="250"/>
+                <col width="200"/>
+                <col width="200"/>
+                <col width="150"/>
+                <col width="94"/>
+            </colgroup>
+            <tr class="row-ro1">
+                <td colspan="5" style="text-align:left " ></td>
+
+                
+                <td colspan="8" style="text-align:center; " >
+                    <p>Fields and Actions by Stages</p>
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " ></td>
+
+                <td colspan="3" style="text-align:center; " >
+                    register file indeces
+                </td>
+                <td style="text-align:left; " ></td>
+                
+                <td colspan="2" style="text-align:center; " >
+                    <p>EX</p>
+                </td>
+                <td colspan="2" style="text-align:center; " >
+                    <p>ME</p>
+                </td>
+                <td colspan="2" style="text-align:center; " >
+                    <p>AT first pass</p>
+                </td>
+                <td colspan="2" style="text-align:center; " >
+                    <p>AT second pass</p>
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    Instruction
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm
+                </td>
+                
+                <td style="text-align:center; " >
+                    Actions
+                </td>
+                <td style="text-align:center; " >
+                    Results
+                </td>
+                <td style="text-align:center; " >
+                    Actions
+                </td>
+                <td style="text-align:center; " >
+                    Results
+                </td>
+                <td style="text-align:center; " >
+                    Actions
+                </td>
+                <td style="text-align:center; " >
+                    Results
+                </td>
+                <td style="text-align:center; " >
+                    Actions
+                </td>
+                <td style="text-align:center; " >
+                    Results
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    lui
+                </td>
+
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm20
+                </td>
+                
+                <td style="text-align:left; " >
+                    ALU: add
+                </td>
+                <td style="text-align:left; " >
+                    rd: (T:d, P:0, I:val, L:0, H:0)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    auipc
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    ALU: add
+                </td>
+                <td style="text-align:left; " >
+                    rd: (T:p, P:pc.ptr, I:val, L:pc.l, H:pc.hdr)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    jal
+                </td>
+
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm20
+                </td>
+                
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    rd: (T:p, P:pc.ptr, I:pc.ix, L:pc.l, H:pc.hdr)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    jalr step 1
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    gp
+                </td>
+                <td style="text-align:left; " >
+                    none
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: load
+                </td>
+                <td style="text-align:left; " >
+                    rd:(T:p, P:val, I:0, H:hdr, L:l)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    jalr step 2
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd 
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    DBU: b_tgt
+                </td>
+                <td style="text-align:left; " >
+                    rd: (T:p, P:pc.ptr, I:pc.ix, L:pc.l, H:pc.hdr)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    bcc
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    disp
+                </td>
+                
+                <td style="text-align:left; " >
+                    ALU: X DBU: b_tgt
+                </td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    arithi (any data op)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    ALU: op=imm12 X rs1
+                </td>
+                <td style="text-align:left; " >
+                    rd: (T:d, P:0, I:val, L:0, H:0)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    arithr (any data op)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    none
+                </td>
+                
+                <td style="text-align:left; " >
+                    ALU: op=rs2 X rs1
+                </td>
+                <td style="text-align:left; " >
+                    rd: (T:d, P:0, I:val, L:0, H:0)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    lb/lbu/lh/lhu
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: lb/lbu/lh/lhu
+                </td>
+                <td style="text-align:left; " >
+                    Rd:(T:d, P:0, I:val, H:0, L:0)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    sb/sh (bit 31 = 0)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: sb/sh
+                </td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    sb/sh (bit 31 = 1)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: sw DU: alc_data
+                </td>
+                <td style="text-align:left; " >
+                    caddr, six (sptr, aaddr)
+                </td>
+                <td style="text-align:left; " >
+                    AC: sw (sanct alloc if new required)
+                </td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    lw (value, bit 31 = 0)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: load
+                </td>
+                <td style="text-align:left; " >
+                    rd:(T:d, P:0, I: val, H:0, L:0)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    lw (value, bit 31 = 1)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: load
+                </td>
+                <td style="text-align:left; " >
+                    caddr
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    rd: (T:d, P:0, I:val, L:0, H:0)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    lw (pointer, ix = 0)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: load
+                </td>
+                <td style="text-align:left; " >
+                    rd:(T:p, P:val, I:0, H:hdr, L:l)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    lw (pointer, ix != 0)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: load
+                </td>
+                <td style="text-align:left; " >
+                    rd:(T:p, P:val)
+                </td>
+                <td style="text-align:left; " >
+                    AC: lw
+                </td>
+                <td style="text-align:left; " >
+                    rd: ix_val
+                </td>
+                <td style="text-align:left; " >
+                    AC: lw
+                </td>
+                <td style="text-align:left; " >
+                    rd: l, hdr
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    sw (value, bit 31 = 0)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: sw
+                </td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    sw (value, bit 31 = 1)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: sw, DU: alc_sadp
+                </td>
+                <td style="text-align:left; " >
+                    caddr, six (sptr, aaddr)
+                </td>
+                <td style="text-align:left; " >
+                    AC: sw (sanc alloc if new required)
+                </td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    sw (pointer, ix = 0)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: sw
+                </td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    sw (pointer, ix != 0)
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: sw DU: alc_sadd
+                </td>
+                <td style="text-align:left; " >
+                    caddr, six (sptr, aaddr)
+                </td>
+                <td style="text-align:left; " >
+                    AC: sw (sanc alloc if new required)
+                </td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    alc
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    none
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    Rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " >
+                    AC: sw [object header]
+                </td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    alci
+                </td>
+
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    Rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " >
+                    AC: sw [object header]
+                </td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    alc.d
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    none
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    Rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " >
+                    AC: sw [object header]
+                </td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    alci.d
+                </td>
+
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    imm12
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    Rd: (T:p, P:val, I:0, L: val, H:val), aaddr,caddr
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " >
+                    AC: sw [object header]
+                </td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    qsz
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    none
+                </td>
+                
+                <td style="text-align:left; " >
+                    PGU: rd
+                </td>
+                <td style="text-align:left; " >
+                    rd: (T:d, P:0, I:val, L:0, H:0)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    dtp
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    none
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    rd: (T:p, P:val, I:val), caddr
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " >
+                    AC: lw [object header]
+                </td>
+                <td style="text-align:left; " >
+                    rd: (L:val, H:val)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    btd
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    none
+                </td>
+                
+                <td style="text-align:left; " >
+                    PGU: rd
+                </td>
+                <td style="text-align:left; " >
+                    rd: (T:d, P:0, I:val, L:0, H:0)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    itd
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    none
+                </td>
+                
+                <td style="text-align:left; " >
+                    PGU: rd
+                </td>
+                <td style="text-align:left; " >
+                    rd: (T:d, P:0, I:val, L:0, H:0)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    lw.x
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    rd
+                </td>
+                <td style="text-align:left; " >
+                    none
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: load
+                </td>
+                <td style="text-align:left; " >
+                    Rd:(T:d, P:0, I:val, H:0, L:0)
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    pass
+                </td>
+                
+            </tr>
+            <tr class="row-ro1">
+                <td style="text-align:left; " >
+                    sw.x
+                </td>
+
+                <td style="text-align:left; " >
+                    rs1
+                </td>
+                <td style="text-align:left; " >
+                    rs2
+                </td>
+                <td style="text-align:left; " >
+                    zero
+                </td>
+                <td style="text-align:left; " >
+                    none
+                </td>
+                
+                <td style="text-align:left; " >
+                    AGU: addr
+                </td>
+                <td style="text-align:left; " >
+                    daddr
+                </td>
+                <td style="text-align:left; " >
+                    DC: sw
+                </td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                <td style="text-align:left; " ></td>
+                <td style="text-align:left; " >
+                    ~
+                </td>
+                
+            </tr>
+        </table>
+        <p>
+            Abbreviations used in the table:
+            <ul>
+                <li>daddr: data cache address</li>
+                <li>aaddr: attribute cache address</li>
+                <li>caddr: malc current address</li>
+                <li>T: tag (d=data, p=pointer)</li>
+                <li>P: pointer value</li>
+                <li>I: pointer index or data value</li>
+                <li>L: object length</li>
+                <li>H: object header</li>
+            </ul>
+        </p>
+    </section>
+
+
+
     
     <h1><a id="chap_refs">References</a></h1>
     <div class="references">

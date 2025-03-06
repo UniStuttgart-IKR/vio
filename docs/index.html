@@ -1974,18 +1974,36 @@
         </table>
         <p>
             Abbreviations used in the table:
-            <ul>
-                <li>daddr: data cache address</li>
-                <li>aaddr: attribute cache address</li>
-                <li>caddr: malc current address</li>
-                <li>six: sanctuary slot index</li>
-                <li>sptr: sanctuary object pointer</li>
-                <li>T: tag (d=data, p=pointer)</li>
-                <li>P: pointer value</li>
-                <li>I: pointer index or data value</li>
-                <li>L: object length</li>
-                <li>H: object header</li>
-            </ul>
+            <table style="text-align:left; border-width: 0;">
+            <td style="text-align:left; align:left; border-width: 0;">
+                <ul style="text-align:left; align:left">
+                    <li>daddr: data cache address</li>
+                    <li>aaddr: attribute cache address</li>
+                    <li>caddr: malc current address</li>
+                    <li>six: sanctuary slot index</li>
+                    <li>sptr: sanctuary object pointer</li>
+                </ul>
+            </td>
+            <td style="text-align:left; align:left; border-width: 0;">
+                <ul style="text-align:left; align:left">
+                    <li>T: tag (d=data, p=pointer)</li>
+                    <li>P: pointer value</li>
+                    <li>I: pointer index or data value</li>
+                    <li>L: object length</li>
+                    <li>H: object header</li>
+                </ul>
+            </td>
+            <td style="text-align:left; align:left; border-width: 0;">
+                <ul style="text-align:left; align:left">
+                    <li>DC: data cache</li>
+                    <li>AC: attribute cache</li>
+                    <li>AGU: address generation unit</li>
+                    <li>ALU: arithmetic logc unit</li>
+                    <li>DBU: dynamic branch unit</li>
+                    <li>DU: displacement unit (manages displacement to sanctuary objects)</li>
+                </ul>
+            </td>
+            </table>
             *1: The values of P, L and H are dependant on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the <a href="#riscv_i_tick">RISC-V I vs I'</a> chapter.<br>
             *2: For the ret variant of jalr, the target index of rd used for the writeback into the register file is ra while the target value is only the color bit in the index field with everything else being zero.
         </p>

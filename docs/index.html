@@ -714,7 +714,7 @@
 
     <h2 class="page-break-before"><a id="t_instr_in_pipe">Instructions in a sample Pipeline</a></h2>
     <p>
-        This table shows how a pipeline-backend implementing the RISC-ViO architecture may look like.
+        This table shows how a pipeline backend implementing the RISC-ViO architecture may look like.
         For this, the fields of the content to be written to a register is shown in the EXecute, MEmory and the new ATtribute stage.
         Also, for each stage the units which are active in this stage for the given instruction are listed. A result field value of 'pass' means that this pipeline stage will only pass along the value of rd from the prior stage while '~' means that rd is invalid and this instruction will not write anything to the register file.
     </p>
@@ -974,7 +974,7 @@
                     zero
                 </td>
                 <td style="text-align:left; " >
-                    rd 
+                    rd<sup>2</sup> 
                 </td>
                 <td style="text-align:left; " >
                     imm12
@@ -984,7 +984,7 @@
                     DBU: b_tgt
                 </td>
                 <td style="text-align:left; " >
-                    rd: (T:p, P:pc.ptr, I:pc.ix, L:pc.l, H:pc.hdr)
+                    rd: (T:p, P:pc.ptr, I:pc.ix, L:pc.l, H:pc.hdr)<sup>2</sup>
                 </td>
                 <td style="text-align:left; " ></td>
                 <td style="text-align:left; " >
@@ -1098,7 +1098,7 @@
                     ALU: op=rs2 X rs1
                 </td>
                 <td style="text-align:left; " >
-                    rd: (T:d, P:val, I:val, L:val, H:val)*
+                    rd: (T:d, P:val, I:val, L:val, H:val)<sup>1</sup>
                 </td>
                 <td style="text-align:left; " ></td>
                 <td style="text-align:left; " >
@@ -1965,13 +1965,16 @@
                 <li>daddr: data cache address</li>
                 <li>aaddr: attribute cache address</li>
                 <li>caddr: malc current address</li>
+                <li>six: sanctuary slot index</li>
+                <li>sptr: sanctuary object pointer</li>
                 <li>T: tag (d=data, p=pointer)</li>
                 <li>P: pointer value</li>
                 <li>I: pointer index or data value</li>
                 <li>L: object length</li>
                 <li>H: object header</li>
             </ul>
-            *: The values of P, L and H are dependant on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the <a href="#riscv_i_tick">RISC-V I vs I'</a> chapter.
+            *1: The values of P, L and H are dependant on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the <a href="#riscv_i_tick">RISC-V I vs I'</a> chapter.<br>
+            *2: For the ret variant of jalr, the target index of rd used for the writeback into the register file is ra while the target value is only the color bit in the index field with everything else being zero.
         </p>
     </section>
 

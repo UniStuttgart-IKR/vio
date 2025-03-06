@@ -39,7 +39,7 @@
     <section>
         <p>
         In conventional computer architectures, the hardware has no information about the location and size of programming language level objects like strings, structs and so on.
-        It is therefore the duty of the runtime of the used programming language to determine whether access to one such object still lies within the bounds of this object and prohibit the access in case of malformed access.
+        It is therefore the duty of the runtime environment of the used programming language to determine whether access to one such object still lies within the bounds of this object and prohibit the access in case of malformed access.
         This leads to a runtime overhead which reduces program efficiency.
         Also, in languages like C, those objects are identified using their address in form of a value only, the hardware therefore cannot distinguish between a reference to a high level object and some data value which might by chance have the value at which one such object lies.
         This ambiguity between pointers and values makes it impossible to garbage collect unused objects in memory which is why in C it is necessary for the programmer to manually manage, ie allocate and free memory.
@@ -48,8 +48,9 @@
         Since the hardware doesn't know about this additional information that the runtime has access to, it is not possible to accelerate the task of garbage collection in hardware and therefore reduce the incurred runtime penalties.
         </p>
         <p>
-        To solve both of those problems, the inspiration for RISC-ViO, the experimental <a href="#meyer_orisc">O-RISC architecture</a> introduces data type information to identify pointers and object size information on the ISA level while abstaining from tag bits.
-        This enables both the enforcement of bounds checks and garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
+        To solve both of those problems, the inspiration for RISC-ViO, the experimental <a href="#meyer_orisc">O-RISC architecture</a> uses the concept of objects on an architecture level.
+        Data type information to identify pointers and object size information are also available on this architecture.
+        This enables both the enforcement of bounds checks, unwanted data modification and garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
         O-RISC also introduces mechanisms to enforce pointer integrity to ensure memory access is limited to regions to which a program has pointers.
         </p>
         <figure>
@@ -76,6 +77,7 @@
         </p>
     </section>
 
+
     <h1><a id="base_spec">The RISC-V I' ISA</a></h1>
     <section>
         <p>
@@ -92,7 +94,19 @@
         </p>
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
-        The most obvious change is necessary in regard to load and store instructions. The main change for those instruction families lies in them requiring pointers to be used to select memory locations.
+        The most obvious change is necessary in regard to load and store instructions as listed below:
+        </p>
+        <ul style="text-align:center">
+            <li style="display: inline-block"><ul><li>lb/lbu</li></ul></li>
+            <li style="display: inline-block"><ul><li>lh/lhu</li></ul></li>
+            <li style="display: inline-block"><ul><li>lw</li></ul></li>
+            <li style="display: inline-block"><ul><li>sb</li></ul></li>
+            <li style="display: inline-block"><ul><li>sh</li></ul></li>
+            <li style="display: inline-block"><ul><li>sw</li></ul></li>
+        </ul>
+
+        <p>
+         The main change for those instruction families lies in them requiring pointers to be used to select memory locations.
         Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed. Arithmetic operations of those pointers like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation.
         The base address information as well as the size information are not influenced by those operations, however. Note that for arithmetic operations on two pointers, rd will take on the pointer, length and header field of that pointer of that object inside of which the operation result lies. 
         Should the result not fall into either of the input objects, the behavior regarding which input is used for the pointer, length and header fields of the output register is undefined.
@@ -113,16 +127,38 @@
         The implications for the passing of function arguments between functions are outlined in the <a href="#chap_calling_convention">calling convention</a> chapter.
         </p>
         <p>
-        Just as data on the stack and heap is organised by means of objects, instructions are also encapsulated in objects. This means that the <em>auipc</em> instruction will emit a pointer instead of a value. 
-        Due to the access to those executable objects being limited as described in the <a href="#objs_execs">executable objects</a> chapter however, access to constant data is not possible using  this pointer.
-        The encapsulation of instructions also means that the <em>jalr</em> instructions expects a pointer to a object containing instructions as a jump target to be written to the program counter.
-        If the pointer provided does not reference such an object, the processor raises a <em>IncompatibleTypeException</em> with <em>xtval</em> containing the target pointer.
-        Using a value as a destination for <em>jalr</em> is still allowed though and leads to jumping to the given index inside the currently executed code object.
+        Just as data on the stack and heap is organised by means of objects, instructions are also encapsulated in objects, modifying the semantics of even more instructions:
+        </p>
+        <ul style="text-align:center">
+            <li style="display: inline-block"><ul><li>auipc</li></ul></li>
+            <li style="display: inline-block"><ul><li>jalr</li></ul></li>
+            <li style="display: inline-block"><ul><li>jal</li></ul></li>
+        </ul>
+        <p>
+        The <em>auipc</em> instruction for example will emit a pointer instead of a value. 
+        Due to the access to executable objects being limited as described in the <a href="#objs_execs">executable objects</a> chapter however, access to constant data is not possible using  this pointer.
         </p>
         <p>
+        The encapsulation of instructions also means that the <em>jalr</em> instructions expects a pointer to a object containing instructions as a jump target to be written to the program counter.
+        This instuction will also, just as <em>jal</em> does, write a pointer to its destination register.
+        If the pointer provided does not reference such an object, the processor raises a <em>IncompatibleTypeException</em> with <em>xtval</em> containing the target pointer.
+        Using a value as a destination for <em>jalr</em> is still allowed though and leads to jumping to the given index inside the currently executed code object.
         To make sure that a return address cannot be used twice, RISC-ViO mandates that the variant of <em>jalr</em> which realises the <em>ret</em> pseudoinstruction has to null out the register <em>ra</em> except for the zero-bit of its index after updating the program counter.
         </p>
     </section>
+
+    <h1><a name="chap_objects">Objects</a></h1>
+    <section>
+        L.
+        <h2><a id="objs_ords">Ordinaries</a></h2>
+            <p></p>
+        <section>
+        </section>
+        <h2><a id="objs_execs">Executables</a></h2>
+        <section>
+        </section>
+    </section>
+
 
     <section>
     <h1><a id="instructions">The Zhm Extension</a></h1>
@@ -136,28 +172,10 @@
         In contrast to the automatic freeing of unnecessary objects, this creation of ISA level objects is achieved by the alc-instruction family which comes in four flavours. 
         In fact the alc instruction family is the only way to obtain new pointers in user mode.
         The next section provides a short description of those instructions alongside their bit encodings.
-        The objects allocated by the alc-instruction family are both readable and writeable on allocation. 
-
-        <h4><a name="alci">alci-Instruction</a></h4>
-        The alci instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is given by the 12 bit wide immediate.
-        This immediate specifies the amount of pointers which can fit inside the object. So for a XLEN of 32, it specifies the number of 32 bit words that fit into the object.
-        <figure>
-            <figcaption>alci instruction encoding</figcaption>
-            <div style="width: 100%; display: flex; justify-content: center;">
-                <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                    <img src="svg/alci_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                </div>
-            </div>
-        </figure>
-        <p>When the alci instruction is used to allocate a frame by specifying sp as the destination register, its semantic is extended. In this case alci not only allocates a new frame object but also stores the old sp at index zero of the new frame object.</p>
-        The alci instruction may trigger the following exceptions for the given events (xtval content):
-        <ul>
-            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
-            <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
-        </ul>
+        The objects allocated by the alc-instruction family are both readable and writeable but not executeable on allocation. 
 
         <h4><a name="alc">alc-Instruction</a></h4>
-            The alc instruction is a variation of the alci instruction. In contrast to alci, the size of the new object is given by the content of register rs1.
+            The alc instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is by the value passed via rs1.
             The size is given in bytes as per the value in rs1.
             Apart from the source of the object size, alc only differs from alci in that alc cannot be used to allocate a frame. 
             <figure>
@@ -175,25 +193,29 @@
             <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
-        <h4><a name="alcid">alcid-Instruction</a></h4>
-            The alcid instruction is a specialisation of the alci instruction. While alci allocates an object which may hold both pointers and data, objects created using alcid may only hold data.
-            Also, using alcid to create a new frame is forbidden.
-            <figure>
-                <figcaption>alcid instruction encoding</figcaption>
-                <div style="width: 100%; display: flex; justify-content: center;">
-                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                        <img src="svg/alcid_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                    </div>
+
+        <h4><a name="alci">alci-Instruction</a></h4>
+        The alci instruction is a variation of the alc instruction. In contrast to alci, the size of the new object is given by the 12 bit wide immediate. 
+        This immediate specifies the amount of pointers which can fit inside the object. So for a XLEN of 32, it specifies the number of 32 bit words that fit into the object.
+        <figure>
+            <figcaption>alci instruction encoding</figcaption>
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                    <img src="svg/alci_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
                 </div>
-            </figure>
-        The alcid instruction may trigger the following exceptions for the given events (xtval content):
+            </div>
+        </figure>
+        <p>When the alci instruction is used to allocate a frame by specifying sp as the destination register, its semantic is extended. In this case alci not only allocates a new frame object but also stores the old sp at index zero of the new frame object.</p>
+        The alci instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
-            <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
+
         <h4><a name="alcd">alcd-Instruction</a></h4>
-            The alcd instruction is the analogous form of alc regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocting frames.
+            The alcd instruction is a specialisation of the alc instruction. While alci allocates an object which may hold both pointers and data, objects created using <em>alcd</em> may only hold data.
+            Since such an object may only hold data, no type information is required for any of the slots in this object. Especially for large amounts of data, this significantly reduces both the amount of memory required and the execution overhead of load and store instructions.  
+            Note that is it also forbidden to use <em>alcd</em> to allocate a new frame object.
             <figure>
                 <figcaption>alcd instruction encoding</figcaption>
                 <div style="width: 100%; display: flex; justify-content: center;">
@@ -206,6 +228,23 @@
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
+            <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
+            <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
+        </ul>
+
+        <h4><a name="alcid">alcid-Instruction</a></h4>
+        The alcid instruction is the analogous form of alci regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocating frames.
+        <figure>
+            <figcaption>alcid instruction encoding</figcaption>
+            <div style="width: 100%; display: flex; justify-content: center;">
+                <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
+                    <img src="svg/alcid_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
+                </div>
+            </div>
+        </figure>
+        The alcid instruction may trigger the following exceptions for the given events (xtval content):
+        <ul>
+            <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
@@ -230,7 +269,8 @@
         <h3><a name="dtp">Raw Pointer Access: dtp/btd/itd</a></h3>
             In order to be able to create and inspect pointers a total of three instructions are provided. These allow for both reading out the integral parts of a pointer as well as creating arbitrary pointers.
             <h4><a name="dtp">dtp-Instruction</a></h4>
-            The dtp "data to pointer" instruction allows the assembly of arbitrary pointers. Both the index as well as the raw pointer value are set according the values in registers rs1 and rs2 respectively. The result is stored in rd.
+            The dtp "data to pointer" instruction allows the assembly of arbitrary pointers. Both the index as well as the raw pointer value are set according the values in registers rs1 and rs2 respectively. The result is stored in rd. 
+            Pointers assembled using <em>dtp</em> may be of ordinary and I/O pointer type. The tag values required for these types are shown in the <a href="#t_op">object and pointer overview</a>.
             <figure>
                 <figcaption>dtp instruction encoding</figcaption>
                 <div style="width: 100%; display: flex; justify-content: center;">
@@ -301,18 +341,6 @@
                 <li><em>IncompatibleTypeException</em>: rs2 contains a pointer, not a value (rs2)</li>
             </ul>
     </section>
-
-    <h1><a name="chap_objects">Objects</a></h1>
-    <section>
-        L.
-        <h2><a id="objs_ords">Ordinaries</a></h2>
-            <p></p>
-        <section>
-        </section>
-        <h2><a id="objs_execs">Executables</a></h2>
-        <section>
-        </section>
-    </section>
     
     <h1><a id="frames">The not so stacked frames</a></h1>
         <p>In order to protect the local data as well as control flow data of a function, RISC-ViO alters the concept of what is called a stack in conventional architectures.
@@ -344,14 +372,14 @@
             <h2><a id="protection">Frame Ownership</a></h2>
                 <p>
                     To achieve protection of frames from foreign accesses RISC-ViO uses so-called colour tags for both the <em>sp</em> and the <em>ra</em> register.
-                    By updating those colours at critical points such as function entries and frame allocations, the processor always knows whether the frame pointed to by the
+                    By updating those colours at critical points such as function entries/exits and frame allocations, the processor always knows whether the frame pointed to by the
                     sp register is owned by the currently executed function. 
                     This state is called "regular", while the current function not being the owner of the current frame is denoted as the "irregular" state.
                 </p>
                 <p>For sp as well as for ra, there are two colours: black and white. Those colours are an integral part of those registers and cannot be read or modified seperately from their registers.
                     Also, when storing/loading ra or sp using sw/lw, the colour is also stored/retrieved to/from the given memory location.
                     An overview of the transition between those colours is given in Figure 1.
-                    On every function entry, the processor flips the colour of ra from white to black or vice versa. For sp, this takes place on every frame allocation.
+                    On every function entry, signified by a <em>jalr ra, zero, x (call)</em> instruction, the processor flips the colour of ra from white to black or vice versa. The same also happens when a function is exited using <em>jalr zero, ra, 0 (ret)</em> For sp, this takes place on every frame allocation.
                     Whether the processor is currently in the regular state (light blue), is given by the equality of the colours of ra and sp. 
                     If the colours of sp and ra both were black for example, the processor would be in the regular state.
                 </p>
@@ -491,7 +519,7 @@
     <h2><a id="alcs">Allocations</a></h2>
     <section>
         <p>In the presented implementation, all members of the alc instruction family place both regular data objects as well as frames objects on the heap. 
-            There the objects lie in allocation order until a garbage collection cycle occurs. 
+            There the objects lie in allocation order until a garbage collection cycle occurs. The CSR <em>malc</em> is used to keep track of the heap fill level and heap limit. <em>malc.ix</em> keeps track of to the newest objects start address while <em>malc.ptr</em> contains the lower limit of the heap in form of an address. 
             In the process of such a cycle, objects may be moved or overwritten in case of not being required anymore.
         </p>
         <p>
@@ -518,7 +546,12 @@
         <p>
             down to next number divisible by 16. If this value is larger than malc.ptr the new object fits inside the heap and malc.ix is updated to this value.
             In this case, a pointer tag is added to the newly calculated address and the resulting pointer value is written to the target register.
-            The initial index is set to zero. Additionally, the object header is written to memory via the attribute cache.
+            The initial index is set to zero. 
+        </p>
+        <p>
+            To commit the header of this new object to memory, the so-called attribute cache is used. 
+            This cache is located in the attribute stage located behind the memory stage and is mainly used to both retrieve and load object attributes.
+            In case of values with bit 31 set or pointers with non-zero index this cache is also used to both store and retrieve these types of data to and from memory.
         </p>
         <figure>
             <figcaption>Heap limits and growth.</figcaption>
@@ -766,16 +799,16 @@
                 <td style="text-align:left; " ></td>
                 
                 <td colspan="2" style="text-align:center; " >
-                    <p>EX</p>
+                    EX
                 </td>
                 <td colspan="2" style="text-align:center; " >
-                    <p>ME</p>
+                    ME
                 </td>
                 <td colspan="2" style="text-align:center; " >
-                    <p>AT first pass</p>
+                    AT first pass
                 </td>
                 <td colspan="2" style="text-align:center; " >
-                    <p>AT second pass</p>
+                    AT second pass
                 </td>
                 
             </tr>

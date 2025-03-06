@@ -531,6 +531,19 @@
                 <p style="flex: 50%; ">b) Heap overflow</p>
             </div>
         </figure>
+        <p>
+            The given implementation uses sanctuary objects to cope with the requirement to distinguish between pointers and values in memory.
+            Any time a value with the highest bit set or a pointer with a non-zero index is stored, a slot of corresponding size and alignment in the current sanctuary object is used.
+            For values this alignment and size is 4 bytes while for pointers with index it is 8 bytes. 
+            The sample implementation has the sanctuary index point to the last used slot in the sanctuary object and decrements this index on every sanctuary slot allocation.
+        </p>
+        <p>
+            When the current sanctuary object is full, which is signified by the sanctuary index being zero, while a new sanctuary slot is required, a new sanctuary object is allocated.
+            For this, the current allocation address is decremented according to the implementation-dependant sanctuary object size and the sanctuary object address is set to this value.
+            Also, the sanctuary slot index is set to highest possible value for the new sanctuary object to be once again be filled from the top to the bottom.
+            In order to ensure the garbage collector being aware of this object, the attribute cache in the attribute stage also writes a header stub to the address at which the sanctuary object lies.
+            In the flags field of this header, the sanctuary bit marks this object as a sanctuary object.
+        </p>
     </section>
     <h2><a id="load_store">Loading and Storing a Pointer</a></h2>
     <section>

@@ -26,7 +26,7 @@
             <div>Robin Lux (<em>B.Sc.</em>)</div>
             <div>University of Stuttgart, IKR</div>
             <div>Stuttgart, Germany</div>
-            <div>rbnlux@ikr.uni-stuttgart.de/div>
+            <div>rbnlux@ikr.uni-stuttgart.de</div>
         </div>
         </div>
     </header>
@@ -73,56 +73,74 @@
             To index contents of an object, compilers are required to keep a separate data register next to the original pointer register.
             This contradicts the assumptions many compilers make of computer architectures. LLVMs <em>getelementptr</em> instruction <a href="#llvm_gep">2</a> is one example
             where the assumptions O-RISC and a compiler take from one another can diverge.
-            This in consequence makes O-RISC also unable to compile the influential C programming language, reducing the amount of programs
+            This in consequence makes O-RISC unable to compile the influential C programming language, reducing the amount of programs
             being source code compatible with this architecture.
         </p>
     </section>
     <section>
         <h2><a id="goals">Design Goals</a></h2>
         <p>
-            As all children try to grow up to be a better version of their parents, RISC-ViO takes over O-RISCs believe in the new way of hardware-software
-            cooperation, but is drawing its own set of conclusions:
+            As all children try to grow up to be a better version of their parents, RISC-ViO takes over O-RISCs <u>believe</u>{gr: belief} in the new way of hardware-software
+            cooperation, but draws its own set of conclusions:
         </p>
         <h4 style="text-indent: 0;">1. Make software more robust while keeping compatibility</h4>
         <p style="text-indent: 0;">
-            RISC-ViO aims to provide the same unambiguousness and integrity of pointers as well as bounds checks of hardware objects which O-RISC is providing.
-            But at the same time, it is desired to keep impact on already existing software as minimal as possible. The only changes necessary have to stay 
-            on the side of runtimes and operating systems. User code should be able to stay as is while still benefiting from RISC-ViOs advantages.
+            RISC-ViO aims to provide the same unambiguousness and integrity of pointers as well as bounds checks of hardware objects which O-RISC provides.
+            <u>But at the same time, it is desired to keep impact on already existing software as minimal as possible</u>{Unlike O-RISC however, RISC-ViO aims to reduce the impact on existing software to a minimum.}. The only changes necessary <u>have</u>{should, is not achieved (li tx, ...; sw ty, 0(tx) impossible)} to stay 
+            on the side of runtimes and operating systems. User code should be able to {mostly?} stay as is while still benefiting from RISC-ViOs advantages.
         </p>
         <h4 style="text-indent: 0;">2. Make the life of compilers easier</h4>
         <p style="text-indent: 0;">
             With the introduction of hardware heap management, RISC-ViO is raising the abstraction layer of memory. Consequently the effort of lowering higher  
-            programming languages to machine instructions is far less. This opens up new possibilities for improvements in how software can be compiled. 
+            programming languages to machine instructions is <u>far less</u>{dramatically reduced}. This opens up new possibilities for improvements in how software can be compiled. 
             We aim to strengthen these benefits without limiting the already existing possibilities of compilers.
         </p>
         <h4 style="text-indent: 0;">3. Stay true to the RISC philosophy</h4>
         <p style="text-indent: 0;">
             The benefits of robustness are worthless when they come at the cost of arbitrary execution times. That is why RISC-ViO is designed in such a way
-            that all instructions can be executed in a single clock cycle. For the first time, this allows secure object-based programming on real-time systems.
+            that all instructions can be executed in a single {or two (jalr?)} clock cycle. For the first time, this allows secure object-based programming {as well as automatic garbage collection?} on real-time systems.
         </p>
-        <h4 style="text-indent: 0;">4. Be an extension, not a replacement</h4>
+        <h4 style="text-indent: 0;">4. Be an extension, not a replacement {sugg: 4. Collaboration for the profit of everyone}</h4>
         <p style="text-indent: 0;">
             We propose a way the RISC-V Instruction Set Architecture can be extended without limiting other extensions or future innovation.
-            This way, the idea of object-based architectures can be easily researched on all sorts of processor configurations. Reaching from minimal embedded
-            applications, over vector-supporting AI-Units to fully fletched, state of the art CPUs. On the other hand, other researchers can easily pick up ViO
+            This way, the idea of object-based architectures can be easily <u>researched</u>{sugg: explored} <u>on all sorts</u>{on a wide range} of processor configurations. Reaching from minimal embedded
+            applications, over <u>vector-supporting AI-Units</u>{AI-accelerators supporting vector operations} to fully fletched, state of the art {multicore, superscalar} CPUs. <u>On the other hand</u>{requires 'on the one hand' first, how about 'furthermore'?}, other researchers can easily pick up ViO
             and make use of its benefits for their own purposes.
         </p>
     </section>
 
 
-    <h1><a id="base_spec">The RISC-V I' ISA</a></h1>
     <section>
+        <h1><a name="chap_objects">Objects</a></h1>
+        {In RISC-ViO, Objects are leveraged as the way to achieve the design goals outlined in the motivational chapter.}
+        Objects are unique, <u>spaces</u>{bounded areas?} <u>allocated on the heap</u>{really? arent executables located outside of the heap? 'of system memory'} that are referenced by pointers. 
+        In user mode, one cannot violate these bounds. Objects are defined by their type and their length.  <u>Contents of objects can only
+        be written, read or executed using the pointer generated by the allocation instruction of the desired object. Pointers to objects cannot be generated by arithmetic operations.</u>{duplicated from i tick / zhm}<br>
+        On ISA-Level we differentiate between two types of objects: "Ordinary"-Objects and "Executable"-Objects. 
+        <h2><a id="objs_ords">Ordinaries</a></h2>
+        <p>Ordinaries are objects a program can read and write data from/to. They can be generated by allocate instructions provided by the <a href="#unpriv_instructions">zhm extension</a>  One can load and store from/to Ordinary
+        Objects, but cannot use them as <u>target for a jump instruction</u>{a source of instructions?}<br>
+        A special type of Ordinaries are "Data-Only"-Objects. As the name suggests, these Objects can only contain primitive data, but no pointers. Data-Only Objects allow for fast and compact memory access
+        if it is already known on compile-time, that a certain object only contains primitive types, like strings or arrays. <u>Data-Only Objects can be allocated using the special "alc[i].d"-instructions.</u>{duplicate from zhm}</p>
+
+        <h2><a id="objs_execs">Executables</a></h2>
+        <p>Executables are objects that contain machine instructions. One cannot load or store from/to Executable Objects, but can use them as target for jump instructions.<br>
+        First, Executables are allocated by the operating system as an ordinary, data-only object on the heap. Next the contents of the Executable are copied from their source to the Object.
+        Finally the operating system changes the type of the object to executable.</p>
+    </section>
+
+    <section>
+    <h1><a id="base_spec">The RISC-V I' ISA</a></h1>
         <p>
-            In order to enforce the usage of bounds checks and pointer unambiguity measures, RISC-ViO alters the semantics of some of the instructions which are part of the RISC-V I base instruction set.
+            In order to achieve the design goals at hand, RISC-ViO is forced to alter the semantics of some of the instructions which are part of the RISC-V I base instruction set.
             This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA. 
         </p>
         <h2><a id="data_vs_pointers">Values vs pointers</a></h2>
         <p>
             In order to restrict access of a program to the memory which contains the objects the program has pointers to, the I' ISA differentiates between values and pointers.
-            Only pointers may be used to access memory as well as I/O devices. Those pointers can be obtained via the alc instruction family or by being manually created and passed down by higher privilege modes. Pointers are to be encoded in such a way as to allow for objects to lie in the entire address space of the processor of XLEN bits.
+            Only pointers may be used to access memory as well as I/O devices. Those pointers can be obtained via the alc instruction family or by being manually created and subsequentially being passed down by higher privilege modes. Pointers are to be encoded in such a way as to allow for objects to lie in the entire address space of the processor of XLEN bits.
             In this specification, pointers are written in the form x.y where x is a pointers value (base address + tag) and y is the index of the pointer. To graphically set apart pointers from values, pointers are drawn in various shades of pink and purple.
              Values are not denoted in any special way in text form but drawn in light blue.
-
         </p>
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
@@ -138,8 +156,9 @@
         </ul>
 
         <p>
-         The main change for those instruction families lies in them requiring pointers to be used to select memory locations.
-        Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed. Arithmetic operations of those pointers like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation.
+         The main change for those instruction families lies in them requiring pointers to be used to select objects instead of memory locations.
+        Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed. 
+        Arithmetic operations of those pointers like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation.
         The base address information as well as the size information are not influenced by those operations, however. Note that for arithmetic operations on two pointers, rd will take on the pointer, length and header field of that pointer of that object inside of which the operation result lies. 
         Should the result not fall into either of the input objects, the behavior regarding which input is used for the pointer, length and header fields of the output register is undefined.
         </p>
@@ -159,7 +178,7 @@
         The implications for the passing of function arguments between functions are outlined in the <a href="#chap_calling_convention">calling convention</a> chapter.
         </p>
         <p>
-        Just as data on the stack and heap is organized by means of objects, instructions are also encapsulated in objects, modifying the semantics of even more instructions:
+        Since instructions are managed using executable objects, the semantics of even more instructions has to be altered:
         </p>
         <ul style="text-align:center">
             <li style="display: inline-block"><ul><li>auipc</li></ul></li>
@@ -179,22 +198,7 @@
         </p>
     </section>
 
-    <section>
-        <h1><a name="chap_objects">Objects</a></h1>
-        Objects are unique spaces allocated on the heap that are referenced by pointers. Objects are defined by their type and their length. One cannot access memory outside of object boundaries. Contents of objects can only
-        be written, read or executed using the pointer generated by the allocation instruction of the desired object. Pointers to objects cannot be generated by arithmetic operations.<br>
-        On ISA-Level we differentiate between two types of objects: "Ordinary"-Objects and "Executable"-Objects. 
-        <h2><a id="objs_ords">Ordinaries</a></h2>
-        <p>Ordinaries are objects a program can read and write data from/to. They can be generated by allocate instructions that are accessible on all privilege levels. One can load and store from/to Ordinary
-        Objects, but cannot use them as target for a jump instruction<br>
-        A special type of Ordinaries are "Data-Only"-Objects. As the name suggests, these Objects can only contain primitive data, but no pointers. Data-Only Objects allow for fast and compact memory access
-        if it is already known on compile-time, that a certain object only contains primitive types, like strings or arrays. Data-Only Objects can be allocated using the special "alc[i].d"-instructions.</p>
 
-        <h2><a id="objs_execs">Executables</a></h2>
-        <p>Executables are objects, that contain machine instructions. One cannot load or store from/to Executable Objects, but can use them as target for jump instructions.<br>
-        First, Executables are allocated by the operating system as an ordinary, data-only object on the heap. Next the contents of the Executable are copied from their source to the Object.
-        Finally the operating system changes the type of the object to executable.</p>
-    </section>
 
 
     <section>
@@ -250,8 +254,7 @@
         </ul>
 
         <h4><a name="alcd">alcd-Instruction</a></h4>
-            The alcd instruction is a specialization of the alc instruction. While alci allocates an object which may hold both pointers and data, objects created using <em>alcd</em> may only hold data.
-            Since such an object may only hold data, no type information is required for any of the slots in this object. Especially for large amounts of data, this significantly reduces both the amount of memory required and the execution overhead of load and store instructions.  
+            The alcd instruction is a specialization of the alc instruction, allowing for the allocation of data only objects.
             Note that is it also forbidden to use <em>alcd</em> to allocate a new frame object.
             <figure>
                 <figcaption>alcd instruction encoding</figcaption>
@@ -468,8 +471,8 @@
         <p><i>In der herkömlichen RISC-V ABI wird die Adresse der GOT über die Distanz zum jal[r] Befehl angegeben. Dieser Ansatz ist in ViO nicht nutzbar, da ein Objekt nicht gleichzeitig
             lesbar und ausführbar sein kann. Zu diesem Zweck wird eine Art "companion"-Objekt eingeführt, dass alle Adressen, auf die ein Executable zu seiner Ausführung zugreifen möchte, führt.
             Anders als bei herkömlichen GOTs werden in diesen Objekten keine Offsets, sondern reine Zeiger gespeichert. Auch ausführbarer Code für Bibliotheksaufrufe befindet sich nicht in einer solchen GOT. 
-            Die "companion"-GOT kann in ViO immer über das Register x3 (gp) zugegriffen werden. Es ist Aufgabe der Hardware oder des Betriebssystems dafür zu sorgen, dass das gp-Register immer
-            auf das dem Executable zugehörigen GOT-Objekt verweist.
+            {gramm: Auf} Die "companion"-GOT kann in RISC-ViO immer über das Register <em>x3</em> (<em>gp</em>) zugegriffen werden. {In order for <em>gp</em> to always contain the pointer to the GOT of the current object during regular program execution, RISC-ViO mandates that the <em>jalr</em> instruction has to update this register on every jump another executable object. On changes of the currently executed object due to exceptions, interrupts as well as <em>sret</em> and <em>mret</em> instructions, it is the duty of the system management software to update <em>gp</em>.}Es ist Aufgabe der Hardware oder des Betriebssystems dafür zu sorgen, dass das gp-Register immer
+            auf das dem Executable zugehörigen GOT-Objekt verweist. 
         </i></p>
     </section>
     <h2><a id="static">Making Library Calls</a></h2>

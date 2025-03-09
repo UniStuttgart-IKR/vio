@@ -20,13 +20,13 @@
             <div>Leyla Jazz Ekinci (<em>B.Sc.</em>)</div>
             <div>University of Stuttgart, IKR</div>
             <div>Stuttgart, Germany</div>
-            <div>email</div>
+            <div>leylknci@ikr.uni-stuttgart.de</div>
         </div>
         <div class="author">
             <div>Robin Lux (<em>B.Sc.</em>)</div>
             <div>University of Stuttgart, IKR</div>
             <div>Stuttgart, Germany</div>
-            <div>email</div>
+            <div>rbnlux@ikr.uni-stuttgart.de/div>
         </div>
         </div>
     </header>
@@ -35,23 +35,24 @@
     <ul id="toc" class="toc page-break-after" style="list-style-type:none; margin-left: 0;">
     </ul>
 
-    <h1><a id="motivation">Motivation</a></h1>
+    <h1><a id="intro">Introduction</a></h1>
     <section>
+        <h2><a id="motivation">Motivation</a></h2>
         <p>
-        In conventional computer architectures, the hardware has no information about the location and size of programming language level objects like strings, structs and so on.
-        It is therefore the duty of the runtime environment of the used programming language to determine whether access to one such object still lies within the bounds of this object and prohibit the access in case of malformed access.
-        This leads to a runtime overhead which reduces program efficiency.
-        Also, in languages like C, those objects are identified using their address in form of a value only, the hardware therefore cannot distinguish between a reference to a high level object and some data value which might by chance have the value at which one such object lies.
-        This ambiguity between pointers and values makes it impossible to garbage collect unused objects in memory which is why in C it is necessary for the programmer to manually manage, ie allocate and free memory.
-        Being a difficult task to get right, this often leads to memory leaks. For this reason, other programming languages like Go store additional type information for every piece of data to distinguish between data and pointers.
-        This enables the removal of unused object from memory by the runtime with this process being called garbage collection.
-        Since the hardware doesn't know about this additional information that the runtime has access to, it is not possible to accelerate the task of garbage collection in hardware and therefore reduce the incurred runtime penalties.
+            In conventional computer architectures, hardware has no information about the location and size of programming language level objects like strings or structs.
+            It is therefore the duty of a runtime environment to define and enforce boundaries to such objects and prohibit malformed accesses.
+            Obviously this comes with a substantial tradeoff in program efficiency.<br>
+            Also, programming languages like C do not strictly differentiate between a reference to objects and values of primitive types. It could be that by chance the
+            value of an integer points to the start of an object in memory, even though it was not intended to be used as a pointer.
+            This ambiguity between pointers and values makes it impossible to use garbage collect mechanisms, making it the job of the programmer
+            to manually free up memory. Being a difficult task to get right, this often leads to memory leaks.
         </p>
         <p>
-        To solve both of those problems, the inspiration for RISC-ViO, the experimental <a href="#meyer_orisc">O-RISC architecture</a> uses the concept of objects on an architecture level.
-        Data type information to identify pointers and object size information are also available on this architecture.
-        This enables both the enforcement of bounds checks, unwanted data modification and garbage collection in hardware, leading to more robust program execution as well as less runtime overhead.
-        O-RISC also introduces mechanisms to enforce pointer integrity to ensure memory access is limited to regions to which a program has pointers.
+            To tackle both of those challenges, the experimental <a href="#meyer_orisc">Objective-RISC architecture</a> (O-RISC), the inspiration of RISC-ViO, proposes a new perspective 
+            on the cooperation of hardware and software. The main idea is to lower the concept of objects from a runtime level to the ISA. For this to work an O-RISC
+            processor always has access to information strictly identifying pointers and boundaries of objects for every instruction executed.
+            This enables the enforcement of bounds checks, prohibition of unwanted data modification and garbage collection in hardware, leading to more robust program execution
+            as well as less runtime overhead.
         </p>
         <figure>
             <figcaption>View of the different architectures on programming language level objects in memory</figcaption>
@@ -67,13 +68,44 @@
             </div>
         </figure>
         <p>
-        While the O-RISC architecture provides a solution to the problems identified above by providing a new perspective on the cooperation of hardware and software, it comes with some drawbacks.
-        One of those drawbacks lies in the fact that O-RISC only allows pointers to the beginning of an object. 
-        Indexing of an objects content is achieved by providing an offset inside the object via an additional value from a register.
-        Accesses to data inside of objects in O-RISC therefore are a two-step process.
-        This in consequence makes O-RISC incompatible to the influental C programming language, reducing the amount of programs being source code compatible with this architecture. 
-        RISC-ViO aims to provide the pointer unambiguity, the pointer integrity and the bounds checks which O-RISC provides while still allowing for pointers inside of objects, enabling compatibility to the programming language C and others.
-        Furthermore, while O-RISC is a fully custom architecture with fully custom instruction format, RISC-ViO is based upon the open RISC-V architecture which allows for easier integration and expansion of this new architecture. 
+            Being the nature of groundbreaking, unexplored concepts, O-RISC is designed to be very cautious about its new responsibilities.
+            One area where this can be easily observed is O-RISCs postulation that pointers cannot be modified in any shape or form.
+            To index contents of an object, compilers are required to keep a separate data register next to the original pointer register.
+            This contradicts the assumptions many compilers make of computer architectures. LLVMs <em>getelementptr</em> instruction <a href="#llvm_gep">2</a> is one example
+            where the assumptions O-RISC and a compiler take from one another can diverge.
+            This in consequence makes O-RISC also unable to compile the influential C programming language, reducing the amount of programs
+            being source code compatible with this architecture.
+        </p>
+    </section>
+    <section>
+        <h2><a id="goals">Design Goals</a></h2>
+        <p>
+            As all children try to grow up to be a better version of their parents, RISC-ViO takes over O-RISCs believe in the new way of hardware-software
+            cooperation, but is drawing its own set of conclusions:
+        </p>
+        <h4 style="text-indent: 0;">1. Make software more robust while keeping compatibility</h4>
+        <p style="text-indent: 0;">
+            RISC-ViO aims to provide the same unambiguousness and integrity of pointers as well as bounds checks of hardware objects which O-RISC is providing.
+            But at the same time, it is desired to keep impact on already existing software as minimal as possible. The only changes necessary have to stay 
+            on the side of runtimes and operating systems. User code should be able to stay as is while still benefiting from RISC-ViOs advantages.
+        </p>
+        <h4 style="text-indent: 0;">2. Make the life of compilers easier</h4>
+        <p style="text-indent: 0;">
+            With the introduction of hardware heap management, RISC-ViO is raising the abstraction layer of memory. Consequently the effort of lowering higher  
+            programming languages to machine instructions is far less. This opens up new possibilities for improvements in how software can be compiled. 
+            We aim to strengthen these benefits without limiting the already existing possibilities of compilers.
+        </p>
+        <h4 style="text-indent: 0;">3. Stay true to the RISC philosophy</h4>
+        <p style="text-indent: 0;">
+            The benefits of robustness are worthless when they come at the cost of arbitrary execution times. That is why RISC-ViO is designed in such a way
+            that all instructions can be executed in a single clock cycle. For the first time, this allows secure object-based programming on real-time systems.
+        </p>
+        <h4 style="text-indent: 0;">4. Be an extension, not a replacement</h4>
+        <p style="text-indent: 0;">
+            We propose a way the RISC-V Instruction Set Architecture can be extended without limiting other extensions or future innovation.
+            This way, the idea of object-based architectures can be easily researched on all sorts of processor configurations. Reaching from minimal embedded
+            applications, over vector-supporting AI-Units to fully fletched, state of the art CPUs. On the other hand, other researchers can easily pick up ViO
+            and make use of its benefits for their own purposes.
         </p>
     </section>
 
@@ -127,7 +159,7 @@
         The implications for the passing of function arguments between functions are outlined in the <a href="#chap_calling_convention">calling convention</a> chapter.
         </p>
         <p>
-        Just as data on the stack and heap is organised by means of objects, instructions are also encapsulated in objects, modifying the semantics of even more instructions:
+        Just as data on the stack and heap is organized by means of objects, instructions are also encapsulated in objects, modifying the semantics of even more instructions:
         </p>
         <ul style="text-align:center">
             <li style="display: inline-block"><ul><li>auipc</li></ul></li>
@@ -140,31 +172,28 @@
         </p>
         <p>
         The encapsulation of instructions also means that the <em>jalr</em> instructions expects a pointer to a object containing instructions as a jump target to be written to the program counter.
-        This instuction will also, just as <em>jal</em> does, write a pointer to its destination register.
+        This instruction will also, just as <em>jal</em> does, write a pointer to its destination register.
         If the pointer provided does not reference such an object, the processor raises a <em>IncompatibleTypeException</em> with <em>xtval</em> containing the target pointer.
         Using a value as a destination for <em>jalr</em> is still allowed though and leads to jumping to the given index inside the currently executed code object.
-        To make sure that a return address cannot be used twice, RISC-ViO mandates that the variant of <em>jalr</em> which realises the <em>ret</em> pseudoinstruction has to null out the register <em>ra</em> except for the zero-bit of its index after updating the program counter.
+        To make sure that a return address cannot be used twice, RISC-ViO mandates that the variant of <em>jalr</em> which realizes the <em>ret</em> pseudo instruction has to null out the register <em>ra</em> except for the zero-bit of its index after updating the program counter.
         </p>
     </section>
 
-    <h1><a name="chap_objects">Objects</a></h1>
     <section>
+        <h1><a name="chap_objects">Objects</a></h1>
         Objects are unique spaces allocated on the heap that are referenced by pointers. Objects are defined by their type and their length. One cannot access memory outside of object boundaries. Contents of objects can only
         be written, read or executed using the pointer generated by the allocation instruction of the desired object. Pointers to objects cannot be generated by arithmetic operations.<br>
-        On ISA-Level we differenciate between two types of objects: "Ordinary"-Objects and "Executable"-Objects. 
+        On ISA-Level we differentiate between two types of objects: "Ordinary"-Objects and "Executable"-Objects. 
         <h2><a id="objs_ords">Ordinaries</a></h2>
-            <p>Ordinaries are objects a programm can read and write data from/to. They can be generated by allocate instructions that are accessible on all privilege leveles. One can load and store from/to Ordinary
-            Objects, but cannot use them as target for a jump instruction<br>
-            A special type of Ordinaries are "Data-Only"-Objects. As the name suggests, these Objects can only contain primitive data, but no pointers. Data-Only Objects allow for fast and compact memory access
-            if it is already known on compile-time, that a certain object only contains primitive types, like strings or arrays. Data-Only Objects can be allocated using the special "alc[i].d"-instructions.</p>
-        <section>
-        </section>
+        <p>Ordinaries are objects a program can read and write data from/to. They can be generated by allocate instructions that are accessible on all privilege levels. One can load and store from/to Ordinary
+        Objects, but cannot use them as target for a jump instruction<br>
+        A special type of Ordinaries are "Data-Only"-Objects. As the name suggests, these Objects can only contain primitive data, but no pointers. Data-Only Objects allow for fast and compact memory access
+        if it is already known on compile-time, that a certain object only contains primitive types, like strings or arrays. Data-Only Objects can be allocated using the special "alc[i].d"-instructions.</p>
+
         <h2><a id="objs_execs">Executables</a></h2>
-        <section>
-            <p>Executables are objects, that contain machine instructions. One cannot load or store from/to Executable Objects, but can use them as target for jump instructions.<br>
-            First, Executables are allocated by the operating system as an ordinary, data-only object on the heap. Next the contents of the Executable are copied from their source to the Object.
-            Finally the operating system changes the type of the object to executable.</p>
-        </section>
+        <p>Executables are objects, that contain machine instructions. One cannot load or store from/to Executable Objects, but can use them as target for jump instructions.<br>
+        First, Executables are allocated by the operating system as an ordinary, data-only object on the heap. Next the contents of the Executable are copied from their source to the Object.
+        Finally the operating system changes the type of the object to executable.</p>
     </section>
 
 
@@ -180,7 +209,7 @@
         In contrast to the automatic freeing of unnecessary objects, this creation of ISA level objects is achieved by the alc-instruction family which comes in four flavours. 
         In fact the alc instruction family is the only way to obtain new pointers in user mode.
         The next section provides a short description of those instructions alongside their bit encodings.
-        The objects allocated by the alc-instruction family are both readable and writeable but not executeable on allocation. 
+        The objects allocated by the alc-instruction family are both readable and writeable but not executable on allocation. 
 
         <h4><a name="alc">alc-Instruction</a></h4>
             The alc instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is by the value passed via rs1.
@@ -221,7 +250,7 @@
         </ul>
 
         <h4><a name="alcd">alcd-Instruction</a></h4>
-            The alcd instruction is a specialisation of the alc instruction. While alci allocates an object which may hold both pointers and data, objects created using <em>alcd</em> may only hold data.
+            The alcd instruction is a specialization of the alc instruction. While alci allocates an object which may hold both pointers and data, objects created using <em>alcd</em> may only hold data.
             Since such an object may only hold data, no type information is required for any of the slots in this object. Especially for large amounts of data, this significantly reduces both the amount of memory required and the execution overhead of load and store instructions.  
             Note that is it also forbidden to use <em>alcd</em> to allocate a new frame object.
             <figure>
@@ -232,7 +261,7 @@
                     </div>
                 </div>
             </figure>
-        The alcd instruction may trigger the following exceptions for the given events (xtval content):
+        The alc.d instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
@@ -240,24 +269,24 @@
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
 
-        <h4><a name="alcid">alcid-Instruction</a></h4>
-        The alcid instruction is the analogous form of alci regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocating frames.
+        <h4><a name="alcid">alci.d-Instruction</a></h4>
+        The alci.d instruction is the analogous form of alci regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocating frames.
         <figure>
-            <figcaption>alcid instruction encoding</figcaption>
+            <figcaption>alci.d instruction encoding</figcaption>
             <div style="width: 100%; display: flex; justify-content: center;">
                 <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
                     <img src="svg/alcid_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
                 </div>
             </div>
         </figure>
-        The alcid instruction may trigger the following exceptions for the given events (xtval content):
+        The alci.d instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
         <h3><a name="qsz">Attribute Query: qsz</a></h3>
-        The qsz instruction proviodes a means of reading an objects size as specified at its allocation time in bytes. For this, the source register has to contain a pointer.
+        The qsz instruction provides a means of reading an objects size as specified at its allocation time in bytes. For this, the source register has to contain a pointer.
         <figure>
             <figcaption>qsz instruction encoding</figcaption>
             <div style="width: 100%; display: flex; justify-content: center;">
@@ -289,7 +318,7 @@
             </figure>
             The dtp instruction may trigger the following exceptions for the given events (xtval content):
             <ul>
-                <li><em>IncompatibleTypeException</em>: rs1 or rs2 contains a pointer, not a value (rs1 or rs2 with rs1 being prioritised)</li>
+                <li><em>IncompatibleTypeException</em>: rs1 or rs2 contains a pointer, not a value (rs1 or rs2 with rs1 being prioritized)</li>
             </ul>
             <h4><a name="btd">btd-Instruction</a></h4>
             The btd "base to data" instruction allows for reading out a pointers raw pointer value. This value is written into rd for the pointer given in rs1.
@@ -384,7 +413,7 @@
                     sp register is owned by the currently executed function. 
                     This state is called "regular", while the current function not being the owner of the current frame is denoted as the "irregular" state.
                 </p>
-                <p>For sp as well as for ra, there are two colours: black and white. Those colours are an integral part of those registers and cannot be read or modified seperately from their registers.
+                <p>For sp as well as for ra, there are two colours: black and white. Those colours are an integral part of those registers and cannot be read or modified separately from their registers.
                     Also, when storing/loading ra or sp using sw/lw, the colour is also stored/retrieved to/from the given memory location.
                     An overview of the transition between those colours is given in Figure 1.
                     On every function entry, signified by a <em>jalr ra, zero, x (call)</em> instruction, the processor flips the colour of ra from white to black or vice versa. The same also happens when a function is exited using <em>jalr zero, ra, 0 (ret)</em> For sp, this takes place on every frame allocation.
@@ -669,7 +698,7 @@
             
             <h2 style="text-align: center;"><a id="data-onlies">Data-Only Objects</a></h2>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
-                Data-Only Objects are identified by the data-only Bit in the Header. Data inside of these Objects is not tagged, so they make use of the whole (64|32) Bit per Element.
+                Data-Only Objects are identified by the data-only Bit in the Header. Data inside of these Objects is not tagged, so they make use of the whole 64|32 Bit per Element.
                 Pointers are forbidden inside data-only Objects.</p>
             <figure style="margin-top: 0;">
                 <img src="svg/objektbaukasten/data_only_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
@@ -680,7 +709,7 @@
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
                 Executables have only the data-only bit set in their header. This identifies them as a executable.<br>
                 As part of their Header, Executables have the pointer to their companion GOT stored at the third (double-)word of the object. The start of Code is then referred as index 0 of the objuect.
-                It is stored in the same fashion as in data-only so they can harvest the full (64|32) bit of a Element.</p>
+                It is stored in the same fashion as in data-only so they can harvest the full 64|32 bit of a Element.</p>
             <figure style="margin-top: 0;">
                 <img src="svg/objektbaukasten/executable_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
                 <figcaption>Executable Object</figcaption>
@@ -691,7 +720,7 @@
                 Sanctuaries only have the Sanctuary Bit set in their header. They are used as memory space for displaced primitives and displaced pointers and cannot be referenced by ordinary pointers.<br>
                 Displaced Pointers take two Element Slots, one for the base pointer and one for the index, thus are always aligned to 2-Element boundaries.
                 The base pointer is stored as a ordinary pointer and the index as data-only primitive.<br>
-                Displaced Primitives only take one Element Slot beeing the 32-Bit (Double-)Word that was displaced. These Types can be stored at any Element position inside the Sanctuary.</p>
+                Displaced Primitives only take one Element Slot beeing the (Double-)Word that was displaced. These Types can be stored at any Element position inside the Sanctuary.</p>
             <figure style="margin-top: 0;">
                 <img src="svg/objektbaukasten/data_only_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
                 <figcaption>Sanctuary Object</figcaption>
@@ -2235,6 +2264,7 @@
     <h1><a id="chap_refs">References</a></h1>
     <div class="references">
         <cite id="meyer_orisc">M.Meyer: "A Novel Processor Architecture with Exact Tag-Free Pointers" in Proceedings of the 2nd Workshop on Application Specific Processors., 2003.</cite>
+        <cite id="llvm_gep">https://llvm.org/docs/LangRef.html#getelementptr-instruction, Last accessed 09.03.2025</cite>
     </div>
 
     <h1><a id="appendix">Appendix</a></h1>

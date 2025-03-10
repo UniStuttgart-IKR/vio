@@ -162,7 +162,8 @@
 
         <p>
          The main change for those instruction families lies in them requiring pointers to be used to select objects instead of memory locations.
-        Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed.</p>
+        Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed. 
+        Those offsets are added to the index of the pointer used to access the object to make up the offset used for the actual object access.</p>
         <!--@Leyla: wenn man unsere regeln bricht, tritt eine hardware exception-->
         <p>
         Arithmetic operations of those pointers like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation.

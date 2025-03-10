@@ -86,8 +86,8 @@
         <h4 style="text-indent: 0;">1. Make software more robust while keeping compatibility</h4>
         <p style="text-indent: 0;">
             RISC-ViO aims to provide the same unambiguousness and integrity of pointers as well as bounds checks of hardware objects which O-RISC provides.
-            <u>But at the same time, it is desired to keep impact on already existing software as minimal as possible</u>{Unlike O-RISC however, RISC-ViO aims to reduce the impact on existing software to a minimum.}. The only changes necessary <u>have</u>{should, is not achieved (li tx, ...; sw ty, 0(tx) impossible)} to stay 
-            on the side of runtimes and operating systems. User code should be able to {mostly?} stay as is while still benefiting from RISC-ViOs advantages.
+            Unlike O-RISC however, RISC-ViO aims to reduce the impact on existing software to a minimum. The only changes necessary should to stay 
+            on the side of runtimes and operating systems. User code should be able to  stay as is while still benefiting from RISC-ViOs advantages.
         </p>
         <h4 style="text-indent: 0;">2. Make the life of compilers easier</h4>
         <p style="text-indent: 0;">
@@ -876,7 +876,7 @@
     </section>
     <h2><a id="coloring">Colouring</a></h2>
     <section>
-        <p>As described in the <a href="#frames">frames</a> chapter and as present in the requirements list above, RISC-ViO calls for the ability to hold colour information for both the <em>ra</em> as well as the <em>sp</em> register. 
+        <p>As described in the <a href="#frames">frames</a> chapter and as present in the requirements list in <a href="#base_spec">I'</a>, RISC-ViO calls for the ability to hold colour information for both the <em>ra</em> as well as the <em>sp</em> register. 
             The implementation presented here is able to satisfy this requirement using the fields as shown in the last section only. In this implementation, the colour 'black' is encoded as a cleared bit ('0') while 'white' corresponds to a bit which is set ('1'). 
             Since the smallest possible instruction size specified by RISC-V is 16 bits or two bytes, the lowest bit of the index of <em>ra</em> always has to be zero.
             This is why it is possible to encode the current colour of <em>ra</em> in this bit. For <em>sp</em>, the same is not true however since its index may be set to any value.
@@ -2698,6 +2698,12 @@
 
           </ol> 
     </p>
+    <h2><a id="abbrevs_gloss">Glossary and Abbreviations</a></h2>
+    <ol>
+        <li>XLEN - base integer ISA width (i.e. 32 for RV32)</li>
+        <li>index - object field offset contained in a pointer</li>
+        <li>offset - object fieöd offset being part of an instruction </li>
+    </ol>
 </body>
 
 <script>

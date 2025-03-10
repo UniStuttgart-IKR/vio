@@ -146,8 +146,6 @@
         <p>
             In order to restrict access of a program to the memory which contains the objects the program has pointers to, the I' ISA differentiates between values and pointers.
             Only pointers may be used to access memory as well as I/O devices. Those pointers can be obtained via the alc instruction family or by being manually created and subsequentially being passed down by higher privilege modes. Pointers are to be encoded in such a way as to allow for objects to lie in the entire address space of the processor of XLEN bits.
-            <u>In this specification, pointers are written in the form x.y where x is a pointers value (base address + tag) and y is the index of the pointer. To graphically set apart pointers from values, pointers are drawn in various shades of pink and purple.
-             Values are not denoted in any special way in text form but drawn in light blue.</u>
         </p>
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
@@ -190,6 +188,18 @@
         If the pointer provided does not reference such an object, the processor raises a <em>IncompatibleTypeException</em> with <em>xtval</em> containing the target pointer.
         Using a value as a destination for <em>jalr</em> is still allowed though and leads to jumping to the given index inside the currently executed code object.
         To make sure that a return address cannot be used twice, RISC-ViO mandates that the variant of <em>jalr</em> which realizes the <em>ret</em> pseudo instruction has to null out the register <em>ra</em> except for the zero-bit of its index after updating the program counter.
+        </p>
+
+        <h2><a id="riscv_i_tick">Register File</a></h2>
+            </p>
+            RISC-V specifies 31 general-purpose registers and one special register, <em>zero</em>.
+            The RISC-ViO architecture adds additional requirements to this register file definition:
+                <ul>
+                    <li><em>zero</em> has to contain the value 0.</li>
+                    <li>each register has to be able to hold either a value of width XLEN or a pointer with a XLEN wide index.</li>
+                    <li>both <em>ra</em> and <em>sp</em> have to be able to hold colour information.</li>
+                </ul>
+            <p>
         </p>
     </section>
 
@@ -456,6 +466,7 @@
             </figure>
         </section>
     
+        <section>   
     <h1><a id="got">Global Offset Table</a></h1>
     <p><i>Der Einsatz von Code-Objekten verbietet Sprünge auf fest definierte Adressen. Auch Speichern und Laden von Daten an festen Adressen ist mit dem Objektansatz unvereinbar.
         In herkömlichen Architekturen kommen zum Auflösen von (zur Compilezeit) unbekannten Adressen "Global Offset Tables" (GOT) zum Einsatz. Möchte ein Programm auf bestimmte Runtime-Funktionen
@@ -469,79 +480,68 @@
         die Adresse des Sprungziels ermittelt. Diese ersetzt dann den Eintrag in der GOT die den Linker aufgerufen hat, so dass folgende Sprünge nicht noch einmal den Linker ansprechen müssen.
     </i></p>
     <h2><a id="gp">Global Pointer</a></h2>
-    <section>
-        <p><i>In der herkömlichen RISC-V ABI wird die Adresse der GOT über die Distanz zum jal[r] Befehl angegeben. Dieser Ansatz ist in ViO nicht nutzbar, da ein Objekt nicht gleichzeitig
+    <p><i>In der herkömlichen RISC-V ABI wird die Adresse der GOT über die Distanz zum jal[r] Befehl angegeben. Dieser Ansatz ist in ViO nicht nutzbar, da ein Objekt nicht gleichzeitig
             lesbar und ausführbar sein kann. Zu diesem Zweck wird eine Art "companion"-Objekt eingeführt, dass alle Adressen, auf die ein Executable zu seiner Ausführung zugreifen möchte, führt.
             Anders als bei herkömlichen GOTs werden in diesen Objekten keine Offsets, sondern reine Zeiger gespeichert. Auch ausführbarer Code für Bibliotheksaufrufe befindet sich nicht in einer solchen GOT. 
             {gramm: Auf} Die "companion"-GOT kann in RISC-ViO immer über das Register <em>x3</em> (<em>gp</em>) zugegriffen werden. {In order for <em>gp</em> to always contain the pointer to the GOT of the current object during regular program execution, RISC-ViO mandates that the <em>jalr</em> instruction has to update this register on every jump another executable object. On changes of the currently executed object due to exceptions, interrupts as well as <em>sret</em> and <em>mret</em> instructions, it is the duty of the system management software to update <em>gp</em>.}Es ist Aufgabe der Hardware oder des Betriebssystems dafür zu sorgen, dass das gp-Register immer
             auf das dem Executable zugehörigen GOT-Objekt verweist. 
         </i></p>
-    </section>
     <h2><a id="static">Making Library Calls</a></h2>
-    <section>
         <p><i>Um nun einen Bibliotheksaufruf auszuführen wird zuerst die Adresse der Bibliotheksfunktion aus der GOT mittels eines normalen Ladebefehls geladen und dann mit einem jalr and diese Adresse gesprungen.
             Um dem Linker mitzuteilen, dass für dieses Sprungziel ein GOT-Eintrag angelegt werden soll, wurde ein neuer Assembler Modifier eingeführt: %got_off(symbol). Dieser Modifier wird vom Linker ersetzt durch den Offset
             in der GOT der Executable an dem das symbol zu finden ist. Zu diesem Zweck wurde auch ein neuer Relocation/Dynsym-Typ eingeführt, um in ELF-Files zu markieren dass an einer bestimmten Stelle der load-offset noch
             ersetzt werden muss, mit dem endgültigen Offset der Adresse in der GOT, ähnlich wie es auch bei den Assembler Modifiern %hi, %lo, usw. gehandhabt wird.
             Ein<br>call symbol<br>wird also nun ersetzt durch eine<br>lw t1, %got_off(symbol)(gp)<br>jalr ra, 0(t1)<br>Abfolge.
         </i></p>
-    </section>
     <h2><a id="static">Accessing static objects</a></h2>
-    <section>
         <p><i>Nach dem selben Prinzip werden auch Zugriffe auf statische Objekte gehandhabt. Über den %got_off modifier wird der Linker angewiesen, den Zeiger auf das Objekt in der GOT vorzuhalten und den Zugriff
             auf das Objekt zur Load-Time aufzulösen. Die statischen Objekte werden auch schon in herkömmlichen ELF-Files markiert, sodass der Lader in ViO mit einem normalen ALC Befehl das statische Objekt anlegen,
             evtl. befüllen und den Zeiger auf dieses Objekt in der GOT hinterlegen kann.
         </i></p>
     </section>
     
+    <section>
     <h1><a id="exceptions">Exceptions</a></h1>
-    <h2><a id="gen">General</a></h2>
-        <p>Since RISC-ViO allows both pointers and regular data to be stored in the registers and also organizes code using objects, some CSR also need to be able to hold pointers.
-            This is the case for <em>xtvec</em> and <em>xepc</em> due to code objects and for <em>xtval</em> and <em>xscratch</em> due to pointers in general.
-            To access the components of these registers, the <em>csrw</em> instruction may be used in conjunction with the <em>dtp</em>/<em>btd</em>/<em>itd</em> instructions.
-            Apart from this slight modification as well as the expansion of available exceptions, exceptions and interrupts behave identical to the way they do in RISC-V.
-        </p>
-
-        <!--@Robin: einpflegen!-->
-        <p>
-        To enforce this new addressing scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use an address value to access memory. 
-        Since the object attributes for every object referenced by a pointer are known, the processor is able to raise a <em>IndexOutBoundsException</em> when an out of bound load or store instruction is executed.
-        In case of such an exception, <em>xtval</em> will contain the base pointer as well as the index which was beyond the object bounds.
-        The processor is also able to detect whether the destination object is compatible with the current access type. In consequence, <em>LoadAccessFault</em>, <em>StoreAccessFault</em> or <em>IncompatibleTypeException</em> will be raised accordingly as per <a href="#objs_ords">ordinary objects</a>. 
-        While in general, I/O pointers behave the same way as pointers to objects in memory by allowing stores and loads with offsets, there are some restrictions when using them.
-        Most notably, while it is perfectly fine to store a pointer inside an object, the same is not true for I/O devices.
-        Storing a pointer in a I/O device identified by an I/O pointer will lead to an <em>IncompatibleTypeException</em>. This simplification reduces the complexity of the task of garbage collection.
-        </p>
+        <h2><a id="gen">Enforcing correct pointer use</a></h2>
+            <p>
+                To enforce the pointer based memory access scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use an address value to access memory. 
+                Since the object length is known on ISA level, the processor is able to raise a <em>IndexOutBoundsException</em> when an out of bound load or store instruction is executed.
+                In case of such an exception, <em>xtval</em> will contain the base pointer as well as the index which was beyond the object bounds.
+                The processor is also able to detect whether the destination object is compatible with the current access type. 
+                In consequence, <em>LoadAccessFault</em>, <em>StoreAccessFault</em> or <em>IncompatibleTypeException</em> will be raised when the corresponding flag is not set as per <a href="#objs_ords">ordinary objects</a>. 
+                <em>LoadAccessFault</em>s are triggered when the read-flag is cleared while <em>StoreAccessFault</em> is raised in case of a store access to a object with cleared write flag.
+                Trying to store pointers to a data only object marked by a set data-only-flag will also lead to a <em>StoreAccessFault</em>. 
+                The same exception is triggered when trying to jump to a regular object using <em>jalr</em>.
+            </p>
+            <p>
+                While in general, I/O pointers behave the same way as pointers to objects in memory by allowing stores and loads with offsets, there are some restrictions when using them.
+                Most notably, while it is perfectly fine to store a pointer inside an object, the same is not true for I/O devices.
+                Storing a pointer in a I/O device identified by an I/O pointer will lead to an <em>IncompatibleTypeException</em>. This simplification reduces the complexity of the task of garbage collection.
+            </p>
+        <h2><a id="gen">Exceptions in conjunction with CSR</a></h2>
+            <p>Since RISC-ViO allows both pointers and values to be stored in the registers and also organizes code using objects, some CSR also need to be able to hold pointers.
+                This is the case for <em>xtvec</em> and <em>xepc</em> due to code objects and for <em>xtval</em> and <em>xscratch</em> due to pointers in general.
+                To access the components of these registers, the <em>csrw</em> instruction may be used in conjunction with the <em>dtp</em>/<em>btd</em>/<em>itd</em> instructions.
+                Apart from this slight modification as well as the expansion of available exceptions, exceptions and interrupts behave identical to the way they do in RISC-V.
+            </p>
         <h2><a id="priv">Privilege Violations</a></h2>
-        <section>
-        <p>The <a href="#t_csr">exception table</a> provides an overview of the exceptions corresponding to the protection schemes introduced by RISC-ViO.
-            In order to allow higher privilege modes to gain the access required for system management, some exceptions are suppressed in certain privilege modes.</p>
+            <p>
+                The <a href="#t_csr">exception table</a> provides an overview of the exceptions corresponding to the protection schemes introduced by RISC-ViO.
+                In order to allow higher privilege modes to gain the access required for system management, some exceptions are suppressed in certain privilege modes.
+            </p>
         
     </section>
 
     <h1><a id="reg_fl">Values and Pointers in the Register File</a></h1>
     <section>
     <p>
-        The RISC-ViO architecture requires a register file which is able to hold the following information:
-    </p>
-        <ul>
-            <li>tag (pointer or value?) for each register except zero</li>
-            <li>values (XLEN) for each register except zero</li>
-            <li>pointers with indeces (XLEN) for each register except zero</li>
-            <li>pointer colours for ra and sp</li>
-        </ul>
-    <p>
-        Additionally, the following statements always hold true for the register file:
-        <ul>
-            <li><em>zero</em> contains the value 0x0.</li>
-            <li><em>gp</em> only contains pointers with index zero.</li>
-            <li><em>gp</em> is updated by every jalr to contain the GOT pointer of the jump target code object.</li>
-            <li><em>sp</em> only contains pointers with index zero.</li>
-        </ul>
-    </p>
-    <p>
+        Every RISC-ViO architecture requires a register file which is able to satisfy the requirements given in the <a href="#base_spec">I'</a> chapter.
         Apart from these requirements, RISC-ViO does not specify how a register file of an implementation of this architecture has to look like.
         This leaves room for tailoring the implemented register file to the design constraints at hand. 
+    </p>
+    <p style="font-size: 9pt;">
+        (Please note that in this specification, pointers are written in the form x.y where x is a pointers value (base address + tag) and y is the index of the pointer. To graphically set apart pointers from values, pointers are drawn in various shades of pink and purple.
+        Values are not denoted in any special way in text form but drawn in light blue.)
     </p>
     </section>
     <h2><a id="fields">Fields</a></h2>

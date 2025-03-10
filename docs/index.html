@@ -224,15 +224,47 @@
             The alc instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is by the value passed via rs1.
             The size is given in bytes as per the value in rs1.
             Apart from the source of the object size, alc only differs from alci in that alc cannot be used to allocate a frame. 
-            <figure>
-                <figcaption>alc instruction encoding</figcaption>
-                <div style="width: 100%; display: flex; justify-content: center;">
-                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                        <img src="svg/alc_instr_bitmap.svg" id="svg3" style="width: 100%; margin: 0px auto">
-                    </div>
-                </div>
-            </figure>
-
+            
+            <div style="margin-top: 5%; margin-bottom: 3%;">
+                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+                    <colgroup>
+                        <col width="20%"/>
+                        <col width="13%"/>
+                        <col width="14%"/>
+                        <col width="8%"/>
+                        <col width="14%"/>
+                        <col width="20%"/>
+                    </colgroup>
+                    <thead>
+                        <th style="border-style:solid; border-width: 0px;">
+                                <div style="float: left">31</div><div style="float: right">25</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">24</div><div style="float: right">20</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">19</div><div style="float: right">15</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">14</div><div style="float: right">12</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">11</div><div style="float: right">7</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">6</div><div style="float: right">0</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            Instruction
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr  style="float: center">
+                            <td>0000000</td><td>0000</td><td>rs1(src)</td><td>000</td><td>rd(dst)</td><td>0001011</td><td>alc</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         The alc instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
@@ -243,14 +275,46 @@
         <h4><a name="alci">alci-Instruction</a></h4>
         The alci instruction is a variation of the alc instruction. In contrast to alci, the size of the new object is given by the 12 bit wide immediate. 
         This immediate specifies the amount of pointers which can fit inside the object. So for a XLEN of 32, it specifies the number of 32 bit words that fit into the object.
-        <figure>
-            <figcaption>alci instruction encoding</figcaption>
-            <div style="width: 100%; display: flex; justify-content: center;">
-                <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                    <img src="svg/alci_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                </div>
-            </div>
-        </figure>
+        <div style="margin-top: 5%; margin-bottom: 3%;">
+            <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+                <colgroup>
+                    <col width="20%"/>
+                    <col width="13%"/>
+                    <col width="14%"/>
+                    <col width="8%"/>
+                    <col width="14%"/>
+                    <col width="20%"/>
+                </colgroup>
+                <thead>
+                    <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">31</div><div style="float: right">25</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">24</div><div style="float: right">20</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">19</div><div style="float: right">15</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">14</div><div style="float: right">12</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">11</div><div style="float: right">7</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">6</div><div style="float: right">0</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        Instruction
+                    </th>
+                </thead>
+                <tbody>
+                    <tr  style="float: center"></tr>
+                        <td colspan="2">imm[13:2]</td><td>00010</td><td>010</td><td>rd(dst)</td><td>0001011</td><td>alci</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <p>When the alci instruction is used to allocate a frame by specifying sp as the destination register, its semantic is extended. In this case alci not only allocates a new frame object but also stores the old sp at index zero of the new frame object.</p>
         The alci instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
@@ -261,14 +325,46 @@
         <h4><a name="alcd">alcd-Instruction</a></h4>
             The alcd instruction is a specialization of the alc instruction, allowing for the allocation of data only objects.
             Note that is it also forbidden to use <em>alcd</em> to allocate a new frame object.
-            <figure>
-                <figcaption>alcd instruction encoding</figcaption>
-                <div style="width: 100%; display: flex; justify-content: center;">
-                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                        <img src="svg/alcd_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                    </div>
-                </div>
-            </figure>
+            <div style="margin-top: 5%; margin-bottom: 3%;">
+                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+                    <colgroup>
+                        <col width="20%"/>
+                        <col width="13%"/>
+                        <col width="14%"/>
+                        <col width="8%"/>
+                        <col width="14%"/>
+                        <col width="20%"/>
+                    </colgroup>
+                    <thead>
+                        <th style="border-style:solid; border-width: 0px;">
+                                <div style="float: left">31</div><div style="float: right">25</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">24</div><div style="float: right">20</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">19</div><div style="float: right">15</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">14</div><div style="float: right">12</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">11</div><div style="float: right">7</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">6</div><div style="float: right">0</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            Instruction
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr  style="float: center"></tr>
+                            <td>0000000</td><td>0000</td><td>rs1(src)</td><td>001</td><td>rd(dst)</td><td>0001011</td><td>alcd</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         The alc.d instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
@@ -279,14 +375,46 @@
 
         <h4><a name="alcid">alci.d-Instruction</a></h4>
         The alci.d instruction is the analogous form of alci regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocating frames.
-        <figure>
-            <figcaption>alci.d instruction encoding</figcaption>
-            <div style="width: 100%; display: flex; justify-content: center;">
-                <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                    <img src="svg/alcid_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                </div>
-            </div>
-        </figure>
+        <div style="margin-top: 5%; margin-bottom: 3%;">
+            <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+                <colgroup>
+                    <col width="20%"/>
+                    <col width="13%"/>
+                    <col width="14%"/>
+                    <col width="8%"/>
+                    <col width="14%"/>
+                    <col width="20%"/>
+                </colgroup>
+                <thead>
+                    <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">31</div><div style="float: right">25</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">24</div><div style="float: right">20</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">19</div><div style="float: right">15</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">14</div><div style="float: right">12</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">11</div><div style="float: right">7</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">6</div><div style="float: right">0</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        Instruction
+                    </th>
+                </thead>
+                <tbody>
+                    <tr  style="float: center"></tr>
+                        <td colspan="2">imm[13:2]</td><td>00010</td><td>011</td><td>rd(dst)</td><td>0001011</td><td>alcid</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         The alci.d instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
@@ -295,14 +423,46 @@
         </ul>
         <h3><a name="qsz">Attribute Query: qsz</a></h3>
         The qsz instruction provides a means of reading an objects size as specified at its allocation time in bytes. For this, the source register has to contain a pointer.
-        <figure>
-            <figcaption>qsz instruction encoding</figcaption>
-            <div style="width: 100%; display: flex; justify-content: center;">
-                <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                    <img src="svg/qsz_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                </div>
-            </div>
-        </figure>
+        <div style="margin-top: 5%; margin-bottom: 3%;">
+            <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+                <colgroup>
+                    <col width="20%"/>
+                    <col width="13%"/>
+                    <col width="14%"/>
+                    <col width="8%"/>
+                    <col width="14%"/>
+                    <col width="20%"/>
+                </colgroup>
+                <thead>
+                    <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">31</div><div style="float: right">25</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">24</div><div style="float: right">20</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">19</div><div style="float: right">15</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">14</div><div style="float: right">12</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">11</div><div style="float: right">7</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">6</div><div style="float: right">0</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        Instruction
+                    </th>
+                </thead>
+                <tbody>
+                    <tr  style="float: center"></tr>
+                        <td>0000000</td><td>0000</td><td>rs1(src)</td><td>100</td><td>rd(dst)</td><td>0001011</td><td>qsz</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         The qsz instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
@@ -316,42 +476,138 @@
             <h4><a name="dtp">dtp-Instruction</a></h4>
             The dtp "data to pointer" instruction allows the assembly of arbitrary pointers. Both the index as well as the raw pointer value are set according the values in registers rs1 and rs2 respectively. The result is stored in rd. 
             Pointers assembled using <em>dtp</em> may be of ordinary and I/O pointer type. The tag values required for these types are shown in the <a href="#t_op">object and pointer overview</a>.
-            <figure>
-                <figcaption>dtp instruction encoding</figcaption>
-                <div style="width: 100%; display: flex; justify-content: center;">
-                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                        <img src="svg/dtp_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                    </div>
-                </div>
-            </figure>
+            <div style="margin-top: 5%; margin-bottom: 3%;">
+                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+                    <colgroup>
+                        <col width="20%"/>
+                        <col width="13%"/>
+                        <col width="14%"/>
+                        <col width="8%"/>
+                        <col width="14%"/>
+                        <col width="20%"/>
+                    </colgroup>
+                    <thead>
+                        <th style="border-style:solid; border-width: 0px;">
+                                <div style="float: left">31</div><div style="float: right">25</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">24</div><div style="float: right">20</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">19</div><div style="float: right">15</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">14</div><div style="float: right">12</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">11</div><div style="float: right">7</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">6</div><div style="float: right">0</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            Instruction
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr  style="float: center"></tr>
+                            <td>0111111</td><td>rs2(ix)</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>dtp</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             The dtp instruction may trigger the following exceptions for the given events (xtval content):
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs1 or rs2 contains a pointer, not a value (rs1 or rs2 with rs1 being prioritized)</li>
             </ul>
             <h4><a name="btd">btd-Instruction</a></h4>
             The btd "base to data" instruction allows for reading out a pointers raw pointer value. This value is written into rd for the pointer given in rs1.
-            <figure>
-                <figcaption>btd instruction encoding</figcaption>
-                <div style="width: 100%; display: flex; justify-content: center;">
-                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                        <img src="svg/btd_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                    </div>
-                </div>
-            </figure>
+            <div style="margin-top: 5%; margin-bottom: 3%;">
+                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+                    <colgroup>
+                        <col width="20%"/>
+                        <col width="13%"/>
+                        <col width="14%"/>
+                        <col width="8%"/>
+                        <col width="14%"/>
+                        <col width="20%"/>
+                    </colgroup>
+                    <thead>
+                        <th style="border-style:solid; border-width: 0px;">
+                                <div style="float: left">31</div><div style="float: right">25</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">24</div><div style="float: right">20</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">19</div><div style="float: right">15</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">14</div><div style="float: right">12</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">11</div><div style="float: right">7</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">6</div><div style="float: right">0</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            Instruction
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr  style="float: center"></tr>
+                            <td>1101111</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>btd</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             The btd instruction may trigger the following exceptions for the given events (xtval content):
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs1 contains a value, not a pointer (rs1)</li>
             </ul>
             <h4><a name="itd">itd-Instruction</a></h4>
             The itd "index to data" instruction allows for reading out a pointers raw pointer index. This value is written into rd for the pointer given in rs1.
-            <figure>
-                <figcaption>itd instruction encoding</figcaption>
-                <div style="width: 100%; display: flex; justify-content: center;">
-                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                        <img src="svg/itd_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                    </div>
-                </div>
-            </figure>
+            <div style="margin-top: 5%; margin-bottom: 3%;">
+                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+                    <colgroup>
+                        <col width="20%"/>
+                        <col width="13%"/>
+                        <col width="14%"/>
+                        <col width="8%"/>
+                        <col width="14%"/>
+                        <col width="20%"/>
+                    </colgroup>
+                    <thead>
+                        <th style="border-style:solid; border-width: 0px;">
+                                <div style="float: left">31</div><div style="float: right">25</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">24</div><div style="float: right">20</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">19</div><div style="float: right">15</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">14</div><div style="float: right">12</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">11</div><div style="float: right">7</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">6</div><div style="float: right">0</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            Instruction
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr  style="float: center"></tr>
+                            <td>1011111</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>itd</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             The itd instruction may trigger the following exceptions for the given events (xtval content):
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs1 contains a value, not a pointer (rs1)</li>
@@ -361,26 +617,90 @@
             <h4><a name="lw_x">lw.x-Instruction</a></h4>
             This instruction enables the software to force the hardware to load a word from a given access given by rs1. This address may either be a pointer as well as an address value. 
             After the execution of this instruction, the register selected by rd contains the value of the memory at address rs1.
-            <figure>
-                <figcaption>lw.x instruction encoding</figcaption>
-                <div style="width: 100%; display: flex; justify-content: center;">
-                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                        <img src="svg/lwx_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                    </div>
-                </div>
-            </figure>
+            <div style="margin-top: 5%; margin-bottom: 3%;">
+                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+                    <colgroup>
+                        <col width="20%"/>
+                        <col width="13%"/>
+                        <col width="14%"/>
+                        <col width="8%"/>
+                        <col width="14%"/>
+                        <col width="20%"/>
+                    </colgroup>
+                    <thead>
+                        <th style="border-style:solid; border-width: 0px;">
+                                <div style="float: left">31</div><div style="float: right">25</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">24</div><div style="float: right">20</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">19</div><div style="float: right">15</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">14</div><div style="float: right">12</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">11</div><div style="float: right">7</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">6</div><div style="float: right">0</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            Instruction
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr  style="float: center"></tr>
+                            <td>1110111</td><td>00000</td><td>rs1(src)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>lw.x</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <h4><a name="sw_x">sw.x-Instruction</a></h4>
             This instruction enables the software to force the hardware to write a word to a given access given by rs1. This address may either be a pointer as well as an address value. 
             The register rs2 which provides the store data has to contain a value. Please note that although the theoretical order of the registers is sw.x rs1, rs2, the value to be stored comes first in assembly files. 
             This makes the argument order of sw.x analogous to the regular memory access instructions to avoid confusion regarding this order.
-            <figure>
-                <figcaption>sw.x instruction encoding</figcaption>
-                <div style="width: 100%; display: flex; justify-content: center;">
-                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap; margin: 10px">
-                        <img src="svg/swx_instr_bitmap.svg" id="svg2" style="width: 100%; margin: 0px auto">
-                    </div>
-                </div>
-            </figure>
+            <div style="margin-top: 5%; margin-bottom: 3%;">
+                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+                    <colgroup>
+                        <col width="20%"/>
+                        <col width="13%"/>
+                        <col width="14%"/>
+                        <col width="8%"/>
+                        <col width="14%"/>
+                        <col width="20%"/>
+                    </colgroup>
+                    <thead>
+                        <th style="border-style:solid; border-width: 0px;">
+                                <div style="float: left">31</div><div style="float: right">25</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">24</div><div style="float: right">20</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">19</div><div style="float: right">15</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">14</div><div style="float: right">12</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">11</div><div style="float: right">7</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">6</div><div style="float: right">0</div>
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;">
+                            Instruction
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr  style="float: center"></tr>
+                            <td>1111011</td><td>rs2(sd)</td><td>rs1(ptr)</td><td>000</td><td>00000</td><td>0001011</td><td>sw.x</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             The sw.x instruction may trigger the following exceptions for the given events (xtval content):
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs2 contains a pointer, not a value (rs2)</li>

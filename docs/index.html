@@ -379,7 +379,7 @@
                 <p>For sp as well as for ra, there are two colours: black and white. Those colours are an integral part of those registers and cannot be read or modified seperately from their registers.
                     Also, when storing/loading ra or sp using sw/lw, the colour is also stored/retrieved to/from the given memory location.
                     An overview of the transition between those colours is given in Figure 1.
-                    On every function entry, signified by a <em>jalr ra, zero, x (call)</em> instruction, the processor flips the colour of ra from white to black or vice versa. The same also happens when a function is exited using <em>jalr zero, ra, 0 (ret)</em> For sp, this takes place on every frame allocation.
+                    On every function entry, signified by a <em>jalr ra, zero, x (call)</em> instruction, the processor flips the colour of ra from white to black or vice versa. The same also happens when a function is exited using <em>jalr zero, ra, 0 (ret)</em>. For sp, this takes place on every frame allocation.
                     Whether the processor is currently in the regular state (light blue), is given by the equality of the colours of ra and sp. 
                     If the colours of sp and ra both were black for example, the processor would be in the regular state.
                 </p>
@@ -587,7 +587,7 @@
             In the given subarchitectural implementation, the attribute stage is used to accomplish additional tasks like loading full XLEN wide data or a pointer with non-zero index from an object. 
             For the task of loading full XLEN wide data, it is the task of the attribute stage to load the actual data from memory instead of the memory stage. This is necessary since the memory stage has to determine where this data is located in memory first by loading the according displacement pointer.
             For pointers with a non-zero index, the attribute stage also has to become active. Since requiring both the loading of a pointers index as well as the header of the object pointed to, this operation takes two clock cycles however and therefore necessitates stalling the remaining pipeline until both operations have been completed.
-            In this situation, the attributes stage will load the pointer index at first before loading the object header and combining the loaded fields with the pointer value loaded by the memory stage and passing the combined register file entry to the writeback stage.
+            In this situation, the attributes stage will load the pointer index before loading the object header and combining the loaded fields with the pointer value loaded by the memory stage and passing the combined register file entry to the writeback stage.
         </p>
         <p>
             The process of storing register contents is analogous to the process of loading values as well as pointers regarding the fundamental tasks accomplished by the memory and attribute stages. The only difference other than those stages storing instead of loading is that the attribute stage might need to allocate a new 'Sanctuary object' to store XLEN wide values or pointers with non-zero index into.
@@ -603,9 +603,77 @@
     </section>
 
     <h1><a id="tables">Tables</a></h1>
-    <h2><a id="t_inst">Instructions</a></h2>
+    
+    
     <section>
+    <h2><a id="t_inst">Instructions (zhm extension)</a></h2>
+        <table border="0" cellspacing="0" cellpadding="0" class="table-ta1" style="text-align:center">
+            <colgroup>
+                <col width="20%"/>
+                <col width="13%"/>
+                <col width="14%"/>
+                <col width="8%"/>
+                <col width="14%"/>
+                <col width="20%"/>
+            </colgroup>
+            <tr style="border: none">
+                <td style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">31</div><div style="float: right">25</div>
+                </td>
+                <td style="border-style:solid; border-width: 0px;">
+                    <div style="float: left">24</div><div style="float: right">20</div>
+                </td>
+                <td style="border-style:solid; border-width: 0px;">
+                    <div style="float: left">19</div><div style="float: right">15</div>
+                </td>
+                <td style="border-style:solid; border-width: 0px;">
+                    <div style="float: left">14</div><div style="float: right">12</div>
+                </td>
+                <td style="border-style:solid; border-width: 0px;">
+                    <div style="float: left">11</div><div style="float: right">7</div>
+                </td>
+                <td style="border-style:solid; border-width: 0px;">
+                    <div style="float: left">6</div><div style="float: right">0</div>
+                </td>
+                <td style="border-style:solid; border-width: 0px;">
+                    Instruction
+                </td>
+            </tr>
+            <tr  style="float: center">
+                <td>0000000</td><td>0000</td><td>rs1(src)</td><td>000</td><td>rd(dst)</td><td>0001011</td><td>alc</td>
+            </tr>
+            <tr  style="float: center"></tr>
+                <td colspan="2">imm[13:2]</td><td>00010</td><td>010</td><td>rd(dst)</td><td>0001011</td><td>alci</td>
+            </tr>
+            <tr  style="float: center"></tr>
+                <td>0000000</td><td>0000</td><td>rs1(src)</td><td>001</td><td>rd(dst)</td><td>0001011</td><td>alcd</td>
+            </tr>
+            <tr  style="float: center"></tr>
+                <td colspan="2">imm[13:2]</td><td>00010</td><td>011</td><td>rd(dst)</td><td>0001011</td><td>alcid</td>
+            </tr>
+            <tr  style="float: center"></tr>
+                <td>0000000</td><td>0000</td><td>rs1(src)</td><td>100</td><td>rd(dst)</td><td>0001011</td><td>qsz</td>
+            </tr>
+            <tr  style="float: center"></tr>
+                <td>0111111</td><td>rs2(ix)</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>dtp</td>
+            </tr>
+            <tr  style="float: center"></tr>
+                <td>1101111</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>btd</td>
+            </tr>
+            <tr  style="float: center"></tr>
+                <td>1011111</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>itd</td>
+            </tr>
+            <tr  style="float: center"></tr>
+                <td>1110111</td><td>00000</td><td>rs1(src)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>lw.x</td>
+            </tr>
+            <tr  style="float: center"></tr>
+                <td>1111011</td><td>rs2(sd)</td><td>rs1(ptr)</td><td>000</td><td>00000</td><td>0001011</td><td>sw.x</td>
+            </tr>
+
+        </table>
     </section>
+
+
     <h2 class="page-break-before"><a id="t_op">Object and Pointer Types</a></h2>
     <section>
         <figure style="display:flex">
@@ -2038,7 +2106,7 @@
                 </ul>
             </td>
             </table>
-            *1: The values of P, L and H are dependant on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the <a href="#riscv_i_tick">RISC-V I vs I'</a> chapter.<br>
+            *1: The values of P, L and H are dependent on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the <a href="#riscv_i_tick">RISC-V I vs I'</a> chapter.<br>
             *2: For the ret variant of jalr, the target index of rd used for the writeback into the register file is ra while the target value is only the color bit in the index field with everything else being zero.
         </p>
     </section>

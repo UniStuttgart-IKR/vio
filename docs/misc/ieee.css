@@ -10,9 +10,9 @@ a[href^="#"] {
   color: inherit;
   content: target-counter(attr(href, url), reference);
   text-decoration: none; }
-  a[href^="#"]:not(.toc-link)::before {
+  a[href^="#"]:not(.sl)::before {
     content: "["; }
-  a[href^="#"]:not(.toc-link)::after {
+  a[href^="#"]:not(.sl)::after { /*sl = short link*/
     content: "]"; }
   a[href^="#"].section {
     content: target-counter(attr(href, url), section); }

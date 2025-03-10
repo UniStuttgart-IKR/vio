@@ -158,13 +158,31 @@
 
         <h2><a id="isa_object_types">Major object types</a></h2>
         <p>
-            By 
+            By combining the three independent access permissions of an object, a total of eight distinct combinations are possible.
+            To simplifiy the discussion of objects, these possibilities are combined to make up three groups.
         </p>
+        <p>
+            The first group is denoted as the regular objects group. Any object having its data only access permission cleared is part of this group.
+            Objects of this group may hold any data meaning both values and pointers may be stored in a object of this group.
+            In order to enforce the seperation of instructions and data however, instructions may not be fetched from such objects and executed subsequntually.
+            The second important object group is made up of objects having their data only bit set and at least one of their read or write permissions being granted.
+            Such objects are said to be data only objects.
+        </p>
+        <p>
+            Just as with regular objects, it is not allowed to fetch and execute instructions from such objects.
+            Data only objects differ from regular objects in that it is not possible to store pointers in objects of this type group.
+            By keeping pointers out of such objects, it is possible to achieve a improvement of memory access efficiency in some implementations.
+            Another advantage of objects not containing any pointers is the reduction of the effort caused by garbage collecting these objects.
+        </p>
+        <p>
+            While the object groups introduced up to this point only allow for variation of data to be contained in objects, the last group enables instructions to be encapsulated in objects too.
+            
+        </p>   
 
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
-        One of the object types mentioned above are regular objects. This type of object may contain both values as well as data.
-        The most obvious change is necessary in regard to load and store instructions as listed below:
+        As motivated in the first section of this chapter, only pointers may be used to access memory.
+        This requirement influences all load and store instructions as listed below:
         </p>
         <ul style="list-style-position: inside; padding-left: 0; text-align:center">
             <li style="display: inline; padding-right: 2em;">◈ lb/lbu</li>

@@ -42,8 +42,9 @@
             In conventional computer architectures, hardware has no information about the location and size of programming language level objects like strings or structs.
             Such architectures are also not able to distinguish between pointers and values in both their register files and memories.
             This lack of information makes it impossible for the hardware to do bounds checks and automatically remove unused data from system memory.
-            Programming languages like C demonstrate how this leads to problems manifesting themselves in the form of buffer overflows and memory leaks.<br>
-
+            Programming languages like C demonstrate how this can lead to problems like buffer overflows and memory leaks.
+        </p>
+        <p>
             Other programming languages like Python choose to add both the bounds checks and the pointer tagging to the tasks handled by their runtime.
             Obviously this improvement of reliability and security comes with a substantial tradeoff in the efficiency of programs written in such languages.<br>
         </p>
@@ -72,7 +73,7 @@
             One area where this can be easily observed is O-RISCs postulation that pointers cannot be modified in any shape or form.
             To index contents of an object, compilers are required to keep a separate data register next to the original pointer register.
             This contradicts the assumptions many compilers make of computer architectures. LLVMs <em>getelementptr</em> instruction <a href="#llvm_gep">2</a> is one example
-            where the assumptions O-RISC and a compiler take from one another can diverge.
+            where the assumptions O-RISC and conventional compilers diverge.
             This in consequence makes O-RISC unable to compile the influential C programming language, reducing the amount of programs
             being source code compatible with this architecture.
         </p>

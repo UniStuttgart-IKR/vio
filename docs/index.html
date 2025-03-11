@@ -152,7 +152,8 @@
             Arithmetic or logic operations on such a pointer like additions or bitwise inversions modify the pointer as a regular address would have been modified by the executed operation. 
             This modification is achieved by only altering a pointers index field while the combined field stays unchanged. 
             Note that pointers having an index reaching out of the bounds of an object or I/O device are allowed in both the register file and in memory.
-            Comparisons act only on the effective address of a pointer, all other information is not taken into account.
+            In case of pointers of memory type, comparisons act only on the effective address of a pointer, all other information is not taken into account.
+            For I/O type pointers, the value used for the actual comparison is made up by shifting the I/O device number up by XLEN bits and adding this value to the index.
             <br>
             Arithmetic or logical operations on two pointers are allowed in the case that both pointers are of memory type.
             For arithmetic operations on two memory type pointers, the combined field of the resulting pointer is chosen from the input pointer base addresses such that the calculated index lies within the object located at this base address. 

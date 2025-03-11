@@ -39,21 +39,19 @@
     <section>
         <h2><a id="motivation">Motivation</a></h2>
         <p>
-            In conventional computer architectures, the system hardware has no information about the location and size of programming language level objects like strings or structs.
-            Such architectures are also not able to distinguish between pointers and values in both their register files and memories.
-            This lack of information makes it impossible for the hardware to do bounds checks and automatically remove unused data from system memory.
-            Programming languages like C demonstrate how this can lead to problems like buffer overflows and memory leaks.
+            In conventional computer architectures, the system hardware has no information about the location and size of runtime level objects like structs or arrays.
+            While executing machine instructions, they also cannot distinguish between handling a pointer to such objects or a primitive that by chance has the same value as the pointer.
+            This lack of information makes it impossible for the hardware to do bounds checks or automatically remove unused data from system memory.
+            Programming languages like C demonstrate how this can lead to problems like buffer overflows or memory leaks.<br>
+            Object-oriented programming languages like Java or Python depend on their runtime to differentiate pointers from values and free up unused memory.
+            Obviously, this improvement of reliability and security comes with a substantial tradeoff in program efficiency written in these languages.<br>
         </p>
         <p>
-            Other object-oriented programming languages like Java and Python choose to include the distinction of pointers and values required for bounds checks and  garbage collection to the tasks handled by their runtime.
-            Obviously, this improvement of reliability and security comes with a substantial tradeoff in the efficiency of programs written in such languages.<br>
-        </p>
-        <p>
-            To tackle both the challenge of bound checks and garbage collection in hardware, the experimental <a href="#meyer_orisc">Objective-RISC architecture</a> (O-RISC), proposes a new perspective 
+            To tackle these challenges, the experimental <a href="#meyer_orisc">Objective-RISC architecture</a> (O-RISC), proposes a new perspective 
             on the cooperation of hardware and software. The O-RISC architecture is the main inspiration for RISC-ViO with its core idea to lower the concept of objects from a runtime level down to ISA level. 
             For this to work an O-RISC processor always has access to information strictly identifying pointers and boundaries of objects for every instruction executed.
-            This enables the enforcement of bounds checks, the protection of data from unwanted modification and garbage collection in hardware, leading to more robust program execution
-            without the performance impact caused by a runtime providing those features.
+            This enables the enforcement of bounds checks, the protection of data from unwanted modification and garbage collection in hardware. 
+            This leads to a more robust program execution without the performance impact caused by a runtime providing these features.
         </p>
         <figure>
             <figcaption>View of the different architectures on programming language level objects in memory</figcaption>
@@ -70,10 +68,10 @@
         </figure>
         <p>
             Being the nature of groundbreaking concepts, O-RISC is designed to be very cautious about its new responsibilities.
-            One area where this can be easily observed is O-RISCs postulation that pointers cannot be modified in any shape or form and always point at the first slot of the corresponding object.
-            To index contents of an object, compilers are required to keep a separate data register next to the original pointer register.
+            One area where this can be easily observed is O-RISCs postulation of immutable pointers, they always reference the head of an object.
+            To index across its contents, compilers are required to keep a separate data register next to the original pointer register.
             This contradicts the assumptions many compilers make of computer architectures. LLVMs <em>getelementptr</em> instruction <a href="#llvm_gep">2</a> is one example
-            where the assumptions O-RISC and conventional compilers diverge.
+            where they can diverge.
             This in consequence makes O-RISC unable to compile the influential C programming language, reducing the amount of programs
             being source code compatible with this architecture.
         </p>
@@ -86,20 +84,21 @@
         </p>
         <h4 style="text-indent: 0;">1. Make software more robust while keeping compatibility</h4>
         <p style="text-indent: 0;">
-            RISC-ViO aims to provide the same unambiguousness and integrity of pointers as well as bounds checks of hardware objects which O-RISC provides.
+            RISC-ViO aims to provide the same unambiguousness and integrity of pointers as well as bounds checks of objects O-RISC provides.
             Unlike O-RISC however, RISC-ViO aims to reduce the impact on existing software to a minimum. The only changes necessary should stay 
             on the side of runtimes and operating systems. User code on programming language level should be able to stay as is while still benefiting from RISC-ViOs advantages.
         </p>
-        <h4 style="text-indent: 0;">2. Make the life of compilers easier</h4>
+        <h4 style="text-indent: 0;">2. Make life of compilers easier</h4>
         <p style="text-indent: 0;">
             With the introduction of hardware heap management, RISC-ViO is raising the abstraction layer of memory. Consequently, the effort of lowering higher  
-            programming languages to machine instructions is dramatically reduced. This opens up new possibilities for improvements in how software can be compiled. 
-            We aim to strengthen these benefits without limiting the already existing possibilities of compilers.
+            programming languages to machine instructions is dramatically reduced. This opens up chances for improvements in how software is compiled. 
+            We aim to strengthen these benefits without limiting the already existing capabilities of compilers.
         </p>
         <h4 style="text-indent: 0;">3. Stay true to the RISC philosophy</h4>
         <p style="text-indent: 0;">
-            The benefits of robustness are worthless when they come at the cost of arbitrary execution times. That is why RISC-ViO is designed in such a way
-            that all instructions can be executed in a single clock cycle. This allows secure object-based programming with concurrent garbage collection on real-time systems.
+            The benefits of robustness are worthless when they come at the cost of arbitrary execution times. That is why RISC-ViO's instructions are designed
+            in such a way that they can be implemented with single-cycle latency. This keeps changes needed to conventional RISC architectures small and program
+            execution stays predictable.
         </p>
         <h4 style="text-indent: 0;">4. Be an extension, not a replacement</h4>
         <p style="text-indent: 0;">
@@ -259,7 +258,6 @@
         <h4><a name="alc">alc-instruction</a></h4>
             The <em>alc</em> instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is by the value passed via rs1.
             The size is given in bytes as per the value in rs1.
-            Apart from the source of the object size, <em>alc</em> only differs from <em>alci</em> in that <em>alc</em> cannot be used to allocate a frame. 
             
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
@@ -296,7 +294,7 @@
                     </thead>
                     <tbody>
                         <tr  style="float: center">
-                            <td>0000000</td><td>0000</td><td>rs1(src)</td><td>000</td><td>rd(dst)</td><td>0001011</td><td>alc</td>
+                            <td>0000000</td><td>rs1 (src)</td><td>00010</td><td>000</td><td>rd (dst)</td><td>0001011</td><td>alc</td>
                         </tr>
                     </tbody>
                 </table>
@@ -346,7 +344,7 @@
                 </thead>
                 <tbody>
                     <tr  style="float: center"></tr>
-                        <td colspan="2">imm[13:2]</td><td>00010</td><td>010</td><td>rd(dst)</td><td>0001011</td><td>alci</td>
+                        <td colspan="2">imm[13:2]</td><td>00010</td><td>010</td><td>rd (dst)</td><td>0001011</td><td>alci</td>
                     </tr>
                 </tbody>
             </table>
@@ -358,9 +356,9 @@
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
 
-        <h4><a name="alcd">alcd-instruction</a></h4>
-            The <em>alcd</em> instruction is a specialization of the <em>alc</em> instruction, allowing for the allocation of data only objects.
-            Note that is it also forbidden to use <em>alcd</em> to allocate a new frame object.
+        <h4><a name="alcd">alc.d-instruction</a></h4>
+            The <em>alc.d</em> instruction is a specialization of the <em>alc</em> instruction, allowing for the allocation of data only objects.
+            Note that is it also forbidden to use <em>alc.d</em> to allocate a new frame object.
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
@@ -396,7 +394,7 @@
                     </thead>
                     <tbody>
                         <tr  style="float: center"></tr>
-                            <td>0000000</td><td>0000</td><td>rs1(src)</td><td>001</td><td>rd(dst)</td><td>0001011</td><td>alcd</td>
+                            <td>0000000</td><td>rs1 (src)</td><td>00000</td><td>001</td><td>rd (dst)</td><td>0001011</td><td>alc.d</td>
                         </tr>
                     </tbody>
                 </table>
@@ -446,7 +444,7 @@
                 </thead>
                 <tbody>
                     <tr  style="float: center"></tr>
-                        <td colspan="2">imm[13:2]</td><td>00010</td><td>011</td><td>rd(dst)</td><td>0001011</td><td>alcid</td>
+                        <td colspan="2">imm[13:2]</td><td>00000</td><td>011</td><td>rd (dst)</td><td>0001011</td><td>alci.d</td>
                     </tr>
                 </tbody>
             </table>
@@ -494,7 +492,7 @@
                 </thead>
                 <tbody>
                     <tr  style="float: center"></tr>
-                        <td>0000000</td><td>0000</td><td>rs1(src)</td><td>100</td><td>rd(dst)</td><td>0001011</td><td>qsz</td>
+                        <td>0000000</td><td>00000</td><td>rs1 (src)</td><td>100</td><td>rd (dst)</td><td>0001011</td><td>qsz</td>
                     </tr>
                 </tbody>
             </table>
@@ -547,7 +545,7 @@
                     </thead>
                     <tbody>
                         <tr  style="float: center"></tr>
-                            <td>0111111</td><td>rs2(ix)</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>dtp</td>
+                            <td>0111111</td><td>rs2 (ix)</td><td>rs1 (ptr)</td><td>000</td><td>rd (dst)</td><td>1001001</td><td>dtp</td>
                         </tr>
                     </tbody>
                 </table>
@@ -593,7 +591,7 @@
                     </thead>
                     <tbody>
                         <tr  style="float: center"></tr>
-                            <td>1101111</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>btd</td>
+                            <td>1101111</td><td>00000</td><td>rs1 (ptr)</td><td>000</td><td>rd (dst)</td><td>1001001</td><td>btd</td>
                         </tr>
                     </tbody>
                 </table>
@@ -639,7 +637,7 @@
                     </thead>
                     <tbody>
                         <tr  style="float: center"></tr>
-                            <td>1011111</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>itd</td>
+                            <td>1011111</td><td>00000</td><td>rs1 (ptr)</td><td>000</td><td>rd (dst)</td><td>1001001</td><td>itd</td>
                         </tr>
                     </tbody>
                 </table>
@@ -688,7 +686,7 @@
                     </thead>
                     <tbody>
                         <tr  style="float: center"></tr>
-                            <td>1110111</td><td>00000</td><td>rs1(src)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>lw.x</td>
+                            <td>1110111</td><td>00000</td><td>rs1 (src)</td><td>000</td><td>rd (dst)</td><td>1001001</td><td>lw.x</td>
                         </tr>
                     </tbody>
                 </table>
@@ -732,7 +730,7 @@
                     </thead>
                     <tbody>
                         <tr  style="float: center"></tr>
-                            <td>1111011</td><td>rs2(sd)</td><td>rs1(ptr)</td><td>000</td><td>00000</td><td>0001011</td><td>sw.x</td>
+                            <td>1111011</td><td>rs2 (sd)</td><td>rs1 (ptr)</td><td>000</td><td>00000</td><td>0001011</td><td>sw.x</td>
                         </tr>
                     </tbody>
                 </table>

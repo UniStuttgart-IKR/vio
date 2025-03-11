@@ -204,7 +204,7 @@
         This instruction will also, just as <em>jal</em> does, write a pointer to its destination register.
         <!--If the pointer provided does not reference such an object, the processor raises a <em>IncompatibleTypeException</em> with <em>xtval</em> containing the target pointer.-->
         For the seperation of data and instructions, <em>jalr</em> also requires a pointer to an executable object as source register content.
-        Using a value as a destination for <em>jalr</em> is still allowed though and leads to jumping to the given index inside the currently executed code object.
+        Using a value as a destination for <em>jalr</em> is still allowed though and leads to jumping to the given index inside the currently executed executable object.
         To make sure that a return address cannot be used twice, RISC-ViO mandates that the variant of <em>jalr</em> which realizes the <em>ret</em> pseudo instruction has to null out the register <em>ra</em> except for the zero-bit of its index after updating the program counter.
         </p>
 
@@ -870,7 +870,7 @@
             </p>
         <h2><a id="gen">Exceptions in conjunction with CSR</a></h2>
             <p>Since RISC-ViO allows both pointers and values to be stored in the registers and also organizes code using objects, some CSR also need to be able to hold pointers.
-                This is the case for <em>xtvec</em> and <em>xepc</em> due to code objects and for <em>xtval</em> and <em>xscratch</em> due to pointers in general.
+                This is the case for <em>xtvec</em> and <em>xepc</em> due to executable objects and for <em>xtval</em> and <em>xscratch</em> due to pointers in general.
                 To access the components of these registers, the <em>csrw</em> instruction may be used in conjunction with the <em>dtp</em>/<em>btd</em>/<em>itd</em> instructions.
                 Apart from this slight modification as well as the expansion of available exceptions, exceptions and interrupts behave identical to the way they do in RISC-V.
             </p>
@@ -2704,8 +2704,8 @@
     <section>
         <p>
             After system reset, all registers are initialised with the value zero. Also, both <em>malc</em> and <em>msad</em> contain the value 0x0.0x0.
-            The subarchitectural registers that contain the current code object length and index are also zero.
-            The code object initially executed is 0x7, so its header should be located at address zero and instructions should start at address 0xC. 
+            The subarchitectural registers that contain the current executable object length and index are also zero.
+            The executable object initially executed is 0x7, so its header should be located at address zero and instructions should start at address 0xC. 
             To set up this register as well as gp, a system software should start with the following instruction sequence:
         </p>
 

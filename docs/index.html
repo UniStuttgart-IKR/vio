@@ -122,31 +122,29 @@
         <p>
             Objects are unique, bounded areas allocated in memory. 
             The defining traits of such objects are their type, XLEN-wide length as well as the accesses possible on these objects. 
-            For this purpose, a total of three flags, 'read', 'write' and 'data only' exist for each object, each granting their respective access type.
-            The permissions for these accesses may be granted or denied in any combination using special, privileged instructions.
+            For this purpose, a total of three flags, 'read', 'write' and 'data only' exist for each object.
+            These flags and their incurred permissions may be set or cleared in any combination using special, privileged instructions.
         </p>
         <p>
-            The RISC-V I' ISA differentiates between two data types. References to objects called pointers which are mandated to be unique and regular data being denoted as values.<br>
+            The RISC-V I' ISA differentiates between two data types. Regular data being denoted as values and references to objects called pointers.
+            Such pointers have a both a base address field which contains the address of the referenced object and an index field which may point to any byte inside of the referenced object. 
+            The pointer encoding has to allow pointers to cover the entire address space of the processor of XLEN bits.<br>
         </p>
         <p>
-            Values like numbers or characters may be arbitrarily modified just as it is possible in RISC-V.<br>
-            For pointers, in contrast, some restrictions apply regarding the way in which they may be modified. 
-            Arithmetic operations of those pointers like additions or any arithmetic or logical operation are still allowed and modify the pointer as a regular address would be modified by the executed operation. 
-            Such operations only change the index part of a pointer.
-            The base address information as well as the size information are not influenced by those operations, however. 
-            Comparisons act only on the effective address of a pointer, all other tags and flags are ignored by these operations.<br>
+            A value like a number or a character may be arbitrarily modified just as it is possible in RISC-V.<br>
+            For a pointer, in contrast, some restrictions apply regarding the way in which it may be modified.
 
-            Note that for arithmetic operations on two pointers, rd will take on the pointer, length and header field of that pointer of that object inside of which the operation result lies. 
-            Should the result not fall into either of the input objects, the behavior regarding which input is used for the pointer, length and header fields of the output register is undefined. <br>
-        </p>
-        <p>
-            For the differentiation between pointers and values to be meaningful, RISC-ViO mandates that only pointers may be used to access memory via the object abstraction. The same is also true for accesses to I/O devices: Access to an I/O device is only possible via its corresponding pointer.
-            <!--For obtaining pointers, there are two distinct possibilities. Either by using a member the alc instruction family to allocate a new object or by manually creating them in higher privilege modes. -->
-            The pointer encoding has to allow pointers to cover the entire address space of the processor of XLEN bits.
-            (Note that pointers may not be written to I/O devices.)
+            Arithmetic or logic operations on such a pointer like additions or bitwise inversions modify the pointer as a regular address would have been modified by the executed operation. 
+            This modification is achieved by only altering a pointers index field while the base address information stays unchanged. 
+            Comparisons act only on the effective address of a pointer, all other information is not taken into account.
+            <br>
+
+            
+            Note that for arithmetic operations on two pointers, the base address of the resulting pointer is chosen from the input pointer base addresses such that the calculated index lies within the object located at this base address. 
+            Should the result not fall into either of the input objects, the behavior regarding which input is used for the base address field of the resulting pointer  is undefined. <br>
         </p>
 
-        <h2><a id="isa_object_types">Object type groups</a></h2>
+        <h2><a id="isa_object_types">Object types</a></h2>
         <p>
             By combining the three independent access permissions of an object, a total of eight distinct combinations are possible.
             To simplify the discussion of objects, these possibilities are combined to make up three groups.
@@ -173,7 +171,9 @@
 
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
-        As motivated in the first section of this chapter, only pointers may be used to access memory.
+        For the differentiation between pointers and values to be meaningful, RISC-ViO mandates that only pointers may be used to access memory via the object abstraction. The same is also true for accesses to I/O devices: Access to an I/O device is only possible via its corresponding pointer.
+        <!--For obtaining pointers, there are two distinct possibilities. Either by using a member the alc instruction family to allocate a new object or by manually creating them in higher privilege modes. -->
+        (Note that pointers may not be written to I/O devices.)
         This requirement influences all load and store instructions as listed below:
         </p>
         <ul style="list-style-position: inside; padding-left: 0; text-align:center">

@@ -2782,30 +2782,30 @@
     var h2Numbering = 0;
     for (var i = 0; i < headerList.length; i++) {
         var header = headerList[i];
-        if (header.childNodes.length &equals; 0 || header.childNodes[0].nodeName &ne; "A")
+        if (header.childNodes.length == 0 || header.childNodes[0].nodeName != "A")
             continue;
 
-        if (h2Numbering &equals; 0 && header.nodeName &equals; "H2"){
+        if (h2Numbering == 0 && header.nodeName == "H2"){
             const h2Toc = document.createElement("ul");
             h2Toc.style.paddingInlineStart = "28pt";
             h2Toc.style.listStyleType = "none";
             h2Toc.style.marginLeft = 0;
             h1Toc.appendChild(h2Toc);
             toc = h2Toc;
-        } else if (h2Numbering > 0 && header.nodeName &equals; "H1"){
+        } else if (h2Numbering > 0 && header.nodeName == "H1"){
             toc = h1Toc;
             h2Numbering = 0;
         }
 
-        if (header.nodeName &equals; "H1")
+        if (header.nodeName == "H1")
             h1Numbering++;
         
-        if (header.nodeName &equals; "H2")
+        if (header.nodeName == "H2")
             h2Numbering++;
 
         const li = document.createElement("li");
         li.className = "toc";
-        if (h2Numbering &equals; 0){
+        if (h2Numbering == 0){
             li.style.fontSize = "14pt";
             li.style.fontWeight = "bold";
             li.appendChild(document.createTextNode(h1Numbering + ". "));

@@ -86,12 +86,12 @@
         <h4 style="text-indent: 0;">1. Make software more robust while keeping compatibility</h4>
         <p style="text-indent: 0;">
             RISC-ViO aims to provide the same unambiguousness and integrity of pointers as well as bounds checks of hardware objects which O-RISC provides.
-            Unlike O-RISC however, RISC-ViO aims to reduce the impact on existing software to a minimum. The only changes necessary should to stay 
-            on the side of runtimes and operating systems. User code on programming language level should be able to  stay as is while still benefiting from RISC-ViOs advantages.
+            Unlike O-RISC however, RISC-ViO aims to reduce the impact on existing software to a minimum. The only changes necessary should stay 
+            on the side of runtimes and operating systems. User code on programming language level should be able to stay as is while still benefiting from RISC-ViOs advantages.
         </p>
         <h4 style="text-indent: 0;">2. Make the life of compilers easier</h4>
         <p style="text-indent: 0;">
-            With the introduction of hardware heap management, RISC-ViO is raising the abstraction layer of memory. Consequently the effort of lowering higher  
+            With the introduction of hardware heap management, RISC-ViO is raising the abstraction layer of memory. Consequently, the effort of lowering higher  
             programming languages to machine instructions is dramatically reduced. This opens up new possibilities for improvements in how software can be compiled. 
             We aim to strengthen these benefits without limiting the already existing possibilities of compilers.
         </p>
@@ -104,7 +104,7 @@
         <p style="text-indent: 0;">
             We propose a way the RISC-V Instruction Set Architecture can be extended without limiting other extensions or future innovation.
             This way, the idea of object-based architectures can be easily explored on a wide range of processor configurations. Reaching from minimal embedded
-            applications, over vector-supporting AI-Units to fully fletched, state of the art multicore, superscalar CPUs. At the same time, other researchers can easily pick up ViO
+            applications, over vector-supporting AI accelerators to fully fletched, state of the art multicore, superscalar CPUs. At the same time, other researchers can easily pick up ViO
             and make use of its benefits for their own purposes.
         </p>
     </section>
@@ -121,7 +121,7 @@
         <h2><a id="data_vs_pointers">Objects, pointers and values</a></h2>
         <p>
             Objects are unique, bounded areas allocated in memory. 
-            The defining traits of such objects are their type, XLEN-wide length as well as the accesses possible on these object. 
+            The defining traits of such objects are their type, XLEN-wide length as well as the accesses possible on these objects. 
             For this purpose, a total of three flags, 'read', 'write' and 'data only' exist for each object, each granting their respective access type.
             The permissions for these accesses may be granted or denied in any combination using special, privileged instructions.
         </p>
@@ -144,7 +144,7 @@
         <p>
             The first group is denoted as the regular objects group. Any object having its 'data only' flag cleared is part of this group.
             Objects of this group may hold any data meaning both values and pointers may be stored in a object of this group.
-            In order to enforce the seperation of instructions and data however, instructions may not be fetched from such objects and executed subsequentually.
+            In order to enforce the seperation of instructions and data however, instructions may not be fetched from such objects and executed afterwards.
         </p>
         <p>
             The second important object group is made up of objects having their 'data only' flag set and at least one of their 'read' or 'write' flags being enabled.
@@ -158,7 +158,7 @@
             As hinted by the section about regular objects, there is also a object type which contains instructions.
             This object type is denoted as 'executable' and has its 'data only' flag set while both 'read' and 'write' flags are cleared.
             As such, no instruction may explicitly access the contents of an object of this type. Only the processor may fetch instructions from such an object.
-            This makes it necessary for system management software to load in code in the form of a data only object and then altering the objects type ny settings its permission flags.
+            This makes it necessary for system management software to load in code in the form of a data only object and then altering the objects type by modifying its permission flags.
         </p>   
 
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>

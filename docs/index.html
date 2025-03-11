@@ -240,7 +240,7 @@
             Those instructions are all part of the zhm ("heap management") extension.
         </p>
 
-        <h2><a name="unpriv_instructions">Unprivileged Instructions</a></h2>
+        <h2><a name="unpriv_instructions">Unprivileged instructions</a></h2>
         <h3><a name="alc_fam">Allocation: alc/alci/alc.d/alci.d</a></h3>
         <p>
             Since RISC-ViO manages objects on the ISA level, the ISA has to provide a means to create new objects and their corresponding pointers.
@@ -256,7 +256,7 @@
             The CSR index of the <em>malc</em> CSR can be extracted from the <a href="#t_csr">CSR table</a>.
         </p>
 
-        <h4><a name="alc">alc-Instruction</a></h4>
+        <h4><a name="alc">alc-instruction</a></h4>
             The <em>alc</em> instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is by the value passed via rs1.
             The size is given in bytes as per the value in rs1.
             Apart from the source of the object size, <em>alc</em> only differs from <em>alci</em> in that <em>alc</em> cannot be used to allocate a frame. 
@@ -308,7 +308,7 @@
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
 
-        <h4><a name="alci">alci-Instruction</a></h4>
+        <h4><a name="alci">alci-instruction</a></h4>
         The <em>alci</em> instruction is a variation of the <em>alc</em> instruction. In contrast to <em>alci</em>, the size of the new object is given by the 12 bit wide immediate. 
         This immediate specifies the amount of pointers which can fit inside the object. So for a XLEN of 32, it specifies the number of 32 bit words that fit into the object.
         <div style="margin-top: 5%; margin-bottom: 3%;">
@@ -358,7 +358,7 @@
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
 
-        <h4><a name="alcd">alcd-Instruction</a></h4>
+        <h4><a name="alcd">alcd-instruction</a></h4>
             The <em>alcd</em> instruction is a specialization of the <em>alc</em> instruction, allowing for the allocation of data only objects.
             Note that is it also forbidden to use <em>alcd</em> to allocate a new frame object.
             <div style="margin-top: 5%; margin-bottom: 3%;">
@@ -409,7 +409,7 @@
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
 
-        <h4><a name="alcid">alci.d-Instruction</a></h4>
+        <h4><a name="alcid">alci.d-instruction</a></h4>
         The <em>alci.d</em> instruction is the analogous form of <em>alci</em> regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocating frames.
         <div style="margin-top: 5%; margin-bottom: 3%;">
             <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
@@ -509,7 +509,7 @@
             With the instructions described above, it is impossible to break out of the restrictions given by the bounds check and pointer integrity safety measures. To enable the management of the processor system additional instructions are available for all privilege modes above the user mode.
         <h3><a name="dtp">Raw pointer access: dtp/btd/itd</a></h3>
             In order to be able to create and inspect pointers a total of three instructions are provided. These allow for both reading out the integral parts of a pointer as well as creating arbitrary pointers.
-            <h4><a name="dtp">dtp-Instruction</a></h4>
+            <h4><a name="dtp">dtp-instruction</a></h4>
             The dtp "data to pointer" instruction allows the assembly of arbitrary pointers. Both the index as well as the raw pointer value are set according the values in registers rs1 and rs2 respectively. The result is stored in rd. 
             Pointers assembled using <em>dtp</em> may be of ordinary and I/O pointer type. The tag values required for these types are shown in the <a href="#t_op">object and pointer overview</a>.
             <div style="margin-top: 5%; margin-bottom: 3%;">
@@ -556,7 +556,7 @@
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs1 or rs2 contains a pointer, not a value (rs1 or rs2 with rs1 being prioritized)</li>
             </ul>
-            <h4><a name="btd">btd-Instruction</a></h4>
+            <h4><a name="btd">btd-instruction</a></h4>
             The btd "base to data" instruction allows for reading out a pointers raw pointer value. This value is written into rd for the pointer given in rs1.
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
@@ -602,7 +602,7 @@
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs1 contains a value, not a pointer (rs1)</li>
             </ul>
-            <h4><a name="itd">itd-Instruction</a></h4>
+            <h4><a name="itd">itd-instruction</a></h4>
             The <em>itd</em> 'index to data' instruction allows for reading out a pointers raw pointer index. This value is written into rd for the pointer given in rs1.
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
@@ -650,7 +650,7 @@
             </ul>
         <h3><a name="lw_x">Raw memory access: lw.x/sw.x</a></h3>
             Since the I' ISA abstracts the memory access on ISA level from the actual memory access the hardware performs, it is not guaranteed that a store or load instruction accesses the given memory location or stores the given register data in unmodified form. 
-            <h4><a name="lw_x">lw.x-Instruction</a></h4>
+            <h4><a name="lw_x">lw.x-instruction</a></h4>
             This instruction enables the software to force the hardware to load a word from a given access given by rs1. This address may either be a pointer as well as an address value. 
             After the execution of this instruction, the register selected by rd contains the value of the memory at address rs1.
             <div style="margin-top: 5%; margin-bottom: 3%;">
@@ -693,7 +693,7 @@
                     </tbody>
                 </table>
             </div>
-            <h4><a name="sw_x">sw.x-Instruction</a></h4>
+            <h4><a name="sw_x">sw.x-instruction</a></h4>
             This instruction enables the software to force the hardware to write a word to a given access given by rs1. This address may either be a pointer as well as an address value. 
             The register rs2 which provides the store data has to contain a value. Please note that although the theoretical order of the registers is sw.x rs1, rs2, the value to be stored comes first in assembly files. 
             This makes the argument order of sw.x analogous to the regular memory access instructions to avoid confusion regarding this order.
@@ -820,7 +820,7 @@
         </section>
     
         <section>   
-    <h1><a id="got">Global Offset Table</a></h1>
+    <h1><a id="got">Global offset table</a></h1>
     <p><i>Der Einsatz von Code-Objekten verbietet Sprünge auf fest definierte Adressen. Auch Speichern und Laden von Daten an festen Adressen ist mit dem Objektansatz unvereinbar.
         In herkömlichen Architekturen kommen zum Auflösen von (zur Compilezeit) unbekannten Adressen "Global Offset Tables" (GOT) zum Einsatz. Möchte ein Programm auf bestimmte Runtime-Funktionen
         wie z.B. printf() zugreifen, kompilieren gcc und clang keinen Sprung zu einer absoluten Adresse in den Programmablauf, sondern einen Sprung in die für dieses Programm individulle GOT.
@@ -832,14 +832,14 @@
         sondern auf die Adresse des Dynamischen Linkers gesetzt. Soll nun das erste Mal ein Bibliotheksaufruf ausgeführt werden, wird in wirklichkeit zuerst der Linker angesprungen, der
         die Adresse des Sprungziels ermittelt. Diese ersetzt dann den Eintrag in der GOT die den Linker aufgerufen hat, so dass folgende Sprünge nicht noch einmal den Linker ansprechen müssen.
     </i></p>
-    <h2><a id="gp">Global Pointer</a></h2>
+    <h2><a id="gp">Global pointer</a></h2>
     <p><i>In der herkömlichen RISC-V ABI wird die Adresse der GOT über die Distanz zum jal[r] Befehl angegeben. Dieser Ansatz ist in ViO nicht nutzbar, da ein Objekt nicht gleichzeitig
             lesbar und ausführbar sein kann. Zu diesem Zweck wird eine Art "companion"-Objekt eingeführt, dass alle Adressen, auf die ein Executable zu seiner Ausführung zugreifen möchte, führt.
             Anders als bei herkömlichen GOTs werden in diesen Objekten keine Offsets, sondern reine Zeiger gespeichert. Auch ausführbarer Code für Bibliotheksaufrufe befindet sich nicht in einer solchen GOT. 
             {gramm: Auf} Die "companion"-GOT kann in RISC-ViO immer über das Register <em>x3</em> (<em>gp</em>) zugegriffen werden. Es ist Aufgabe der Hardware oder des Betriebssystems dafür zu sorgen, dass das gp-Register immer
             auf das dem Executable zugehörigen GOT-Objekt verweist. 
         </i></p>
-    <h2><a id="static">Making Library Calls</a></h2>
+    <h2><a id="static">Making library calls</a></h2>
         <p><i>Um nun einen Bibliotheksaufruf auszuführen wird zuerst die Adresse der Bibliotheksfunktion aus der GOT mittels eines normalen Ladebefehls geladen und dann mit einem jalr and diese Adresse gesprungen.
             Um dem Linker mitzuteilen, dass für dieses Sprungziel ein GOT-Eintrag angelegt werden soll, wurde ein neuer Assembler Modifier eingeführt: %got_off(symbol). Dieser Modifier wird vom Linker ersetzt durch den Offset
             in der GOT der Executable an dem das symbol zu finden ist. Zu diesem Zweck wurde auch ein neuer Relocation/Dynsym-Typ eingeführt, um in ELF-Files zu markieren dass an einer bestimmten Stelle der load-offset noch
@@ -906,7 +906,7 @@
     </div>
 
 
-    <h1><a id="reg_fl">Values and Pointers in the Register File</a></h1>
+    <h1><a id="reg_fl">Values and pointers in the register file</a></h1>
     <section>
     <p>
         Every RISC-ViO architecture requires a register file which is able to satisfy the requirements given in the <a href="#base_spec">I'</a> chapter.
@@ -1116,7 +1116,7 @@
         </div>
     </section>
 
-    <h1><a id="ptr_addr">Pointer and Address generation</a></h1>
+    <h1><a id="ptr_addr">Pointer and address generation</a></h1>
         <p>The provided implementation example of the RISC-ViO architecture by using the object structures outlined above implies new requirements for a processor pipeline supporting this implementation.
             In the next sections, a possible subarchitecture meeting those requirements shall be described. </p>
     <h2><a id="alcs">Allocations</a></h2>
@@ -1185,7 +1185,7 @@
             The CSR index of the <em>msad</em> CSR can be extracted from the <a href="#t_csr">CSR table</a>.
         </p>
     </section>
-    <h2><a id="load_store">Loading and Storing a Pointer</a></h2>
+    <h2><a id="load_store">Loading and storing a pointer</a></h2>
     <section>
         <p>As the subarchitectural implementation requires some flag bit from the object header as well as its length or lambda field, those fields also have to be retrieved from memory when loading a pointer. 
             For this, the example subarchitectural implementation uses an additional pipeline stage called the attribute stage which is located behind the memory stage in the processor pipeline.<br>
@@ -1203,7 +1203,7 @@
         </p>
     </section>
 
-    <h2><a id="bounds">Bounds and Flag Checks</a></h2>
+    <h2><a id="bounds">Bounds and Flag checks</a></h2>
     <section>
         <p>As the outlined subarchitecture keeps the length of the corresponding object for each pointer in the register file, it is possible to check for an out of bound access as soon as the actual access index is available. 
             This can be the case as early as in the execute stage, which allows for early raising of <em>IndexOutBoundsException</em>s. 
@@ -2762,7 +2762,7 @@
 
           </ol> 
     </p>
-    <h2><a id="abbrevs_gloss">Glossary and Abbreviations</a></h2>
+    <h2><a id="abbrevs_gloss">Glossary and abbreviations</a></h2>
     <ol>
         <li>XLEN - base integer ISA width (i.e. 32 for RV32)</li>
         <li>index - object field offset contained in a pointer</li>

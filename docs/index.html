@@ -45,8 +45,8 @@
             Programming languages like C demonstrate how this can lead to problems like buffer overflows and memory leaks.
         </p>
         <p>
-            Other programming languages like Python choose to add both the bounds checks and the pointer tagging to the tasks handled by their runtime.
-            Obviously this improvement of reliability and security comes with a substantial tradeoff in the efficiency of programs written in such languages.<br>
+            Other object-oriented programming languages like Java and Python choose to include the distinction of pointers and values required for bounds checks and  garbage collection to the tasks handled by their runtime.
+            Obviously, this improvement of reliability and security comes with a substantial tradeoff in the efficiency of programs written in such languages.<br>
         </p>
         <p>
             To tackle both the challenge of bound checks and garbage collection in hardware, the experimental <a href="#meyer_orisc">Objective-RISC architecture</a> (O-RISC), proposes a new perspective 
@@ -70,7 +70,7 @@
         </figure>
         <p>
             Being the nature of groundbreaking concepts, O-RISC is designed to be very cautious about its new responsibilities.
-            One area where this can be easily observed is O-RISCs postulation that pointers cannot be modified in any shape or form.
+            One area where this can be easily observed is O-RISCs postulation that pointers cannot be modified in any shape or form and always point at the first slot of the corresponding object.
             To index contents of an object, compilers are required to keep a separate data register next to the original pointer register.
             This contradicts the assumptions many compilers make of computer architectures. LLVMs <em>getelementptr</em> instruction <a href="#llvm_gep">2</a> is one example
             where the assumptions O-RISC and conventional compilers diverge.
@@ -79,7 +79,7 @@
         </p>
     </section>
     <section>
-        <h2><a id="goals">Design Goals</a></h2>
+        <h2><a id="goals">Design goals</a></h2>
         <p>
             As all children try to grow up to be a better version of their parents, RISC-ViO takes over O-RISCs belief in the new way of hardware-software
             cooperation, but draws its own set of conclusions:
@@ -168,6 +168,7 @@
             As such, no instruction may explicitly access the contents of an object of this type. Only the processor may implicitly read from executable objects to fetch instructions.
             This makes it necessary for system management software to load in code in the form of a data only object and then alter object type by modifying its permission flags.
             RISC-ViO requires executable objects to hold a pointer to their Global Offset Table as described in the <a href="#got">Global Offset Table</a> chapter. 
+            In user mode, this pointer is not accessible directly but has to be setup by the system management software instead.
         </p>   
 
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
@@ -216,7 +217,7 @@
         To make sure that a return address cannot be used twice, RISC-ViO mandates that the variant of <em>jalr</em> which realizes the <em>ret</em> pseudoinstruction has to null out the register <em>ra</em> except for the zero-bit of its index after updating the program counter.
         </p>
 
-        <h2><a id="riscv_i_tick">Register File</a></h2>
+        <h2><a id="riscv_i_tick">Register file</a></h2>
             </p>
             RISC-V specifies 31 general-purpose registers and one special register, <em>zero</em>.
             The RISC-ViO architecture adds additional requirements to this register file definition:
@@ -233,7 +234,7 @@
 
 
     <section>
-    <h1><a id="instructions">The Zhm Extension</a></h1>
+    <h1><a id="instructions">The zhm extension</a></h1>
         <p>In addition to the modifications of already existing instructions which are part of the RISC-V I base ISA, RISC-ViO introduces several instructions as an interface between software and hardware regarding objects.
             Those instructions are all part of the zhm ("heap management") extension.
         </p>
@@ -447,7 +448,7 @@
             <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
-        <h3><a name="qsz">Attribute Query: qsz</a></h3>
+        <h3><a name="qsz">Attribute query: qsz</a></h3>
         The <em>qsz</em> instruction provides a means of reading an objects size as specified at its allocation time in bytes. For this, the source register has to contain a pointer.
         <div style="margin-top: 5%; margin-bottom: 3%;">
             <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
@@ -497,7 +498,7 @@
         </ul>
         <h2><a name="priv_instructions">Privileged Instructions</a></h2>
             With the instructions described above, it is impossible to break out of the restrictions given by the bounds check and pointer integrity safety measures. To enable the management of the processor system additional instructions are available for all privilege modes above the user mode.
-        <h3><a name="dtp">Raw Pointer Access: dtp/btd/itd</a></h3>
+        <h3><a name="dtp">Raw pointer access: dtp/btd/itd</a></h3>
             In order to be able to create and inspect pointers a total of three instructions are provided. These allow for both reading out the integral parts of a pointer as well as creating arbitrary pointers.
             <h4><a name="dtp">dtp-Instruction</a></h4>
             The dtp "data to pointer" instruction allows the assembly of arbitrary pointers. Both the index as well as the raw pointer value are set according the values in registers rs1 and rs2 respectively. The result is stored in rd. 
@@ -638,7 +639,7 @@
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs1 contains a value, not a pointer (rs1)</li>
             </ul>
-        <h3><a name="lw_x">Raw Memory Access: lw.x/sw.x</a></h3>
+        <h3><a name="lw_x">Raw memory access: lw.x/sw.x</a></h3>
             Since the I' ISA abstracts the memory access on ISA level from the actual memory access the hardware performs, it is not guaranteed that a store or load instruction accesses the given memory location or stores the given register data in unmodified form. 
             <h4><a name="lw_x">lw.x-Instruction</a></h4>
             This instruction enables the software to force the hardware to load a word from a given access given by rs1. This address may either be a pointer as well as an address value. 
@@ -746,7 +747,7 @@
         <h2><a id="are_obj">Structure</a></h2>
             <p>
                 Frame objects are based on regular objects but differ in the accesses which are allowed on them. 
-                Frame objects are never data only which means the data only bit in their header is cleared while the frame bit is set. 
+                Frame objects are never data only which means the 'data only' flag is cleared. 
                 To protect both the stack pointer <em>sp</em> as well as the return index <em>ra</em>, in frame objects special slots are reserved. For the 'stack' pointer <em>sp</em>, the pointer to the previous frame object, the first slot of XLEN size at byte index zero is reserved. 
                 This is immediately followed by the <em>ra</em> slot which is also XLEN wide. For XLEN=32, this slot resides at byte address 4.
                 In user mode, these slots of a frame object are only allowed to be used to store or load their respective register. Any other operation on these slots will lead to a <em>ForbiddenDstException</em> or <em>ForbiddenSrcException</em>.
@@ -760,14 +761,14 @@
                 </figure>
                 All other slots are general purpose and access to them is not restricted in any way.
             </p>
-        <h2><a id="chap_calling_convention">Calling Convention</a></h2>
+        <h2><a id="chap_calling_convention">Calling convention</a></h2>
             <p>As described in the introduction to this chapter, RISC-ViO denies foreign access to frame objects. As a consequence, the calling convention has be modified slightly from the convention used by RISC-V.
                 Namely, it is not possible to spill function arguments from registers onto the stack of the receiving function. Instead, the following scheme is employed: 
                 Just as is the case for conventional RISC-V, the arguments are stored in the registers <em>a0</em> to <em>a7</em> given that there are no more than eight XLEN arguments or as many arguments as will fit in those registers.
                 Instead of pushing the additional arguments that will not fit in the argument registers on the stack, a spill object of corresponding size has to be allocated. A pointer to this spill object is placed in <em>a7</em> and the remaining arguments are stored in this object.
             </p>
         <section>
-            <h2><a id="frame_ownership">Frame Ownership</a></h2>
+            <h2><a id="frame_ownership">Frame ownership</a></h2>
                 <p>
                     To achieve protection of frames from foreign accesses RISC-ViO uses so-called colour tags for both the <em>sp</em> and the <em>ra</em> register.
                     By updating those colours at critical points such as function entries/exits and frame allocations, the processor always knows whether the frame pointed to by the
@@ -775,14 +776,11 @@
                     This state is called "regular", while the current function not being the owner of the current frame is denoted as the "irregular" state.
                 </p>
                 <p>For <em>sp</em> as well as for <em>ra</em>, there are two colours: black and white. Those colours are an integral part of those registers and cannot be read or modified separately from their registers.
-                    Also, when storing/loading <em>ra</em> or <em>sp</em> using <em>sw/lw</em>, the colour is also stored/retrieved to/from the given memory location.
+                    Also, when storing/loading <em>ra</em> and <em>sp</em> using <em>sw/lw</em>, their colour is also stored/retrieved to/from their slots.
                     An overview of the transition between those colours is given in Figure 1.
-                    On every function entry, signified by a <em>jalr ra, zero, x (call)</em> instruction, the processor flips the colour of ra from white to black or vice versa. The same also happens when a function is exited using <em>jalr zero, ra, 0 (ret)</em>. For sp, this takes place on every frame allocation.
+                    On every function entry, signified by a <em>jalr ra, zero, x (call)</em> instruction, the processor flips the colour of ra from white to black or vice versa. The same also happens when a function is exited using <em>jalr zero, ra, 0 (ret)</em>. For <em>sp</em>, this takes place on every frame allocation using the <em>alc/alci</em> instructions.
                     Whether the processor is currently in the regular state (light blue), is given by the equality of the colours of ra and sp. 
-                    If the colours of <em>sp</em> and <em>ra</em> both were black for example, the processor would be in the regular state.
-                </p>
-                <p>
-                    Any access to the current frame while in irregular state leads to a <em>StateException</em> indicating access to a foreign frame.
+                    If the colours of <em>sp</em> and <em>ra</em> both were black for example, the processor would be in the regular state, allowing access to the current frame.
                 </p>
             <figure>
                 <figcaption>Colour transitions</figcaption>
@@ -889,6 +887,13 @@
             </p>
         
     </section>
+
+    <div style="margin-top: 3rem; margin-bottom: 3rem;">
+        <div style="font-size: 9pt; text-align: center;">ISA</div>
+        <hr>
+        <div style="font-size: 9pt; text-align: center;">implementation</div>
+    </div>
+
 
     <h1><a id="reg_fl">Values and Pointers in the Register File</a></h1>
     <section>
@@ -1100,7 +1105,7 @@
     </section>
 
     <h1><a id="ptr_addr">Pointer and Address generation</a></h1>
-        <p>The provided implementation example of the RISC-ViO architecture by using the object structures outline above implies new requirements for a processor pipeline supporting this implementation.
+        <p>The provided implementation example of the RISC-ViO architecture by using the object structures outlined above implies new requirements for a processor pipeline supporting this implementation.
             In the next sections, a possible subarchitecture meeting those requirements shall be described. </p>
     <h2><a id="alcs">Allocations</a></h2>
     <section>

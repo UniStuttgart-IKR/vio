@@ -167,6 +167,7 @@
             This object type is denoted as 'executable' and has its 'data only' flag set while both 'read' and 'write' flags are cleared.
             As such, no instruction may explicitly access the contents of an object of this type. Only the processor may implicitly read from executable objects to fetch instructions.
             This makes it necessary for system management software to load in code in the form of a data only object and then alter object type by modifying its permission flags.
+            RISC-ViO requires executable objects to hold a pointer to their Global Offset Table as described in the <a href="#got">Global Offset Table</a> chapter. 
         </p>   
 
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>

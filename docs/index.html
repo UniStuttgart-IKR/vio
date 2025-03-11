@@ -40,19 +40,19 @@
         <h2><a id="motivation">Motivation</a></h2>
         <p>
             In conventional computer architectures, hardware has no information about the location and size of programming language level objects like strings or structs.
-            It is therefore the duty of a runtime environment to define and enforce boundaries to such objects and prohibit malformed accesses. <!--mention garbage collection here-->
-            Obviously this comes with a substantial tradeoff in program efficiency.<br>
-            Also, programming languages like C do not strictly differentiate between a reference to an object and a value of primitive type. It could be that by chance the
-            value of an integer points to the start of an object in memory, even though it was not intended to be used as a pointer. <!--umstellen-->
-            This ambiguity between pointers and values makes it impossible to use garbage collection mechanisms, making it the job of the programmer
-            to manually free up memory. Being a difficult task to get right, this often leads to memory leaks.
+            Such architectures are also not able to distinguish between pointers and values in both their register files and memories.
+            This lack of information makes it impossible for the hardware to do bounds checks and automatically remove unused data from system memory.
+            Programming languages like C demonstrate how this leads to problems manifesting themselves in the form of buffer overflows and memory leaks.<br>
+
+            Other programming languages like Python choose to add both the bounds checks and the pointer tagging to the tasks handled by their runtime.
+            Obviously this improvement of reliability and security comes with a substantial tradeoff in the efficiency of programs written in such languages.<br>
         </p>
         <p>
-            To tackle both of those challenges, the experimental <a href="#meyer_orisc">Objective-RISC architecture</a> (O-RISC), the inspiration of RISC-ViO, proposes a new perspective 
-            on the cooperation of hardware and software. The main idea is to lower the concept of objects from a runtime level to the ISA. For this to work an O-RISC
-            processor always has access to information strictly identifying pointers and boundaries of objects for every instruction executed.
-            This enables the enforcement of bounds checks, prohibition of unwanted data modification and garbage collection in hardware, leading to more robust program execution
-            as well as less runtime overhead.
+            To tackle both the challenge of bound checks and garbage collection in hardware, the experimental <a href="#meyer_orisc">Objective-RISC architecture</a> (O-RISC), proposes a new perspective 
+            on the cooperation of hardware and software. The O-RISC architecture is the main inspiration for RISC-ViO with its core idea to lower the concept of objects from a runtime level down to ISA level. 
+            For this to work an O-RISC processor always has access to information strictly identifying pointers and boundaries of objects for every instruction executed.
+            This enables the enforcement of bounds checks, the protection of data from unwanted modification and garbage collection in hardware, leading to more robust program execution
+            without the performance impact caused by a runtime providing those features.
         </p>
         <figure>
             <figcaption>View of the different architectures on programming language level objects in memory</figcaption>
@@ -241,10 +241,10 @@
         <h2><a name="unpriv_instructions">Unprivileged Instructions</a></h2>
         <h3><a name="alc_fam">Allocation: alc/alci/alc.d/alci.d</a></h3>
         Since RISC-ViO manages objects on the ISA level, the ISA has to provide a means to create new objects and their corresponding pointers.
-        In contrast to the automatic freeing of unnecessary objects, this creation of ISA level objects is achieved by the alc-instruction family which comes in four flavours. 
+        The creation of ISA level objects is achieved by the alc-instruction family which comes in four flavours. 
         In fact the alc instruction family is the only way to obtain new pointers in user mode.
         The next section provides a short description of those instructions alongside their bit encodings.
-        The objects allocated by the alc-instruction family are both readable and writable but not executable on allocation. 
+        The objects allocated by the alc-instruction family are both readable and writable but not executable on allocation (their 'read' and 'write' bits are set). 
 
         <h4><a name="alc">alc-Instruction</a></h4>
             The <em>alc</em> instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is by the value passed via rs1.

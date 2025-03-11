@@ -129,7 +129,8 @@
         <p>
             The RISC-V I' ISA differentiates between two data types. Regular data being denoted as values and references to objects called pointers.
             Such pointers have a both a base address field which contains the address of the referenced object and an index field which may point to any byte inside of the referenced object. 
-            The pointer encoding has to allow pointers to cover the entire address space of the processor of XLEN bits.<br>
+            The pointer encoding has to allow pointers to cover the entire address space of the processor of XLEN bits.
+            To set apart pointers from values, pointers are drawn in pink while values are marked using blue colour.<br>
         </p>
         <p>
             A value like a number or a character may be arbitrarily modified just as it is possible in RISC-V.<br>
@@ -1862,7 +1863,7 @@
             </tr>
             <tr class="row-ro1">
                 <td style="text-align:left; " >
-                    sb/sh (bit 31 = 0)
+                    sb/sh<sup>3</sup>
                 </td>
 
                 <td style="text-align:left; " >
@@ -1902,7 +1903,7 @@
             </tr>
             <tr class="row-ro1">
                 <td style="text-align:left; " >
-                    sb/sh (bit 31 = 1)
+                    sb/sh<sup>4</sup>
                 </td>
 
                 <td style="text-align:left; " >
@@ -1944,7 +1945,7 @@
             </tr>
             <tr class="row-ro1">
                 <td style="text-align:left; " >
-                    lw (value, bit 31 = 0)
+                    lw (value<sup>3</sup>)
                 </td>
 
                 <td style="text-align:left; " >
@@ -1984,7 +1985,7 @@
             </tr>
             <tr class="row-ro1">
                 <td style="text-align:left; " >
-                    lw (value, bit 31 = 1)
+                    lw (value<sup>4</sup>)
                 </td>
 
                 <td style="text-align:left; " >
@@ -2024,7 +2025,7 @@
             </tr>
             <tr class="row-ro1">
                 <td style="text-align:left; " >
-                    lw (pointer, ix = 0)
+                    lw pointer<sup>5</sup>
                 </td>
 
                 <td style="text-align:left; " >
@@ -2064,7 +2065,7 @@
             </tr>
             <tr class="row-ro1">
                 <td style="text-align:left; " >
-                    lw (pointer, ix != 0)
+                    lw pointer<sup>6</sup>
                 </td>
 
                 <td style="text-align:left; " >
@@ -2108,7 +2109,7 @@
             </tr>
             <tr class="row-ro1">
                 <td style="text-align:left; " >
-                    sw (value, bit 31 = 0)
+                    sw (value<sup>3</sup>)
                 </td>
 
                 <td style="text-align:left; " >
@@ -2148,7 +2149,7 @@
             </tr>
             <tr class="row-ro1">
                 <td style="text-align:left; " >
-                    sw (value, bit 31 = 1)
+                    sw (value<sup>4</sup>)
                 </td>
 
                 <td style="text-align:left; " >
@@ -2190,7 +2191,7 @@
             </tr>
             <tr class="row-ro1">
                 <td style="text-align:left; " >
-                    sw (pointer, ix = 0)
+                    sw pointer<sup>5</sup>
                 </td>
 
                 <td style="text-align:left; " >
@@ -2230,7 +2231,7 @@
             </tr>
             <tr class="row-ro1">
                 <td style="text-align:left; " >
-                    sw (pointer, ix != 0)
+                    sw pointer<sup>6</sup>
                 </td>
 
                 <td style="text-align:left; " >
@@ -2699,7 +2700,11 @@
             </td>
             </table>
             *1: The values of P, L and H are dependent on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the <a href="#riscv_i_tick">RISC-V I vs I'</a> chapter.<br>
-            *2: For the ret variant of jalr, the target index of rd used for the writeback into the register file is ra while the target value is only the color bit in the index field with everything else being zero.
+            *2: For the ret variant of jalr, the target index of rd used for the writeback into the register file is ra while the target value is only the color bit in the index field with everything else being zero.<br>
+            *3: For bit 31 == bit 30<br>
+            *4: For bit 31 != bit 30<br>
+            *5: For index == 0<br>
+            *6: For index != 0
         </p>
     </section>
 

@@ -1191,7 +1191,7 @@
             For this, the example subarchitectural implementation uses an additional pipeline stage called the attribute stage which is located behind the memory stage in the processor pipeline.<br>
             The <a href="#t_instr_in_pipe">instruction behaviuor table</a> shows how this stage interacts with the stages that come before it, this section looks at this interaction in further detail.
             After the memory stage has loaded a pointer, the attribute stage then loads the header being pointed to by the pointer base address. This header along with the actual pointer value is then handed over to the write-back stage which writes those fields into the register file.
-            In the given subarchitectural implementation, the attribute stage is used to accomplish additional tasks like loading full XLEN wide data, meaning data with bits 31 and 31 being unequal, or a pointer with non-zero index from an object. 
+            In the given subarchitectural implementation, the attribute stage is used to accomplish additional tasks like loading full XLEN wide data, meaning data with bits 30 and 31 being unequal, or a pointer with non-zero index from an object. 
             For the task of loading full XLEN wide data, it is the task of the attribute stage to load the actual data from memory instead of the memory stage. 
             This is necessary since the memory stage has to determine where this data is located in memory first by loading the according displacement pointer.
             For pointers with a non-zero index, the attribute stage also has to become active. Since requiring both the loading of a pointers index as well as the header of the object pointed to, this operation takes two clock cycles however and therefore necessitates stalling the remaining pipeline until both operations have been completed.
@@ -2717,10 +2717,10 @@
             </table>
             *1: The values of P, L and H are dependent on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the <a href="#riscv_i_tick">RISC-V I vs I'</a> chapter.<br>
             *2: For the ret variant of jalr, the target index of rd used for the writeback into the register file is ra while the target value is only the color bit in the index field with everything else being zero.<br>
-            *3: For bit 31 == bit 30<br>
-            *4: For bit 31 != bit 30<br>
-            *5: For index == 0<br>
-            *6: For index != 0
+            *3: For bit 31 &equals; bit 30<br>
+            *4: For bit 31 &ne; bit 30<br>
+            *5: For index &equals; 0<br>
+            *6: For index &ne; 0
         </p>
     </section>
 
@@ -2782,30 +2782,30 @@
     var h2Numbering = 0;
     for (var i = 0; i < headerList.length; i++) {
         var header = headerList[i];
-        if (header.childNodes.length == 0 || header.childNodes[0].nodeName != "A")
+        if (header.childNodes.length &equals; 0 || header.childNodes[0].nodeName &ne; "A")
             continue;
 
-        if (h2Numbering == 0 && header.nodeName == "H2"){
+        if (h2Numbering &equals; 0 && header.nodeName &equals; "H2"){
             const h2Toc = document.createElement("ul");
             h2Toc.style.paddingInlineStart = "28pt";
             h2Toc.style.listStyleType = "none";
             h2Toc.style.marginLeft = 0;
             h1Toc.appendChild(h2Toc);
             toc = h2Toc;
-        } else if (h2Numbering > 0 && header.nodeName == "H1"){
+        } else if (h2Numbering > 0 && header.nodeName &equals; "H1"){
             toc = h1Toc;
             h2Numbering = 0;
         }
 
-        if (header.nodeName == "H1")
+        if (header.nodeName &equals; "H1")
             h1Numbering++;
         
-        if (header.nodeName == "H2")
+        if (header.nodeName &equals; "H2")
             h2Numbering++;
 
         const li = document.createElement("li");
         li.className = "toc";
-        if (h2Numbering == 0){
+        if (h2Numbering &equals; 0){
             li.style.fontSize = "14pt";
             li.style.fontWeight = "bold";
             li.appendChild(document.createTextNode(h1Numbering + ". "));

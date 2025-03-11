@@ -147,26 +147,26 @@
         <h2><a id="isa_object_types">Object types</a></h2>
         <p>
             By combining the three independent access permissions of an object, a total of eight distinct combinations are possible.
-            To simplify the discussion of objects, these possibilities are combined to make up three groups.
+            To simplify the discussion of objects, these possibilities are combined to make up three types.
         </p>
         <p>
-            The first group is denoted as the regular objects group. Any object having its 'data only' flag cleared is part of this group.
-            Objects of this group may hold any data meaning both values and pointers may be stored in an object of this group.
+            The first types is denoted as the regular type. Any object having its 'data only' flag cleared is of this type.
+            Such objects may hold any data meaning both values and pointers may be stored in an object of this type.
             In order to enforce the separation of instructions and data however, instructions may not be fetched from such objects and executed afterwards.
         </p>
         <p>
-            The second important object group is made up of objects having their 'data only' flag set and at least one of their 'read' or 'write' flags being enabled.
+            The second important object type is objects having their 'data only' flag set and at least one of their 'read' or 'write' flags being enabled.
             Such objects are said to be data only objects.
             Data only objects, unlike regular objects, may not contain pointers.
             Just as with regular objects, it is not allowed to fetch and execute instructions from such objects.
-            By keeping pointers out of such objects, it is possible to achieve an improvement of memory access efficiency in some implementations.
+            By keeping pointers out of data only objects, it is possible to achieve an improvement of memory access efficiency in some implementations.
             Another advantage of objects not containing any pointers is the reduction of the effort caused by garbage collecting these objects.
         </p>
         <p>
             As hinted at by the section on regular objects, there is also an object type which contains instructions.
             This object type is denoted as 'executable' and has its 'data only' flag set while both 'read' and 'write' flags are cleared.
-            As such, no instruction may explicitly access the contents of an object of this type. Only the processor may fetch instructions from such an object.
-            This makes it necessary for system management software to load in code in the form of a data only object and then altering the objects type by modifying its permission flags.
+            As such, no instruction may explicitly access the contents of an object of this type. Only the processor may implicitly read from executable objects to fetch instructions.
+            This makes it necessary for system management software to load in code in the form of a data only object and then alter object type by modifying its permission flags.
         </p>   
 
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>

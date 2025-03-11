@@ -118,7 +118,7 @@
             In order to enforce the correct use of these objects and references to these objects, RISC-ViO alters the semantics of some of the instructions which are part of the RISC-V I base instruction set.
             This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA. 
         </p>
-        <h2><a id="data_vs_pointers">Objects, pointers and values</a></h2>
+        <h2><a id="data_vs_pointers">Objects, I/O devices, pointers and values</a></h2>
         <p>
             Objects are unique, bounded areas allocated in memory. 
             The defining traits of such objects are their type, XLEN-wide length as well as the accesses possible on these objects. 
@@ -126,22 +126,37 @@
             These flags and their incurred permissions may be set or cleared in any combination using special, privileged instructions.
         </p>
         <p>
-            The RISC-V I' ISA differentiates between two data types. Regular data being denoted as values and references to objects called pointers.
-            Such pointers have a both a base address field which contains the address of the referenced object and an index field which may point to any byte inside of the referenced object. 
+            I/O devices behave similarly to objects in that they also have XLEN-wide length traits. 
+            In contrast to objects, those traits are fixed by the hardware and cannot be influenced by software. 
+            I/O devices implicitly have all three of the 'read', 'write' and 'data only' flags set.  
+        </p>
+        <br>
+        <p>
+            The RISC-V I' ISA differentiates between two data types in the register file and in memory: references to objects, called pointers, and regular data, being denoted as values.
+        </p>
+        <p>
+            Pointers have a a total of two separate fields. One of those is a combined field which contains a tag which marks the pointer to either be of memory or I/O type and some type specific information.
+            Memory type pointers, referencing objects in memory, have a 0b0111 tag while I/O type pointers are tagged with the value 0b01111 and allow for I/O device access.
+            The mentioned tags are located at the lowest bits of the combined field.
+            The remaining bits of the combined field are used to either store the high bits of the base address of the corresponding object or the I/O device number in case of I/O pointers.<br>
+            An objects second field always contains an index which may point to any byte inside of the referenced object or I/O device. 
             The pointer encoding has to allow pointers to cover the entire address space of the processor of XLEN bits.
             To set apart pointers from values, pointers are drawn in pink while values are marked using blue colour.<br>
         </p>
         <p>
             A value like a number or a character may be arbitrarily modified just as it is possible in RISC-V.<br>
-            For a pointer, in contrast, some restrictions apply regarding the way in which it may be modified.
-
+            
+        </p>
+        <p>For a pointer, in contrast, some restrictions apply regarding the way in which it may be modified.
             Arithmetic or logic operations on such a pointer like additions or bitwise inversions modify the pointer as a regular address would have been modified by the executed operation. 
-            This modification is achieved by only altering a pointers index field while the base address information stays unchanged. 
-            Note that pointers having an index reaching out of the bounds of an object are allowed in both the register file and in memory.
-            Comparisons act only on the effective address of a pointer, all other information is not taken into account.
+            This modification is achieved by only altering a pointers index field while the combined field stays unchanged. 
+            Note that pointers having an index reaching out of the bounds of an object or I/O device are allowed in both the register file and in memory.
+            In case of pointers of memory type, comparisons act only on the effective address of a pointer, all other information is not taken into account.
+            For I/O type pointers, the value used for the actual comparison is made up by shifting the I/O device number up by XLEN bits and adding this value to the index.
             <br>
-            Note that for arithmetic operations on two pointers, the base address of the resulting pointer is chosen from the input pointer base addresses such that the calculated index lies within the object located at this base address. 
-            Should the result not fall into either of the input objects, the behavior regarding which input is used for the base address field of the resulting pointer  is undefined. <br>
+            Arithmetic or logical operations on two pointers are allowed in the case that both pointers are of memory type.
+            For arithmetic operations on two memory type pointers, the combined field of the resulting pointer is chosen from the input pointer base addresses such that the calculated index lies within the object located at this base address. 
+            Should the result not fall into either of the input objects, the behavior regarding which input is used for the base address field of the resulting pointer is undefined. 
         </p>
 
         <h2><a id="isa_object_types">Object types</a></h2>
@@ -173,9 +188,9 @@
 
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
-        For the differentiation between pointers and values to be meaningful, RISC-ViO mandates that only pointers may be used to access memory via the object abstraction. The same is also true for accesses to I/O devices: Access to an I/O device is only possible via its corresponding pointer.
+        For the differentiation between pointers and values to be meaningful, RISC-ViO mandates that only pointers may be used to access memory via the object abstraction. The same is also true for accesses to I/O devices: Accesses to I/O devices is only possible via their corresponding pointer.
         <!--For obtaining pointers, there are two distinct possibilities. Either by using a member the alc instruction family to allocate a new object or by manually creating them in higher privilege modes. -->
-        (Note that pointers may not be written to I/O devices.)
+        (Note that pointers may not be written to I/O devices as their 'data only' flag is set implicitly.)
         This requirement influences all load and store instructions as listed below:
         </p>
         <ul style="list-style-position: inside; padding-left: 0; text-align:center">
@@ -188,10 +203,10 @@
         </ul>
 
         <p>
-         The main change for those instruction families lies in them requiring pointers to be used to select objects instead of memory locations.
+         The main change for those instruction families lies in them requiring pointers to be used to select objects and I/O devices instead of memory locations.
         Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed. 
-        Those offsets are added to the index of the pointer used to access the object to make up the offset used for the actual object access.
-        Being explicit memory accesses, these instructions may only access regular as well as data only objects.</p>
+        Those offsets are added to the index of the pointer used to access the object to make up the offset used for the actual object or I/O device access.
+        Being explicit memory accesses in the case of memory type pointers, these instructions may only access regular as well as data only objects.</p>
         <!--@Leyla: wenn man unsere regeln bricht, tritt eine hardware exception-->
         <p>
         </p>
@@ -251,7 +266,7 @@
         <p>
             In order for the system management software to influence where new objects are placed, the zhm extension introduces an additional machine mode CSR.
             The CSR <em>malc</em> contains both the lowest possible address on the heap as well as the address of the object last allocated.
-            Those values are represented using a pointer, where the pointer field contains the address of the object last allocated and the index field contains the lowest address still being part of the heap.
+            Those values are represented using a pointer, where the base address field contains the address of the object last allocated and the index field contains the lowest address still being part of the heap.
             The CSR index of the <em>malc</em> CSR can be extracted from the <a href="#t_csr">CSR table</a>.
         </p>
 
@@ -864,7 +879,7 @@
                 In consequence, <em>LoadAccessFault</em>, <em>StoreAccessFault</em> or <em>IncompatibleTypeException</em> are raised when the corresponding flag is not set as per <a href="#objs_ords">ordinary objects</a>. 
                 <em>LoadAccessFault</em>s are triggered when the 'read' flag is cleared while <em>StoreAccessFault</em> is raised in case of a store access to a object with cleared 'write' flag.
                 Trying to store pointers to a data only object marked by a set 'data only' flag will lead to a <em>IncompatibleTypeException</em>. 
-                The same exception is triggered when trying to jump to a regular object using <em>jalr</em>.
+                The same exception is triggered when trying to jump to a regular object using <em>jalr</em> or when trying to do an arithmetic or logical operation on two pointers which are not both of memory type.
             </p>
             <p>
                 Trying to access the register <em>gp</em> for anything other than as a access pointer in a memory instruction will lead to a <em>GPAccessException</em>.

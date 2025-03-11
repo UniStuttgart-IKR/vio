@@ -182,7 +182,7 @@
         Being explicit memory accesses, these instructions may only access regular as well as data only objects.</p>
         <!--@Leyla: wenn man unsere regeln bricht, tritt eine hardware exception-->
         <p>
-        Arithmetic operations of those pointers like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation.
+        Arithmetic operations of those pointers like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation. The same also applies for all compare instructions.
         The base address information as well as the size information are not influenced by those operations, however. Note that for arithmetic operations on two pointers, rd will take on the pointer, length and header field of that pointer of that object inside of which the operation result lies. 
         Should the result not fall into either of the input objects, the behavior regarding which input is used for the pointer, length and header fields of the output register is undefined.
         </p>

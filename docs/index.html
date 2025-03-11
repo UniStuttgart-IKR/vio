@@ -137,10 +137,9 @@
 
             Arithmetic or logic operations on such a pointer like additions or bitwise inversions modify the pointer as a regular address would have been modified by the executed operation. 
             This modification is achieved by only altering a pointers index field while the base address information stays unchanged. 
+            Note that pointers having an index reaching out of the bounds of an object are allowed in both the register file and in memory.
             Comparisons act only on the effective address of a pointer, all other information is not taken into account.
             <br>
-
-            
             Note that for arithmetic operations on two pointers, the base address of the resulting pointer is chosen from the input pointer base addresses such that the calculated index lies within the object located at this base address. 
             Should the result not fall into either of the input objects, the behavior regarding which input is used for the base address field of the resulting pointer  is undefined. <br>
         </p>

@@ -40,10 +40,10 @@
         <h2><a id="motivation">Motivation</a></h2>
         <p>
             In conventional computer architectures, hardware has no information about the location and size of programming language level objects like strings or structs.
-            It is therefore the duty of a runtime environment to define and enforce boundaries to such objects and prohibit malformed accesses.
+            It is therefore the duty of a runtime environment to define and enforce boundaries to such objects and prohibit malformed accesses. <!--mention garbage collection here-->
             Obviously this comes with a substantial tradeoff in program efficiency.<br>
-            Also, programming languages like C do not strictly differentiate between a reference to objects and values of primitive types. It could be that by chance the
-            value of an integer points to the start of an object in memory, even though it was not intended to be used as a pointer.
+            Also, programming languages like C do not strictly differentiate between a reference to an object and a value of primitive type. It could be that by chance the
+            value of an integer points to the start of an object in memory, even though it was not intended to be used as a pointer. <!--umstellen-->
             This ambiguity between pointers and values makes it impossible to use garbage collection mechanisms, making it the job of the programmer
             to manually free up memory. Being a difficult task to get right, this often leads to memory leaks.
         </p>
@@ -126,36 +126,46 @@
             The permissions for these accesses may be granted or denied in any combination using special, privileged instructions.
         </p>
         <p>
-            The RISC-V I' ISA differentiates between two data types. References to objects called pointers which are mandated to be unique and regular data being denoted as values.
+            The RISC-V I' ISA differentiates between two data types. References to objects called pointers which are mandated to be unique and regular data being denoted as values.<br>
         </p>
         <p>
-            This is necessary to achieve arbitrary permutation of values while enforcing the bounds of objects being pointed to.
-            For this differentiation to be meaningful, RISC-ViO mandates that only pointers may be used to access memory via the object abstraction. The same is also true for accesses to I/O devices: Access to any I/O device is only possible via its corresponding pointer.
+            Values like numbers or characters may be arbitrarily modified just as it is possible in RISC-V.<br>
+            For pointers, in contrast, some restrictions apply regarding the way in which they may be modified. 
+            Arithmetic operations of those pointers like additions or any arithmetic or logical operation are still allowed and modify the pointer as a regular address would be modified by the executed operation. 
+            Such operations only change the index part of a pointer.
+            The base address information as well as the size information are not influenced by those operations, however. 
+            Comparisons act only on the effective address of a pointer, all other tags and flags are ignored by these operations.<br>
+
+            Note that for arithmetic operations on two pointers, rd will take on the pointer, length and header field of that pointer of that object inside of which the operation result lies. 
+            Should the result not fall into either of the input objects, the behavior regarding which input is used for the pointer, length and header fields of the output register is undefined. <br>
+        </p>
+        <p>
+            For the differentiation between pointers and values to be meaningful, RISC-ViO mandates that only pointers may be used to access memory via the object abstraction. The same is also true for accesses to I/O devices: Access to an I/O device is only possible via its corresponding pointer.
             <!--For obtaining pointers, there are two distinct possibilities. Either by using a member the alc instruction family to allocate a new object or by manually creating them in higher privilege modes. -->
-            Pointers are to be encoded in such a way as to cover the entire address space of the processor of XLEN bits.
+            The pointer encoding has to allow pointers to cover the entire address space of the processor of XLEN bits.
             (Note that pointers may not be written to I/O devices.)
         </p>
 
         <h2><a id="isa_object_types">Object type groups</a></h2>
         <p>
             By combining the three independent access permissions of an object, a total of eight distinct combinations are possible.
-            To simplifiy the discussion of objects, these possibilities are combined to make up three groups.
+            To simplify the discussion of objects, these possibilities are combined to make up three groups.
         </p>
         <p>
             The first group is denoted as the regular objects group. Any object having its 'data only' flag cleared is part of this group.
-            Objects of this group may hold any data meaning both values and pointers may be stored in a object of this group.
-            In order to enforce the seperation of instructions and data however, instructions may not be fetched from such objects and executed afterwards.
+            Objects of this group may hold any data meaning both values and pointers may be stored in an object of this group.
+            In order to enforce the separation of instructions and data however, instructions may not be fetched from such objects and executed afterwards.
         </p>
         <p>
             The second important object group is made up of objects having their 'data only' flag set and at least one of their 'read' or 'write' flags being enabled.
             Such objects are said to be data only objects.
+            Data only objects, unlike regular objects, may not contain pointers.
             Just as with regular objects, it is not allowed to fetch and execute instructions from such objects.
-            Data only objects differ from regular objects in that it is not possible to store pointers in objects of this type group.
-            By keeping pointers out of such objects, it is possible to achieve a improvement of memory access efficiency in some implementations.
+            By keeping pointers out of such objects, it is possible to achieve an improvement of memory access efficiency in some implementations.
             Another advantage of objects not containing any pointers is the reduction of the effort caused by garbage collecting these objects.
         </p>
         <p>
-            As hinted by the section about regular objects, there is also a object type which contains instructions.
+            As hinted at by the section on regular objects, there is also an object type which contains instructions.
             This object type is denoted as 'executable' and has its 'data only' flag set while both 'read' and 'write' flags are cleared.
             As such, no instruction may explicitly access the contents of an object of this type. Only the processor may fetch instructions from such an object.
             This makes it necessary for system management software to load in code in the form of a data only object and then altering the objects type by modifying its permission flags.
@@ -182,9 +192,6 @@
         Being explicit memory accesses, these instructions may only access regular as well as data only objects.</p>
         <!--@Leyla: wenn man unsere regeln bricht, tritt eine hardware exception-->
         <p>
-        Arithmetic operations of those pointers like additions or subtractions are also still allowed and modify the pointer as a regular address would be modified by the executed operation. The same also applies for all compare instructions.
-        The base address information as well as the size information are not influenced by those operations, however. Note that for arithmetic operations on two pointers, rd will take on the pointer, length and header field of that pointer of that object inside of which the operation result lies. 
-        Should the result not fall into either of the input objects, the behavior regarding which input is used for the pointer, length and header fields of the output register is undefined.
         </p>
         <!--@Leyla: Bild erstellen!-->
         <p>
@@ -203,9 +210,9 @@
         The encapsulation of instructions also means that the <em>jalr</em> instructions expects a pointer to a object containing instructions as a jump target to be written to the program counter.
         This instruction will also, just as <em>jal</em> does, write a pointer to its destination register.
         <!--If the pointer provided does not reference such an object, the processor raises a <em>IncompatibleTypeException</em> with <em>xtval</em> containing the target pointer.-->
-        For the seperation of data and instructions, <em>jalr</em> also requires a pointer to an executable object as source register content.
+        For the separation of data and instructions, <em>jalr</em> also requires a pointer to an executable object as source register content.
         Using a value as a destination for <em>jalr</em> is still allowed though and leads to jumping to the given index inside the currently executed executable object.
-        To make sure that a return address cannot be used twice, RISC-ViO mandates that the variant of <em>jalr</em> which realizes the <em>ret</em> pseudo instruction has to null out the register <em>ra</em> except for the zero-bit of its index after updating the program counter.
+        To make sure that a return address cannot be used twice, RISC-ViO mandates that the variant of <em>jalr</em> which realizes the <em>ret</em> pseudoinstruction has to null out the register <em>ra</em> except for the zero-bit of its index after updating the program counter.
         </p>
 
         <h2><a id="riscv_i_tick">Register File</a></h2>
@@ -213,10 +220,10 @@
             RISC-V specifies 31 general-purpose registers and one special register, <em>zero</em>.
             The RISC-ViO architecture adds additional requirements to this register file definition:
                 <ul>
-                    <li><em>zero</em> has to contain the value 0.</li>
                     <li>each register has to be able to hold either a value of width XLEN or a pointer with a XLEN wide index.</li>
                     <li>both <em>ra</em> and <em>sp</em> have to be able to hold colour information. (see <a href="#frames">frames</a> chapter)</li>
                 </ul>
+            <div style="font-size: 10pt;">Note: The <em>zero</em> register has to contain the value 0.</div>
             <p>
         </p>
     </section>
@@ -236,12 +243,12 @@
         In contrast to the automatic freeing of unnecessary objects, this creation of ISA level objects is achieved by the alc-instruction family which comes in four flavours. 
         In fact the alc instruction family is the only way to obtain new pointers in user mode.
         The next section provides a short description of those instructions alongside their bit encodings.
-        The objects allocated by the alc-instruction family are both readable and writeable but not executable on allocation. 
+        The objects allocated by the alc-instruction family are both readable and writable but not executable on allocation. 
 
         <h4><a name="alc">alc-Instruction</a></h4>
-            The alc instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is by the value passed via rs1.
+            The <em>alc</em> instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is by the value passed via rs1.
             The size is given in bytes as per the value in rs1.
-            Apart from the source of the object size, alc only differs from alci in that alc cannot be used to allocate a frame. 
+            Apart from the source of the object size, <em>alc</em> only differs from <em>alci</em> in that <em>alc</em> cannot be used to allocate a frame. 
             
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
@@ -291,7 +298,7 @@
         </ul>
 
         <h4><a name="alci">alci-Instruction</a></h4>
-        The alci instruction is a variation of the alc instruction. In contrast to alci, the size of the new object is given by the 12 bit wide immediate. 
+        The <em>alci</em> instruction is a variation of the <em>alc</em> instruction. In contrast to <em>alci</em>, the size of the new object is given by the 12 bit wide immediate. 
         This immediate specifies the amount of pointers which can fit inside the object. So for a XLEN of 32, it specifies the number of 32 bit words that fit into the object.
         <div style="margin-top: 5%; margin-bottom: 3%;">
             <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
@@ -333,15 +340,15 @@
                 </tbody>
             </table>
         </div>
-        <p>When the alci instruction is used to allocate a frame by specifying sp as the destination register, its semantic is extended. In this case alci not only allocates a new frame object but also stores the old sp at index zero of the new frame object.</p>
-        The alci instruction may trigger the following exceptions for the given events (xtval content):
+        <p>When the <em>alci</em> instruction is used to allocate a frame by specifying <em>sp</em> as the destination register, its semantic is extended. In this case <em>alci</em> not only allocates a new frame object but also stores the old <em>sp</em> at index zero of the new frame object.</p>
+        The <em>alci</em> instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
 
         <h4><a name="alcd">alcd-Instruction</a></h4>
-            The alcd instruction is a specialization of the alc instruction, allowing for the allocation of data only objects.
+            The <em>alcd</em> instruction is a specialization of the <em>alc</em> instruction, allowing for the allocation of data only objects.
             Note that is it also forbidden to use <em>alcd</em> to allocate a new frame object.
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
@@ -383,7 +390,7 @@
                     </tbody>
                 </table>
             </div>
-        The alc.d instruction may trigger the following exceptions for the given events (xtval content):
+        The <em>alc.d</em> instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
@@ -392,7 +399,7 @@
         </ul>
 
         <h4><a name="alcid">alci.d-Instruction</a></h4>
-        The alci.d instruction is the analogous form of alci regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocating frames.
+        The <em>alci.d</em> instruction is the analogous form of <em>alci</em> regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocating frames.
         <div style="margin-top: 5%; margin-bottom: 3%;">
             <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                 <colgroup>
@@ -433,14 +440,14 @@
                 </tbody>
             </table>
         </div>
-        The alci.d instruction may trigger the following exceptions for the given events (xtval content):
+        The <em>alci.d</em> instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
             <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
         <h3><a name="qsz">Attribute Query: qsz</a></h3>
-        The qsz instruction provides a means of reading an objects size as specified at its allocation time in bytes. For this, the source register has to contain a pointer.
+        The <em>qsz</em> instruction provides a means of reading an objects size as specified at its allocation time in bytes. For this, the source register has to contain a pointer.
         <div style="margin-top: 5%; margin-bottom: 3%;">
             <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                 <colgroup>
@@ -481,7 +488,7 @@
                 </tbody>
             </table>
         </div>
-        The qsz instruction may trigger the following exceptions for the given events (xtval content):
+        The <em>qsz</em> instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
             <li><em>ForbiddenDstException</em>: rd is sp which only takes pointers (-)</li>
@@ -534,7 +541,7 @@
                     </tbody>
                 </table>
             </div>
-            The dtp instruction may trigger the following exceptions for the given events (xtval content):
+            The <em>dtp</em> instruction may trigger the following exceptions for the given events (xtval content):
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs1 or rs2 contains a pointer, not a value (rs1 or rs2 with rs1 being prioritized)</li>
             </ul>
@@ -580,12 +587,12 @@
                     </tbody>
                 </table>
             </div>
-            The btd instruction may trigger the following exceptions for the given events (xtval content):
+            The <em>btd</em> instruction may trigger the following exceptions for the given events (xtval content):
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs1 contains a value, not a pointer (rs1)</li>
             </ul>
             <h4><a name="itd">itd-Instruction</a></h4>
-            The itd "index to data" instruction allows for reading out a pointers raw pointer index. This value is written into rd for the pointer given in rs1.
+            The <em>itd</em> 'index to data' instruction allows for reading out a pointers raw pointer index. This value is written into rd for the pointer given in rs1.
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
@@ -626,7 +633,7 @@
                     </tbody>
                 </table>
             </div>
-            The itd instruction may trigger the following exceptions for the given events (xtval content):
+            The <em>itd</em> instruction may trigger the following exceptions for the given events (xtval content):
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs1 contains a value, not a pointer (rs1)</li>
             </ul>
@@ -719,7 +726,7 @@
                     </tbody>
                 </table>
             </div>
-            The sw.x instruction may trigger the following exceptions for the given events (xtval content):
+            The <em>sw.x</em> instruction may trigger the following exceptions for the given events (xtval content):
             <ul>
                 <li><em>IncompatibleTypeException</em>: rs2 contains a pointer, not a value (rs2)</li>
             </ul>
@@ -741,9 +748,9 @@
                 Frame objects are never data only which means the data only bit in their header is cleared while the frame bit is set. 
                 To protect both the stack pointer <em>sp</em> as well as the return index <em>ra</em>, in frame objects special slots are reserved. For the 'stack' pointer <em>sp</em>, the pointer to the previous frame object, the first slot of XLEN size at byte index zero is reserved. 
                 This is immediately followed by the <em>ra</em> slot which is also XLEN wide. For XLEN=32, this slot resides at byte address 4.
-                In the user mode, these slots of a frame object are only allowed to be used to store or load their respective register. Any other operation on these slots will lead to a <em>ForbiddenDstException</em> or <em>ForbiddenSrcException</em>.
+                In user mode, these slots of a frame object are only allowed to be used to store or load their respective register. Any other operation on these slots will lead to a <em>ForbiddenDstException</em> or <em>ForbiddenSrcException</em>.
                 Note that it is not only prohibited to store any other register than <em>sp</em> and <em>ra</em> in those slots, but also to store these registers anywhere else when in not in a privileged mode. The same restriction also applies when loading these registers.
-                This restriction is also enforced using <em>ForbiddenDstException</em> and <em>ForbiddenSrcException</em>.
+                These restrictions are enforced using <em>ForbiddenDstException</em> and <em>ForbiddenSrcException</em>.
                 <figure style="display:flex; margin-bottom: 0.5rem">
                     <div style="flex: 30%; margin-bottom: 0.5rem">
                         <figcaption>A Frame Object for XLEN=32</figcaption>
@@ -763,15 +770,15 @@
                 <p>
                     To achieve protection of frames from foreign accesses RISC-ViO uses so-called colour tags for both the <em>sp</em> and the <em>ra</em> register.
                     By updating those colours at critical points such as function entries/exits and frame allocations, the processor always knows whether the frame pointed to by the
-                    sp register is owned by the currently executed function. 
+                    <em>sp</em> register is owned by the currently executed function. 
                     This state is called "regular", while the current function not being the owner of the current frame is denoted as the "irregular" state.
                 </p>
-                <p>For sp as well as for ra, there are two colours: black and white. Those colours are an integral part of those registers and cannot be read or modified separately from their registers.
-                    Also, when storing/loading ra or sp using sw/lw, the colour is also stored/retrieved to/from the given memory location.
+                <p>For <em>sp</em> as well as for <em>ra</em>, there are two colours: black and white. Those colours are an integral part of those registers and cannot be read or modified separately from their registers.
+                    Also, when storing/loading <em>ra</em> or <em>sp</em> using <em>sw/lw</em>, the colour is also stored/retrieved to/from the given memory location.
                     An overview of the transition between those colours is given in Figure 1.
                     On every function entry, signified by a <em>jalr ra, zero, x (call)</em> instruction, the processor flips the colour of ra from white to black or vice versa. The same also happens when a function is exited using <em>jalr zero, ra, 0 (ret)</em>. For sp, this takes place on every frame allocation.
                     Whether the processor is currently in the regular state (light blue), is given by the equality of the colours of ra and sp. 
-                    If the colours of sp and ra both were black for example, the processor would be in the regular state.
+                    If the colours of <em>sp</em> and <em>ra</em> both were black for example, the processor would be in the regular state.
                 </p>
                 <p>
                     Any access to the current frame while in irregular state leads to a <em>StateException</em> indicating access to a foreign frame.
@@ -792,7 +799,7 @@
                     In 2b) the colour mechanism spots function b trying to access function a's frame, which leads to the processor raising a <em>StateException</em>.
                 </p>
             <figure>
-                <figcaption>State transitions for examplary instruction streams</figcaption>
+                <figcaption>State transitions two instruction streams</figcaption>
                 <div style="display: flex; margin-top: 14pt; margin-bottom: 28pt;">
                     <img src="svg/vio_stack_colors.drawio.svg" id="svg1" style="flex: 50%; margin-right: 10pt;">
                     <img src="svg/vio_stack_colors_exception.drawio.svg" id="svg2" style="flex: 50%; margin-left: 10pt; align-self: baseline;">
@@ -845,17 +852,17 @@
                 To enforce the pointer based memory access scheme, the processor will raise a <em>IncompatibleTypeException</em> when a program tries to use an address value to access memory. 
                 Since the object length is known on ISA level, the processor is able to raise a <em>IndexOutBoundsException</em> when an out of bound load or store instruction is executed.
                 In case of such an exception, <em>xtval</em> will contain the base pointer as well as the index which was beyond the object bounds.
-                The processor is also able to detect whether the destination object is compatible with the current access type. 
-                In consequence, <em>LoadAccessFault</em>, <em>StoreAccessFault</em> or <em>IncompatibleTypeException</em> will be raised when the corresponding flag is not set as per <a href="#objs_ords">ordinary objects</a>. 
-                <em>LoadAccessFault</em>s are triggered when the read-flag is cleared while <em>StoreAccessFault</em> is raised in case of a store access to a object with cleared write flag.
-                Trying to store pointers to a data only object marked by a set data-only-flag will also lead to a <em>IncompatibleTypeException</em>. 
+                The processor is also able to detect whether the destination object is compatible with the current access type by checking the permission tags of the object. 
+                In consequence, <em>LoadAccessFault</em>, <em>StoreAccessFault</em> or <em>IncompatibleTypeException</em> are raised when the corresponding flag is not set as per <a href="#objs_ords">ordinary objects</a>. 
+                <em>LoadAccessFault</em>s are triggered when the 'read' flag is cleared while <em>StoreAccessFault</em> is raised in case of a store access to a object with cleared 'write' flag.
+                Trying to store pointers to a data only object marked by a set 'data only' flag will lead to a <em>IncompatibleTypeException</em>. 
                 The same exception is triggered when trying to jump to a regular object using <em>jalr</em>.
             </p>
             <p>
                 Trying to access the register <em>gp</em> for anything other than as a access pointer in a memory instruction will lead to a <em>GPAccessException</em>.
             </p>
             <p>
-                To inform the software that a access to a regular or executable object would lie outside its bounds, a <em>JumpIndexOutBoundsException</em> is raised in case of an executable object or a <em>IndexOutBoundsException</em> in case of a regular object.
+                To inform the software that a access to a regular or executable object would violate its bounds, a <em>JumpIndexOutBoundsException</em> is raised in case of an executable object or a <em>IndexOutBoundsException</em> in case of a regular object.
                 Should the heap onto which new objects are allocated on reach the end of its capacity, a <em>HeapOverflowException</em> is raised.
             </p>
             <p>
@@ -866,7 +873,7 @@
 
             </p>
             <p>
-                The <em>IncompatibleTypeException</em> is also raised when a pointer is written to a I/O device using its corresponding pointer.
+                The <em>IncompatibleTypeException</em> is raised when a pointer is written to a I/O device using its corresponding pointer.
             </p>
         <h2><a id="gen">Exceptions in conjunction with CSR</a></h2>
             <p>Since RISC-ViO allows both pointers and values to be stored in the registers and also organizes code using objects, some CSR also need to be able to hold pointers.
@@ -908,7 +915,7 @@
     <section>
         <p>As described in the <a href="#frames">frames</a> chapter and as present in the requirements list in <a href="#base_spec">I'</a>, RISC-ViO calls for the ability to hold colour information for both the <em>ra</em> as well as the <em>sp</em> register. 
             The implementation presented here is able to satisfy this requirement using the fields as shown in the last section only. In this implementation, the colour 'black' is encoded as a cleared bit ('0') while 'white' corresponds to a bit which is set ('1'). 
-            Since the smallest possible instruction size specified by RISC-V is 16 bits or two bytes, the lowest bit of the index of <em>ra</em> always has to be zero.
+            Since the smallest possible instruction size specified by RISC-V is 16 bits or two bytes, the lowest bit of the index of <em>ra</em> always has to be 0.
             This is why it is possible to encode the current colour of <em>ra</em> in this bit. For <em>sp</em>, the same is not true however since its index may be set to any value.
             The colour of <em>sp</em> is instead stored in the current frames header copy in the register file. More specifically, the colour-bit in this header is used for storing <em>sp</em>'s colour.
         </p>
@@ -2703,10 +2710,10 @@
     <h2><a id="boot">Boot Process</a></h2>
     <section>
         <p>
-            After system reset, all registers are initialised with the value zero. Also, both <em>malc</em> and <em>msad</em> contain the value 0x0.0x0.
-            The subarchitectural registers that contain the current executable object length and index are also zero.
+            After system reset, all registers are initialised with the value 0. Also, both <em>malc</em> and <em>msad</em> contain the value 0x0.0x0.
+            The subarchitectural registers that contain the current executable object length and index also contain the value 0.
             The executable object initially executed is 0x7, so its header should be located at address zero and instructions should start at address 0xC. 
-            To set up this register as well as gp, a system software should start with the following instruction sequence:
+            To set up this register as well as <em>gp</em>, a system software should start with the following instruction sequence:
         </p>
 
         <code><br>
@@ -2717,7 +2724,7 @@
 
         <p>
             After this, it is recommended to set both <em>malc</em> as well as <em>msad</em> to reasonable values using the csrw instruction.
-            Since the processor starts up in the irregular state, this should be followed by an alc or alci instruction to get into regular state and be able to call functions.
+            Since the processor starts up in the irregular state, this should be followed by an <em>alc</em> or <em>alci</em> instruction to get into regular state and be able to call functions.
         </p>
     </section>
     <h2><a id="implemenation_notes_chap">Implementation notes</a></h2>

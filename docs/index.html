@@ -242,11 +242,19 @@
 
         <h2><a name="unpriv_instructions">Unprivileged Instructions</a></h2>
         <h3><a name="alc_fam">Allocation: alc/alci/alc.d/alci.d</a></h3>
-        Since RISC-ViO manages objects on the ISA level, the ISA has to provide a means to create new objects and their corresponding pointers.
-        The creation of ISA level objects is achieved by the alc-instruction family which comes in four flavours. 
-        In fact the alc instruction family is the only way to obtain new pointers in user mode.
-        The next section provides a short description of those instructions alongside their bit encodings.
-        The objects allocated by the alc-instruction family are both readable and writable but not executable on allocation (their 'read' and 'write' bits are set). 
+        <p>
+            Since RISC-ViO manages objects on the ISA level, the ISA has to provide a means to create new objects and their corresponding pointers.
+            The creation of ISA level objects on the heap is achieved by the alc-instruction family which comes in four flavours. 
+            In fact the alc instruction family is the only way to obtain new pointers in user mode.
+            The next section provides a short description of those instructions alongside their bit encodings.
+            The objects allocated by the alc-instruction family are both readable and writable but not executable on allocation (their 'read' and 'write' bits are set). 
+        </p>
+        <p>
+            In order for the system management software to influence where new objects are placed, the zhm extension introduces an additional machine mode CSR.
+            The CSR <em>malc</em> contains both the lowest possible address on the heap as well as the address of the object last allocated.
+            Those values are represented using a pointer, where the pointer field contains the address of the object last allocated and the index field contains the lowest address still being part of the heap.
+            The CSR index of the <em>malc</em> CSR can be extracted from the <a href="#t_csr">CSR table</a>.
+        </p>
 
         <h4><a name="alc">alc-Instruction</a></h4>
             The <em>alc</em> instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is by the value passed via rs1.
@@ -828,7 +836,7 @@
     <p><i>In der herkömlichen RISC-V ABI wird die Adresse der GOT über die Distanz zum jal[r] Befehl angegeben. Dieser Ansatz ist in ViO nicht nutzbar, da ein Objekt nicht gleichzeitig
             lesbar und ausführbar sein kann. Zu diesem Zweck wird eine Art "companion"-Objekt eingeführt, dass alle Adressen, auf die ein Executable zu seiner Ausführung zugreifen möchte, führt.
             Anders als bei herkömlichen GOTs werden in diesen Objekten keine Offsets, sondern reine Zeiger gespeichert. Auch ausführbarer Code für Bibliotheksaufrufe befindet sich nicht in einer solchen GOT. 
-            {gramm: Auf} Die "companion"-GOT kann in RISC-ViO immer über das Register <em>x3</em> (<em>gp</em>) zugegriffen werden. {In order for <em>gp</em> to always contain the pointer to the GOT of the current object during regular program execution, RISC-ViO mandates that the <em>jalr</em> instruction has to update this register on every jump another executable object. On changes of the currently executed object due to exceptions, interrupts as well as <em>sret</em> and <em>mret</em> instructions, it is the duty of the system management software to update <em>gp</em>.}Es ist Aufgabe der Hardware oder des Betriebssystems dafür zu sorgen, dass das gp-Register immer
+            {gramm: Auf} Die "companion"-GOT kann in RISC-ViO immer über das Register <em>x3</em> (<em>gp</em>) zugegriffen werden. Es ist Aufgabe der Hardware oder des Betriebssystems dafür zu sorgen, dass das gp-Register immer
             auf das dem Executable zugehörigen GOT-Objekt verweist. 
         </i></p>
     <h2><a id="static">Making Library Calls</a></h2>
@@ -844,6 +852,8 @@
             evtl. befüllen und den Zeiger auf dieses Objekt in der GOT hinterlegen kann.
         </i></p>
     </section>
+
+
     
     <section>
     <h1><a id="exceptions">Exceptions</a></h1>
@@ -917,6 +927,7 @@
                 <img src="svg/register_file.drawio.svg" id="register_file_svg" style="width: 100%;margin-bottom: 0.5rem">
             </div>
         </figure>
+        <p>In the provided implementation, the hardware will update <em>gp</em> on every jump to another executanle object. In case of exceptions,interrupts and code object changes due to <em>sret/mret</em>, it is the duty of the system management software to update <em>gp</em> accordingly.</p>
     </section>
     <h2><a id="coloring">Colouring</a></h2>
     <section>
@@ -1169,6 +1180,10 @@
             In order to ensure the garbage collector being aware of this object, the attribute cache in the attribute stage also writes a header stub to the address at which the sanctuary object lies.
             In the flags field of this header, the sanctuary bit marks this object as a sanctuary object.
         </p>
+        <p>
+            In order to allow a system management software to control the allocation of sanctuary objects, a new CSR called <em>msad</em> is introduced. The pointer contained in this CSR has the current allocation index in the sanctuary object as its pointer field while the address of the current sanctuary object is located in the index field of this CSR.
+            The CSR index of the <em>msad</em> CSR can be extracted from the <a href="#t_csr">CSR table</a>.
+        </p>
     </section>
     <h2><a id="load_store">Loading and Storing a Pointer</a></h2>
     <section>
@@ -1176,8 +1191,9 @@
             For this, the example subarchitectural implementation uses an additional pipeline stage called the attribute stage which is located behind the memory stage in the processor pipeline.<br>
             The <a href="#t_instr_in_pipe">instruction behaviuor table</a> shows how this stage interacts with the stages that come before it, this section looks at this interaction in further detail.
             After the memory stage has loaded a pointer, the attribute stage then loads the header being pointed to by the pointer base address. This header along with the actual pointer value is then handed over to the write-back stage which writes those fields into the register file.
-            In the given subarchitectural implementation, the attribute stage is used to accomplish additional tasks like loading full XLEN wide data or a pointer with non-zero index from an object. 
-            For the task of loading full XLEN wide data, it is the task of the attribute stage to load the actual data from memory instead of the memory stage. This is necessary since the memory stage has to determine where this data is located in memory first by loading the according displacement pointer.
+            In the given subarchitectural implementation, the attribute stage is used to accomplish additional tasks like loading full XLEN wide data, meaning data with bits 31 and 31 being unequal, or a pointer with non-zero index from an object. 
+            For the task of loading full XLEN wide data, it is the task of the attribute stage to load the actual data from memory instead of the memory stage. 
+            This is necessary since the memory stage has to determine where this data is located in memory first by loading the according displacement pointer.
             For pointers with a non-zero index, the attribute stage also has to become active. Since requiring both the loading of a pointers index as well as the header of the object pointed to, this operation takes two clock cycles however and therefore necessitates stalling the remaining pipeline until both operations have been completed.
             In this situation, the attributes stage will load the pointer index before loading the object header and combining the loaded fields with the pointer value loaded by the memory stage and passing the combined register file entry to the writeback stage.
         </p>
@@ -1404,7 +1420,7 @@
             <tr>
                 <th>0xBC1</th>
                 <th>MSAD</th>
-                <th>free index in sanctuary object</th>
+                <th>current index in sanctuary object</th>
                 <th>address of current sanctuary object</th>
             </tr>
            

@@ -8,6 +8,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RISC-ViO Spec</title>
+    <!--
+        * sep - set equal pointer
+        * st
+        * lt
+        * clr
+        * dtp takes base address , no tags
+        * io is port mapped, io ptr created using dtp rd, io-number, zero (or any other index)
+
+        * pointer/object type tags (impl, scratch, scratch, r, w, io, do, ex, ord) specified, bits to the left impl dep, at least 2 bits reserved fort system software
+        * g|g|r|w|d|s|i|c|f|lambda|11111
+        
+        * 'types' -> 'kinds'
+        * 'values' -> 'primitives'
+        * 
+    -->
 </head>
 <body>
     <header class="col-span page-break-after">
@@ -125,11 +140,21 @@
             For this purpose, a total of three flags, 'read', 'write' and 'data only' exist for each object.
             These flags and their incurred permissions may be set or cleared in any combination using special, privileged instructions.
         </p>
+        <figure style="margin-bottom: 0.5rem">
+                <img src="svg/software_objects/object1.svg" style="width: 80%; margin-bottom: 0.5rem">
+                <figcaption>Visualization of a pointer (pink), value (blue) and an object</figcaption>
+            </div>
+        </figure>
         <p>
             I/O devices behave similarly to objects in that they also have XLEN-wide length traits. 
             In contrast to objects, those traits are fixed by the hardware and cannot be influenced by software. 
             I/O devices implicitly have all three of the 'read', 'write' and 'data only' flags set.  
         </p>
+        <figure style="margin-bottom: 0.5rem">
+                <img src="svg/software_objects/object2.svg" style="width: 80%; margin-bottom: 0.5rem">
+                <figcaption>Visualization of a pointer (pink), value (blue) and an object</figcaption>
+            </div>
+        </figure>
         <h2><a id="data_vs_pointers">Pointers and values</a></h2>
         <p>
             The RISC-V I' ISA differentiates between two data types in the register file and in memory: references to objects or I/O devices, called pointers, and regular data, being denoted as values.
@@ -309,7 +334,7 @@
                     </thead>
                     <tbody>
                         <tr  style="float: center">
-                            <td>0000000</td><td>rs1 (src)</td><td>00010</td><td>000</td><td>rd (dst)</td><td>0001011</td><td>alc</td>
+                            <td>0000000</td><td>rs2 (src)</td><td>00010</td><td>000</td><td>rd (dst)</td><td>0001011</td><td>alc</td>
                         </tr>
                     </tbody>
                 </table>
@@ -317,7 +342,7 @@
         The alc instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
-            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
+            <li><em>IncompatibleTypeException</em>: rs2 contains a pointer, not a value (rs2)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>
 
@@ -409,7 +434,7 @@
                     </thead>
                     <tbody>
                         <tr  style="float: center"></tr>
-                            <td>0000000</td><td>rs1 (src)</td><td>00000</td><td>001</td><td>rd (dst)</td><td>0001011</td><td>alc.d</td>
+                            <td>0000000</td><td>rs2 (src)</td><td>00000</td><td>001</td><td>rd (dst)</td><td>0001011</td><td>alc.d</td>
                         </tr>
                     </tbody>
                 </table>
@@ -417,7 +442,7 @@
         The <em>alc.d</em> instruction may trigger the following exceptions for the given events (xtval content):
         <ul>
             <li><em>HeapOverflowException</em>: Allocating the specified object would overflow the heap. (object_size as value)</li>
-            <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a value (rs1)</li>
+            <li><em>IncompatibleTypeException</em>: rs2 contains a pointer, not a value (rs2)</li>
             <li><em>ForbiddenDstException</em>: rd is forbidden sp (-)</li>
             <li><em>GPAccessException</em>: rd is forbidden gp (-)</li>
         </ul>

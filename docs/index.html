@@ -118,7 +118,7 @@
             In order to enforce the correct use of these objects and references to these objects, RISC-ViO alters the semantics of some of the instructions which are part of the RISC-V I base instruction set.
             This alteration of the RISC-V base ISA is denoted as the RISC-V I' ISA. 
         </p>
-        <h2><a id="data_vs_pointers">Objects, I/O devices, pointers and values</a></h2>
+        <h2><a id="objects_devices">Objects and I/O devices</a></h2>
         <p>
             Objects are unique, bounded areas allocated in memory. 
             The defining traits of such objects are their type, XLEN-wide length as well as the accesses possible on these objects. 
@@ -130,9 +130,9 @@
             In contrast to objects, those traits are fixed by the hardware and cannot be influenced by software. 
             I/O devices implicitly have all three of the 'read', 'write' and 'data only' flags set.  
         </p>
-        <br>
+        <h2><a id="data_vs_pointers">Pointers and values</a></h2>
         <p>
-            The RISC-V I' ISA differentiates between two data types in the register file and in memory: references to objects, called pointers, and regular data, being denoted as values.
+            The RISC-V I' ISA differentiates between two data types in the register file and in memory: references to objects or I/O devices, called pointers, and regular data, being denoted as values.
         </p>
         <p>
             Pointers have a a total of two separate fields. One of those is a combined field which contains a tag which marks the pointer to either be of memory or I/O type and some type specific information.

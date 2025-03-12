@@ -58,7 +58,7 @@
             While executing machine instructions, they also cannot distinguish between handling a pointer to such objects or a primitive that by chance has the same value as the pointer.
             This lack of information makes it impossible for the hardware to do bounds checks or automatically remove unused data from system memory.
             Programming languages like C demonstrate how this can lead to problems like buffer overflows or memory leaks.<br>
-            Object-oriented programming languages like Java or Python depend on their runtime to differentiate pointers from values and free up unused memory.
+            Object-oriented programming languages like Java or Python depend on their runtime to differentiate pointers from primitives and free up unused memory.
             Obviously, this improvement of reliability and security comes with a substantial tradeoff in program efficiency written in these languages.<br>
         </p>
         <p>
@@ -142,7 +142,7 @@
         </p>
         <figure style="margin-bottom: 0.5rem">
                 <img src="svg/software_objects/object1.svg" style="width: 80%; margin-bottom: 0.5rem">
-                <figcaption>Visualization of a pointer (pink), value (blue) and an object</figcaption>
+                <figcaption>Visualization of a pointer (pink), primitive (blue) and an object</figcaption>
             </div>
         </figure>
         <p>
@@ -152,21 +152,17 @@
         </p>
         <figure style="margin-bottom: 0.5rem">
                 <img src="svg/software_objects/object2.svg" style="width: 80%; margin-bottom: 0.5rem">
-                <figcaption>Visualization of a pointer (pink), value (blue) and an object</figcaption>
+                <figcaption>Visualization of a pointer (pink), primitive (blue) and an object</figcaption>
             </div>
         </figure>
-        <h2><a id="data_vs_pointers">Pointers and values</a></h2>
+        <h2><a id="data_vs_pointers">Pointers and primitives</a></h2>
         <p>
-            The RISC-V I' ISA differentiates between two data types in the register file and in memory: references to objects or I/O devices, called pointers, and regular data, being denoted as values.
+            The RISC-V I' ISA differentiates between two data types in the register file and in memory: references to objects or I/O devices, called pointers, and regular data, being denoted as primitives.
         </p>
         <p>
-            Pointers have a a total of two separate fields. One of those is a combined field which contains a tag which marks the pointer to either be of memory or I/O type and some type specific information.
-            Memory type pointers, referencing objects in memory, have a 0b0111 tag while I/O type pointers are tagged with the value 0b01111 and allow for I/O device access.
-            The mentioned tags are located at the lowest bits of the combined field.
-            The remaining bits of the combined field are used to either store the high bits of the base address of the corresponding object or the I/O device number in case of I/O pointers.<br>
+            Pointers have a a total of two separate fields. One of those is a reference field containing either an objects base address or the number of a I/O device.<br>
             An objects second field always contains an index which may point to any byte inside of the referenced object or I/O device. 
             The pointer encoding has to allow pointers to cover the entire address space of the processor of XLEN bits.
-            To set apart pointers from values, pointers are drawn in pink while values are marked using blue colour.<br>
         </p>
         <p>
             A value like a number or a character may be arbitrarily modified just as it is possible in RISC-V.<br>

@@ -181,6 +181,58 @@
         </p>
 
         <h2><a id="#isa_tags">Object tags</a></h2>
+        <table summary="Bit Values of Object Headers" style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <thead>
+                <tr>
+                    <th>Bits</th>
+                    <th>Sym.</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>31:8</td>
+                    <td>impl</td>
+                    <td>Implementation specific object trait bits</td>
+                </tr>
+                <tr>
+                    <td>7:6</td>
+                    <td>scratch</td>
+                    <td>stratch trait bits usable by software</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>r</td>
+                    <td>Redable</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>w</td>
+                    <td>Writeable</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>io</td>
+                    <td>Is io device kind</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>do</td>
+                    <td>Is data only kind</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>ex</td>
+                    <td>Is executable kind</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>ex</td>
+                    <td>Is ordinary kind</td>
+                </tr>
+            </tbody>
+        </table>
+        <u>Legacy:
         <p>
             By combining the three independent access permissions of an object, a total of eight distinct combinations are possible.
             To simplify the discussion of objects, these possibilities are combined to make up three types.
@@ -206,6 +258,7 @@
             RISC-ViO requires executable objects to hold a pointer to their Global Offset Table as described in the <a href="#got">Global Offset Table</a> chapter. 
             In user mode, this pointer is not accessible directly but has to be setup by the system management software instead.
         </p>   
+    </u>
 
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>

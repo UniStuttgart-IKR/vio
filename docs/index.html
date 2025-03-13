@@ -9,12 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RISC-ViO Spec</title>
     <!--
-        * sep - set equal pointer
-        * st
-        * lt
-        * clr
-        * dtp takes base address , no tags
-        * io is port mapped, io ptr created using dtp rd, io-number, zero (or any other index)
 
         * pointer/object type tags (impl, scratch, scratch, r, w, io, do, ex, ord) specified, bits to the left impl dep, at least 2 bits reserved fort system software
         * g|g|r|w|d|s|i|c|f|lambda|11111
@@ -148,7 +142,7 @@
         <p>
             I/O devices behave similarly to objects in that they also have XLEN-wide length traits. 
             In contrast to objects, those traits are fixed by the hardware and cannot be influenced by software. 
-            I/O devices implicitly have all three of the 'read', 'write' and 'data only' flags set.  
+            I/O devices are uniquely identified by their device number and are always readable and writable.
         </p>
         <figure style="margin-bottom: 0.5rem">
                 <img src="svg/software_objects/object2.svg" style="width: 80%; margin-bottom: 0.5rem">
@@ -157,11 +151,11 @@
         </figure>
         <h2><a id="data_vs_pointers">Pointers and primitives</a></h2>
         <p>
-            The RISC-V I' ISA differentiates between two data types in the register file and in memory: references to objects or I/O devices, called pointers, and regular data, being denoted as primitives.
+            The RISC-V I' ISA differentiates between two data kinds in the register file and in memory: references to objects or I/O devices, called pointers, and regular data, being denoted as primitives.
         </p>
         <p>
-            Pointers have a a total of two separate fields. One of those is a reference field containing either an objects base address or the number of a I/O device.<br>
-            An objects second field always contains an index which may point to any byte inside of the referenced object or I/O device. 
+            Pointers have a total of two separate fields. One of those is a reference field containing either an objects base address or the number of a I/O device.<br>
+            An objects second field always contains an index which may point to any byte of the referenced object or I/O device. 
             The pointer encoding has to allow pointers to cover the entire address space of the processor of XLEN bits.
         </p>
         <p>
@@ -172,11 +166,11 @@
             Arithmetic or logic operations on such a pointer like additions or bitwise inversions modify the pointer as a regular address would have been modified by the executed operation. 
             This modification is achieved by only altering a pointers index field while the combined field stays unchanged. 
             Note that pointers having an index reaching out of the bounds of an object or I/O device are allowed in both the register file and in memory.
-            In case of pointers of memory type, comparisons act only on the effective address of a pointer, all other information is not taken into account.
-            For I/O type pointers, the value used for the actual comparison is made up by shifting the I/O device number up by XLEN bits and adding this value to the index.
+            In case of pointers of memory kind, comparisons act only on the effective address of a pointer, all other information is not taken into account.
+            For I/O kind pointers, the value used for the actual comparison is made up by shifting the I/O device number up by XLEN bits and adding this value to the index.
             <br>
-            Arithmetic or logical operations on two pointers are allowed in the case that both pointers are of memory type.
-            For arithmetic operations on two memory type pointers, the combined field of the resulting pointer is chosen from the input pointer base addresses such that the calculated index lies within the object located at this base address. 
+            Arithmetic or logical operations on two pointers are allowed in the case that both pointers are of memory kind.
+            For arithmetic operations on two pointers of memory kind, the combined field of the resulting pointer is chosen from the input pointer base addresses such that the calculated index lies within the object located at this base address. 
             Should the result not fall into either of the input objects, the behavior regarding which input is used for the base address field of the resulting pointer is undefined. 
         </p>
 
@@ -203,7 +197,7 @@
                         permissions
                     </th>
                     <th style="border-style:solid; border-width: 0px;" colspan="4">
-                        <div style="text-align: center">type</div>
+                        <div style="text-align: center">kind</div>
                     </th>
                 </tr>
                 <tr  style="float: center">
@@ -242,10 +236,10 @@
         <u>Legacy:
         <p>
             By combining the three independent access permissions of an object, a total of eight distinct combinations are possible.
-            To simplify the discussion of objects, these possibilities are combined to make up three types.
+            To simplify the discussion of objects, these possibilities are combined to make up three kinds.
         </p>
         <p>
-            The first types is denoted as the regular type. Any object having its 'data only' flag cleared is of this type.
+            The first kinds is denoted as the regular type. Any object having its 'data only' flag cleared is of this type.
             Such objects may hold any data meaning both primitives and pointers may be stored in an object of this type.
             In order to enforce the separation of instructions and data however, instructions may not be fetched from such objects and executed afterwards.
         </p>
@@ -269,8 +263,7 @@
 
         <h2><a id="riscv_i_tick">RISC-V I vs I'</a></h2>
         <p>
-        For the differentiation between pointers and primitives to be meaningful, RISC-ViO mandates that only pointers may be used to access memory via the object abstraction. The same is also true for accesses to I/O devices: Accesses to I/O devices is only possible via their corresponding pointer.
-        <!--For obtaining pointers, there are two distinct possibilities. Either by using a member the alc instruction family to allocate a new object or by manually creating them in higher privilege modes. -->
+        For the differentiation between pointers and primitives to be meaningful, RISC-ViO mandates that only pointers may be used to access memory via the object abstraction. The same is also true for accesses to I/O devices: Accesses to I/O devices are only possible via their corresponding pointers.
         (Note that pointers may not be written to I/O devices as their 'data only' flag is set implicitly.)
         This requirement influences all load and store instructions as listed below:
         </p>
@@ -287,7 +280,7 @@
          The main change for those instruction families lies in them requiring pointers to be used to select objects and I/O devices instead of memory locations.
         Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed. 
         Those offsets are added to the index of the pointer used to access the object to make up the offset used for the actual object or I/O device access.
-        Being explicit memory accesses in the case of memory type pointers, these instructions may only access regular as well as data only objects.</p>
+        Being explicit memory accesses in the case of pointers of memory type, these instructions may only access regular as well as data only objects.</p>
         <!--@Leyla: wenn man unsere regeln bricht, tritt eine hardware exception-->
         <p>
         </p>
@@ -315,7 +308,7 @@
 
         <h2><a id="riscv_i_tick">Register file</a></h2>
             </p>
-            RISC-V specifies 31 general-purpose registers and one special register, <em>zero</em>.
+            The RISC-V ISA specifies 31 general-purpose registers and one special register, <em>zero</em>.
             The RISC-ViO architecture adds additional requirements to this register file definition:
                 <ul>
                     <li>each register has to be able to hold either a primitive of width XLEN or a pointer with a XLEN wide index.</li>
@@ -353,8 +346,10 @@
         </p>
 
         <h4><a name="alc">alc-instruction</a></h4>
+            <p>
             The <em>alc</em> instruction is the most basic form in its family. This instruction allows the allocation of a regular object where the size of the object is given by the value passed via rs1.
             The size is given in bytes as per the value in rs1.
+            </p>
             
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
@@ -506,7 +501,7 @@
         </ul>
 
         <h4><a name="alcid">alci.d-instruction</a></h4>
-        The <em>alci.d</em> instruction is the analogous form of <em>alci</em> regarding data only objects. It differs in the type of allocated object and in that it also is prohibited from allocating frames.
+        The <em>alci.d</em> instruction is the analogous form of <em>alci</em> regarding data only objects. It differs in the kind of allocated object and in that it also is prohibited from allocating frames.
         <div style="margin-top: 5%; margin-bottom: 3%;">
             <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                 <colgroup>
@@ -603,7 +598,7 @@
         </ul>
         <h2><a name="priv_instructions">Privileged Instructions</a></h2>
             With the instructions described above, it is impossible to break out of the restrictions given by the bounds check and pointer integrity safety measures. It is also not possible to influence object behaviour regarding permissions.
-            To enable the management of the processor system, requiring low level control over these features, additional instructions are available for all privilege modes above the user mode.
+            To enable the management of the processor system, which requires low level control over these features, additional instructions are available for all privilege modes above the user mode.
         <h3><a name="dtp">Raw pointer access: sep/btd/itd/dtp</a></h3>
             In order to be able to create and inspect pointers a total of four instructions are provided. These allow for asserting that a register contains a pointer, reading out the integral parts of a pointer as well as creating arbitrary pointers.
             <h4><a name="sep">sep-instruction</a></h4>
@@ -650,7 +645,7 @@
                 </table>
             </div>
             <h4><a name="btd">btd-instruction</a></h4>
-            The btd 'base to data' instruction allows for reading out a pointers base address. This value is written into rd for the pointer given in rs1.
+            The btd 'base to data' instruction allows for reading out a pointers base address. This primitive value is written into rd for the pointer given in rs1.
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
@@ -696,7 +691,7 @@
                 <li><em>IncompatibleTypeException</em>: rs1 contains a primitive, not a pointer (rs1)</li>
             </ul>
             <h4><a name="itd">itd-instruction</a></h4>
-            The <em>itd</em> 'index to data' instruction allows for reading out a pointers raw pointer index. This value is written into rd for the pointer given in rs1.
+            The <em>itd</em> 'index to data' instruction allows for reading out a pointers raw pointer index. This primitive value is written into rd for the pointer given in rs1.
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
@@ -738,8 +733,8 @@
                 </table>
             </div>
             <h4><a name="dtp">dtp-instruction</a></h4>
-            The dtp 'data to pointer' instruction allows for the assembly of arbitrary pointers. Both the index as well as the base address are set according the values in registers rs1 and rs2 respectively. The result is stored in rd. 
-            Pointers assembled using <em>dtp</em> are of memory object type on creation but may be turned into I/O pointers using the <em>st</em> instruction. Note that in such a case, the I/O device number field is directly set to base address field value. 
+            The dtp 'data to pointer' instruction allows for the assembly of arbitrary pointers. Both the index and the base address are set according the values in registers rs1 and rs2 respectively. The result is stored in rd. 
+            Pointers assembled using <em>dtp</em> are of memory object type on creation but may be turned into I/O pointers using the <em>st</em> instruction. Note that in such a case, the I/O device number field is directly set to the former base address field value. 
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
@@ -781,9 +776,10 @@
                 </table>
             </div>
             The <em>dtp</em> instruction may trigger the following exceptions for the given events (xtval content):
-            <ul>
-                <li><em>IncompatibleTypeException</em>: rs1 or rs2 contains a pointer, not a primitive (rs1 or rs2 with rs1 being prioritized)</li>
-            </ul>
+            <ol>
+                <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a primitive (rs1)</li>
+                <li><em>IncompatibleTypeException</em>: rs2 contains a pointer, not a primitive (rs2)</li>
+            </ol>
         <h3><a name="lt_st">Object tag access: lt/st</a></h3>
             In order for a system software to gain control over the tags that make up an objects traits, additional instructions are required. Both read and write access to these tags is possible using the instructions introduced below. 
             <h4><a name="lt">lt-instruction</a></h4>
@@ -881,15 +877,13 @@
                 <li><em>IncompatibleTypeException</em>: rs1 contains a primitive, not a pointer (rs1)</li>
                 <li><em>IncompatibleTypeException</em>: rs2 contains a pointer, not a primitive (rs2)</li>
             </ol>
-            <h4><a name="st">st-instruction</a></h4>
-            The <em>st</em> instruction is the companion of the <em>lt</em> instruction, allowing object or I/O device tags to written. For this, <em>st</em> sets the tags of the object or I/O device being referenced by the content of the rs1 register to the tags provided in rs2 in form of a primitive.
-            
             <h3><a name="clr">Memory clearing: clr</a></h3>
             <p>
-                In order to be able for garbage collection to be possible in software, it is necessary to be able to clear out certain memory regions. 
+                To enable garbage collection in software, it is necessary to be able to clear out certain memory regions. 
                 This is a consequence of mandating that newly allocated objects may only contain the primitive value 0. 
                 A garbage collector implemented in software is able to use the <em>clr</em> instruction to ensure that this requirement is met.
                 This is achieved by this instruction writing the primitive value 0 of XLEN width to the memory address given by the contents of register rs1.
+                This address has to be aligned accordingly.
             </p>
             <div style="margin-top: 5%; margin-bottom: 3%;">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
@@ -932,9 +926,10 @@
                 </table>
             </div>
             The <em>clr</em> instruction may trigger the following exceptions for the given events (xtval content):
-            <ul>
+            <ol>
                 <li><em>IncompatibleTypeException</em>: rs1 contains a pointer, not a primitive (rs1)</li>
-            </ul>
+                <li><em>Store/AMO address misaligned</em>: primitive in rs1 is not aligned</li>
+            </ol>
     </section>
     
     <h1><a id="frames">The not so stacked frames</a></h1>
@@ -958,7 +953,7 @@
                 These restrictions are enforced using <em>ForbiddenDstException</em> and <em>ForbiddenSrcException</em>.
                 <figure style="display:flex; margin-bottom: 0.5rem">
                     <div style="flex: 30%; margin-bottom: 0.5rem">
-                        <figcaption>A Frame Object for XLEN=32</figcaption>
+                        <figcaption>A frame object for XLEN=32</figcaption>
                         <img src="svg/objektbaukasten/frame_object.svg" id="frame_object_svg" style="width: 35%;margin-bottom: 0.5rem">
                     </div>
                 </figure>
@@ -1060,7 +1055,7 @@
                 In consequence, <em>LoadAccessFault</em>, <em>StoreAccessFault</em> or <em>IncompatibleTypeException</em> are raised when the corresponding flag is not set as per <a href="#objs_ords">ordinary objects</a>. 
                 <em>LoadAccessFault</em>s are triggered when the 'read' flag is cleared while <em>StoreAccessFault</em> is raised in case of a store access to a object with cleared 'write' flag.
                 Trying to store pointers to a data only object marked by a set 'data only' flag will lead to a <em>IncompatibleTypeException</em>. 
-                The same exception is triggered when trying to jump to a regular object using <em>jalr</em> or when trying to do an arithmetic or logical operation on two pointers which are not both of memory type.
+                The same exception is triggered when trying to jump to a regular object using <em>jalr</em> or when trying to do an arithmetic or logical operation on two pointers which are not both of memory kind.
             </p>
             <p>
                 Trying to access the register <em>gp</em> for anything other than as a access pointer in a memory instruction will lead to a <em>GPAccessException</em>.
@@ -1135,23 +1130,23 @@
     <h2><a id="flgs_tgs">Flags and Tags</a></h2>
     <section>
         <p>In order to distinguish pointers from primitives, the provided implementation uses a tag bit for all registers which may hold both primitives and pointers. Primitives are tagged as '0' while pointers are identified by a '1' bit.
-            Since on ISA level, RISC-ViO only distinguishes between regular an I/O pointers, only a single bit in the register file is required to keep those pointer types apart.
+            Since on ISA level, RISC-ViO only distinguishes between regular an I/O pointers, only a single bit in the register file is required to keep those pointer kinds apart.
             This bit is interpreted as part of the pointer and is added to the right of the pointer base address or I/O device number for I/O pointers.
         </p>
     </section>
 
 
-    <h1><a id="hard_obj">Objects in Memory</a></h1>
+    <h1><a id="hard_obj">Objects in memory</a></h1>
     <section style="display:flex">
         <div class="screen2_print1">
             <h2 style="text-align: center;"><a id="headers">Headers</a></h2>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
-                Headers mark the beginning of every Object. They hold all information about the object necessary to ensure proper handling of itself. Headers are always 16-Byte aligned.</p>
+                Headers mark the beginning of every object. They hold all information about the object necessary to ensure proper handling of itself. Headers are always 16-Byte aligned.</p>
             <figure>
                 <img src="svg/objektbaukasten/header.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
                 <figcaption>Header Bitmap on 32-Bit Architectures</figcaption>
             </figure>
-            <table summary="Bit Values of Object Headers" style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <table summary="Bit Values of object headers" style="width: 80%; margin-left: 10%; margin-right: 10%;">
                 <thead>
                     <tr>
                         <th>Bits</th>
@@ -1193,17 +1188,17 @@
                     <tr>
                         <td>6</td>
                         <td>c</td>
-                        <td>Color of Frame Objects.<br>See <a href="#frames">Frames Chapter</a></td>
+                        <td>Color of frame objects.<br>See <a href="#frames">Frames chapter</a></td>
                     </tr>
                     <tr>
                         <td>5</td>
                         <td>f</td>
-                        <td>Frame Object</td>
+                        <td>Frame object</td>
                     </tr>
                     <tr>
                         <td>4:0</td>
                         <td>-</td>
-                        <td>Header Identifier</td>
+                        <td>Header identifier</td>
                     </tr>
                     <tr>
                         <td></td>
@@ -1213,7 +1208,7 @@
                     <tr>
                         <td>31:3</td>
                         <td>λ</td>
-                        <td>Length of Object<br>(only bits (63|31):3)</td>
+                        <td>Length of object<br>(only bits (63|31):3)</td>
                     </tr>
                     <tr>
                         <td><i>1</i></td>
@@ -1223,7 +1218,7 @@
                     <tr>
                         <td>0</td>
                         <td>-</td>
-                        <td>Data Identifier</td>
+                        <td>Data identifier</td>
                     </tr>
                 </tbody>
             </table>
@@ -1232,15 +1227,15 @@
 
             <h2 style="text-align: center;"><a id="elements">Elements</a></h2>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
-                Elements of Objects are tagged by the lowest Bit(s) in a Chunk of Memory.
-                On a 32-Bit Architecture this Chunk is 32 bits wide, on 64-Bit Architectures 64 bits.</p>
+                Elements of objects are tagged by the lowest Bit(s) in a chunk of memory.
+                On a 32-Bit architecture this chunk is 32 bits wide, on 64-Bit architectures 64 bits.</p>
             <figure style="margin-top: 0; margin-bottom: 1em">
                 <img src="svg/objektbaukasten/data.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
-                <figcaption>Word, Half and Byte locations in an ordinary object</figcaption>
+                <figcaption>Word, half and byte locations in an ordinary object</figcaption>
             </figure>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
-                Data in Ordinary Objects is identified by the trailing <em>0</em>-Bit. If a Store is attempted, which would make the two uppermost bits of a chunk unequal (e.g. <em>bit-31 &ne; bit-30</em> on a 32-Bit Architecture)
-                then the Data is stored to the current sanctuary Object instead and the corresponding displacement pointer will be stored to the address the original store was attempted to.</p>
+                Data in ordinary objects is identified by the trailing <em>0</em>-Bit. If a Store is attempted, which would make the two uppermost bits of a chunk unequal (e.g. <em>bit-31 &ne; bit-30</em> on a 32-Bit Architecture)
+                then the data is stored to the current sanctuary object instead and the corresponding displacement pointer will be stored to the address the original store was attempted to.</p>
             <figure style="margin-top: 0; margin-bottom: 1em">
                 <img src="svg/objektbaukasten/disp_prim_ptr.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
                 <figcaption>Pointer to displaced data</figcaption>
@@ -1248,10 +1243,10 @@
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
                 These Pointers are identified by trailing <em>01</em>-Bits.</p>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%; margin-top: 2em">
-                Pointers to Objects are identified by trailing <em>0111</em>-Bits. They can be generated by allocation instructions and point to the head of ordinary, data-only and executable objects.</p>
+                Pointers to objects are identified by trailing <em>0111</em>-Bits. They can be generated by allocation instructions and point to the head of ordinary, data-only and executable objects.</p>
             <figure style="margin-top: 0; margin-bottom: 1em">
                 <img src="svg/objektbaukasten/pointer.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
-                <figcaption>Pointer to an Object</figcaption>
+                <figcaption>Pointer to an object</figcaption>
             </figure>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
                 If a store is attempted on a pointer that was modified by arithmetic instructions so that its index is unequal to zero, the pointer will be displaced into the current sanctuary object and only the displacement pointer
@@ -1261,9 +1256,9 @@
                 <figcaption>Pointer to a displaced Pointer</figcaption>
             </figure>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
-                These Pointers are identified by trailing <em>011</em>-Bits.</p>
+                These pointers are identified by trailing <em>011</em>-Bits.</p>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%; margin-top: 2em">
-                Pointers to I/O-Capabilities are identified by the trailing <em>01111</em>-Bits. They hold a device-id which identify what I/O-Device is referenced.</p>
+                Pointers to I/O-capabilities are identified by the trailing <em>01111</em>-Bits. They hold a device-id which identify what I/O-Device is referenced.</p>
             <figure style="margin-top: 0; margin-bottom: 1em">
                 <img src="svg/objektbaukasten/io_ptr.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
                 <figcaption>I/O-Pointer</figcaption>
@@ -1272,26 +1267,26 @@
         <div class="screen2_print1">
             <h2 style="text-align: center;"><a id="ords">Ordinaries</a></h2>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
-                Ordinary Objects always start with a Header and can hold every element type defined.</p>
+                Ordinary objects always start with a header and can hold every element kind defined.</p>
             <figure style="margin-top: 0;">
                 <img src="svg/objektbaukasten/ordinary_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
-                <figcaption>Ordinary Object and its possible Elements</figcaption>
+                <figcaption>Ordinary object and its possible elements</figcaption>
             </figure>
             
             <h2 style="text-align: center;"><a id="data-onlies">Data-Only Objects</a></h2>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
-                Data-Only Objects are identified by the data-only Bit in the Header. Data inside of these Objects is not tagged, so they make use of the whole 64|32 Bit per Element.
-                Pointers are forbidden inside data-only Objects.</p>
+                Data-only objects are identified by the data-only bit in the Header. Data inside of these objects is not tagged, so they make use of the whole 64|32 Bit per element.
+                Pointers are forbidden inside data-only objects.</p>
             <figure style="margin-top: 0;">
                 <img src="svg/objektbaukasten/data_only_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
-                <figcaption>Data-Only Object</figcaption>
+                <figcaption>Data-only object</figcaption>
             </figure>
 
             <h2 style="text-align: center;"><a id="execs">Executables</a></h2>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
                 Executables have only the data-only bit set in their header. This identifies them as a executable.<br>
-                As part of their Header, Executables have the pointer to their companion GOT stored at the third (double-)word of the object. The start of Code is then referred as index 0 of the objuect.
-                It is stored in the same fashion as in data-only so they can harvest the full 64|32 bit of a Element.</p>
+                As part of their header, executables have the pointer to their companion GOT stored at the third (double-)word of the object. The start of Code is then referred as index 0 of the objuect.
+                It is stored in the same fashion as in data-only so they can harvest the full 64|32 bit of a element.</p>
             <figure style="margin-top: 0;">
                 <img src="svg/objektbaukasten/executable_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
                 <figcaption>Executable Object</figcaption>
@@ -1300,9 +1295,9 @@
             <h2 style="text-align: center;"><a id="sancts">Sanctuaries</a></h2>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
                 Sanctuaries only have the Sanctuary Bit set in their header. They are used as memory space for displaced primitives and displaced pointers and cannot be referenced by ordinary pointers.<br>
-                Displaced Pointers take two Element Slots, one for the base pointer and one for the index, thus are always aligned to 2-Element boundaries.
+                Displaced Pointers take two element slots, one for the base pointer and one for the index, thus are always aligned to 2-Element boundaries.
                 The base pointer is stored as a ordinary pointer and the index as data-only primitive.<br>
-                Displaced Primitives only take one Element Slot beeing the (Double-)Word that was displaced. These Types can be stored at any Element position inside the Sanctuary.</p>
+                Displaced primitives only take one element slot beeing the (Double-)Word that was displaced. These kinds can be stored at any element position inside the Sanctuary.</p>
             <figure style="margin-top: 0;">
                 <img src="svg/objektbaukasten/data_only_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
                 <figcaption>Sanctuary Object</figcaption>
@@ -1348,7 +1343,7 @@
         <p>
             To commit the header of this new object to memory, the so-called attribute cache is used. 
             This cache is located in the attribute stage located behind the memory stage and is mainly used to both retrieve and load object attributes.
-            In case of primitives with bit 31 set or pointers with non-zero index this cache is also used to both store and retrieve these types of data to and from memory.
+            In case of primitives with bit 31 set or pointers with non-zero index this cache is also used to both store and retrieve these kinds of data to and from memory.
         </p>
         <figure>
             <figcaption>Heap limits and growth.</figcaption>
@@ -1482,7 +1477,7 @@
         </table>
     </section>
 
-    <h2 class="page-break-before"><a id="t_op">Object and Pointer Types</a></h2>
+    <h2 class="page-break-before"><a id="t_op">Object and pointer kinds</a></h2>
     <section>
         <figure style="display:flex">
             <div style="flex: 50%;">
@@ -1490,11 +1485,11 @@
                 <img src="svg/objektbaukasten/header.svg" id="header_table_svg" style="width: 60%;">
                 <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Data</p>
                 <img src="svg/objektbaukasten/data.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Displacement Pointer (Primitive)</p>
+                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Displacement pointer (primitive)</p>
                 <img src="svg/objektbaukasten/disp_prim_ptr.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Displacement Pointer (Pointer)</p>
+                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Displacement pointer (pointer)</p>
                 <img src="svg/objektbaukasten/disp_ptr_ptr.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Ordinary Pointer</p>
+                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Ordinary pointer</p>
                 <img src="svg/objektbaukasten/pointer.svg" id="header_table_svg" style="width: 60%;">
                 <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">I/O-Pointer</p>
                 <img src="svg/objektbaukasten/io_ptr.svg" id="header_table_svg" style="width: 60%;">
@@ -1502,9 +1497,9 @@
             <div style="flex: 50%;">
                 <p style="font-size: 16pt; font-style: italic; text-indent:0;">Ordinary Object</p>
                 <img src="svg/objektbaukasten/ordinary_object.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Executable Object</p>
+                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Executable object</p>
                 <img src="svg/objektbaukasten/executable_object.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Data-Only Object</p>
+                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Data-only object</p>
                 <img src="svg/objektbaukasten/data_only_object.svg" id="header_table_svg" style="width: 60%;">
             </div>
         </figure>
@@ -1634,7 +1629,7 @@
         <img src="svg/pretty_heap.svg" id="heap">
     </figure>
 
-    <h2 class="page-break-before"><a id="t_instr_in_pipe">Instructions in a sample Pipeline</a></h2>
+    <h2 class="page-break-before"><a id="t_instr_in_pipe">Instructions in a sample pipeline</a></h2>
     <p>
         This table shows how a pipeline backend implementing the RISC-ViO architecture may look like.
         For this, the fields of the content to be written to a register is shown in the EXecute, MEmory and the new ATtribute stage.
@@ -2966,7 +2961,7 @@
         <li>XLEN - base integer ISA width (i.e. 32 for RV32)</li>
         <li>index - object field offset contained in a pointer</li>
         <li>offset - object fieöd offset being part of an instruction </li>
-        <li>tag - bits making up a type information</li>
+        <li>tag - bits making up a kind information</li>
         <li>flag - a bit for a singular permission</li>
     </ol>
 </body>

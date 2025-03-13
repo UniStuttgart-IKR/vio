@@ -181,57 +181,64 @@
         </p>
 
         <h2><a id="#isa_tags">Object tags</a></h2>
-        <table summary="Bit Values of Object Headers" style="width: 80%; margin-left: 10%; margin-right: 10%;">
+        <table summary="Bit Values of Tag word" cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center">
+            <colgroup>
+                <col width="30%"/>
+                <col width="20%"/>
+                <col width="10%"/>
+                <col width="10%"/>
+                <col width="10%"/>
+                <col width="10%"/>
+                <col width="10%"/>
+            </colgroup>
             <thead>
-                <tr>
-                    <th>Bits</th>
-                    <th>Sym.</th>
-                    <th>Details</th>
+                <tr  style="float: center">
+                    <th style="border-style:solid; border-width: 0px;">
+                        implementation specific
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;" >
+                        scratch
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;" colspan="2">
+                        permissions
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;" colspan="4">
+                        <div style="text-align: center">type</div>
+                    </th>
                 </tr>
+                <tr  style="float: center">
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">31</div><div style="float: right">8</div>
+                </th>
+                <th style="border-style:solid; border-width: 0px;">
+                    <div style="float: left">7</div><div style="float: right">6</div>
+                </th>
+                <th style="border-style:solid; border-width: 0px;">
+                    5
+                </th>
+                <th style="border-style:solid; border-width: 0px;">
+                    4
+                </th>
+                <th style="border-style:solid; border-width: 0px;">
+                    3
+                </th>
+                <th style="border-style:solid; border-width: 0px;">
+                    2
+                </th>
+                <th style="border-style:solid; border-width: 0px;">
+                    1
+                </th>
+                <th style="border-style:solid; border-width: 0px;">
+                    0
+                </th>
             </thead>
             <tbody>
-                <tr>
-                    <td>31:8</td>
-                    <td>impl</td>
-                    <td>Implementation specific object trait bits</td>
-                </tr>
-                <tr>
-                    <td>7:6</td>
-                    <td>scratch</td>
-                    <td>stratch trait bits usable by software</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>r</td>
-                    <td>Redable</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>w</td>
-                    <td>Writeable</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>io</td>
-                    <td>Is io device kind</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>do</td>
-                    <td>Is data only kind</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>ex</td>
-                    <td>Is executable kind</td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>ex</td>
-                    <td>Is ordinary kind</td>
+                <tr  style="float: center">
+                    <td>...</td><td>...</td><td>r</td><td>w</td><td>io</td><td>data only</td><td>executable</td><td>ordinary</td>
                 </tr>
             </tbody>
         </table>
+
         <u>Legacy:
         <p>
             By combining the three independent access permissions of an object, a total of eight distinct combinations are possible.

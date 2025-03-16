@@ -431,6 +431,8 @@ cite {
   font-size: 8pt;
   margin-bottom: 3pt;
   text-align: left; }
+
+#toc-left { width: max-content;}
   
 @media screen {
   html {
@@ -442,7 +444,7 @@ cite {
     background: light-dark(#f5f5f5, #1a1a1aff);
     display: table-cell;
     vertical-align: middle;
-    width: 70rem;
+    max-width: 70rem;
   }
 
   h1, h2, h3, h4, h5 { color: light-dark(#674a93, #c6afe9);}
@@ -465,6 +467,14 @@ cite {
 
   #heap { width: 85%; }
   .screen2_print1 { flex: 50% }
+}
+
+@media (min-width: 94rem) {
+  #left-toc {
+    position: fixed; top: 0; left: 0; width: 24rem; height: 100vh; overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none;
+  }
+  #toc-title { text-align: left; }
+  body { padding-left: 24rem; }
 }
 
 @media print {

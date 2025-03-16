@@ -40,9 +40,12 @@
         </div>
     </header>
 
-    <h1 class="counter-skip page-break-before" style="text-align: center;">Table of Contents</h1>
-    <ul id="toc" class="toc page-break-after" style="list-style-type:none; margin-left: 0;">
-    </ul>
+    <div id="left-toc">
+        <h1 id="toc-title" class="counter-skip page-break-before" style="padding-left: 1em; margin-top: 0.5rem"><a class="sl" href="#">Table of Contents</a></h1>
+        <ul id="toc" class="toc page-break-after" style="list-style-type:none; margin-left: 0;">
+        </ul>
+    </div>
+
 
     <h1><a id="intro">Introduction</a></h1>
     <section>
@@ -982,13 +985,7 @@
                 </p>
             <figure>
                 <figcaption>Colour transitions</figcaption>
-                <div style="width: 100%; display: flex; justify-content: center;">
-                    <div style="width: 80%; display: flex; justify-content: space-around; flex-direction: row;  flex-wrap: wrap;">
-                        <div style="margin: 0px auto" >
-                            <img src="svg/vio_stack_colors_transitions.drawio.svg" id="svg2" style="width: 20rem; margin: 0px auto;">
-                        </div>
-                    </div>
-                </div>
+                <img src="svg/vio_stack_colors_transitions.drawio.svg" id="svg2" style="max-width: 40%;">
             </figure>
                 <p>
                     Figure 2 provides two sample program flows for which the colour and therefore state transitions are shown. 
@@ -1110,11 +1107,9 @@
     <h2><a id="fields">Fields</a></h2>
     <section>
         <p>The subarchitecture implementation offered here is meant only as an example implementation and is focused on higher performance while requiring more hardware resources. The register sections required by the RISC-ViO specification are denoted with 'ISA' while sections introduced by this particular implementation are denoted with 'IMP'. In this implementation, the 'IMP' sections are exclusively made up of object header metadata drawn in green.  </p>
-        <figure style="display:flex; margin-bottom: 0.5rem">
-            <div style="flex: 30%; margin-bottom: 0.5rem">
-                <figcaption>An example implementation of a RISC-ViO register file</figcaption>
-                <img src="svg/register_file.drawio.svg" id="register_file_svg" style="width: 100%;margin-bottom: 0.5rem">
-            </div>
+        <figure style="margin-bottom: 1rem">
+            <figcaption>An example implementation of a RISC-ViO register file</figcaption>
+            <img src="svg/register_file.drawio.svg" id="register_file_svg" style="width: 100%;">
         </figure>
         <p>In the provided implementation, the hardware will update <em>gp</em> on every jump to another executanle object. In case of exceptions,interrupts and code object changes due to <em>sret/mret</em>, it is the duty of the system management software to update <em>gp</em> accordingly.</p>
     </section>
@@ -1137,7 +1132,7 @@
 
 
     <h1><a id="hard_obj">Objects in memory</a></h1>
-    <section style="display:flex">
+    <section style="display:flex; width: 100%;">
         <div class="screen2_print1">
             <h2 style="text-align: center;"><a id="headers">Headers</a></h2>
             <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
@@ -1636,7 +1631,7 @@
         Also, for each stage the units which are active in this stage for the given instruction are listed. A result field value of 'pass' means that this pipeline stage will only pass along the value of rd from the prior stage while '~' means that rd is invalid and this instruction will not write anything to the register file.
     </p>
     <section>
-        <table border="0" cellspacing="0" cellpadding="0" class="table-ta1" style="text-align:left">
+        <table class="table-ta1" style="text-align:left; border: 0; overflow-x: auto;">
             <colgroup>
                 <col width="172"/>
                 <col width="40"/>
@@ -2976,12 +2971,13 @@
     var h2Numbering = 0;
     for (var i = 0; i < headerList.length; i++) {
         var header = headerList[i];
-        if (header.childNodes.length == 0 || header.childNodes[0].nodeName != "A")
+        if (header.childNodes.length == 0 || header.childNodes[0].nodeName != "A"
+            || header.id == "toc-title")
             continue;
 
         if (h2Numbering == 0 && header.nodeName == "H2"){
             const h2Toc = document.createElement("ul");
-            h2Toc.style.paddingInlineStart = "28pt";
+            h2Toc.style.paddingInlineStart = "32pt";
             h2Toc.style.listStyleType = "none";
             h2Toc.style.marginLeft = 0;
             h1Toc.appendChild(h2Toc);
@@ -2997,18 +2993,24 @@
         if (header.nodeName == "H2")
             h2Numbering++;
 
+        const link = header.childNodes[0].cloneNode(true);
         const li = document.createElement("li");
         li.className = "toc";
         if (h2Numbering == 0){
             li.style.fontSize = "14pt";
             li.style.fontWeight = "bold";
-            li.appendChild(document.createTextNode(h1Numbering + ". "));
+            const number = document.createElement("span");
+            number.appendChild(document.createTextNode(h1Numbering + "."));
+            li.appendChild(number);
+            link.style.display = "block";
+            link.style.marginLeft = "32pt";
+            link.style.marginTop = "-19pt";
+            link.style.textAlign = "left";
         } else {
             li.style.fontSize = "12pt";
             li.style.fontWeight = "normal";
-            //li.appendChild(document.createTextNode(h1Numbering + "." + h2Numbering + ". "));
+            li.style.textAlign = "left";
         }
-        const link = header.childNodes[0].cloneNode(true);
         link.setAttribute("href", "#" + link.getAttribute("id"));
         link.setAttribute("class", "sl");
         link.setAttribute("id", null);

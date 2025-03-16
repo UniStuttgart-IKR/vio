@@ -75,13 +75,17 @@ cite {
   cite a {
     text-decoration: none; }
 
+code::before {
+  max-width: calc(100vw - 12pt);
+  overflow-x: auto;
+}
 code {
   font-family: Consolas, Courier, monospace;
   font-size: 11pt;
   font-weight: 400;
   white-space: nowrap; 
   margin: 30pt;
-  text-align: left
+  text-align: left;
 }
 
 figure {
@@ -466,14 +470,14 @@ cite {
   }
 
   #heap { width: 85%; }
-  .screen2_print1 { flex: 50% }
+  .screen2_print1 { flex: 50%; min-width: 20rem; }
 }
 
 @media (min-width: 94rem) {
   #left-toc {
     position: fixed; top: 0; left: 0; width: 24rem; height: 100vh; overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none;
   }
-  #toc-title { text-align: left; }
+  #toc-title { display: none; }
   body { padding-left: 24rem; }
 }
 
@@ -529,5 +533,5 @@ cite {
 
   #heap { height: 350mm; }
 
-  .screen2_print1 { flex: 100% }
+  .screen2_print1 { flex: 50%; min-width: 50rem; }
 }

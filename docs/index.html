@@ -40,15 +40,39 @@
         </div>
     </header>
 
+    <input id="sl-button" style="position: fixed; top: 1rem; left: 1rem; transform: scale(-1, -1);" class="l-hidden" type="image" src="svg/menu_open.svg" />
     <div id="left-toc">
         <h1 id="toc-title" class="counter-skip page-break-before" style="padding-left: 1em; margin-top: 0.5rem"><a class="sl" href="#">Table of Contents</a></h1>
+        <input id="hl-button" style="position: fixed; top: 1rem; left: 22rem;" type="image" src="svg/menu_open.svg" />
         <ul id="toc" class="toc page-break-after" style="list-style-type:none; margin-left: 0;">
         </ul>
     </div>
 
+    <input id="sr-button" style="position: fixed; top: 1rem; right: 1rem;" class="r-hidden" type="image" src="svg/menu_open.svg" />
+    <div id="right-legend">
+        <h1 id="legend-title" class="counter-skip page-break-before" style="padding-left: 1em; margin-top: 0.5rem"><a class="sl" href="#">Legend</a></h1>
+        <div id="legend" style="margin-left: 0;">
+            <input id="hr-button" style="position: fixed; top: 1rem; right: 20rem; transform: scale(-1, -1);" type="image" src="svg/menu_open.svg" />
+            <div style=" margin-top: 1em;">This document is split into two categories:</div>
+            <div style="display: flex; align-items: center; margin-top: 0.5em;">
+                <div class="legend-square" style="background-color: light-dark(#674a93, #c6afe9);"></div>
+                <span style="font-size: 16pt; font-weight: bold; margin-top: 0;">ISA</span>
+            </div>
+            <div style="display: flex; align-items: center; margin-top: 0.5em;">
+                <div class="legend-square" style="background-color: light-dark(#4aa893, #a0e6d3);"></div>
+                <span style="font-size: 16pt; font-weight: bold; margin-top: 0;">Implementation</span>
+            </div>
+            <div style="padding-top: 1em;">
+                Whenever a chapter is highlighted in <em class="isa">ISA</em> colors, an abstract ISA-Layer concept is being described.
+                The <em class="imp">Implementation</em> sections then cover specifics on how these concepts <em class="imp">could</em>
+                be realized.
+            </div>
+        </div>
+    </div>
 
-    <h1><a id="intro">Introduction</a></h1>
-    <section>
+
+    <h1 class="isa"><a id="intro">Introduction</a></h1>
+    <section class="isa">
         <h2><a id="motivation">Motivation</a></h2>
         <p>
             In conventional computer architectures, the system hardware has no information about the location and size of runtime level objects like structs or arrays.
@@ -92,7 +116,7 @@
             being source code compatible with this architecture.
         </p>
     </section>
-    <section>
+    <section class="isa">
         <h2><a id="goals">Design goals</a></h2>
         <p>
             As all children try to grow up to be a better version of their parents, RISC-ViO takes over O-RISCs belief in the new way of hardware-software
@@ -127,7 +151,7 @@
 
 
 
-    <section>
+    <section class="isa">
     <h1><a id="base_spec">The RISC-V I' ISA</a></h1>
         <p>
             In RISC-ViO, objects are leveraged as the way to achieve the design goals outlined in the motivational chapter.
@@ -331,7 +355,7 @@
 
 
 
-    <section>
+    <section class="isa">
     <h1><a id="instructions">The zhm extension</a></h1>
         <p>In addition to the modifications of already existing instructions which are part of the RISC-V I base ISA, RISC-ViO introduces several instructions as an interface between software and hardware regarding objects.
             Those instructions are all part of the zhm ("heap management") extension.
@@ -941,7 +965,7 @@
             </ol>
     </section>
     
-    <section>
+    <section class="isa">
         <h1><a id="frames">The not so stacked frames</a></h1>
         <p>In order to protect the local data as well as control flow data of a function, RISC-ViO alters the concept of what is called a stack in conventional architectures.
             To protect the stand-ins for this stack, the so-called frame objects or frames, from malicious or accidental modification by foreign functions, RISC-ViO introduces additional protection mechanisms for these frame objects.</p>
@@ -1014,7 +1038,7 @@
             </figure>
         </section>
     
-        <section>   
+        <section class="isa">   
     <h1><a id="got">Global offset table</a></h1>
     <p><i>Der Einsatz von Code-Objekten verbietet Sprünge auf fest definierte Adressen. Auch Speichern und Laden von Daten an festen Adressen ist mit dem Objektansatz unvereinbar.
         In herkömlichen Architekturen kommen zum Auflösen von (zur Compilezeit) unbekannten Adressen "Global Offset Tables" (GOT) zum Einsatz. Möchte ein Programm auf bestimmte Runtime-Funktionen
@@ -1050,7 +1074,7 @@
 
 
     
-    <section>
+    <section class="isa">
     <h1><a id="exceptions">Exceptions</a></h1>
         <h2><a id="gen">Enforcing correct program behaviour</a></h2>
             <p>
@@ -1101,8 +1125,8 @@
     </div>
 
 
-    <h1><a id="reg_fl">Primitives and pointers in the register file</a></h1>
-    <section>
+    <section class="imp">
+    <h1 class="imp"><a id="reg_fl">Primitives and pointers in the register file</a></h1>
     <p>
         Every RISC-ViO architecture requires a register file which is able to satisfy the requirements given in the <a href="#base_spec">I'</a> chapter.
         Apart from these requirements, RISC-ViO does not specify how a register file of an implementation of this architecture has to look like.
@@ -1114,7 +1138,7 @@
     </p>
     </section>
     <h2><a id="fields">Fields</a></h2>
-    <section>
+    <section class="imp">
         <p>The subarchitecture implementation offered here is meant only as an example implementation and is focused on higher performance while requiring more hardware resources. The register sections required by the RISC-ViO specification are denoted with 'ISA' while sections introduced by this particular implementation are denoted with 'IMP'. In this implementation, the 'IMP' sections are exclusively made up of object header metadata drawn in green.  </p>
         <figure style="margin-bottom: 1rem">
             <figcaption>An example implementation of a RISC-ViO register file</figcaption>
@@ -1123,7 +1147,7 @@
         <p>In the provided implementation, the hardware will update <em>gp</em> on every jump to another executanle object. In case of exceptions,interrupts and code object changes due to <em>sret/mret</em>, it is the duty of the system management software to update <em>gp</em> accordingly.</p>
     </section>
     <h2><a id="coloring">Colouring</a></h2>
-    <section>
+    <section class="imp">
         <p>As described in the <a href="#frames">frames</a> chapter and as present in the requirements list in <a href="#base_spec">I'</a>, RISC-ViO calls for the ability to hold colour information for both the <em>ra</em> as well as the <em>sp</em> register. 
             The implementation presented here is able to satisfy this requirement using the fields as shown in the last section only. In this implementation, the colour 'black' is encoded as a cleared bit ('0') while 'white' corresponds to a bit which is set ('1'). 
             Since the smallest possible instruction size specified by RISC-V is 16 bits or two bytes, the lowest bit of the index of <em>ra</em> always has to be 0.
@@ -1132,7 +1156,7 @@
         </p>
     </section>
     <h2><a id="flgs_tgs">Flags and Tags</a></h2>
-    <section>
+    <section class="imp">
         <p>In order to distinguish pointers from primitives, the provided implementation uses a tag bit for all registers which may hold both primitives and pointers. Primitives are tagged as '0' while pointers are identified by a '1' bit.
             Since on ISA level, RISC-ViO only distinguishes between regular an I/O pointers, only a single bit in the register file is required to keep those pointer kinds apart.
             This bit is interpreted as part of the pointer and is added to the right of the pointer base address or I/O device number for I/O pointers.
@@ -1140,8 +1164,8 @@
     </section>
 
 
-    <h1><a id="hard_obj">Objects in memory</a></h1>
-    <section class="screen2_print1">
+    <h1 class="imp"><a id="hard_obj">Objects in memory</a></h1>
+    <section class="screen2_print1 imp">
         <div style="flex: 50%;">
             <h2 style="text-align: center;"><a id="headers">Headers</a></h2>
             <p>
@@ -1309,11 +1333,11 @@
         </div>
     </section>
 
-    <h1><a id="ptr_addr">Pointer and address generation</a></h1>
+    <section class="imp">
+        <h1 class="imp"><a id="ptr_addr">Pointer and address generation</a></h1>
         <p>The provided implementation example of the RISC-ViO architecture by using the object structures outlined above implies new requirements for a processor pipeline supporting this implementation.
-            In the next sections, a possible subarchitecture meeting those requirements shall be described. </p>
-    <h2><a id="alcs">Allocations</a></h2>
-    <section>
+        In the next sections, a possible subarchitecture meeting those requirements shall be described. </p>
+        <h2 class="imp"><a id="alcs">Allocations</a></h2>
         <p>In the presented implementation, all members of the alc instruction family place both regular data objects as well as frames objects on the heap. 
             There the objects lie in allocation order until a garbage collection cycle occurs. The CSR <em>malc</em> is used to keep track of the heap fill level and heap limit. <em>malc.ix</em> keeps track of to the newest objects start address while <em>malc.ptr</em> contains the lower limit of the heap in form of an address. 
             In the process of such a cycle, objects may be moved or overwritten in case of not being required anymore.
@@ -1381,8 +1405,8 @@
             The CSR index of the <em>msad</em> CSR can be extracted from the <a href="#t_csr">CSR table</a>.
         </p>
     </section>
-    <h2><a id="load_store">Loading and storing a pointer</a></h2>
-    <section>
+    <section class="imp">
+        <h2><a id="load_store">Loading and storing a pointer</a></h2>
         <p>As the subarchitectural implementation requires some flag bit from the object header as well as its length or lambda field, those fields also have to be retrieved from memory when loading a pointer. 
             For this, the example subarchitectural implementation uses an additional pipeline stage called the attribute stage which is located behind the memory stage in the processor pipeline.<br>
             The <a href="#t_instr_in_pipe">instruction behaviuor table</a> shows how this stage interacts with the stages that come before it, this section looks at this interaction in further detail.
@@ -1399,17 +1423,17 @@
         </p>
     </section>
 
-    <h2><a id="bounds">Bounds and Flag checks</a></h2>
-    <section>
+    <section class="imp">
+        <h2><a id="bounds">Bounds and Flag checks</a></h2>
         <p>As the outlined subarchitecture keeps the length of the corresponding object for each pointer in the register file, it is possible to check for an out of bound access as soon as the actual access index is available. 
             This can be the case as early as in the execute stage, which allows for early raising of <em>IndexOutBoundsException</em>s. 
             Since an objects flags which signify it as being readable, writeable and data only are also available as soon as the pointer to this object is available in the processor, the conditions for <em>LoadAccessFault</em> and <em>StoreAccessFault</em> exceptions can also be tested for just as early.</p>
     </section>
 
-    <h1><a id="tables">Tables</a></h1>
+    <h1 class="imp"><a id="tables">Tables</a></h1>
     
     
-    <section>
+    <section class="imp">
         <h2><a id="t_inst">Instructions (zhm extension)</a></h2>
         <div style="overflow-x: auto; max-width: calc(100vw - 12pt);">
             <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center">
@@ -1484,10 +1508,10 @@
                 </tbody>
             </table>
         </div>
+    <h2 class="page-break-before"><a id="t_op">Object and pointer kinds</a></h2>
     </section>
 
-    <h2 class="page-break-before"><a id="t_op">Object and pointer kinds</a></h2>
-    <section class="screen2_print1">
+    <section class="screen2_print1 imp">
         <div style="flex: 50%;">
             <p style="font-size: 16pt; font-style: italic; text-indent:0;">Header</p>
             <img src="svg/objektbaukasten/header.svg" id="header_table_svg" style="width: 60%;">
@@ -1511,8 +1535,8 @@
             <img src="svg/objektbaukasten/data_only_object.svg" id="header_table_svg" style="width: 60%;">
         </div>
     </section>
-    <h2><a id="t_exc">Exceptions</a></h2>
-    <section>
+    <section class="imp">
+        <h2><a id="t_exc">Exceptions</a></h2>
         <div style="overflow-x: auto; max-width: calc(100vw - 12pt);">
             <table summary="Exceptions and their numbers for privilege modes" style="margin-bottom: 0;">
                 <thead>
@@ -1595,8 +1619,8 @@
             </table>
         </div>
     </section>
-    <h2><a id="t_csr">CSRs</a></h2>
-    <section>
+    <section class="imp">
+        <h2><a id="t_csr">CSRs</a></h2>
         <div style="overflow-x: auto; max-width: calc(100vw - 12pt);">
             <table summary="CSR added by zhm extension" style="margin-bottom: 0;">
                 <thead>
@@ -3015,16 +3039,26 @@
 
 <script>
     var h1Toc = document.getElementById('toc'); 
-    var headerList = document.querySelectorAll("h1, h2");
+    var headerList = document.querySelectorAll("section, h1, h2");
 
     var lastWasH2 = false;
     var toc = h1Toc;
+    var headerClass = "isa";
     var h1Numbering = 0;
     var h2Numbering = 0;
     for (var i = 0; i < headerList.length; i++) {
         var header = headerList[i];
+
+        if (header.nodeName == "SECTION") {
+            if (header.classList.contains("isa"))
+                headerClass = "isa";
+            else
+                headerClass = "imp";
+            continue;
+        }
+
         if (header.childNodes.length == 0 || header.childNodes[0].nodeName != "A"
-            || header.id == "toc-title")
+            || header.id == "toc-title" || header.id == "legend-title")
             continue;
 
         if (h2Numbering == 0 && header.nodeName == "H2"){
@@ -3047,7 +3081,7 @@
 
         const link = header.childNodes[0].cloneNode(true);
         const li = document.createElement("li");
-        li.className = "toc";
+        li.className = "toc " + headerClass;
         if (h2Numbering == 0){
             li.style.fontSize = "14pt";
             li.style.fontWeight = "bold";
@@ -3069,5 +3103,29 @@
         li.appendChild(link);
         toc.appendChild(li);
     }
+
+    //Hide left table of contents
+    document.getElementById("hl-button").addEventListener("click", function () {
+        document.getElementById("left-toc").classList.add("l-hidden");
+        document.getElementById("sl-button").classList.remove("l-hidden");
+    });
+
+    //Show left table of contents
+    document.getElementById("sl-button").addEventListener("click", function () {
+        document.getElementById("left-toc").classList.remove("l-hidden");
+        document.getElementById("sl-button").classList.add("l-hidden");
+    });
+
+    //Hide right legend
+    document.getElementById("hr-button").addEventListener("click", function () {
+        document.getElementById("right-legend").classList.add("r-hidden");
+        document.getElementById("sr-button").classList.remove("r-hidden");
+    });
+
+    //Show right legend
+    document.getElementById("sr-button").addEventListener("click", function () {
+        document.getElementById("right-legend").classList.remove("r-hidden");
+        document.getElementById("sr-button").classList.add("r-hidden");
+    });
 </script>
 </html>

@@ -154,6 +154,13 @@ td {
   padding: 0.333em;
   text-align: center; }
 
+.no-border {
+  border-style:solid;
+  border-width: 0px;
+  text-align: left;
+  vertical-align: baseline;
+}
+
 .footnote {
   counter-increment: footnote;
   float: prince-column-footnote;
@@ -436,7 +443,7 @@ cite {
   margin-bottom: 3pt;
   text-align: left; }
 
-#toc-left { width: max-content;}
+#toc-left { width: max-content;  max-width: calc(100vw - 12pt); }
   
 @media screen {
   html {
@@ -470,7 +477,7 @@ cite {
   }
 
   #heap { width: 85%; }
-  .screen2_print1 { flex: 50%; min-width: 20rem; }
+  .screen2_print1 { display:flex; column-gap: 3rem;}
 }
 
 @media (min-width: 94rem) {
@@ -482,6 +489,12 @@ cite {
 }
 
 @media print {
+  
+  p { 
+    font-family: "Verdana", Arial, sans-serif;
+    hyphens: auto;
+  }
+
   @page {
       size: A4 portrait;
       margin: .1 .1;
@@ -533,5 +546,5 @@ cite {
 
   #heap { height: 350mm; }
 
-  .screen2_print1 { flex: 50%; min-width: 50rem; }
+  .screen2_print1 { display: block;}
 }

@@ -19,24 +19,24 @@
     -->
 </head>
 <body>
-    <header class="col-span page-break-after">
+    <header class="page-break-after">
         <div id="title" class="subtitle counter-skip" style="margin-bottom: 0;"><em>The</em></div>
         <div class="title counter-skip"><em>RISC-ViO</em></div>
         <div id="title-spec" class="subtitle counter-skip"><em>Specification</em></div>
         <h5  id="version" class="subtitle counter-skip" style="font-size: 18pt;"><em>DRAFT V0.2.4</em></h2>
-        <div class="authors col-2">
-        <div class="author">
-            <div>Leyla Jazz Ekinci (<em>B.Sc.</em>)</div>
-            <div>University of Stuttgart, IKR</div>
-            <div>Stuttgart, Germany</div>
-            <div>leylknci@ikr.uni-stuttgart.de</div>
-        </div>
-        <div class="author">
-            <div>Robin Lux (<em>B.Sc.</em>)</div>
-            <div>University of Stuttgart, IKR</div>
-            <div>Stuttgart, Germany</div>
-            <div>rbnlux@ikr.uni-stuttgart.de</div>
-        </div>
+        <div style="display: flex; text-align: center">
+            <div style="flex: 50%;">
+                <div>Leyla Jazz Ekinci (<em>B.Sc.</em>)</div>
+                <div>University of Stuttgart, IKR</div>
+                <div>Stuttgart, Germany</div>
+                <div>leylknci@ikr.uni-stuttgart.de</div>
+            </div>
+            <div style="flex: 50%;">
+                <div>Robin Lux (<em>B.Sc.</em>)</div>
+                <div>University of Stuttgart, IKR</div>
+                <div>Stuttgart, Germany</div>
+                <div>rbnlux@ikr.uni-stuttgart.de</div>
+            </div>
         </div>
     </header>
 
@@ -182,63 +182,65 @@
         </p>
 
         <h2><a id="#isa_tags">Object tags</a></h2>
-        <table summary="Bit Values of Tag word" cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center">
-            <colgroup>
-                <col width="30%"/>
-                <col width="20%"/>
-                <col width="10%"/>
-                <col width="10%"/>
-                <col width="10%"/>
-                <col width="10%"/>
-                <col width="10%"/>
-            </colgroup>
-            <thead>
-                <tr  style="float: center">
+        <div style="overflow-x: auto; max-width: calc(100vw - 12pt);">
+            <table summary="Bit Values of Tag word"style="border: 0; text-align: center;">
+                <colgroup>
+                    <col width="30%"/>
+                    <col width="20%"/>
+                    <col width="10%"/>
+                    <col width="10%"/>
+                    <col width="10%"/>
+                    <col width="10%"/>
+                    <col width="10%"/>
+                </colgroup>
+                <thead>
+                    <tr  style="float: center">
+                        <th style="border-style:solid; border-width: 0px;">
+                            implementation specific
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;" >
+                            scratch
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;" colspan="2">
+                            permissions
+                        </th>
+                        <th style="border-style:solid; border-width: 0px;" colspan="4">
+                            <div style="text-align: center">kind</div>
+                        </th>
+                    </tr>
+                    <tr  style="float: center">
+                        <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">31</div><div style="float: right">8</div>
+                    </th>
                     <th style="border-style:solid; border-width: 0px;">
-                        implementation specific
+                        <div style="float: left">7</div><div style="float: right">6</div>
                     </th>
-                    <th style="border-style:solid; border-width: 0px;" >
-                        scratch
-                    </th>
-                    <th style="border-style:solid; border-width: 0px;" colspan="2">
-                        permissions
-                    </th>
-                    <th style="border-style:solid; border-width: 0px;" colspan="4">
-                        <div style="text-align: center">kind</div>
-                    </th>
-                </tr>
-                <tr  style="float: center">
                     <th style="border-style:solid; border-width: 0px;">
-                        <div style="float: left">31</div><div style="float: right">8</div>
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    <div style="float: left">7</div><div style="float: right">6</div>
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    5
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    4
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    3
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    2
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    1
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    0
-                </th>
-            </thead>
-            <tbody>
-                <tr  style="float: center">
-                    <td>...</td><td>...</td><td>r</td><td>w</td><td>io</td><td>data only</td><td>executable</td><td>ordinary</td>
-                </tr>
-            </tbody>
-        </table>
+                        5
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        4
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        3
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        2
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        1
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        0
+                    </th>
+                </thead>
+                <tbody>
+                    <tr  style="float: center">
+                        <td>...</td><td>...</td><td>r</td><td>w</td><td>io</td><td>data only</td><td>executable</td><td>ordinary</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <u>Legacy:
         <p>
@@ -358,7 +360,7 @@
             The size is given in bytes as per the value in rs1.
             </p>
             
-            <div style="margin-top: 5%; margin-bottom: 3%;">
+            <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
                 <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
                         <col width="20%"/>
@@ -409,8 +411,8 @@
         <h4><a name="alci">alci-instruction</a></h4>
         The <em>alci</em> instruction is a variation of the <em>alc</em> instruction. In contrast to <em>alci</em>, the size of the new object is given by the 12 bit wide immediate. 
         This immediate specifies the amount of pointers which can fit inside the object. So for a XLEN of 32, it specifies the number of 32 bit words that fit into the object.
-        <div style="margin-top: 5%; margin-bottom: 3%;">
-            <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+        <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+            <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                 <colgroup>
                     <col width="20%"/>
                     <col width="13%"/>
@@ -459,8 +461,8 @@
         <h4><a name="alcd">alc.d-instruction</a></h4>
             The <em>alc.d</em> instruction is a specialization of the <em>alc</em> instruction, allowing for the allocation of data only objects.
             Note that is it also forbidden to use <em>alc.d</em> to allocate a new frame object.
-            <div style="margin-top: 5%; margin-bottom: 3%;">
-                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+            <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+                <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
                         <col width="20%"/>
                         <col width="13%"/>
@@ -509,8 +511,8 @@
 
         <h4><a name="alcid">alci.d-instruction</a></h4>
         The <em>alci.d</em> instruction is the analogous form of <em>alci</em> regarding data only objects. It differs in the kind of allocated object and in that it also is prohibited from allocating frames.
-        <div style="margin-top: 5%; margin-bottom: 3%;">
-            <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+        <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+            <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                 <colgroup>
                     <col width="20%"/>
                     <col width="13%"/>
@@ -557,8 +559,8 @@
         </ul>
         <h3><a name="qsz">Attribute query: qsz</a></h3>
         The <em>qsz</em> instruction provides a means of reading an objects size as specified at its allocation time in bytes. For this, the source register has to contain a pointer.
-        <div style="margin-top: 5%; margin-bottom: 3%;">
-            <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+        <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+            <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                 <colgroup>
                     <col width="20%"/>
                     <col width="13%"/>
@@ -611,8 +613,8 @@
             <h4><a name="sep">sep-instruction</a></h4>
             The <em>sep</em> 'set if pointer' instruction allows for checking for the kind of value present in a register. When the register given by rs1 contains a primitive, a primitive of value 0 is written into the register given by rd.
             Otherwise, a non 0 primitive value is written to this register.
-            <div style="margin-top: 5%; margin-bottom: 3%;">
-                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+            <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+                <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
                         <col width="20%"/>
                         <col width="13%"/>
@@ -653,8 +655,8 @@
             </div>
             <h4><a name="btd">btd-instruction</a></h4>
             The btd 'base to data' instruction allows for reading out a pointers base address. This primitive value is written into rd for the pointer given in rs1.
-            <div style="margin-top: 5%; margin-bottom: 3%;">
-                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+            <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+                <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
                         <col width="20%"/>
                         <col width="13%"/>
@@ -699,8 +701,8 @@
             </ul>
             <h4><a name="itd">itd-instruction</a></h4>
             The <em>itd</em> 'index to data' instruction allows for reading out a pointers raw pointer index. This primitive value is written into rd for the pointer given in rs1.
-            <div style="margin-top: 5%; margin-bottom: 3%;">
-                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+            <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+                <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
                         <col width="20%"/>
                         <col width="13%"/>
@@ -742,8 +744,8 @@
             <h4><a name="dtp">dtp-instruction</a></h4>
             The dtp 'data to pointer' instruction allows for the assembly of arbitrary pointers. Both the index and the base address are set according the values in registers rs1 and rs2 respectively. The result is stored in rd. 
             Pointers assembled using <em>dtp</em> are of memory object type on creation but may be turned into I/O pointers using the <em>st</em> instruction. Note that in such a case, the I/O device number field is directly set to the former base address field value. 
-            <div style="margin-top: 5%; margin-bottom: 3%;">
-                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+            <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+                <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
                         <col width="20%"/>
                         <col width="13%"/>
@@ -792,8 +794,8 @@
             <h4><a name="lt">lt-instruction</a></h4>
             The <em>lt</em> instruction enables reading out the tags of an object by placing the tags of the object or I/O device pointed to by the contents of rs1 into the register rd in the form of a primitive. 
             For information on how these tags are encoded, please refer to the discussion of <a href="#isa_tags">tags on ISA level</a>.
-            <div style="margin-top: 5%; margin-bottom: 3%;">
-                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+            <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+                <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
                         <col width="20%"/>
                         <col width="13%"/>
@@ -839,8 +841,8 @@
             <h4><a name="st">st-instruction</a></h4>
             The <em>st</em> instruction is the companion of the <em>lt</em> instruction, allowing object or I/O device tags to written. For this, <em>st</em> sets the tags of the object or I/O device being referenced by the content of the rs1 register to the tags provided in rs2 in form of a primitive.
             
-            <div style="margin-top: 5%; margin-bottom: 3%;">
-                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+            <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+                <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
                         <col width="20%"/>
                         <col width="13%"/>
@@ -892,8 +894,8 @@
                 This is achieved by this instruction writing the primitive value 0 of XLEN width to the memory address given by the contents of register rs1.
                 This address has to be aligned accordingly.
             </p>
-            <div style="margin-top: 5%; margin-bottom: 3%;">
-                <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
+            <div style="margin-top: 5%; margin-bottom: 3%; overflow-x: auto; max-width: calc(100vw - 12pt);">
+                <table style="border: 0; text-align:center; width: 80%; align: center; margin: auto;">
                     <colgroup>
                         <col width="20%"/>
                         <col width="13%"/>
@@ -939,17 +941,18 @@
             </ol>
     </section>
     
-    <h1><a id="frames">The not so stacked frames</a></h1>
+    <section>
+        <h1><a id="frames">The not so stacked frames</a></h1>
         <p>In order to protect the local data as well as control flow data of a function, RISC-ViO alters the concept of what is called a stack in conventional architectures.
             To protect the stand-ins for this stack, the so-called frame objects or frames, from malicious or accidental modification by foreign functions, RISC-ViO introduces additional protection mechanisms for these frame objects.</p>
         <!--@Leyla: Linked Frames-->
                 <p>
-        Apart from objects for regular data storage the I' ISA also manages the stack as a series of objects. This partition of the stack in a single frame per function allows for further security mechanisms but also requires cooperation by the program.
-        Most notably, the stack is not grown by arithmetically modifying the stack pointer. Instead, the program has to manually allocate a new frame object. Once this frame object has been allocated, accesses to inside this object behave just the way the stack frame in RISC-V behaves.<br>
-        Due to the stack pointer register now containing a pointer, I' is able to protect older frame objects from accesses by arithmetical modification of sp.
-        The implications for the passing of function arguments between functions are outlined in the <a href="#chap_calling_convention">calling convention</a> chapter.
-        </p>
-        <h2><a id="are_obj">Structure</a></h2>
+            Apart from objects for regular data storage the I' ISA also manages the stack as a series of objects. This partition of the stack in a single frame per function allows for further security mechanisms but also requires cooperation by the program.
+            Most notably, the stack is not grown by arithmetically modifying the stack pointer. Instead, the program has to manually allocate a new frame object. Once this frame object has been allocated, accesses to inside this object behave just the way the stack frame in RISC-V behaves.<br>
+            Due to the stack pointer register now containing a pointer, I' is able to protect older frame objects from accesses by arithmetical modification of sp.
+            The implications for the passing of function arguments between functions are outlined in the <a href="#chap_calling_convention">calling convention</a> chapter.
+            </p>
+            <h2><a id="are_obj">Structure</a></h2>
             <p>
                 Frame objects are based on regular objects but differ in the accesses which are allowed on them. 
                 Frame objects are never data only which means the 'data only' flag is cleared. 
@@ -966,13 +969,12 @@
                 </figure>
                 All other slots are general purpose and access to them is not restricted in any way.
             </p>
-        <h2><a id="chap_calling_convention">Calling convention</a></h2>
+            <h2><a id="chap_calling_convention">Calling convention</a></h2>
             <p>As described in the introduction to this chapter, RISC-ViO denies foreign access to frame objects. As a consequence, the calling convention has be modified slightly from the convention used by RISC-V.
                 Namely, it is not possible to spill function arguments from registers onto the stack of the receiving function. Instead, the following scheme is employed: 
                 Just as is the case for conventional RISC-V, the arguments are stored in the registers <em>a0</em> to <em>a7</em> given that there are no more than eight XLEN arguments or as many arguments as will fit in those registers.
                 Instead of pushing the additional arguments that will not fit in the argument registers on the stack, a spill object of corresponding size has to be allocated. A pointer to this spill object is placed in <em>a7</em> and the remaining arguments are stored in this object.
             </p>
-        <section>
             <h2><a id="frame_ownership">Frame ownership</a></h2>
                 <p>
                     To achieve protection of frames from foreign accesses RISC-ViO uses so-called colour tags for both the <em>sp</em> and the <em>ra</em> register.
@@ -1139,16 +1141,16 @@
 
 
     <h1><a id="hard_obj">Objects in memory</a></h1>
-    <section style="display:flex; width: 100%; flex-wrap: wrap;">
-        <div class="screen2_print1">
+    <section class="screen2_print1">
+        <div style="flex: 50%;">
             <h2 style="text-align: center;"><a id="headers">Headers</a></h2>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p>
                 Headers mark the beginning of every object. They hold all information about the object necessary to ensure proper handling of itself. Headers are always 16-Byte aligned.</p>
-            <figure>
-                <img src="svg/objektbaukasten/header.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
+            <figure style="margin-top: 0;">
+                <img src="svg/objektbaukasten/header.svg" style="width: 60%; max-width: 40vw">
                 <figcaption>Header Bitmap on 32-Bit Architectures</figcaption>
             </figure>
-            <table summary="Bit Values of object headers" style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <table summary="Bit Values of object headers" style="max-width: 60vw;">
                 <thead>
                     <tr>
                         <th>Bits</th>
@@ -1224,84 +1226,84 @@
                     </tr>
                 </tbody>
             </table>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p>
                 <i>On a 64-Bit Architecture the upper bits of the header bitmap are shifted upwards to 64-Bit boundaries.</i></p>
 
             <h2 style="text-align: center;"><a id="elements">Elements</a></h2>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p>
                 Elements of objects are tagged by the lowest Bit(s) in a chunk of memory.
                 On a 32-Bit architecture this chunk is 32 bits wide, on 64-Bit architectures 64 bits.</p>
-            <figure style="margin-top: 0; margin-bottom: 1em">
-                <img src="svg/objektbaukasten/data.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
+            <figure style="margin-top: 0;">
+                <img src="svg/objektbaukasten/data.svg" style="width: 60%; max-width: 40vw">
                 <figcaption>Word, half and byte locations in an ordinary object</figcaption>
             </figure>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p>
                 Data in ordinary objects is identified by the trailing <em>0</em>-Bit. If a Store is attempted, which would make the two uppermost bits of a chunk unequal (e.g. <em>bit-31 &ne; bit-30</em> on a 32-Bit Architecture)
                 then the data is stored to the current sanctuary object instead and the corresponding displacement pointer will be stored to the address the original store was attempted to.</p>
-            <figure style="margin-top: 0; margin-bottom: 1em">
-                <img src="svg/objektbaukasten/disp_prim_ptr.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
+            <figure style="margin-top: 0;">
+                <img src="svg/objektbaukasten/disp_prim_ptr.svg" style="width: 60%; max-width: 40vw">
                 <figcaption>Pointer to displaced data</figcaption>
             </figure>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p style="margin-top: 0;">
                 These Pointers are identified by trailing <em>01</em>-Bits.</p>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%; margin-top: 2em">
+            <p>
                 Pointers to objects are identified by trailing <em>0111</em>-Bits. They can be generated by allocation instructions and point to the head of ordinary, data-only and executable objects.</p>
-            <figure style="margin-top: 0; margin-bottom: 1em">
-                <img src="svg/objektbaukasten/pointer.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
+            <figure style="margin-top: 0;">
+                <img src="svg/objektbaukasten/pointer.svg" style="width: 60%; max-width: 40vw">
                 <figcaption>Pointer to an object</figcaption>
             </figure>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p>
                 If a store is attempted on a pointer that was modified by arithmetic instructions so that its index is unequal to zero, the pointer will be displaced into the current sanctuary object and only the displacement pointer
                 is stored to the original address the store was attemped to.</p>
-            <figure style="margin-top: 0; margin-bottom: 1em">
-                <img src="svg/objektbaukasten/disp_ptr_ptr.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
+            <figure style="margin-top: 0;">
+                <img src="svg/objektbaukasten/disp_ptr_ptr.svg" style="width: 60%; max-width: 40vw">
                 <figcaption>Pointer to a displaced Pointer</figcaption>
             </figure>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p>
                 These pointers are identified by trailing <em>011</em>-Bits.</p>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%; margin-top: 2em">
+            <p>
                 Pointers to I/O-capabilities are identified by the trailing <em>01111</em>-Bits. They hold a device-id which identify what I/O-Device is referenced.</p>
-            <figure style="margin-top: 0; margin-bottom: 1em">
-                <img src="svg/objektbaukasten/io_ptr.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
+            <figure style="margin-top: 0;">
+                <img src="svg/objektbaukasten/io_ptr.svg" style="width: 60%; max-width: 40vw">
                 <figcaption>I/O-Pointer</figcaption>
             </figure>
         </div>
-        <div class="screen2_print1">
+        <div style="flex: 50%">
             <h2 style="text-align: center;"><a id="ords">Ordinaries</a></h2>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p>
                 Ordinary objects always start with a header and can hold every element kind defined.</p>
             <figure style="margin-top: 0;">
-                <img src="svg/objektbaukasten/ordinary_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
+                <img src="svg/objektbaukasten/ordinary_object.svg" style="width: 60%; max-width: 40vw">
                 <figcaption>Ordinary object and its possible elements</figcaption>
             </figure>
             
             <h2 style="text-align: center;"><a id="data-onlies">Data-Only Objects</a></h2>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p>
                 Data-only objects are identified by the data-only bit in the Header. Data inside of these objects is not tagged, so they make use of the whole 64|32 Bit per element.
                 Pointers are forbidden inside data-only objects.</p>
             <figure style="margin-top: 0;">
-                <img src="svg/objektbaukasten/data_only_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
+                <img src="svg/objektbaukasten/data_only_object.svg" style="width: 60%; max-width: 40vw">
                 <figcaption>Data-only object</figcaption>
             </figure>
 
             <h2 style="text-align: center;"><a id="execs">Executables</a></h2>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p>
                 Executables have only the data-only bit set in their header. This identifies them as a executable.<br>
                 As part of their header, executables have the pointer to their companion GOT stored at the third (double-)word of the object. The start of Code is then referred as index 0 of the objuect.
                 It is stored in the same fashion as in data-only so they can harvest the full 64|32 bit of a element.</p>
             <figure style="margin-top: 0;">
-                <img src="svg/objektbaukasten/executable_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
+                <img src="svg/objektbaukasten/executable_object.svg" style="width: 60%; max-width: 40vw">
                 <figcaption>Executable Object</figcaption>
             </figure>
 
             <h2 style="text-align: center;"><a id="sancts">Sanctuaries</a></h2>
-            <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+            <p>
                 Sanctuaries only have the Sanctuary Bit set in their header. They are used as memory space for displaced primitives and displaced pointers and cannot be referenced by ordinary pointers.<br>
                 Displaced Pointers take two element slots, one for the base pointer and one for the index, thus are always aligned to 2-Element boundaries.
                 The base pointer is stored as a ordinary pointer and the index as data-only primitive.<br>
                 Displaced primitives only take one element slot beeing the (Double-)Word that was displaced. These kinds can be stored at any element position inside the Sanctuary.</p>
             <figure style="margin-top: 0;">
-                <img src="svg/objektbaukasten/data_only_object.svg" style="width: 60%; margin-left: 20%; margin-right: 20%;">
+                <img src="svg/objektbaukasten/data_only_object.svg" style="width: 60%; max-width: 40vw">
                 <figcaption>Sanctuary Object</figcaption>
             </figure>
         </div>
@@ -1408,226 +1410,230 @@
     
     
     <section>
-    <h2><a id="t_inst">Instructions (zhm extension)</a></h2>
-        <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center">
-            <colgroup>
-                <col width="20%"/>
-                <col width="13%"/>
-                <col width="14%"/>
-                <col width="8%"/>
-                <col width="14%"/>
-                <col width="20%"/>
-            </colgroup>
-            <thead>
-                <th style="border-style:solid; border-width: 0px;">
-                        <div style="float: left">31</div><div style="float: right">25</div>
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    <div style="float: left">24</div><div style="float: right">20</div>
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    <div style="float: left">19</div><div style="float: right">15</div>
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    <div style="float: left">14</div><div style="float: right">12</div>
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    <div style="float: left">11</div><div style="float: right">7</div>
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    <div style="float: left">6</div><div style="float: right">0</div>
-                </th>
-                <th style="border-style:solid; border-width: 0px;">
-                    Instruction
-                </th>
-            </thead>
-            <tbody>
-                <tr  style="float: center">
-                    <td>0000000</td><td>rs1(src)</td><td>00010</td><td>000</td><td>rd(dst)</td><td>0001011</td><td>alc</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td colspan="2">imm[13:2]</td><td>00010</td><td>010</td><td>rd(dst)</td><td>0001011</td><td>alci</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td>0000000</td><td>rs1(src)</td><td>00010</td><td>001</td><td>rd(dst)</td><td>0001011</td><td>alcd</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td colspan="2">imm[13:2]</td><td>00010</td><td>011</td><td>rd(dst)</td><td>0001011</td><td>alcid</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td>0000000</td><td>0000</td><td>rs1(src)</td><td>100</td><td>rd(dst)</td><td>0001011</td><td>qsz</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td>0111111</td><td>rs2(ix)</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>dtp</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td>1011111</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>itd</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td>1101111</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>btd</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td>1110111</td><td>00000</td><td>rs1(src)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>lt</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td>1111011</td><td>rs2(sd)</td><td>rs1(ptr)</td><td>000</td><td>00000</td><td>0001011</td><td>st</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td>1111101</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>00000</td><td>0001011</td><td>clr</td>
-                </tr>
-                <tr  style="float: center"></tr>
-                    <td>1111110</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(tag)</td><td>0001011</td><td>sep</td>
-                </tr>
-            </tbody>
-        </table>
+        <h2><a id="t_inst">Instructions (zhm extension)</a></h2>
+        <div style="overflow-x: auto; max-width: calc(100vw - 12pt);">
+            <table cellspacing="0" cellpadding="0" class="table-ta1" style="border: 0; text-align:center">
+                <colgroup>
+                    <col width="20%"/>
+                    <col width="13%"/>
+                    <col width="14%"/>
+                    <col width="8%"/>
+                    <col width="14%"/>
+                    <col width="20%"/>
+                </colgroup>
+                <thead>
+                    <th style="border-style:solid; border-width: 0px;">
+                            <div style="float: left">31</div><div style="float: right">25</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">24</div><div style="float: right">20</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">19</div><div style="float: right">15</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">14</div><div style="float: right">12</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">11</div><div style="float: right">7</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        <div style="float: left">6</div><div style="float: right">0</div>
+                    </th>
+                    <th style="border-style:solid; border-width: 0px;">
+                        Instruction
+                    </th>
+                </thead>
+                <tbody>
+                    <tr  style="float: center">
+                        <td>0000000</td><td>rs1(src)</td><td>00010</td><td>000</td><td>rd(dst)</td><td>0001011</td><td>alc</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td colspan="2">imm[13:2]</td><td>00010</td><td>010</td><td>rd(dst)</td><td>0001011</td><td>alci</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td>0000000</td><td>rs1(src)</td><td>00010</td><td>001</td><td>rd(dst)</td><td>0001011</td><td>alcd</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td colspan="2">imm[13:2]</td><td>00010</td><td>011</td><td>rd(dst)</td><td>0001011</td><td>alcid</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td>0000000</td><td>0000</td><td>rs1(src)</td><td>100</td><td>rd(dst)</td><td>0001011</td><td>qsz</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td>0111111</td><td>rs2(ix)</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>dtp</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td>1011111</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>itd</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td>1101111</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>btd</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td>1110111</td><td>00000</td><td>rs1(src)</td><td>000</td><td>rd(dst)</td><td>1001001</td><td>lt</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td>1111011</td><td>rs2(sd)</td><td>rs1(ptr)</td><td>000</td><td>00000</td><td>0001011</td><td>st</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td>1111101</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>00000</td><td>0001011</td><td>clr</td>
+                    </tr>
+                    <tr  style="float: center"></tr>
+                        <td>1111110</td><td>00000</td><td>rs1(ptr)</td><td>000</td><td>rd(tag)</td><td>0001011</td><td>sep</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
     <h2 class="page-break-before"><a id="t_op">Object and pointer kinds</a></h2>
-    <section>
-        <figure style="display:flex; flex-wrap: wrap;">
-            <div class="screen2_print1">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0;">Header</p>
-                <img src="svg/objektbaukasten/header.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Data</p>
-                <img src="svg/objektbaukasten/data.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Displacement pointer (primitive)</p>
-                <img src="svg/objektbaukasten/disp_prim_ptr.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Displacement pointer (pointer)</p>
-                <img src="svg/objektbaukasten/disp_ptr_ptr.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Ordinary pointer</p>
-                <img src="svg/objektbaukasten/pointer.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">I/O-Pointer</p>
-                <img src="svg/objektbaukasten/io_ptr.svg" id="header_table_svg" style="width: 60%;">
-            </div>
-            <div class="screen2_print1">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0;">Ordinary Object</p>
-                <img src="svg/objektbaukasten/ordinary_object.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Executable object</p>
-                <img src="svg/objektbaukasten/executable_object.svg" id="header_table_svg" style="width: 60%;">
-                <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Data-only object</p>
-                <img src="svg/objektbaukasten/data_only_object.svg" id="header_table_svg" style="width: 60%;">
-            </div>
-        </figure>
+    <section class="screen2_print1">
+        <div style="flex: 50%;">
+            <p style="font-size: 16pt; font-style: italic; text-indent:0;">Header</p>
+            <img src="svg/objektbaukasten/header.svg" id="header_table_svg" style="width: 60%;">
+            <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Data</p>
+            <img src="svg/objektbaukasten/data.svg" id="header_table_svg" style="width: 60%;">
+            <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Displacement pointer (primitive)</p>
+            <img src="svg/objektbaukasten/disp_prim_ptr.svg" id="header_table_svg" style="width: 60%;">
+            <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Displacement pointer (pointer)</p>
+            <img src="svg/objektbaukasten/disp_ptr_ptr.svg" id="header_table_svg" style="width: 60%;">
+            <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Ordinary pointer</p>
+            <img src="svg/objektbaukasten/pointer.svg" id="header_table_svg" style="width: 60%;">
+            <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">I/O-Pointer</p>
+            <img src="svg/objektbaukasten/io_ptr.svg" id="header_table_svg" style="width: 60%;">
+        </div>
+        <div style="flex: 50%;">
+            <p style="font-size: 16pt; font-style: italic; text-indent:0;">Ordinary Object</p>
+            <img src="svg/objektbaukasten/ordinary_object.svg" id="header_table_svg" style="width: 60%;">
+            <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Executable object</p>
+            <img src="svg/objektbaukasten/executable_object.svg" id="header_table_svg" style="width: 60%;">
+            <p style="font-size: 16pt; font-style: italic; text-indent:0; margin-top: 1.5rem;">Data-only object</p>
+            <img src="svg/objektbaukasten/data_only_object.svg" id="header_table_svg" style="width: 60%;">
+        </div>
     </section>
     <h2><a id="t_exc">Exceptions</a></h2>
     <section>
-        <table summary="Exceptions and their numbers for privilege modes" style="margin-bottom: 0;">
-            <thead>
-            <tr>
-                <th rowspan="2">
-                    <em>xcause index</em>
-                </th>
-                <th rowspan="2">
-                    <em>Name</em>
-                </th>
-                <th colspan="3">
-                    <em>may be raised in privilege mode</em>
-                </th>
-            </tr>
-            <tr>
-                <th><em>user</em></th>
-                <th><em>supervisor</em></th>
-                <th><em>machine</em></th>
-            </tr>
-            <tr>
-                <th>16</th>
-                <th>JumpIndexOutBoundsException</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✖</th>
-            </tr>
-            <tr>
-                <th>17</th>
-                <th>GPAccessException</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✖</th>
-            </tr>
-            <tr>
-                <th>18</th>
-                <th>IndexOutBoundsException</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✖</th>
-            </tr>
-            <tr>
-                <th>19</th>
-                <th>HeapOverflowException</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✖</th>
-            </tr>
-            <tr>
-                <th>20</th>
-                <th>StateException</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✖</th>
-            </tr>
-            <tr>
-                <th>21</th>
-                <th>ForbiddenSrcException</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✖</th>
-                <th style="color: #c6afe9">✖</th>
-            </tr>
-            <tr>
-                <th>22</th>
-                <th>ForbiddenDstException</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✖</th>
-                <th style="color: #c6afe9">✖</th>
-            </tr>
-            <tr>
-                <th>23</th>
-                <th>IncompatibleTypeException</th>
-                <th style="color: #c6afe9">✔</th>
-                <th style="color: #c6afe9">✖</th>
-                <th style="color: #c6afe9">✖</th>
-            </tr>
-        </thead>
-        <tbody>
+        <div style="overflow-x: auto; max-width: calc(100vw - 12pt);">
+            <table summary="Exceptions and their numbers for privilege modes" style="margin-bottom: 0;">
+                <thead>
+                <tr>
+                    <th rowspan="2">
+                        <em>xcause index</em>
+                    </th>
+                    <th rowspan="2">
+                        <em>Name</em>
+                    </th>
+                    <th colspan="3">
+                        <em>may be raised in privilege mode</em>
+                    </th>
+                </tr>
+                <tr>
+                    <th><em>user</em></th>
+                    <th><em>supervisor</em></th>
+                    <th><em>machine</em></th>
+                </tr>
+                <tr>
+                    <th>16</th>
+                    <th>JumpIndexOutBoundsException</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✖</th>
+                </tr>
+                <tr>
+                    <th>17</th>
+                    <th>GPAccessException</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✖</th>
+                </tr>
+                <tr>
+                    <th>18</th>
+                    <th>IndexOutBoundsException</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✖</th>
+                </tr>
+                <tr>
+                    <th>19</th>
+                    <th>HeapOverflowException</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✖</th>
+                </tr>
+                <tr>
+                    <th>20</th>
+                    <th>StateException</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✖</th>
+                </tr>
+                <tr>
+                    <th>21</th>
+                    <th>ForbiddenSrcException</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✖</th>
+                    <th style="color: #c6afe9">✖</th>
+                </tr>
+                <tr>
+                    <th>22</th>
+                    <th>ForbiddenDstException</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✖</th>
+                    <th style="color: #c6afe9">✖</th>
+                </tr>
+                <tr>
+                    <th>23</th>
+                    <th>IncompatibleTypeException</th>
+                    <th style="color: #c6afe9">✔</th>
+                    <th style="color: #c6afe9">✖</th>
+                    <th style="color: #c6afe9">✖</th>
+                </tr>
+            </thead>
+            <tbody>
 
-        </tbody>
-        </table>
+            </tbody>
+            </table>
+        </div>
     </section>
     <h2><a id="t_csr">CSRs</a></h2>
     <section>
-        <table summary="CSR added by zhm extension" style="margin-bottom: 0;">
-            <thead>
-            <tr>
-                <th rowspan="2">
-                    <em>CSR index</em>
-                </th>
-                <th rowspan="2">
-                    <em>Name</em>
-                </th>
-                <th colspan="2">
-                    <em>subfields</em>
-                </th>
-            </tr>
-            <tr>
-                <th><em>ptr</em></th>
-                <th><em>index</em></th>
-            </tr>
-            <tr>
-                <th>0xBC0</th>
-                <th>MALC</th>
-                <th>current allocation address</th>
-                <th>heap end adress</th>
-            </tr>
-            <tr>
-                <th>0xBC1</th>
-                <th>MSAD</th>
-                <th>current index in sanctuary object</th>
-                <th>address of current sanctuary object</th>
-            </tr>
-           
-        </thead>
-        <tbody>
+        <div style="overflow-x: auto; max-width: calc(100vw - 12pt);">
+            <table summary="CSR added by zhm extension" style="margin-bottom: 0;">
+                <thead>
+                <tr>
+                    <th rowspan="2">
+                        <em>CSR index</em>
+                    </th>
+                    <th rowspan="2">
+                        <em>Name</em>
+                    </th>
+                    <th colspan="2">
+                        <em>subfields</em>
+                    </th>
+                </tr>
+                <tr>
+                    <th><em>ptr</em></th>
+                    <th><em>index</em></th>
+                </tr>
+                <tr>
+                    <th>0xBC0</th>
+                    <th>MALC</th>
+                    <th>current allocation address</th>
+                    <th>heap end adress</th>
+                </tr>
+                <tr>
+                    <th>0xBC1</th>
+                    <th>MSAD</th>
+                    <th>current index in sanctuary object</th>
+                    <th>address of current sanctuary object</th>
+                </tr>
+            
+            </thead>
+            <tbody>
 
-        </tbody>
-        </table>
+            </tbody>
+            </table>
+        </div>
     </section>
     <h2 class="page-break-before"><a id="t_heap">Example of a Heap</a></h2>
     <figure class="page-break-after">
@@ -1640,8 +1646,8 @@
         For this, the fields of the content to be written to a register is shown in the EXecute, MEmory and the new ATtribute stage.
         Also, for each stage the units which are active in this stage for the given instruction are listed. A result field value of 'pass' means that this pipeline stage will only pass along the value of rd from the prior stage while '~' means that rd is invalid and this instruction will not write anything to the register file.
     </p>
-    <section>
-        <div style=" overflow-x: scroll; max-width: calc(100vw - 12pt);">
+    <section">
+        <div style="overflow-x: auto; max-width: calc(100vw - 12pt);">
             <table style="display: block; text-align:left; border: 0;">
                 <colgroup>
                     <col width="172"/>
@@ -2888,37 +2894,66 @@
         </div>
         <p>
             Abbreviations used in the table:
-            <table style="text-align:left; border-width: 0;">
-            <td style="text-align:left; align:left; border-width: 0;" valign="top">
-                <ul style="text-align:left; align:left">
-                    <li>daddr: data cache address</li>
-                    <li>aaddr: attribute cache address</li>
-                    <li>caddr: malc current address</li>
-                    <li>six: sanctuary slot index</li>
-                    <li>sptr: sanctuary object pointer</li>
-                </ul>
-            </td>
-            <td style="text-align:left; align:left; border-width: 0;" valign="top">
-                <ul style="text-align:left; align:left">
-                    <li>T: tag (d=data, p=pointer)</li>
-                    <li>P: pointer value</li>
-                    <li>I: pointer index or primtive value</li>
-                    <li>L: object length</li>
-                    <li>H: object header</li>
-                </ul>
-            </td>
-            <td style="text-align:left; align:left; border-width: 0;" valign="top">
-                <ul style="text-align:left; align:left">
-                    <li>DC: data cache</li>
-                    <li>AC: attribute cache</li>
-                    <li>AGU: address generation unit</li>
-                    <li>ALU: arithmetic logc unit</li>
-                    <li>DBU: dynamic branch unit</li>
-                    <li>DU: displacement unit (manages displacement to sanctuary objects)</li>
-                    <li>SA: sanctuary allocator</li>
-                </ul>
-            </td>
+        </p>
+        <div style="overflow-x: auto; max-width: calc(100vw-12pt);">
+            <table style="border: 0;">
+                <tbody>
+                    <tr>
+                        <td class="no-border">●</td>
+                        <td class="no-border">daddr: data cache address</td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">T: tag (d=data, p=pointer)</td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">DC: data cache</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border">●</td>
+                        <td class="no-border">aaddr: attribute cache address</td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">P: pointer value</td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">AC: attribute cache</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border">●</td>
+                        <td class="no-border">caddr: malc current address</td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">I: pointer index or primtive value</td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">AGU: address generation unit</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border">●</td>
+                        <td class="no-border">six: sanctuary slot index</td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">L: object length</td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">ALU: arithmetic logc unit</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border">●</td>
+                        <td class="no-border">sptr: sanctuary object pointer</td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">H: object header</td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">DBU: dynamic branch unit</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border"></td>
+                        <td class="no-border"></td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">DU: displacement unit (manages displacement to sanctuary objects)</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border"></td>
+                        <td class="no-border"></td>
+                        <td class="no-border">●</td>
+                        <td class="no-border">SA: sanctuary allocator</td>
+                    </tr>
+                </tbody>
             </table>
+        </div>
+        <p>
             *1: The values of P, L and H are dependent on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the <a href="#riscv_i_tick">RISC-V I vs I'</a> chapter.<br>
             *2: For the ret variant of jalr, the target index of rd used for the writeback into the register file is ra while the target value is only the color bit in the index field with everything else being zero.<br>
             *3: For bit 31 &equals; bit 30<br>

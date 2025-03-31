@@ -8,15 +8,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RISC-ViO Spec</title>
-    <!--
-
-        * pointer/object type tags (impl, scratch, scratch, r, w, io, do, ex, ord) specified, bits to the left impl dep, at least 2 bits reserved fort system software
-        * g|g|r|w|d|s|i|c|f|lambda|11111
-        
-        * 'types' -> 'kinds'
-        * 'values' -> 'primitives'
-        * 
-    -->
 </head>
 <body>
     <header class="page-break-after">
@@ -165,7 +156,7 @@
             These flags and their incurred permissions may be set or cleared in any combination using special, privileged instructions.
         </p>
         <figure style="margin-bottom: 0.5rem">
-                <img src="svg/software_objects/object1.svg" style="width: 80%; margin-bottom: 0.5rem">
+                <img src="svg/software_objects/object1.svg" style="width: 30rem; max-width: 95vw; margin-bottom: 0.5rem">
                 <figcaption>Visualization of a pointer (pink), primitive (blue) and an object</figcaption>
             </div>
         </figure>
@@ -175,74 +166,25 @@
             I/O devices are uniquely identified by their device number and are always readable and writable.
         </p>
         <figure style="margin-bottom: 0.5rem">
-                <img src="svg/software_objects/object2.svg" style="width: 80%; margin-bottom: 0.5rem">
+                <img src="svg/software_objects/object2.svg" style="width: 40rem; max-width: 95vw; margin-bottom: 0.5rem">
                 <figcaption>Visualization of a pointer (pink), primitive (blue) and an object</figcaption>
             </div>
+        </figure>
+        
+        <figure style="margin-bottom: 0.5rem">
+            <img src="svg/software_objects/sw_header.svg" style="width: 95%; margin-bottom: 0.5rem">
+            <figcaption>ISA-Visible fields of a header</figcaption>
         </figure>
 
     </section>
     <section class="imp">
 
         <h2><a id="#isa_tags">Object tags</a></h2>
-        <div style="overflow-x: auto; max-width: calc(100vw - 12pt);">
-            <table summary="Bit Values of Tag word"style="border: 0; text-align: center;">
-                <colgroup>
-                    <col width="30%"/>
-                    <col width="20%"/>
-                    <col width="10%"/>
-                    <col width="10%"/>
-                    <col width="10%"/>
-                    <col width="10%"/>
-                    <col width="10%"/>
-                </colgroup>
-                <thead>
-                    <tr  style="float: center">
-                        <th style="border-style:solid; border-width: 0px;">
-                            implementation specific
-                        </th>
-                        <th style="border-style:solid; border-width: 0px;" >
-                            scratch
-                        </th>
-                        <th style="border-style:solid; border-width: 0px;" colspan="2">
-                            permissions
-                        </th>
-                        <th style="border-style:solid; border-width: 0px;" colspan="4">
-                            <div style="text-align: center">kind</div>
-                        </th>
-                    </tr>
-                    <tr  style="float: center">
-                        <th style="border-style:solid; border-width: 0px;">
-                            <div style="float: left">31</div><div style="float: right">8</div>
-                    </th>
-                    <th style="border-style:solid; border-width: 0px;">
-                        <div style="float: left">7</div><div style="float: right">6</div>
-                    </th>
-                    <th style="border-style:solid; border-width: 0px;">
-                        5
-                    </th>
-                    <th style="border-style:solid; border-width: 0px;">
-                        4
-                    </th>
-                    <th style="border-style:solid; border-width: 0px;">
-                        3
-                    </th>
-                    <th style="border-style:solid; border-width: 0px;">
-                        2
-                    </th>
-                    <th style="border-style:solid; border-width: 0px;">
-                        1
-                    </th>
-                    <th style="border-style:solid; border-width: 0px;">
-                        0
-                    </th>
-                </thead>
-                <tbody>
-                    <tr  style="float: center">
-                        <td>...</td><td>...</td><td>r</td><td>w</td><td>io</td><td>data only</td><td>executable</td><td>ordinary</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        
+        <figure style="margin-bottom: 0.5rem">
+            <img src="svg/software_objects/hw_header.svg" style="width: 95%; margin-bottom: 0.5rem">
+            <figcaption>Implementation of a header</figcaption>
+        </figure>
 
         <u>Legacy:
         <p>
@@ -304,15 +246,15 @@
     <section class="imp">
         <h2><a id="#imp_ptr_idx">Pointer Arithmetics</a></h2>
         <figure style="margin-bottom: 0.5rem">
-            <img src="svg/software_objects/pointer_plus_index.svg" style="width: 30rem; max-width: 100vw; margin-bottom: 0.5rem">
+            <img src="svg/software_objects/pointer_plus_index.svg" style="width: 18rem; max-width: 100vw; margin-bottom: 0.5rem">
             <figcaption>Composition of a pointer</figcaption>
         </figure>
-        <figure style="margin-bottom: 0.5rem; margin-top: -2rem;">
+        <figure style="margin-bottom: 0.5rem;">
             <div>
-                <img src="svg/software_objects/prim_plus_prim.svg" style="width: 15rem; margin-top: 3rem;">
-                <img src="svg/software_objects/pointer_plus_prim.svg" style="width: 15rem; margin-top: 3rem;">
-                <img src="svg/software_objects/pointer_plus_pointer_1.svg" style="width: 15rem; margin-top: 3rem;">
-                <img src="svg/software_objects/pointer_plus_pointer_2.svg" style="width: 15rem; margin-top: 3rem;">
+                <img src="svg/software_objects/prim_plus_prim.svg" style="width: 17rem;">
+                <img src="svg/software_objects/pointer_plus_prim.svg" style="width: 17rem;">
+                <img src="svg/software_objects/pointer_plus_pointer_1.svg" style="width: 17rem;">
+                <img src="svg/software_objects/pointer_plus_pointer_2.svg" style="width: 17rem;">
             </div>
             <figcaption style="margin-top: 1rem;">Different forms of arithmetics depending on the input types</figcaption>
         </figure>

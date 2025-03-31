@@ -2,7 +2,7 @@
 <!-- Created by Leyla :3 -->
 
 <svg
-    width="52"
+    width="29"
     height="7"
     version="1.1"
     id="data-svg"
@@ -34,69 +34,44 @@
             font-size:   2pt;
         }
 
-        rect { stroke: #000000ff; stroke-width:0.4; stroke-linejoin:round; }
+        rect { stroke-width: 0; }
+
         .foreground { fill: #1a1a1aff; }
         text.foreground { font-size:1.2pt; font-weight:normal; }
+        path { fill: none }
+        path.foreground { stroke: #1a1a1aff; stroke-width: 0.25; }
 
-        text.green      { fill: #1a1a1aff; }
-        rect.green      { fill: #55ff99ff; }
-        path.green      { stroke: #000000ff; stroke-width:0.25; }
         rect.blue       { fill: #80e5ffff; }
-        polygon.blue    { fill: #80e5ffff; stroke: #192629; }
-        path.blue       { stroke: #000000ff; stroke-width:0.25; }
+        path.blue       { stroke: #000000ff; stroke-width:0.4; }
         rect.pink       { fill: #ff55ddff; }
-        polygon.pink    { fill: #ff55ddff; stroke: #000000ff;}
-        path.pink       { stroke: #000000ff; stroke-width:0.25; }
-        rect.purple     { fill: #ccaaffff; }
-        polygon.purple  { stroke: #000000ff; fill: #ccaaffff; stroke-width:0.25; }
-        path.purple     { stroke: #000000ff; stroke-width:0.25; }
-        rect.grey       { fill: #55555588; stroke: #44444488; }
-        path.grey       { stroke: #33333388; stroke-width:0.25; }
-        rect.light-pink { fill: #ffaaeeff; }
-        polygon.light-pink { fill: #ffaaeeff; stroke: #291f27ff}
-        path.light-pink { stroke: #000000ff; stroke-width:0.25; }
+        path.pink       { stroke: #000000ff; stroke-width:0.4; }
 
         @media (prefers-color-scheme: dark) {
             
             .foreground     { fill: #888888ff; }
-            text.black      { fill: #80e5ffff; }
+            path.foreground { stroke: #888888ff; }
 
-            text.green      { fill: #55ff99ff; }
-            rect.green      { fill: #55ff9940; stroke: #14291c; }
-            path.green      { stroke: #14291c; }
             text.blue       { fill: #80e5ffff; }
             rect.blue       { fill: #80e5ff40; stroke: #192629; }
-            polygon.blue    { fill: #80e5ff40; stroke: #192629; }
-            path.blue       { stroke: #192629; }
+            path.blue       { stroke: #192629ff; }
             text.pink       { fill: #ff55ddff; }
             rect.pink       { fill: #ff55dd40; stroke: #291425; }
-            polygon.pink    { fill: #ff55dd40; stroke: #291425; }
-            path.pink       { stroke: #291425; }
-            text.purple     { fill: #ccaaffff; }
-            rect.purple     { fill: #ccaaff40; stroke: #231f29; }
-            polygon.purple  { fill: #ccaaff40; stroke: #231f29; }
-            path.purple     { stroke: #231f29; }
-            text.light-pink { fill: #ffaaeeff; }
-            rect.light-pink { fill: #ffaaee40; stroke: #291f27; }
-            polygon.light-pink { fill: #ffaaee40; stroke: #291f27; }
-            path.light-pink { stroke: #291f27; }
-            rect.grey       { fill: #88888888; stroke: #44444488; }
-            path.grey       { stroke: #77777788; stroke-width:0.25; }
+            path.pink       { stroke: #291425ff; }
         }
     </style>
 
     <g id="bit-labels" transform="translate(0 1.5)">
         <text
             class="foreground"
-            x="49.5"
+            x="27"
             y="0">0</text>
         <text
             class="foreground"
-            x="26.5"
+            x="15"
             y="0">31</text>
         <text
             class="foreground"
-            x="23"
+            x="12"
             y="0">32</text>
         <text
             class="foreground"
@@ -104,34 +79,47 @@
             y="0">63</text>
     </g>
 
-    <g id="pointer" transform="translate(0.2 2.5)">
+    <g id="pointer" transform="translate(0.4 2.5)">
         
         <rect
-            width="25"
+            width="14"
             height="4"
-            x="0.2"
+            x="0"
             y="0"
             class="pink" />
 
         <text
             class="pink"
-            x="9.5"
+            x="4.1"
             y="2.9">base</text>
+
+        <path
+            d="M 14,-0.2 H -0.2 V 4.2 H 14"
+            class="pink" />
 
     </g>
 
-    <g id="value" transform="translate(25.7 2.5)">
+    <g id="value" transform="translate(14.4 2.5)">
         
         <rect
-            width="25"
+            width="14"
             height="4"
-            x="0.2"
+            x="0"
             y="0"
             class="blue" />
 
         <text
             class="blue"
-            x="8.5"
+            x="3.5"
             y="2.9">index</text>
+
+        <path
+            d="M 0,-0.2 H 14.2 V 4.2 H 0"
+            class="blue" />
     </g>
+
+    <path
+        d="M 14.35,2.5 V 6.5"
+        stroke="#00000080"
+        stroke-width="0.1" />
 </svg>

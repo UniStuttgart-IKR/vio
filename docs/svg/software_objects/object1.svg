@@ -2,8 +2,8 @@
 <!-- Created by Leyla :3 -->
 
 <svg
-    width="86"
-    height="20"
+    width="57"
+    height="22"
     version="1.1"
     id="data-svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -31,29 +31,32 @@
             font-family: Consolas, DejaVu Sans Mono, Lucida Sans Typewriter, monospace;
             font-style:  normal;
             font-weight: bold;
-            font-size:   2pt;
+            font-size:   1.7pt;
         }
 
         rect { stroke: #000000ff; stroke-width:0.4; stroke-linejoin:round; }
+        polygon { stroke: #000000ff; stroke-width:0.2; stroke-linejoin:round; }
+        path { stroke-linejoin:round; fill:none }
         .foreground { fill: #1a1a1aff; }
+        text.foreground { font-size: 1.5pt }
 
         text.green      { fill: #1a1a1aff; }
         rect.green      { fill: #55ff99ff; }
-        path.green      { stroke: #000000ff; stroke-width:0.25; }
+        path.green      { stroke: #000000ff; stroke-width:0.1; }
         rect.blue       { fill: #80e5ffff; }
         polygon.blue    { fill: #80e5ffff; stroke: #192629; }
-        path.blue       { stroke: #000000ff; stroke-width:0.25; }
+        path.blue       { stroke: #000000ff; stroke-width:0.4; }
         rect.pink       { fill: #ff55ddff; }
         polygon.pink    { fill: #ff55ddff; stroke: #000000ff;}
-        path.pink       { stroke: #000000ff; stroke-width:0.25; }
+        path.pink       { stroke: #000000ff; stroke-width:0.4; }
         rect.purple     { fill: #ccaaffff; }
-        polygon.purple  { stroke: #000000ff; fill: #ccaaffff; stroke-width:0.25; }
-        path.purple     { stroke: #000000ff; stroke-width:0.25; }
+        polygon.purple  { stroke: #000000ff; fill: #ccaaffff; stroke-width:0.1; }
+        path.purple     { stroke: #000000ff; stroke-width:0.1; }
         rect.grey       { fill: #55555588; stroke: #44444488; }
-        path.grey       { stroke: #33333388; stroke-width:0.25; }
+        path.grey       { stroke: #33333388; stroke-width:0.1; }
         rect.light-pink { fill: #ffaaeeff; }
         polygon.light-pink { fill: #ffaaeeff; stroke: #291f27ff}
-        path.light-pink { stroke: #000000ff; stroke-width:0.25; }
+        path.light-pink { stroke: #000000ff; stroke-width:0.1; }
 
         @media (prefers-color-scheme: dark) {
             
@@ -84,10 +87,10 @@
         }
     </style>
 
-    <g id="pointer" transform="translate(0.2 6)">
+    <g id="pointer" transform="translate(0.2 8)">
         
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="2.5"
@@ -95,15 +98,15 @@
 
         <text
             class="pink"
-            x="7.5"
-            y="5.4">pointer</text>
+            x="3.8"
+            y="5.2">pointer</text>
 
     </g>
 
-    <g id="value" transform="translate(30.2 6)">
+    <g id="prim" transform="translate(20 8)">
         
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="2.5"
@@ -111,43 +114,50 @@
 
         <text
             class="blue"
-            x="8.5"
-            y="5.4">value</text>
+            x="2.8"
+            y="5.2">primitive</text>
     </g>
     
-    <g id="object" transform="translate(60.2 0)">
-        <text
-            class="foreground"
-            x="8"
-            y="2"
-            style="font-weight: bold">Object</text>
+    <g id="ordinary" transform="translate(40 0)">
 
         <g id="some_cont1" transform="translate(0.2 4.2)">
-            <polygon points="0,0 15,0 10,4 0,4" class="blue" style="stroke-width: 0.4"/>
-            <text class="blue" x="3" y="2.75">val</text>
-            <polygon points="15,0 25,0 25,4 10,4" class="pink" style="stroke-width: 0.4"/>
-            <text class="pink" x="17" y="2.75">ptr</text>
-            <text class="foreground" x="10.75" y="2.75">or</text>
+            <polygon points="0,0 10,0 6,4 0,4" class="blue"/>
+            <text class="blue" x="0.9" y="2.65">prim</text>
+            <polygon points="10,0 16,0 16,4 6,4" class="pink"/>
+            <text class="pink" x="10.5" y="2.65">ptr</text>
+            <text class="foreground" x="6.8" y="2.55">or</text>
         </g>
         <g id="some_cont2" transform="translate(0.2 8.2)">
-            <polygon points="0,0 15,0 10,4 0,4" class="blue" style="stroke-width: 0.4"/>
-            <text class="blue" x="3" y="2.75">val</text>
-            <polygon points="15,0 25,0 25,4 10,4" class="pink" style="stroke-width: 0.4"/>
-            <text class="pink" x="17" y="2.75">ptr</text>
-            <text class="foreground" x="10.75" y="2.75">or</text>
+            <polygon points="0,0 10,0 6,4 0,4" class="blue"/>
+            <text class="blue" x="0.9" y="2.65">prim</text>
+            <polygon points="10,0 16,0 16,4 6,4" class="pink"/>
+            <text class="pink" x="10.5" y="2.65">ptr</text>
+            <text class="foreground" x="6.8" y="2.55">or</text>
         </g>
         <g id="some_cont3" transform="translate(0.2 12.2)">
-            <polygon points="0,0 15,0 10,4 0,4" class="blue" style="stroke-width: 0.4"/>
-            <text class="blue" x="3" y="2.75">val</text>
-            <polygon points="15,0 25,0 25,4 10,4" class="pink" style="stroke-width: 0.4"/>
-            <text class="pink" x="17" y="2.75">ptr</text>
-            <text class="foreground" x="10.75" y="2.75">or</text>
+            <polygon points="0,0 10,0 6,4 0,4" class="blue"/>
+            <text class="blue" x="0.9" y="2.65">prim</text>
+            <polygon points="10,0 16,0 16,4 6,4" class="pink"/>
+            <text class="pink" x="10.5" y="2.65">ptr</text>
+            <text class="foreground" x="6.8" y="2.55">or</text>
         </g>
-        <text
-            class="foreground"
-            x="10"
-            y="19.5"
-            style="font-size: 2pt">...</text>
+        <g id="some_cont4" transform="translate(0.2 16.2)">
+            <polygon points="0,0 10,0 6,4 0,4" class="blue"/>
+            <text class="blue" x="0.9" y="2.65">prim</text>
+            <polygon points="10,0 16,0 16,4 6,4" class="pink"/>
+            <text class="pink" x="10.5" y="2.65">ptr</text>
+            <text class="foreground" x="6.8" y="2.55">or</text>
+        </g>
+
+        <path
+            d="M 10.2,4.2 H 0.2 V 20.2 H 6.2"
+            class="blue" />
+
+        <path
+            d="M 10.2,4.2 H 16.2 V 20.2 H 6.2"
+            class="pink" />
+
+        <text class="foreground" style="font-size: 1.7pt" x="4.2" y="2.6">Object</text>
     </g>
 
 </svg>

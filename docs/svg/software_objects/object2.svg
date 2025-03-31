@@ -2,8 +2,8 @@
 <!-- Created by Leyla :3 -->
 
 <svg
-    width="86"
-    height="24.4"
+    width="77"
+    height="25"
     version="1.1"
     id="data-svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -31,21 +31,23 @@
             font-family: Consolas, DejaVu Sans Mono, Lucida Sans Typewriter, monospace;
             font-style:  normal;
             font-weight: bold;
-            font-size:   2pt;
+            font-size:   1.7pt;
         }
 
-        rect { stroke: #000000ff; stroke-width:0.4; stroke-linejoin:round; }
+        rect { stroke: #000000ff; stroke-width:0.2; stroke-linejoin:round; }
+        polygon { stroke: #000000ff; stroke-width:0.2; stroke-linejoin:round; }
         .foreground { fill: #1a1a1aff; }
+        text.foreground { font-size: 1.5pt }
 
-        text.green      { fill: #1a1a1aff; }
-        rect.green      { fill: #55ff99ff; }
+        text.green      { fill: #1a1a1aff; font-style: italic }
+        rect.green      { fill: #55ff99ff; stroke-width: 0.4 }
         path.green      { stroke: #000000ff; stroke-width:0.25; }
         rect.blue       { fill: #80e5ffff; }
         polygon.blue    { fill: #80e5ffff; stroke: #192629; }
-        path.blue       { stroke: #000000ff; stroke-width:0.25; }
+        path.blue       { stroke: #000000ff; stroke-width:0.4; }
         rect.pink       { fill: #ff55ddff; }
         polygon.pink    { fill: #ff55ddff; stroke: #000000ff;}
-        path.pink       { stroke: #000000ff; stroke-width:0.25; }
+        path.pink       { stroke: #000000ff; stroke-width:0.4; }
         rect.purple     { fill: #ccaaffff; }
         polygon.purple  { stroke: #000000ff; fill: #ccaaffff; stroke-width:0.25; }
         path.purple     { stroke: #000000ff; stroke-width:0.25; }
@@ -56,7 +58,9 @@
         path.light-pink { stroke: #000000ff; stroke-width:0.25; }
         polygon.yellow,
         rect.yellow     { fill: #e5ff80ff; stroke: #262919;  }
+        path.yellow     { stroke: #000000ff; stroke-width:0.4; }
         rect.cyan       { fill: #55ffddff; }
+        path.cyan       { stroke: #000000ff; stroke-width:0.4; }
 
         @media (prefers-color-scheme: dark) {
             
@@ -86,150 +90,232 @@
             path.grey       { stroke: #77777788; stroke-width:0.25; }
             polygon.yellow,
             rect.yellow     { fill: #e5ff8040; stroke: #262919; }
+            path.yellow     { stroke: #262919; }
             text.yellow     { fill: #e5ff80ff; }
             rect.cyan       { fill: #55ffdd40; stroke: #142925; }
             text.cyan       { fill: #55ffddff; }
+            path.cyan       { stroke: #142925; }
         }
     </style>
     
     <g id="ordinary" transform="translate(0 0)">
 
-        <rect
-            width="25"
-            height="4"
-            x="0.2"
-            y="0.2"
-            class="green" />
-        <text class="green" x="6" y="3">Ordinary</text>
-
         <g id="some_cont1" transform="translate(0.2 4.2)">
-            <polygon points="0,0 15,0 10,4 0,4" class="blue" style="stroke-width: 0.4"/>
-            <text class="blue" x="3" y="2.75">val</text>
-            <polygon points="15,0 25,0 25,4 10,4" class="pink" style="stroke-width: 0.4"/>
-            <text class="pink" x="17" y="2.75">ptr</text>
-            <text class="foreground" x="10.75" y="2.75">or</text>
+            <polygon points="0,0 10,0 6,4 0,4" class="blue"/>
+            <text class="blue" x="0.9" y="2.65">prim</text>
+            <polygon points="10,0 16,0 16,4 6,4" class="pink"/>
+            <text class="pink" x="10.5" y="2.65">ptr</text>
+            <text class="foreground" x="6.8" y="2.55">or</text>
         </g>
         <g id="some_cont2" transform="translate(0.2 8.2)">
-            <polygon points="0,0 15,0 10,4 0,4" class="blue" style="stroke-width: 0.4"/>
-            <text class="blue" x="3" y="2.75">val</text>
-            <polygon points="15,0 25,0 25,4 10,4" class="pink" style="stroke-width: 0.4"/>
-            <text class="pink" x="17" y="2.75">ptr</text>
-            <text class="foreground" x="10.75" y="2.75">or</text>
+            <polygon points="0,0 10,0 6,4 0,4" class="blue"/>
+            <text class="blue" x="0.9" y="2.65">prim</text>
+            <polygon points="10,0 16,0 16,4 6,4" class="pink"/>
+            <text class="pink" x="10.5" y="2.65">ptr</text>
+            <text class="foreground" x="6.8" y="2.55">or</text>
         </g>
         <g id="some_cont3" transform="translate(0.2 12.2)">
-            <polygon points="0,0 15,0 10,4 0,4" class="blue" style="stroke-width: 0.4"/>
-            <text class="blue" x="3" y="2.75">val</text>
-            <polygon points="15,0 25,0 25,4 10,4" class="pink" style="stroke-width: 0.4"/>
-            <text class="pink" x="17" y="2.75">ptr</text>
-            <text class="foreground" x="10.75" y="2.75">or</text>
+            <polygon points="0,0 10,0 6,4 0,4" class="blue"/>
+            <text class="blue" x="0.9" y="2.65">prim</text>
+            <polygon points="10,0 16,0 16,4 6,4" class="pink"/>
+            <text class="pink" x="10.5" y="2.65">ptr</text>
+            <text class="foreground" x="6.8" y="2.55">or</text>
         </g>
         <g id="some_cont4" transform="translate(0.2 16.2)">
-            <polygon points="0,0 15,0 10,4 0,4" class="blue" style="stroke-width: 0.4"/>
-            <text class="blue" x="3" y="2.75">val</text>
-            <polygon points="15,0 25,0 25,4 10,4" class="pink" style="stroke-width: 0.4"/>
-            <text class="pink" x="17" y="2.75">ptr</text>
-            <text class="foreground" x="10.75" y="2.75">or</text>
+            <polygon points="0,0 10,0 6,4 0,4" class="blue"/>
+            <text class="blue" x="0.9" y="2.65">prim</text>
+            <polygon points="10,0 16,0 16,4 6,4" class="pink"/>
+            <text class="pink" x="10.5" y="2.65">ptr</text>
+            <text class="foreground" x="6.8" y="2.55">or</text>
         </g>
+
         <text
             class="foreground"
-            x="10"
-            y="23.5"
+            transform="translate(7.8,21) rotate(90)"
             style="font-size: 2pt">...</text>
-    </g>
-    
-    <g id="executable" transform="translate(30 0)">
+
+        <path
+            d="M 0.2,4.2 V 20.2"
+            class="blue" />
+
+        <path
+            d="M 16.2,4.2 V 20.2"
+            class="pink" />
+
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="0.2"
             class="green" />
-        <text class="green" x="5" y="3">Executable</text>
+        <text class="green" x="3.5" y="2.85">Ordinary</text>
+    </g>
+    
+    <g id="executable" transform="translate(20 0)">
 
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="4.2"
             class="yellow" />
-        <text class="yellow" x="9" y="7">code</text>
+        <text class="yellow" x="5.7" y="7">code</text>
 
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="8.2"
             class="yellow" />
-        <text class="yellow" x="9" y="11">code</text>
+        <text class="yellow" x="5.7" y="11">code</text>
 
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="12.2"
             class="yellow" />
-        <text class="yellow" x="9" y="15">code</text>
+        <text class="yellow" x="5.7" y="15">code</text>
 
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="16.2"
             class="yellow" />
-        <text class="yellow" x="9" y="19">code</text>
+        <text class="yellow" x="5.7" y="19">code</text>
 
-        <text
-            class="foreground"
-            x="10"
-            y="23.5"
-            style="font-size: 2pt">...</text>
-    </g>
-    
-    <g id="data-only" transform="translate(60 0)">
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="0.2"
             class="green" />
-        <text class="green" x="5" y="3">Data-Only</text>
+        <text class="green" x="2" y="2.85">Executable</text>
+
+        <path
+            d="M 0.2,4.2 V 20.2"
+            class="yellow" />
+
+        <path
+            d="M 16.2,4.2 V 20.2"
+            class="yellow" />
+
+        <text
+            class="foreground"
+            transform="translate(7.8,21) rotate(90)"
+            style="font-size: 2pt">...</text>
+    </g>
+    
+    <g id="data-only" transform="translate(40 0)">
 
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="4.2"
             class="cyan" />
-        <text class="cyan" x="8.5" y="7">value</text>
+        <text class="cyan" x="4.8" y="6.9">value</text>
 
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="8.2"
             class="cyan" />
-        <text class="cyan" x="8.5" y="11">value</text>
+        <text class="cyan" x="4.8" y="10.9">value</text>
 
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="12.2"
             class="cyan" />
-        <text class="cyan" x="8.5" y="15">value</text>
+        <text class="cyan" x="4.8" y="14.9">value</text>
 
         <rect
-            width="25"
+            width="16"
             height="4"
             x="0.2"
             y="16.2"
             class="cyan" />
-        <text class="cyan" x="8.5" y="19">value</text>
+        <text class="cyan" x="4.8" y="18.9">value</text>
+
+        <rect
+            width="16"
+            height="4"
+            x="0.2"
+            y="0.2"
+            class="green" />
+        <text class="green" x="2.8" y="2.85">Data-Only</text>
+
+        <path
+            d="M 0.2,4.2 V 20.2"
+            class="cyan" />
+
+        <path
+            d="M 16.2,4.2 V 20.2"
+            class="cyan" />
 
         <text
             class="foreground"
-            x="10"
-            y="23.5"
+            transform="translate(7.8,21) rotate(90)"
+            style="font-size: 2pt">...</text>
+    </g>
+    
+    <g id="io" transform="translate(60 0)">
+
+        <rect
+            width="16"
+            height="4"
+            x="0.2"
+            y="4.2"
+            class="cyan" />
+        <text class="cyan" x="4.8" y="6.9">value</text>
+
+        <rect
+            width="16"
+            height="4"
+            x="0.2"
+            y="8.2"
+            class="cyan" />
+        <text class="cyan" x="4.8" y="10.9">value</text>
+
+        <rect
+            width="16"
+            height="4"
+            x="0.2"
+            y="12.2"
+            class="cyan" />
+        <text class="cyan" x="4.8" y="14.9">value</text>
+
+        <rect
+            width="16"
+            height="4"
+            x="0.2"
+            y="16.2"
+            class="cyan" />
+        <text class="cyan" x="4.8" y="18.9">value</text>
+
+        <rect
+            width="16"
+            height="4"
+            x="0.2"
+            y="0.2"
+            class="green" />
+        <text class="green" x="6.0" y="2.85">I/O</text>
+
+        <path
+            d="M 0.2,4.2 V 20.2"
+            class="cyan" />
+
+        <path
+            d="M 16.2,4.2 V 20.2"
+            class="cyan" />
+
+        <text
+            class="foreground"
+            transform="translate(7.8,21) rotate(90)"
             style="font-size: 2pt">...</text>
     </g>
 

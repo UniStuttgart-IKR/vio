@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created by Leyla :3 -->
+
+<svg
+    width="88.8"
+    height="7"
+    version="1.1"
+    id="data-svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg">
+
+    <style id="pretty-colors">
+        @font-face {
+            font-family: DejaVu Sans Mono;
+            src: local(DejaVu Sans Mono);
+            size-adjust: 91.6%
+        }
+        @font-face {
+            font-family: Lucida Sans Typewriter;
+            src: local(Lucida Sans Typewriter);
+            size-adjust: 91.6%
+        }
+        @font-face {
+            font-family: monospace;
+            src: local(monospace);
+            size-adjust: 91.6%
+        }
+
+        text {
+            font-family: Consolas, DejaVu Sans Mono, Lucida Sans Typewriter, monospace;
+            font-style:  normal;
+            font-weight: bold;
+            font-size:   1.7pt;
+        }
+
+        rect { stroke-width: 0; }
+
+        .foreground { fill: #1a1a1aff; }
+        text.foreground { font-size:1.2pt; font-weight:normal; }
+        path { fill: none; stroke: #000000ff; stroke-width:0.4; }
+        path.divider { stroke-width:0.1 }
+
+        rect.muted      { fill: #77FFAD; }
+        rect.mid        { fill: #66FFA3; }
+        rect.normal     { fill: #55FF99; }
+        rect.dark       { fill: #4CE68A; }
+        rect.almost     { fill: #44CC7A; }
+        rect.black      { fill: #3BB36B; }
+        rect.deep       { fill: #33995C; }
+
+        @media (prefers-color-scheme: dark) {
+            
+            .foreground     { fill: #888888ff; }
+            path.foreground { stroke: #888888ff; }
+            path.divider    { stroke: #00000080; }
+            path            { stroke: #1F2A22; }
+
+            rect.muted      { fill: #4D8162ff; }
+            rect.mid        { fill: #3A6A4Dff; }
+            rect.normal     { fill: #285339ff; }
+            rect.dark       { fill: #1F3E2Dff; }
+            rect.almost     { fill: #183526; }
+            rect.black      { fill: #122B20; }
+            rect.deep       { fill: #0C2219; }
+
+            text.muted      { fill: #77FFAD; }
+            text.mid        { fill: #66FFA3; }
+            text.normal     { fill: #55FF99; }
+            text.dark       { fill: #4CE68A; }
+            text.almost     { fill: #44CC7A; }
+            text.black      { fill: #3BB36B; }
+            text.deep       { fill: #33995C; }
+        }
+    </style>
+
+    <g id="bit-labels" transform="translate(0 1.5)">
+        <text
+            class="foreground"
+            x="86.5"
+            y="0">0</text>
+        <text
+            class="foreground"
+            x="76.5"
+            y="0">4</text>
+        <text
+            class="foreground"
+            x="73.5"
+            y="0">5</text>
+        <text
+            class="foreground"
+            x="34.5"
+            y="0">20</text>
+        <text
+            class="foreground"
+            x="30.5"
+            y="0">21</text>
+        <text
+            class="foreground"
+            x="24.5"
+            y="0">23</text>
+        <text
+            class="foreground"
+            x="15.5"
+            y="0">26</text>
+        <text
+            class="foreground"
+            x="9.5"
+            y="0">28</text>
+        <text
+            class="foreground"
+            x="3.5"
+            y="0">30</text>
+    </g>
+
+    <g transform="translate(0.4 2.5)">
+        <rect
+            class="muted"
+            width="6"
+            height="4"
+            x="0"
+            y="0" />
+        <text
+            class="muted"
+            x="1.8"
+            y="2.9">gc</text>
+    </g>
+
+    <g transform="translate(6.4 2.5)">
+        <rect
+            class="mid"
+            width="6"
+            height="4"
+            x="0"
+            y="0" />
+        <path
+            d="M -0.05,0 V 4"
+            class="divider" />
+        <text
+            class="mid"
+            x="1.0"
+            y="2.9">scr</text>
+    </g>
+
+    <g transform="translate(12.4 2.5)">
+        <rect
+            class="normal"
+            width="6"
+            height="4"
+            x="0"
+            y="0" />
+        <path
+            d="M -0.05,0 V 4"
+            class="divider" />
+        <text
+            class="normal"
+            x="1.0"
+            y="2.9">r w</text>
+    </g>
+
+    <g transform="translate(18.4 2.5)">
+        <rect
+            class="dark"
+            width="9"
+            height="4"
+            x="0"
+            y="0" />
+        <path
+            d="M -0.05,0 V 4"
+            class="divider" />
+        <text
+            class="dark"
+            x="1.4"
+            y="2.9">d s i</text>
+    </g>
+
+    <g transform="translate(27.4 2.5)">
+        <rect
+            class="almost"
+            width="6"
+            height="4"
+            x="0"
+            y="0" />
+        <path
+            d="M -0.05,0 V 4"
+            class="divider" />
+        <text
+            class="almost"
+            x="1.1"
+            y="2.9">c f</text>
+    </g>
+
+    <g transform="translate(33.4 2.5)">
+        <rect
+            class="black"
+            width="42"
+            height="4"
+            x="0"
+            y="0" />
+        <path
+            d="M -0.05,0 V 4"
+            class="divider" />
+        <text
+            class="black"
+            x="18"
+            y="2.9">size</text>
+    </g>
+
+    <g transform="translate(75.4 2.5)">
+        <rect
+            class="deep"
+            width="15"
+            height="4"
+            x="0"
+            y="0" />
+        <path
+            d="M -0.05,0 V 4"
+            class="divider" />
+        <text
+            class="deep"
+            x="3.5"
+            y="2.9">11111</text>
+    </g>
+
+    <path
+        transform="translate(0.2,2.5)"
+        d="M 0,0 H 88.4 V 4.2 H 0 V 0" />
+</svg>

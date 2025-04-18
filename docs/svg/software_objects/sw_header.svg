@@ -2,7 +2,7 @@
 <!-- Created by Leyla :3 -->
 
 <svg
-    width="88.8"
+    width="73.1"
     height="7"
     version="1.1"
     id="data-svg"
@@ -37,7 +37,7 @@
         rect { stroke-width: 0; }
 
         .foreground { fill: #1a1a1aff; }
-        text.foreground { font-size:1.2pt; font-weight:normal; }
+        text.foreground { font-size:1.1pt; font-weight:normal; }
         path { fill: none; stroke: #000000ff; stroke-width:0.4; }
         path.divider { stroke-width:0.1 }
 
@@ -45,6 +45,7 @@
         rect.mid        { fill: #66FFA3; }
         rect.normal     { fill: #55FF99; }
         rect.dark       { fill: #4CE68A; }
+        rect.almost     { fill: #44CC7A; }
 
         @media (prefers-color-scheme: dark) {
             
@@ -57,43 +58,53 @@
             rect.mid        { fill: #3A6A4Dff; stroke: #233228; }
             rect.normal     { fill: #285339ff; stroke: #1F2A22; }
             rect.dark       { fill: #1F3E2Dff; stroke: #1D2620; }
+            rect.almost     { fill: #183526ff; stroke: #1B221E; }
 
             text.muted      { fill: #77FFAD; }
             text.mid        { fill: #66FFA3; }
             text.normal     { fill: #55FF99; }
             text.dark       { fill: #4CE68A; }
+            text.almost     { fill: #44CC7A; }
         }
     </style>
 
     <g id="bit-labels" transform="translate(0 1.5)">
         <text
             class="foreground"
-            x="86.5"
+            x="71.5"
             y="0">0</text>
         <text
             class="foreground"
-            x="57.5"
+            x="55.0"
+            y="0">2</text>
+        <text
+            class="foreground"
+            x="52.7"
             y="0">3</text>
         <text
             class="foreground"
-            x="54.5"
+            x="43.2"
             y="0">4</text>
         <text
             class="foreground"
-            x="41.5"
+            x="40.7"
             y="0">5</text>
         <text
             class="foreground"
-            x="38.5"
+            x="31.0"
             y="0">6</text>
         <text
             class="foreground"
-            x="25.5"
+            x="28.7"
             y="0">7</text>
         <text
             class="foreground"
-            x="22.5"
+            x="19.2"
             y="0">8</text>
+        <text
+            class="foreground"
+            x="16.5"
+            y="0">9</text>
         <text
             class="foreground"
             x="1"
@@ -103,20 +114,20 @@
     <g transform="translate(0.4 2.5)">
         <rect
             class="muted"
-            width="24"
+            width="18"
             height="4"
             x="0"
             y="0" />
         <text
             class="muted"
-            x="10"
+            x="7.5"
             y="2.9">...</text>
     </g>
 
-    <g transform="translate(24.4 2.5)">
+    <g transform="translate(18.4 2.5)">
         <rect
             class="mid"
-            width="16"
+            width="12"
             height="4"
             x="0"
             y="0" />
@@ -125,14 +136,14 @@
             class="divider" />
         <text
             class="mid"
-            x="3.7"
+            x="1.7"
             y="2.9">scratch</text>
     </g>
 
-    <g transform="translate(40.4 2.5)">
+    <g transform="translate(30.4 2.5)">
         <rect
             class="normal"
-            width="16"
+            width="12"
             height="4"
             x="0"
             y="0" />
@@ -141,21 +152,21 @@
             class="divider" />
         <text
             class="normal"
-            x="1.6"
-            y="2.9">read</text>
+            x="2.4"
+            y="2.9">ρ</text>
         <path
-            d="M 8,0 V 4"
+            d="M 6,0 V 4"
             class="divider" />
         <text
             class="normal"
-            x="9"
-            y="2.9">write</text>
+            x="8.5"
+            y="2.9">ω</text>
     </g>
 
-    <g transform="translate(56.4 2.5)">
+    <g transform="translate(42.4 2.5)">
         <rect
             class="dark"
-            width="32"
+            width="12"
             height="4"
             x="0"
             y="0" />
@@ -164,32 +175,48 @@
             class="divider" />
         <text
             class="dark"
-            x="2.2"
-            y="2.9">i/o</text>
+            x="2.4"
+            y="2.9">r</text>
         <path
-            d="M 8,0 V 4"
+            d="M 6,0 V 4"
             class="divider" />
         <text
             class="dark"
-            x="9.5"
-            y="2.9">data</text>
+            x="8.5"
+            y="2.9">w</text>
+    </g>
+
+    <g transform="translate(54.4 2.5)">
+        <rect
+            class="almost"
+            width="18"
+            height="4"
+            x="0"
+            y="0" />
         <path
-            d="M 16,0 V 4"
+            d="M -0.05,0 V 4"
             class="divider" />
         <text
-            class="dark"
-            x="17.6"
-            y="2.9">exec</text>
+            class="almost"
+            x="2.4"
+            y="2.9">d</text>
         <path
-            d="M 24,0 V 4"
+            d="M 6,0 V 4"
             class="divider" />
         <text
-            class="dark"
-            x="26"
-            y="2.9">ord</text>
+            class="almost"
+            x="8.5"
+            y="2.9">e</text>
+        <path
+            d="M 12,0 V 4"
+            class="divider" />
+        <text
+            class="almost"
+            x="14.6"
+            y="2.9">o</text>
     </g>
 
     <path
         transform="translate(0.2,2.5)"
-        d="M 0,0 H 88.4 V 4.2 H 0 V 0" />
+        d="M 0,0 H 72.4 V 4.2 H 0 V 0" />
 </svg>

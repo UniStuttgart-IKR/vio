@@ -9,10 +9,11 @@
   text.start { text-anchor: start; }
   text.end { text-anchor: end; }
   text.small { font-size: 10px; font-weight: 400; font-style: italic; }
-  .outline { fill: none; stroke: #1a1a1a; stroke-width: 2; stroke-linejoin: miter; }
-  .divider { fill: none; stroke: #1a1a1a; stroke-width: 1; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
   .dashed { stroke-dasharray: 4 3; }
-  .rule { stroke: #1a1a1a; stroke-width: 2; }
   .purple { fill: #ccaaff }
   .blue { fill: #80e5ff }
   .green { fill: #55ff99 }
@@ -24,9 +25,10 @@
   @media (prefers-color-scheme: dark) {
     text { fill: #cccccc; }
     text.label { fill: #9a9a9a; }
-    .outline, .divider { stroke: #9a9a9a; }
-    .rule { stroke: #9a9a9a; }
-    .white { fill: #ffffff10 }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .white { fill: #ffffff1a }
     .purple { fill: #ccaaff40 }
     text.on-purple { fill: #ccaaff }
     .blue { fill: #80e5ff40 }
@@ -47,32 +49,32 @@
   <text x="70" y="13" class="on-green">Ordinary</text>
   <polygon points="0,26 79.1,26 60.9,52 0,52" class="blue"/>
   <polygon points="79.1,26 140,26 140,52 60.9,52" class="pink"/>
-  <line x1="79.1" y1="26" x2="72.912" y2="34.84" class="divider"/>
-  <line x1="67.088" y1="43.16" x2="60.9" y2="52" class="divider"/>
+  <line x1="79.1" y1="26" x2="72.912" y2="34.84" class="diagonal"/>
+  <line x1="67.088" y1="43.16" x2="60.9" y2="52" class="diagonal"/>
   <text x="70" y="39" class="small">or</text>
   <text x="32.45" y="39" class="on-blue">val</text>
   <text x="107.55" y="39" class="on-pink">ptr</text>
   <line x1="0" y1="26" x2="140" y2="26" class="divider"/>
   <polygon points="0,52 79.1,52 60.9,78 0,78" class="blue"/>
   <polygon points="79.1,52 140,52 140,78 60.9,78" class="pink"/>
-  <line x1="79.1" y1="52" x2="72.912" y2="60.84" class="divider"/>
-  <line x1="67.088" y1="69.16" x2="60.9" y2="78" class="divider"/>
+  <line x1="79.1" y1="52" x2="72.912" y2="60.84" class="diagonal"/>
+  <line x1="67.088" y1="69.16" x2="60.9" y2="78" class="diagonal"/>
   <text x="70" y="65" class="small">or</text>
   <text x="32.45" y="65" class="on-blue">val</text>
   <text x="107.55" y="65" class="on-pink">ptr</text>
   <line x1="0" y1="52" x2="140" y2="52" class="divider"/>
   <polygon points="0,78 79.1,78 60.9,104 0,104" class="blue"/>
   <polygon points="79.1,78 140,78 140,104 60.9,104" class="pink"/>
-  <line x1="79.1" y1="78" x2="72.912" y2="86.84" class="divider"/>
-  <line x1="67.088" y1="95.16" x2="60.9" y2="104" class="divider"/>
+  <line x1="79.1" y1="78" x2="72.912" y2="86.84" class="diagonal"/>
+  <line x1="67.088" y1="95.16" x2="60.9" y2="104" class="diagonal"/>
   <text x="70" y="91" class="small">or</text>
   <text x="32.45" y="91" class="on-blue">val</text>
   <text x="107.55" y="91" class="on-pink">ptr</text>
   <line x1="0" y1="78" x2="140" y2="78" class="divider"/>
   <polygon points="0,104 79.1,104 60.9,130 0,130" class="blue"/>
   <polygon points="79.1,104 140,104 140,130 60.9,130" class="pink"/>
-  <line x1="79.1" y1="104" x2="72.912" y2="112.84" class="divider"/>
-  <line x1="67.088" y1="121.16" x2="60.9" y2="130" class="divider"/>
+  <line x1="79.1" y1="104" x2="72.912" y2="112.84" class="diagonal"/>
+  <line x1="67.088" y1="121.16" x2="60.9" y2="130" class="diagonal"/>
   <text x="70" y="117" class="small">or</text>
   <text x="32.45" y="117" class="on-blue">val</text>
   <text x="107.55" y="117" class="on-pink">ptr</text>

@@ -9,10 +9,11 @@
   text.start { text-anchor: start; }
   text.end { text-anchor: end; }
   text.small { font-size: 10px; font-weight: 400; font-style: italic; }
-  .outline { fill: none; stroke: #1a1a1a; stroke-width: 2; stroke-linejoin: miter; }
-  .divider { fill: none; stroke: #1a1a1a; stroke-width: 1; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
   .dashed { stroke-dasharray: 4 3; }
-  .rule { stroke: #1a1a1a; stroke-width: 2; }
   .purple { fill: #ccaaff }
   .blue { fill: #80e5ff }
   .green { fill: #55ff99 }
@@ -24,9 +25,10 @@
   @media (prefers-color-scheme: dark) {
     text { fill: #cccccc; }
     text.label { fill: #9a9a9a; }
-    .outline, .divider { stroke: #9a9a9a; }
-    .rule { stroke: #9a9a9a; }
-    .white { fill: #ffffff10 }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .white { fill: #ffffff1a }
     .purple { fill: #ccaaff40 }
     text.on-purple { fill: #ccaaff }
     .blue { fill: #80e5ff40 }

@@ -1,153 +1,78 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created by Leyla :3 -->
-
-<svg
-    width="86"
-    height="20"
-    version="1.1"
-    id="data-svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:svg="http://www.w3.org/2000/svg">
-
-    <style id="pretty-colors">
-        @font-face {
-            font-family: DejaVu Sans Mono;
-            src: local(DejaVu Sans Mono);
-            size-adjust: 91.6%
-        }
-        @font-face {
-            font-family: Lucida Sans Typewriter;
-            src: local(Lucida Sans Typewriter);
-            size-adjust: 91.6%
-        }
-        @font-face {
-            font-family: monospace;
-            src: local(monospace);
-            size-adjust: 91.6%
-        }
-
-        text {
-            font-family: Consolas, DejaVu Sans Mono, Lucida Sans Typewriter, monospace;
-            font-style:  normal;
-            font-weight: bold;
-            font-size:   2pt;
-        }
-
-        rect { stroke: #000000ff; stroke-width:0.4; stroke-linejoin:round; }
-        .foreground { fill: #1a1a1aff; }
-
-        text.green      { fill: #1a1a1aff; }
-        rect.green      { fill: #55ff99ff; }
-        path.green      { stroke: #000000ff; stroke-width:0.25; }
-        rect.blue       { fill: #80e5ffff; }
-        polygon.blue    { fill: #80e5ffff; stroke: #192629; }
-        path.blue       { stroke: #000000ff; stroke-width:0.25; }
-        rect.pink       { fill: #ff55ddff; }
-        polygon.pink    { fill: #ff55ddff; stroke: #000000ff;}
-        path.pink       { stroke: #000000ff; stroke-width:0.25; }
-        rect.purple     { fill: #ccaaffff; }
-        polygon.purple  { stroke: #000000ff; fill: #ccaaffff; stroke-width:0.25; }
-        path.purple     { stroke: #000000ff; stroke-width:0.25; }
-        rect.grey       { fill: #55555588; stroke: #44444488; }
-        path.grey       { stroke: #33333388; stroke-width:0.25; }
-        rect.light-pink { fill: #ffaaeeff; }
-        polygon.light-pink { fill: #ffaaeeff; stroke: #291f27ff}
-        path.light-pink { stroke: #000000ff; stroke-width:0.25; }
-
-        @media (prefers-color-scheme: dark) {
-            
-            .foreground     { fill: #888888ff; }
-            text.black      { fill: #80e5ffff; }
-
-            text.green      { fill: #55ff99ff; }
-            rect.green      { fill: #55ff9940; stroke: #14291c; }
-            path.green      { stroke: #14291c; }
-            text.blue       { fill: #80e5ffff; }
-            rect.blue       { fill: #80e5ff40; stroke: #192629; }
-            polygon.blue    { fill: #80e5ff40; stroke: #192629; }
-            path.blue       { stroke: #192629; }
-            text.pink       { fill: #ff55ddff; }
-            rect.pink       { fill: #ff55dd40; stroke: #291425; }
-            polygon.pink    { fill: #ff55dd40; stroke: #291425; }
-            path.pink       { stroke: #291425; }
-            text.purple     { fill: #ccaaffff; }
-            rect.purple     { fill: #ccaaff40; stroke: #231f29; }
-            polygon.purple  { fill: #ccaaff40; stroke: #231f29; }
-            path.purple     { stroke: #231f29; }
-            text.light-pink { fill: #ffaaeeff; }
-            rect.light-pink { fill: #ffaaee40; stroke: #291f27; }
-            polygon.light-pink { fill: #ffaaee40; stroke: #291f27; }
-            path.light-pink { stroke: #291f27; }
-            rect.grey       { fill: #88888888; stroke: #44444488; }
-            path.grey       { stroke: #77777788; stroke-width:0.25; }
-        }
-    </style>
-
-    <g id="pointer" transform="translate(0.2 6)">
-        
-        <rect
-            width="25"
-            height="4"
-            x="0.2"
-            y="2.5"
-            class="pink" />
-
-        <text
-            class="pink"
-            x="7.5"
-            y="5.4">pointer</text>
-
-    </g>
-
-    <g id="value" transform="translate(30.2 6)">
-        
-        <rect
-            width="25"
-            height="4"
-            x="0.2"
-            y="2.5"
-            class="blue" />
-
-        <text
-            class="blue"
-            x="8.5"
-            y="5.4">value</text>
-    </g>
-    
-    <g id="object" transform="translate(60.2 0)">
-        <text
-            class="foreground"
-            x="8"
-            y="2"
-            style="font-weight: bold">Object</text>
-
-        <g id="some_cont1" transform="translate(0.2 4.2)">
-            <polygon points="0,0 15,0 10,4 0,4" class="blue" style="stroke-width: 0.4"/>
-            <text class="blue" x="3" y="2.75">val</text>
-            <polygon points="15,0 25,0 25,4 10,4" class="pink" style="stroke-width: 0.4"/>
-            <text class="pink" x="17" y="2.75">ptr</text>
-            <text class="foreground" x="10.75" y="2.75">or</text>
-        </g>
-        <g id="some_cont2" transform="translate(0.2 8.2)">
-            <polygon points="0,0 15,0 10,4 0,4" class="blue" style="stroke-width: 0.4"/>
-            <text class="blue" x="3" y="2.75">val</text>
-            <polygon points="15,0 25,0 25,4 10,4" class="pink" style="stroke-width: 0.4"/>
-            <text class="pink" x="17" y="2.75">ptr</text>
-            <text class="foreground" x="10.75" y="2.75">or</text>
-        </g>
-        <g id="some_cont3" transform="translate(0.2 12.2)">
-            <polygon points="0,0 15,0 10,4 0,4" class="blue" style="stroke-width: 0.4"/>
-            <text class="blue" x="3" y="2.75">val</text>
-            <polygon points="15,0 25,0 25,4 10,4" class="pink" style="stroke-width: 0.4"/>
-            <text class="pink" x="17" y="2.75">ptr</text>
-            <text class="foreground" x="10.75" y="2.75">or</text>
-        </g>
-        <text
-            class="foreground"
-            x="10"
-            y="19.5"
-            style="font-size: 2pt">...</text>
-    </g>
-
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="122" viewBox="-2 -2 520 122" role="img">
+  <!-- generated by make_diagrams.py, edit the script instead of this file -->
+  <title>A pointer, a primitive value and an object</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #1a1a1a; stroke-width: 2; stroke-linejoin: miter; }
+  .divider { fill: none; stroke: #1a1a1a; stroke-width: 1; }
+  .dashed { stroke-dasharray: 4 3; }
+  .rule { stroke: #1a1a1a; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    .outline, .divider { stroke: #9a9a9a; }
+    .rule { stroke: #9a9a9a; }
+    .white { fill: #ffffff10 }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="0" y="46" width="140" height="26" class="pink"/>
+  <text x="70" y="59" class="on-pink">pointer</text>
+  <rect x="0" y="46" width="140" height="26" class="outline"/>
+  <rect x="188" y="46" width="140" height="26" class="blue"/>
+  <text x="258" y="59" class="on-blue">value</text>
+  <rect x="188" y="46" width="140" height="26" class="outline"/>
+  <text x="446" y="10" class="heading">Object</text>
+  <polygon points="376,20 455.1,20 436.9,46 376,46" class="blue"/>
+  <polygon points="455.1,20 516,20 516,46 436.9,46" class="pink"/>
+  <line x1="455.1" y1="20" x2="448.912" y2="28.84" class="divider"/>
+  <line x1="443.088" y1="37.16" x2="436.9" y2="46" class="divider"/>
+  <text x="446" y="33" class="small">or</text>
+  <text x="408.45" y="33" class="on-blue">val</text>
+  <text x="483.55" y="33" class="on-pink">ptr</text>
+  <polygon points="376,46 455.1,46 436.9,72 376,72" class="blue"/>
+  <polygon points="455.1,46 516,46 516,72 436.9,72" class="pink"/>
+  <line x1="455.1" y1="46" x2="448.912" y2="54.84" class="divider"/>
+  <line x1="443.088" y1="63.16" x2="436.9" y2="72" class="divider"/>
+  <text x="446" y="59" class="small">or</text>
+  <text x="408.45" y="59" class="on-blue">val</text>
+  <text x="483.55" y="59" class="on-pink">ptr</text>
+  <line x1="376" y1="46" x2="516" y2="46" class="divider"/>
+  <polygon points="376,72 455.1,72 436.9,98 376,98" class="blue"/>
+  <polygon points="455.1,72 516,72 516,98 436.9,98" class="pink"/>
+  <line x1="455.1" y1="72" x2="448.912" y2="80.84" class="divider"/>
+  <line x1="443.088" y1="89.16" x2="436.9" y2="98" class="divider"/>
+  <text x="446" y="85" class="small">or</text>
+  <text x="408.45" y="85" class="on-blue">val</text>
+  <text x="483.55" y="85" class="on-pink">ptr</text>
+  <line x1="376" y1="72" x2="516" y2="72" class="divider"/>
+  <rect x="376" y="20" width="140" height="78" class="outline"/>
+  <text x="446" y="112" class="heading">...</text>
 </svg>

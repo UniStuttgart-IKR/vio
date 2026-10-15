@@ -1,192 +1,85 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created by Leyla :3 -->
-
-<svg
-    width="32.4"
-    height="15.2"
-    version="1.1"
-    id="data-svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:svg="http://www.w3.org/2000/svg">
-
-    <style id="pretty-colors">
-        @font-face {
-            font-family: DejaVu Sans Mono;
-            src: local(DejaVu Sans Mono);
-            size-adjust: 91.6%
-        }
-        @font-face {
-            font-family: Lucida Sans Typewriter;
-            src: local(Lucida Sans Typewriter);
-            size-adjust: 91.6%
-        }
-        @font-face {
-            font-family: monospace;
-            src: local(monospace);
-            size-adjust: 91.6%
-        }
-
-        text {
-            font-family: Consolas, DejaVu Sans Mono, Lucida Sans Typewriter, monospace;
-            font-style:  normal;
-            font-weight: bold;
-            font-size:   2pt;
-        }
-        rect { stroke: #000000ff; fill-opacity:1; stroke-width:0.4; stroke-linejoin:round; stroke-dasharray:none; stroke-opacity:1; }
-
-        text   { fill: #000000ff; }
-        text.foreground { font-size:1.2pt; font-weight:normal; }
-        rect.blue   { fill: #80e5ffff; }
-        path.blue   { stroke: #000000ff; stroke-width:0.25; }
-
-        @media (prefers-color-scheme: dark) {
-            rect { stroke: #192629; }
-            .foreground { fill: #888888ff; }
-
-            text.blue      { fill: #80e5ffff; }
-            rect.blue      { fill: #80e5ff40; }
-            path.blue      { stroke: #192629; }
-        }
-    </style>
-
-    
-    <g id="layer1">
-        
-        <rect
-            id="background-rect"
-            width="32"
-            height="12"
-            x="0.2"
-            y="2.5"
-            class="blue" />
-
-        <g id="integer" transform="translate(0.2 2.5)">
-            <text
-                class="blue"
-                x="7"
-                y="2.7">word(30:0)</text>
-            <path
-                d="M 28.6,0.2 V 3.9"
-                id="path12"
-                class="blue" />
-            <text
-                class="blue"
-                x="29.5"
-                y="2.7">0</text>
-        </g>
-        
-        <path
-            d="M 0.4,6.4 H 32"
-            id="path12"
-            class="blue" />
-
-        <g id="halfs" transform="translate(0.2 6.5)">
-            <text
-                class="blue"
-                x="1.2"
-                y="2.7">h1(14:0)</text>
-            <path
-                d="M 14,0 V 3.9"
-                id="path12"
-                class="blue" />
-            <text
-                class="blue"
-                x="15.5"
-                y="2.7">h0(15:0)</text>
-            <path
-                d="M 28.6,0 V 3.9"
-                id="path12"
-                class="blue" />
-            <text
-                class="blue"
-                x="29.5"
-                y="2.7">0</text>
-        </g>
-        
-        <path
-            d="M 0.4,10.4 H 32"
-            id="path12"
-            class="blue" />
-
-        <g id="bytes" transform="translate(0.2 10.5)">
-            <text
-                class="blue"
-                x="2"
-                y="2.7">b3</text>
-            <path
-                d="M 6.7,0 V 3.8"
-                id="path12"
-                class="blue" />
-            <text
-                class="blue"
-                x="8.8"
-                y="2.7">b2</text>
-            <path
-                d="M 14,0 V 3.8"
-                id="path12"
-                class="blue" />
-            <text
-                class="blue"
-                x="16.2"
-                y="2.7">b1</text>
-            <path
-                d="M 21.3,0 V 3.8"
-                id="path12"
-                class="blue" />
-            <text
-                class="blue"
-                x="23.5"
-                y="2.7">b0</text>
-            <path
-                d="M 28.6,0 V 3.8"
-                id="path12"
-                class="blue" />
-            <text
-                class="blue"
-                x="29.5"
-                y="2.7">0</text>
-        </g>
-
-        <g id="bit-labels" transform="translate(0 1.7)">
-
-            <text
-                class="foreground"
-                x="29.9"
-                y="0">0</text>
-            <text
-                class="foreground"
-                x="27.2"
-                y="0">1</text>
-            <text
-                class="foreground"
-                x="21.8"
-                y="0">8</text>
-            <text
-                class="foreground"
-                x="20.1"
-                y="0">9</text>
-            <text
-                class="foreground"
-                x="14.5"
-                y="0">16</text>
-            <text
-                class="foreground"
-                x="11.8"
-                y="0">17</text>
-            <text
-                class="foreground"
-                x="7.2"
-                y="0">24</text>
-            <text
-                class="foreground"
-                x="4.5"
-                y="0">25</text>
-            <text
-                class="foreground"
-                x="0.5"
-                y="0">31</text>
-        </g>
-    </g>
-
+<svg xmlns="http://www.w3.org/2000/svg" width="516" height="96" viewBox="-2 -2 516 96" role="img">
+  <!-- generated by make_diagrams.py, edit the script instead of this file -->
+  <title>Word, half and byte locations in an ordinary object</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #1a1a1a; stroke-width: 2; stroke-linejoin: miter; }
+  .divider { fill: none; stroke: #1a1a1a; stroke-width: 1; }
+  .dashed { stroke-dasharray: 4 3; }
+  .rule { stroke: #1a1a1a; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    .outline, .divider { stroke: #9a9a9a; }
+    .rule { stroke: #9a9a9a; }
+    .white { fill: #ffffff10 }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <text x="504" y="5" class="label">0</text>
+  <text x="494" y="5" class="label end">1</text>
+  <text x="370" y="5" class="label start">8</text>
+  <text x="366" y="5" class="label end">9</text>
+  <text x="242" y="5" class="label start">16</text>
+  <text x="238" y="5" class="label end">17</text>
+  <text x="114" y="5" class="label start">24</text>
+  <text x="110" y="5" class="label end">25</text>
+  <text x="2" y="5" class="label start">31</text>
+  <rect x="0" y="14" width="496" height="26" class="blue"/>
+  <text x="248" y="27" class="on-blue">word(30:0)</text>
+  <rect x="496" y="14" width="16" height="26" class="blue"/>
+  <text x="504" y="27" class="on-blue">0</text>
+  <line x1="496" y1="14" x2="496" y2="40" class="divider"/>
+  <rect x="0" y="40" width="240" height="26" class="blue"/>
+  <text x="120" y="53" class="on-blue">h1(14:0)</text>
+  <rect x="240" y="40" width="256" height="26" class="blue"/>
+  <text x="368" y="53" class="on-blue">h0(15:0)</text>
+  <rect x="496" y="40" width="16" height="26" class="blue"/>
+  <text x="504" y="53" class="on-blue">0</text>
+  <line x1="240" y1="40" x2="240" y2="66" class="divider"/>
+  <line x1="496" y1="40" x2="496" y2="66" class="divider"/>
+  <rect x="0" y="66" width="112" height="26" class="blue"/>
+  <text x="56" y="79" class="on-blue">b3</text>
+  <rect x="112" y="66" width="128" height="26" class="blue"/>
+  <text x="176" y="79" class="on-blue">b2</text>
+  <rect x="240" y="66" width="128" height="26" class="blue"/>
+  <text x="304" y="79" class="on-blue">b1</text>
+  <rect x="368" y="66" width="128" height="26" class="blue"/>
+  <text x="432" y="79" class="on-blue">b0</text>
+  <rect x="496" y="66" width="16" height="26" class="blue"/>
+  <text x="504" y="79" class="on-blue">0</text>
+  <line x1="112" y1="66" x2="112" y2="92" class="divider"/>
+  <line x1="240" y1="66" x2="240" y2="92" class="divider"/>
+  <line x1="368" y1="66" x2="368" y2="92" class="divider"/>
+  <line x1="496" y1="66" x2="496" y2="92" class="divider"/>
+  <line x1="0" y1="40" x2="512" y2="40" class="divider"/>
+  <line x1="0" y1="66" x2="512" y2="66" class="divider"/>
+  <rect x="0" y="14" width="512" height="78" class="outline"/>
 </svg>

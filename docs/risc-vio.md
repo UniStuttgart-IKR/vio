@@ -2,7 +2,7 @@
 pretitle: The
 title: RISC-ViO
 subtitle: Specification
-version: DRAFT V0.2.4
+version: DRAFT V0.3.0
 lang: en
 authors:
   - name: Leyla Jazz Ekinci (*B.Sc.*)
@@ -384,6 +384,53 @@ The *qsz* instruction may trigger the following exceptions for the given events 
 - *ForbiddenDstException*: rd is sp which only takes pointers (-)
 - *GPAccessException*: rd is forbidden gp (-)
 
+### Align: algn {#algn}
+
+The *algn* instruction allows for users to align a register containing a pointer or a primitive **upwards** to the next multiple of the provided immediate. Beginnings of Objects are always considered beeing aligned to every multiple. The immediate has to be written as a whole number, but is encoded as log_2(imm) in the rs2-field. This allows for a maximum alignment of 4MB, which we consider sufficient for most use cases. The goal is to enable users to receive an unknown pointer, but still being able to make sure it has correct alignment for their needs.  
+::: encoding
+| 31:25   | 24:20 | 19:15     | 14:12 | 11:7     | 6:0     | Instruction |
+| :-----: | :---: | :-------: | :---: | :------: | :-----: | :---------: |
+| 0000000 | log2(imm) | rs1 (src) | 101   | rd (dst) | 0001011 | algn         |
+:::
+
+The *algn* instruction may trigger the following exceptions for the given events (xtval content):
+
+- *ForbiddenDstException*: rd is ra (-)
+- *GPAccessException*: rd is gp (-)
+
+### Check object identity: sso/bso {#so_fam}
+
+Because ordered compares of two pointers referencing different objects is forbidden in this architecture, we provide two ways for users to check for object identity to prevent undesired behaviour. The "set if same object"-instruction sso and the "branch if same object" instruction bso.
+
+#### sso-instruction {#sso}
+
+The sso instruction takes two pointers in rs1 and rs2 and writes a primitve 1 into the rd register if they reference the same object or primitive 0 if they do not.  
+::: encoding
+| 31:25   | 24:20 | 19:15     | 14:12 | 11:7     | 6:0     | Instruction |
+| :-----: | :---: | :-------: | :---: | :------: | :-----: | :---------: |
+| 0000000 | rs2 (src) | rs1 (src) | 110   | rd (dst) | 0001011 | sso         |
+:::
+
+The *sso* instruction may trigger the following exceptions for the given events (xtval content):
+- *IncompatibleTypeException*: rs1 or rs2 contain a primitive, not a pointer
+
+- *ForbiddenDstException*: rd is ra (-)
+- *GPAccessException*: rd is gp (-)
+
+#### bso-instruction {#bso}
+
+The bso instruction takes two pointers in rs1 and rs2 and adds the displacement immediate to the pc's index if they reference the same object or does nothing if not.  
+::: encoding
+| 31:25   | 24:20 | 19:15     | 14:12 | 11:7     | 6:0     | Instruction |
+| :-----: | :---: | :-------: | :---: | :------: | :-----: | :---------: |
+| imm[12\|10:5]  | rs2 (src)| rs1 (src) | 111   | imm[4:1\|11]  | 0001011 | bso         |
+:::
+
+The *bso* instruction may trigger the following exceptions for the given events (xtval content):
+- *IncompatibleTypeException*: rs1 or rs2 contain a primitive, not a pointer
+- *ForbiddenDstException*: rd is ra (-)
+- *GPAccessException*: rd is gp (-)
+
 ## Privileged Instructions {#priv_instructions}
 
 With the instructions described above, it is impossible to break out of the restrictions given by the bounds check and pointer integrity safety measures. It is also not possible to influence object behaviour regarding permissions.
@@ -401,7 +448,7 @@ Otherwise, a non 0 primitive value is written to this register.
 ::: encoding
 | 31:25   | 24:20 | 19:15    | 14:12 | 11:7    | 6:0     | Instruction |
 | :-----: | :---: | :------: | :---: | :-----: | :-----: | :---------: |
-| 1111110 | 00000 | rs1(ptr) | 000   | rd(tag) | 0001011 | sep         |
+| 1111110 | 00000 | rs1(ptr) | 000   | rd(tag) | 1110011 | sep         |
 :::
 
 #### btd-instruction {#btd}
@@ -411,7 +458,7 @@ The btd 'base to data' instruction allows for reading out a pointers base addres
 ::: encoding
 | 31:25   | 24:20 | 19:15    | 14:12 | 11:7    | 6:0     | Instruction |
 | :-----: | :---: | :------: | :---: | :-----: | :-----: | :---------: |
-| 1101111 | 00000 | rs1(ptr) | 000   | rd(dst) | 1001001 | btd         |
+| 1101111 | 00000 | rs1(ptr) | 000   | rd(dst) | 1110011 | btd         |
 :::
 
 The *btd* instruction may trigger the following exceptions for the given events (xtval content):
@@ -425,7 +472,7 @@ The *itd* 'index to data' instruction allows for reading out a pointers raw poin
 ::: encoding
 | 31:25   | 24:20 | 19:15     | 14:12 | 11:7     | 6:0     | Instruction |
 | :-----: | :---: | :-------: | :---: | :------: | :-----: | :---------: |
-| 1011111 | 00000 | rs1 (ptr) | 000   | rd (dst) | 1001001 | itd         |
+| 1011111 | 00000 | rs1 (ptr) | 000   | rd (dst) | 1110011 | itd         |
 :::
 
 #### dtp-instruction {#dtp}
@@ -436,7 +483,7 @@ Pointers assembled using *dtp* are of memory object type on creation but may be 
 ::: encoding
 | 31:25   | 24:20    | 19:15      | 14:12 | 11:7     | 6:0     | Instruction |
 | :-----: | :------: | :--------: | :---: | :------: | :-----: | :---------: |
-| 0111111 | rs2 (ix) | rs1 (base) | 000   | rd (dst) | 1001001 | dtp         |
+| 0111111 | rs2 (ix) | rs1 (base) | 000   | rd (dst) | 1110011 | dtp         |
 :::
 
 The *dtp* instruction may trigger the following exceptions for the given events (xtval content):
@@ -456,7 +503,7 @@ For information on how these tags are encoded, please refer to the discussion of
 ::: encoding
 | 31:25   | 24:20 | 19:15     | 14:12 | 11:7      | 6:0     | Instruction |
 | :-----: | :---: | :-------: | :---: | :-------: | :-----: | :---------: |
-| 1110111 | 00000 | rs1 (ptr) | 000   | rd (tags) | 1001001 | lt          |
+| 1110111 | 00000 | rs1 (ptr) | 000   | rd (tags) | 1110011 | lt          |
 :::
 
 The *lt* instruction may trigger the following exceptions for the given events (xtval content):
@@ -470,7 +517,7 @@ The *st* instruction is the companion of the *lt* instruction, allowing object o
 ::: encoding
 | 31:25   | 24:20    | 19:15     | 14:12 | 11:7  | 6:0     | Instruction |
 | :-----: | :------: | :-------: | :---: | :---: | :-----: | :---------: |
-| 1111011 | rs2 (sd) | rs1 (ptr) | 000   | 00000 | 0001011 | st          |
+| 1111011 | rs2 (sd) | rs1 (ptr) | 000   | 00000 | 1110011 | st          |
 :::
 
 The *st* instruction may trigger the following exceptions for the given events (xtval content):
@@ -912,13 +959,16 @@ Since an objects flags which signify it as being readable, writeable and data on
 | 0000000   | rs1(src) | 00010    | 001   | rd(dst) | 0001011 | alcd        |
 | imm[13:2] || 00010    | 011   | rd(dst) | 0001011 | alcid       |
 | 0000000   | 0000     | rs1(src) | 100   | rd(dst) | 0001011 | qsz         |
-| 0111111   | rs2(ix)  | rs1(ptr) | 000   | rd(dst) | 1001001 | dtp         |
-| 1011111   | 00000    | rs1(ptr) | 000   | rd(dst) | 1001001 | itd         |
-| 1101111   | 00000    | rs1(ptr) | 000   | rd(dst) | 1001001 | btd         |
-| 1110111   | 00000    | rs1(src) | 000   | rd(dst) | 1001001 | lt          |
-| 1111011   | rs2(sd)  | rs1(ptr) | 000   | 00000   | 0001011 | st          |
-| 1111101   | 00000    | rs1(ptr) | 000   | 00000   | 0001011 | clr         |
-| 1111110   | 00000    | rs1(ptr) | 000   | rd(tag) | 0001011 | sep         |
+| 0000000   | log2(imm)| rs1(src) | 101   | rd(dst) | 0001011 | algn        |
+| 0000000   | rs2(src) | rs1(src) | 110   | rd(dst) | 0001011 | sso         |
+| imm[12\|10:5] | rs2 (src)| rs1 (src) | 111 | imm[4:1\|11] | 0001011 | bso |
+| 0111111   | rs2(ix)  | rs1(ptr) | 000   | rd(dst) | 1110011 | dtp         |
+| 1011111   | 00000    | rs1(ptr) | 000   | rd(dst) | 1110011 | itd         |
+| 1101111   | 00000    | rs1(ptr) | 000   | rd(dst) | 1110011 | btd         |
+| 1110111   | 00000    | rs1(src) | 000   | rd(dst) | 1110011 | lt          |
+| 1111011   | rs2(sd)  | rs1(ptr) | 000   | 00000   | 1110011 | st          |
+| 1111101   | 00000    | rs1(ptr) | 000   | 00000   | 1110011 | clr         |
+| 1111110   | 00000    | rs1(ptr) | 000   | rd(tag) | 1110011 | sep         |
 :::
 
 ## Object and pointer kinds {#t_op}

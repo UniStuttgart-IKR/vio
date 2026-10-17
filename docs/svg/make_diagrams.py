@@ -3,11 +3,11 @@ Generates the memory-layout diagrams of the spec (bit fields, objects, pointer
 arithmetic, register file) so they all share one look:
 
   * one scale: diagrams are shown 1:1, cell text is 13px, bit numbers 10px
-  * bit fields sit on a common bit grid, so fields of different rows line up
-  * bit numbers are placed at the field edges (RISC-V spec style)
-  * two line weights: 2px for outlines, 1px inside
+  * all 32-bit objects share one compact bit grid: bits that carry a number get a
+    full column, the bits in between are squeezed, so fields of all objects line up
+  * crisp black lines: 2px around objects, 1px inside
   * the colour palette of the original diagrams (and pretty_heap.svg)
-  * dark mode: tinted fills with coloured text and visible outlines
+  * dark mode: tinted tiles with coloured text, separated by dark gaps
 
 Usage:  python3 make_diagrams.py        (writes the SVGs next to this script)
 """
@@ -23,7 +23,8 @@ FONT = '"Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mo
 CELL_TEXT_PX = 13
 LABEL_TEXT_PX = 10
 ROW_HEIGHT = 26
-BIT_WIDTH = 16          # one bit of a 32-bit field
+WIDE_BIT = 15           # bit column that carries a bit number
+NARROW_BIT = 4          # squeezed bit column inside a long field
 OUTLINE = 2             # around each object / row group
 DIVIDER = 1             # between rows and fields inside an object
 LABEL_GAP = 4           # between bit numbers and the box below them
@@ -49,17 +50,19 @@ def stylesheet():
   text.start {{ text-anchor: start; }}
   text.end {{ text-anchor: end; }}
   text.small {{ font-size: {LABEL_TEXT_PX}px; font-weight: 400; font-style: italic; }}
-  .outline {{ fill: none; stroke: #1a1a1a; stroke-width: {OUTLINE}; stroke-linejoin: miter; }}
-  .divider {{ fill: none; stroke: #1a1a1a; stroke-width: {DIVIDER}; }}
+  .outline {{ fill: none; stroke: #000; stroke-width: {OUTLINE}; shape-rendering: crispEdges; }}
+  .divider {{ fill: none; stroke: #000; stroke-width: {DIVIDER}; shape-rendering: crispEdges; }}
+  .diagonal {{ stroke: #000; stroke-width: {DIVIDER}; }}
+  .rule {{ stroke: #000; stroke-width: {OUTLINE}; shape-rendering: crispEdges; }}
   .dashed {{ stroke-dasharray: 4 3; }}
-  .rule {{ stroke: #1a1a1a; stroke-width: {OUTLINE}; }}
 {fills}
   @media (prefers-color-scheme: dark) {{
     text {{ fill: #cccccc; }}
     text.label {{ fill: #9a9a9a; }}
-    .outline, .divider {{ stroke: #9a9a9a; }}
-    .rule {{ stroke: #9a9a9a; }}
-    .white {{ fill: #ffffff10 }}
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal {{ stroke: #1a1a1a; }}
+    .rule, .dashed {{ stroke: #cccccc; }}
+    .white {{ fill: #ffffff1a }}
 {dark_fills}
   }}
 '''
@@ -130,6 +133,21 @@ class Field:
     high_bit: int
     low_bit: int
     color: str = None       # defaults to the colour of its row
+    per_bit: bool = None    # one character per bit, each under its bit number
+
+    def __post_init__(self):
+        if self.per_bit is None:  # binary literals such as 0111 or 00 are written bit by bit
+            is_binary = self.text != '' and set(self.text) <= {'0', '1'}
+            self.per_bit = is_binary and len(self.text) == self.bit_count
+
+    @property
+    def bit_count(self):
+        return self.high_bit - self.low_bit + 1
+
+    @property
+    def bits(self):
+        """From the highest to the lowest bit, i.e. in reading order."""
+        return range(self.high_bit, self.low_bit - 1, -1)
 
 
 @dataclass
@@ -140,17 +158,18 @@ class Row:
 
 
 def fields(*specs):
-    """fields(("gc", 31, 30), ("rwds", 29, 26), ...) -> [Field, ...]"""
+    """fields(("ptr(31:4)", 31, 4), ("0111", 3, 0), ...) -> [Field, ...]"""
     return [Field(*spec) for spec in specs]
 
 
-def is_type_tag(f):
-    """Binary literals ending at bit 0 (0111, 11111, …) identify the kind of a word."""
-    return f.low_bit == 0 and f.text != '' and set(f.text) <= {'0', '1'}
+def flags(letters, high_bit):
+    """Single-bit flags written bit by bit, e.g. flags("rwds", 29) for bits 29…26."""
+    return Field(letters, high_bit, high_bit - len(letters) + 1, per_bit=True)
 
 
-def type_tag_bits(rows):
-    return {bit for row in rows for f in row.fields if is_type_tag(f) for bit in range(f.low_bit, f.high_bit + 1)}
+def per_bit_positions(rows):
+    """Every bit whose value is written in its own column."""
+    return {bit for row in rows for f in row.fields if f.per_bit for bit in f.bits}
 
 
 def field_edges(rows):
@@ -163,29 +182,64 @@ def field_edges(rows):
     return edges
 
 
-def draw_bitfield(drawing, x, y, rows, total_bits=32, bit_width=BIT_WIDTH, with_labels=True):
-    """Draws rows of fields on a shared bit grid; returns the y below the box."""
-    def bit_left(bit):            # x of the left edge of a bit column (bit 31 is leftmost)
-        return x + (total_bits - 1 - bit) * bit_width
+class BitGrid:
+    """Horizontal position of every bit column; the highest bit is on the left."""
 
+    def __init__(self, column_width_of_bit):
+        self.column_width = column_width_of_bit
+        self.left_edge = {}
+        x = 0
+        for bit in sorted(column_width_of_bit, reverse=True):
+            self.left_edge[bit] = x
+            x += column_width_of_bit[bit]
+        self.width = x
+
+    @classmethod
+    def uniform(cls, total_bits, bit_width):
+        return cls({bit: bit_width for bit in range(total_bits)})
+
+    @classmethod
+    def compressed(cls, numbered_bits, total_bits=32):
+        """Full-width columns for numbered bits, narrow ones for the bits in between."""
+        return cls({bit: WIDE_BIT if bit in numbered_bits else NARROW_BIT for bit in range(total_bits)})
+
+    def left(self, bit):
+        return self.left_edge[bit]
+
+    def right(self, bit):
+        return self.left_edge[bit] + self.column_width[bit]
+
+
+# every bit that is numbered in any of the 32-bit object diagrams
+NUMBERED_BITS = {31, 30, 29, 28, 27, 26, 25, 24, 17, 16, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}
+OBJECT_GRID = BitGrid.compressed(NUMBERED_BITS)
+
+
+def draw_bit_numbers(drawing, x, y, rows, grid):
+    """Numbers over field edges and over every bit that is written bit by bit. Centred over the bit
+    when its column is wide enough, otherwise aligned to the field edge."""
+    edges = field_edges(rows)
+    for bit in sorted(set(edges) | per_bit_positions(rows)):
+        label = str(bit)
+        left, right = x + grid.left(bit), x + grid.right(bit)
+        fits_over_column = len(label) * LABEL_TEXT_PX * 0.6 + 2 <= right - left
+        sides = edges.get(bit, set())
+        if fits_over_column or sides == {'high', 'low'} or not sides:
+            drawing.text((left + right) / 2, y, label, 'label')
+        elif sides == {'high'}:
+            drawing.text(left + 2, y, label, 'label start')
+        else:
+            drawing.text(right - 2, y, label, 'label end')
+
+
+def draw_bitfield(drawing, x, y, rows, grid=OBJECT_GRID, with_labels=True):
+    """Draws rows of fields on a bit grid; returns the y below the box."""
     if with_labels:
-        # numbers at field edges (left-aligned at a field's high end, right-aligned at its
-        # low end), and centred over every bit of a type tag
-        label_y = y + LABEL_TEXT_PX / 2
-        edges = field_edges(rows)
-        tag_bits = type_tag_bits(rows)
-        for bit in sorted(set(edges) | tag_bits):
-            sides = edges.get(bit, set())
-            if bit in tag_bits or sides == {'high', 'low'}:
-                drawing.text(bit_left(bit) + bit_width / 2, label_y, str(bit), 'label')
-            elif sides == {'high'}:
-                drawing.text(bit_left(bit) + 2, label_y, str(bit), 'label start')
-            else:
-                drawing.text(bit_left(bit) + bit_width - 2, label_y, str(bit), 'label end')
+        draw_bit_numbers(drawing, x, y + LABEL_TEXT_PX / 2, rows, grid)
         y += LABEL_TEXT_PX + LABEL_GAP
 
     top = y
-    width = total_bits * bit_width
+    width = grid.width
     row_tops = []
     for index, row in enumerate(rows):
         height = row.height * ROW_HEIGHT
@@ -193,13 +247,18 @@ def draw_bitfield(drawing, x, y, rows, total_bits=32, bit_width=BIT_WIDTH, with_
             row_tops.append(y)
         dividers = []
         for f in row.fields:
-            left = bit_left(f.high_bit)
-            right = bit_left(f.low_bit) + bit_width
+            left = x + grid.left(f.high_bit)
+            right = x + grid.right(f.low_bit)
             color = f.color or row.color
             drawing.rect(left, y, right - left, height, color)
             if f.low_bit > 0:
                 dividers.append(right)
-            drawing.text((left + right) / 2, y + height / 2, f.text, f'on-{color}')
+            if f.per_bit:
+                for bit, character in zip(f.bits, f.text):
+                    column_center = x + (grid.left(bit) + grid.right(bit)) / 2
+                    drawing.text(column_center, y + height / 2, character, f'on-{color}')
+            else:
+                drawing.text((left + right) / 2, y + height / 2, f.text, f'on-{color}')
         for divider_x in dividers:
             drawing.line(divider_x, y, divider_x, y + height)
         y += height
@@ -244,11 +303,11 @@ def draw_value_or_pointer(drawing, x, y, width, height=ROW_HEIGHT, left_text='va
     drawing.polygon([(top_x, y), (x + width, y), (x + width, y + height), (bottom_x, y + height)], 'pink')
     if middle_text:  # the diagonal leaves a gap for the small "or"
         gap = 0.34
-        drawing.line(top_x, y, top_x - slant * gap, y + height * gap)
-        drawing.line(bottom_x + slant * gap, y + height * (1 - gap), bottom_x, y + height)
+        drawing.line(top_x, y, top_x - slant * gap, y + height * gap, 'diagonal')
+        drawing.line(bottom_x + slant * gap, y + height * (1 - gap), bottom_x, y + height, 'diagonal')
         drawing.text(split, y + height / 2, middle_text, 'small')
     else:
-        drawing.line(top_x, y, bottom_x, y + height)
+        drawing.line(top_x, y, bottom_x, y + height, 'diagonal')
     drawing.text((x + bottom_x) / 2 + 2, y + height / 2, left_text, 'on-blue')
     drawing.text((top_x + x + width) / 2 - 2, y + height / 2, right_text, 'on-pink')
 
@@ -281,8 +340,10 @@ def draw_continuation(drawing, x, y):
 HEADER_ROW_2 = Row('green', fields(('λ(31:2)', 31, 2), ('00', 1, 0)))
 
 
-def header_row(rw_bits, cf_text):
-    return Row('green', fields(('gc', 31, 30), (rw_bits, 29, 26), ('', 25, 7), (cf_text, 6, 5), ('11111', 4, 0)))
+def header_row(permission_flags, frame_flags):
+    """gc: garbage collector (one 2-bit field); then single-bit flags r w d s and c f."""
+    return Row('green', [Field('gc', 31, 30), flags(permission_flags, 29), Field('', 25, 7),
+                         flags(frame_flags, 6), Field('11111', 4, 0)])
 
 
 def objects_in_memory():
@@ -326,7 +387,7 @@ def objects_in_memory():
 
 def frame_object(path):
     drawing = Drawing()
-    width, index_column = 300, 336
+    width, index_column = 220, 256
     y = 18
     drawing.text(index_column, y - 10, 'ix', 'heading')
     bottom = draw_stack(drawing, 0, y, width, [('sp', 'pink'), ('ra', 'pink'), 'split-any'])
@@ -345,7 +406,7 @@ def software_objects():
     object2(f'{folder}/object2.svg')
     save_bitfield(f'{folder}/pointer_plus_index.svg', 'Composition of a pointer',
                   [Row('pink', fields(('base', 63, 32), ('index', 31, 0, 'blue')))],
-                  total_bits=64, bit_width=6)
+                  grid=BitGrid.uniform(64, 6))
     pointer_arithmetic(folder)
 
 

@@ -133,6 +133,21 @@ class Field:
     high_bit: int
     low_bit: int
     color: str = None       # defaults to the colour of its row
+    per_bit: bool = None    # one character per bit, each under its bit number
+
+    def __post_init__(self):
+        if self.per_bit is None:  # binary literals such as 0111 or 00 are written bit by bit
+            is_binary = self.text != '' and set(self.text) <= {'0', '1'}
+            self.per_bit = is_binary and len(self.text) == self.bit_count
+
+    @property
+    def bit_count(self):
+        return self.high_bit - self.low_bit + 1
+
+    @property
+    def bits(self):
+        """From the highest to the lowest bit, i.e. in reading order."""
+        return range(self.high_bit, self.low_bit - 1, -1)
 
 
 @dataclass
@@ -143,17 +158,18 @@ class Row:
 
 
 def fields(*specs):
-    """fields(("gc", 31, 30), ("rwds", 29, 26), ...) -> [Field, ...]"""
+    """fields(("ptr(31:4)", 31, 4), ("0111", 3, 0), ...) -> [Field, ...]"""
     return [Field(*spec) for spec in specs]
 
 
-def is_type_tag(f):
-    """Binary literals ending at bit 0 (0111, 11111, …) identify the kind of a word."""
-    return f.low_bit == 0 and f.text != '' and set(f.text) <= {'0', '1'}
+def flags(letters, high_bit):
+    """Single-bit flags written bit by bit, e.g. flags("rwds", 29) for bits 29…26."""
+    return Field(letters, high_bit, high_bit - len(letters) + 1, per_bit=True)
 
 
-def type_tag_bits(rows):
-    return {bit for row in rows for f in row.fields if is_type_tag(f) for bit in range(f.low_bit, f.high_bit + 1)}
+def per_bit_positions(rows):
+    """Every bit whose value is written in its own column."""
+    return {bit for row in rows for f in row.fields if f.per_bit for bit in f.bits}
 
 
 def field_edges(rows):
@@ -195,15 +211,15 @@ class BitGrid:
 
 
 # every bit that is numbered in any of the 32-bit object diagrams
-NUMBERED_BITS = {31, 30, 29, 26, 25, 24, 17, 16, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}
+NUMBERED_BITS = {31, 30, 29, 28, 27, 26, 25, 24, 17, 16, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}
 OBJECT_GRID = BitGrid.compressed(NUMBERED_BITS)
 
 
 def draw_bit_numbers(drawing, x, y, rows, grid):
-    """Numbers over field edges and over every bit of a type tag. Centred over the bit
+    """Numbers over field edges and over every bit that is written bit by bit. Centred over the bit
     when its column is wide enough, otherwise aligned to the field edge."""
     edges = field_edges(rows)
-    for bit in sorted(set(edges) | type_tag_bits(rows)):
+    for bit in sorted(set(edges) | per_bit_positions(rows)):
         label = str(bit)
         left, right = x + grid.left(bit), x + grid.right(bit)
         fits_over_column = len(label) * LABEL_TEXT_PX * 0.6 + 2 <= right - left
@@ -237,7 +253,12 @@ def draw_bitfield(drawing, x, y, rows, grid=OBJECT_GRID, with_labels=True):
             drawing.rect(left, y, right - left, height, color)
             if f.low_bit > 0:
                 dividers.append(right)
-            drawing.text((left + right) / 2, y + height / 2, f.text, f'on-{color}')
+            if f.per_bit:
+                for bit, character in zip(f.bits, f.text):
+                    column_center = x + (grid.left(bit) + grid.right(bit)) / 2
+                    drawing.text(column_center, y + height / 2, character, f'on-{color}')
+            else:
+                drawing.text((left + right) / 2, y + height / 2, f.text, f'on-{color}')
         for divider_x in dividers:
             drawing.line(divider_x, y, divider_x, y + height)
         y += height
@@ -319,8 +340,10 @@ def draw_continuation(drawing, x, y):
 HEADER_ROW_2 = Row('green', fields(('λ(31:2)', 31, 2), ('00', 1, 0)))
 
 
-def header_row(rw_bits, cf_text):
-    return Row('green', fields(('gc', 31, 30), (rw_bits, 29, 26), ('', 25, 7), (cf_text, 6, 5), ('11111', 4, 0)))
+def header_row(permission_flags, frame_flags):
+    """gc: garbage collector (one 2-bit field); then single-bit flags r w d s and c f."""
+    return Row('green', [Field('gc', 31, 30), flags(permission_flags, 29), Field('', 25, 7),
+                         flags(frame_flags, 6), Field('11111', 4, 0)])
 
 
 def objects_in_memory():

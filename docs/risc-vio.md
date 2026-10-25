@@ -182,7 +182,7 @@ Operations on two pointers are restricted to subtraction (*sub*) as well as the 
 Such an operation acts only on the indices of both pointers and its result is a primitive. Any other arithmetic operation on two pointers, like an addition or a shift, leads to an *IncompatibleTypeException*.
 The same restriction applies to ordered comparisons of two pointers: they act only on the indices of both pointers and are only allowed if both pointers reference the same object or I/O device.
 Trying to execute any of these operations on two pointers referencing different objects or I/O devices leads to an *IncompatibleTypeException*.
-To check whether two pointers reference the same object, the [sso and bso](#so_fam) instructions are provided.\
+To check whether two pointers reference the same object, the [bso](#so_fam) instructions are provided.\
 Ordered comparisons of a pointer with a primitive are not allowed either and lead to an *IncompatibleTypeException*.
 Equality comparisons (*beq*, *bne*), in contrast, are always allowed. Two pointers are equal if they reference the same object or I/O device with the same index.
 A pointer and a primitive are never equal. Thus, comparing a pointer with the *zero* register always yields 'not equal', which matches the semantics of a null pointer check in C.
@@ -414,53 +414,8 @@ The *qsz* instruction may trigger the following exceptions for the given events 
 - *ForbiddenDstException*: rd is sp or ra (see [restricted registers](#restricted_regs)) (-)
 - *GPAccessException*: rd is forbidden gp (-)
 
-### Align: algn {#algn}
-
-The *algn* instruction allows for users to align a register containing a pointer or a primitive **upwards** to the next multiple of the provided immediate. Index 0 of an object is always considered being aligned to every multiple. The immediate has to be written as a whole number, but is encoded as log_2(imm) in the rs2-field. This allows for a maximum alignment of 2^31 bytes (2 GiB), which we consider sufficient for most use cases. The goal is to enable users to receive an unknown pointer, but still being able to make sure it has correct alignment for their needs.
-
-Note that alignment in RISC-ViO is always defined with respect to the index of a pointer, not to the address the pointer refers to in memory.
-Since index 0 is considered being aligned to every multiple, objects provide any alignment up to the maximum given above, independent of their actual placement in memory.
-As *itd* is only available in privileged modes, user code tests the alignment of a pointer by comparing it to its aligned version: a pointer *p* is aligned to a multiple of *n* if `algn(p, n)` equals *p*, which can be checked using *beq*/*bne*.
-
-::: encoding
-| 31:25   | 24:20 | 19:15     | 14:12 | 11:7     | 6:0     | Instruction |
-| :-----: | :---: | :-------: | :---: | :------: | :-----: | :---------: |
-| 0000000 | log2(imm) | rs1 (src) | 101   | rd (dst) | 0001011 | algn         |
-:::
-
-Assembly syntax: `algn rd, rs1, alignment` (alignment as whole number, e.g. `algn a0, a0, 16`)
-
-The *algn* instruction may trigger the following exceptions for the given events (xtval content):
-
-- *ForbiddenDstException*: rd is ra, or rd is sp and the result does not reference a frame object (see [restricted registers](#restricted_regs)) (-)
-- *GPAccessException*: rd is gp (-)
-
-### Check object identity: sso/bso {#so_fam}
-
-Because ordered compares of two pointers referencing different objects is forbidden in this architecture, we provide two ways for users to check for object identity to prevent undesired behaviour. The "set if same object"-instruction sso and the "branch if same object" instruction bso.
-
-#### sso-instruction {#sso}
-
-The sso instruction takes two pointers in rs1 and rs2 and writes a primitive 1 into the rd register if they reference the same object or primitive 0 if they do not.
-A typical use case is *memmove*, which has to find out whether source and destination lie in the same object before comparing them using an ordered comparison.
-
-::: encoding
-| 31:25   | 24:20 | 19:15     | 14:12 | 11:7     | 6:0     | Instruction |
-| :-----: | :---: | :-------: | :---: | :------: | :-----: | :---------: |
-| 0000000 | rs2 (src) | rs1 (src) | 110   | rd (dst) | 0001011 | sso         |
-:::
-
-Assembly syntax: `sso rd, rs1, rs2`
-
-The *sso* instruction may trigger the following exceptions for the given events (xtval content):
-
-- *IncompatibleTypeException*: rs1 or rs2 contain a primitive, not a pointer (rs1 or rs2)
-- *ForbiddenDstException*: rd is sp or ra (see [restricted registers](#restricted_regs)) (-)
-- *GPAccessException*: rd is gp (-)
-
-#### bso-instruction {#bso}
-
-The bso instruction takes two pointers in rs1 and rs2 and adds the displacement immediate to the pc's index if they reference the same object or does nothing if not.  
+### Check object identity: bso {#bso}
+Because ordered compares of two pointers referencing different objects is forbidden in this architecture, we provide a way for users to check for object identity to prevent undesired behaviour. The bso instruction takes two pointers in rs1 and rs2 and adds the displacement immediate to the pc's index if they reference the same object or does nothing if not.  
 ::: encoding
 | 31:25   | 24:20 | 19:15     | 14:12 | 11:7     | 6:0     | Instruction |
 | :-----: | :---: | :-------: | :---: | :------: | :-----: | :---------: |
@@ -1130,8 +1085,6 @@ Since an objects flags which signify it as being readable, writeable and data on
 | 0000000   | rs2(src) | 00000    | 001   | rd(dst) | 0001011 | alc.d       |
 | imm[13:2] / imm[14:3] || 00000    | 011   | rd(dst) | 0001011 | alci.d      |
 | 0000000   | 00000    | rs1(src) | 100   | rd(dst) | 0001011 | qsz         |
-| 0000000   | log2(imm)| rs1(src) | 101   | rd(dst) | 0001011 | algn        |
-| 0000000   | rs2(src) | rs1(src) | 110   | rd(dst) | 0001011 | sso         |
 | imm[12\|10:5] | rs2 (src)| rs1 (src) | 111 | imm[4:1\|11] | 0001011 | bso |
 | 0111111   | rs2(ix)  | rs1(base) | 000  | rd(dst) | 1110011 | dtp         |
 | 1011111   | 00000    | rs1(ptr) | 000   | rd(dst) | 1110011 | itd         |
@@ -1263,8 +1216,6 @@ The table lists the load and store instructions of RV32. On RV64, *ld* and *sd* 
 | alc.d                      | zero                  | rs2  | rd             | none  | AGU: addr                    | rd: (T:ptr, P:val, I:0, L: val, H:val), aaddr,caddr        |                      | pass                             | AC: sw [object header] | pass                            |                | pass       |
 | alci.d                     | zero                  | zero | rd             | imm12 | AGU: addr                    | rd: (T:ptr, P:val, I:0, L: val, H:val), aaddr,caddr        |                      | pass                             | AC: sw [object header] | pass                            |                | pass       |
 | qsz                        | rs1                   | zero | rd             | none  | PGU: rd                      | rd: (T:prim, P:0, I:val, L:0, H:0)                         |                      | pass                             |                        | pass                            |                | pass       |
-| algn                       | rs1                   | zero | rd             | log2(imm) | ALU: align                   | rd: (T:rs1.T, P:rs1.P, I:val, L:rs1.L, H:rs1.H)            |                      | pass                             |                        | pass                            |                | pass       |
-| sso                        | rs1                   | rs2  | rd             | none  | ALU: comp                    | rd: (T:prim, P:0, I:val, L:0, H:0)                         |                      | pass                             |                        | pass                            |                | pass       |
 | bso                        | rs1                   | rs2  | zero           | disp  | ALU: comp DBU: (b_tgt)       | ~                                                          |                      | ~                                |                        | ~                               |                | ~          |
 | dtp                        | rs1                   | rs2  | rd             | none  | AGU: addr                    | rd: (T:ptr, P:val, I:val), caddr                           |                      | pass                             | AC: lw [object header] | rd: (L:val, H:val)              |                | pass       |
 | btd                        | rs1                   | zero | rd             | none  | PGU: rd                      | rd: (T:prim, P:0, I:val, L:0, H:0)                         |                      | pass                             |                        | pass                            |                | pass       |

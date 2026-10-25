@@ -274,7 +274,7 @@ section.imp :is(h1, h2, h3, h4, h5, h6, em), .imp em, span.imp, em.imp { color: 
 #doc .fn-body a { overflow-wrap: anywhere; }
 #doc .footnotes { margin-top: 3rem; }
 
-/* file prompt (shown when the page cannot load the Markdown by itself) & drop target */
+/* file prompt (shown when the page cannot load the Markdown by itself) */
 body.awaiting-file :is(#toc-panel, #legend-panel, .panel-show) { display: none !important; }
 body.awaiting-file { padding: 0 !important; }
 .file-prompt { max-width: 34rem; margin: 18vh auto 4rem; text-align: center; }
@@ -284,11 +284,6 @@ body.awaiting-file { padding: 0 !important; }
 .file-prompt .textbtn:hover { background: var(--tint); }
 #doc .file-prompt .hint { font-size: .9rem; color: var(--muted); }
 #doc .file-prompt code { white-space: nowrap; }
-#drop-overlay {
-  position: fixed; inset: .75rem; z-index: 10; display: grid; place-items: center;
-  border: 2px dashed var(--isa); border-radius: 6px; background: color-mix(in srgb, var(--bg) 88%, transparent);
-  font: 700 1.1rem var(--mono); color: var(--isa); pointer-events: none;
-}
 
 @media (max-width: 40rem) {
   body { font-size: 1rem; }
@@ -298,7 +293,7 @@ body.awaiting-file { padding: 0 !important; }
 }
 
 @media print {
-  #toc-panel, #legend-panel, .panel-show, #drop-overlay { display: none !important; }
+  #toc-panel, #legend-panel, .panel-show { display: none !important; }
   body { padding: 0 !important; }
   #doc h1 { break-before: page; }
   #doc :is(figure, .table-wrap, pre, .equation) { break-inside: avoid; }
@@ -339,7 +334,6 @@ body.awaiting-file { padding: 0 !important; }
 <main id="doc"></main>
 
 <input type="file" id="file-input" accept=".md,.markdown,.txt,text/markdown,text/plain" hidden>
-<div id="drop-overlay" hidden>Drop a Markdown file to view it</div>
 
 <svg hidden aria-hidden="true">
   <symbol id="icon-menu-open" viewBox="0 -960 960 960">
@@ -1485,7 +1479,6 @@ const Markdown = (() => {
     legend: document.getElementById('legend'),
     content: document.getElementById('doc'),
     fileInput: document.getElementById('file-input'),
-    dropOverlay: document.getElementById('drop-overlay'),
   };
 
   // state of the current document
@@ -1779,9 +1772,9 @@ const Markdown = (() => {
     tocEntries = [];
 
     const serverHint = showServerHint
-      ? `<p class="hint">You can also drop the file onto this page. To skip this step in future, serve the folder instead,
+      ? `<p class="hint">To skip this step in future, serve the folder instead,
          e.g. run <code>python3 -m http.server</code> in it and open <code>http://localhost:8000/viewer.html</code>.</p>`
-      : '<p class="hint">You can also drop the file onto this page.</p>';
+      : '';
     page.content.innerHTML = `
       <div class="file-prompt">
         <p class="prompt-title">${escapeHtml(title)}</p>
@@ -1799,34 +1792,6 @@ const Markdown = (() => {
       const [file] = page.fileInput.files;
       if (file) openLocalFile(file);
       page.fileInput.value = ''; // allows choosing the same file again
-    });
-    setUpDragAndDrop();
-  }
-
-  function setUpDragAndDrop() {
-    const isFileDrag = (event) => [...(event.dataTransfer?.types || [])].includes('Files');
-    let dragDepth = 0; // dragenter/dragleave also fire for every child element
-
-    addEventListener('dragenter', (event) => {
-      if (!isFileDrag(event)) return;
-      dragDepth++;
-      page.dropOverlay.hidden = false;
-    });
-    addEventListener('dragleave', (event) => {
-      if (!isFileDrag(event)) return;
-      dragDepth = Math.max(0, dragDepth - 1);
-      if (dragDepth === 0) page.dropOverlay.hidden = true;
-    });
-    addEventListener('dragover', (event) => {
-      if (isFileDrag(event)) event.preventDefault(); // required to allow dropping
-    });
-    addEventListener('drop', (event) => {
-      if (!isFileDrag(event)) return;
-      event.preventDefault();
-      dragDepth = 0;
-      page.dropOverlay.hidden = true;
-      const [file] = event.dataTransfer.files;
-      if (file) openLocalFile(file);
     });
   }
 

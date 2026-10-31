@@ -36,20 +36,89 @@ be realized.
 
 # Introduction {#intro}
 
+RISC-ViO is a processor architecture in which memory consists of objects instead of bytes.
+At every moment, the hardware knows for every register and every XLEN-wide element of memory whether it holds a *pointer* or a *primitive*, and every pointer names the object it belongs to.
+From this one piece of knowledge, RISC-ViO derives protections that conventional architectures can only approximate with separate mechanisms:
+every access is checked against the bounds of its object, pointers cannot be forged, code can neither be read nor written, a function cannot touch a frame it does not own, a return address can be used only once,
+and memory is reclaimed by exact garbage collection instead of by *free*, which rules out use-after-free errors by construction.
+
+RISC-ViO provides these protections without giving up the memory model of C. Pointers stay XLEN bits wide, pointer arithmetic works as C programs expect, and data structures keep their layout.
+The architecture is defined as a modification of the RISC-V base integer ISA, called I', together with the *zhm* extension.
+
+<!-- FIXME: explain the name 'RISC-ViO' in one sentence. Readers currently have to guess what 'ViO' stands for. -->
+
 ## Motivation {#motivation}
 
-In conventional computer architectures, the system hardware has no information about the location and size of runtime level objects like structs or arrays.
-While executing machine instructions, they also cannot distinguish between handling a pointer to such objects or a primitive that by chance has the same value as the pointer.
-This lack of information makes it impossible for the hardware to do bounds checks or automatically remove unused data from system memory.
-Programming languages like C demonstrate how this can lead to problems like buffer overflows or memory leaks.\
-Object-oriented programming languages like Java or Python depend on their runtime to differentiate pointers from primitives and free up unused memory.
-Obviously, this improvement of reliability and security comes with a substantial tradeoff in program efficiency written in these languages.
+### Hardware that does not know what a pointer is {#motivation_problem}
 
-To tackle these challenges, the experimental Objective-RISC architecture[^meyer_orisc] (O-RISC), proposes a new perspective
-on the cooperation of hardware and software. The O-RISC architecture is the main inspiration for RISC-ViO with its core idea to lower the concept of objects from a runtime level down to ISA level.
-For this to work an O-RISC processor always has access to information strictly identifying pointers and boundaries of objects for every instruction executed.
-This enables the enforcement of bounds checks, the protection of data from unwanted modification and garbage collection in hardware.
-This leads to a more robust program execution without the performance impact caused by a runtime providing these features.
+Conventional architectures treat memory as a flat array of bytes. The objects a program is made of, like structs, arrays, heap allocations or stack frames, exist only in the compiler and in the language runtime.
+While executing an instruction, the hardware knows neither where these objects begin and end, nor whether a register holds a pointer or an integer that merely has the same value.
+It therefore cannot check whether an access stays inside its object, cannot distinguish a valid pointer from a forged one and cannot tell which memory is still in use.
+
+In C and C++, this lack of information is the root of the most damaging class of software defects.
+In the Chromium project, around 70% of serious security bugs are memory safety problems, and about half of those are use-after-free errors[^chromium_ms].
+Microsoft reports the same share of 70% for the vulnerabilities it assigns a CVE[^msrc].
+Buffer overflows, use-after-free, double free, forged pointers and overwritten return addresses look like different bugs, but they share a single cause:
+the machine executing the program has no notion of the objects the program consists of.
+
+### Existing answers {#motivation_existing}
+
+Three kinds of answers to this problem exist today. Memory-safe languages replace the vulnerable code, memory tagging protects it with hardware that is already shipping in consumer devices,
+and capability architectures make it memory safe by changing what a pointer is. Of these, CHERI is the approach any architecture promising memory safety for C, including RISC-ViO, has to be measured against.
+
+#### Memory-safe languages {#motivation_languages}
+
+Java, C#, Go or Python keep track of pointers and object bounds in their runtime, which costs bounds checks, type checks and a garbage collector that has to find pointers using metadata maintained in software.
+Rust moves most of the cost to compile time, at the price of a strict ownership discipline.
+None of them protects the existing code base: operating systems, browsers, libraries and firmware written in C and C++ will not be rewritten within the lifetime of the hardware being designed today.
+
+#### Memory tagging {#motivation_tagging}
+
+Memory tagging protects this existing code without rewriting it. Arm's Memory Tagging Extension (MTE) assigns a 4-bit tag to every 16-byte granule of memory and places a matching tag in the unused top bits of every pointer[^mte].
+On every access, the hardware compares both tags and faults on a mismatch. Allocators choose a random tag for every allocation and a new one when it is freed, so out-of-bounds accesses and stale pointers are caught as long as the tags differ.
+Memory tagging is the hardware memory safety mechanism that has made it into consumer devices: MTE has been available on Google's Pixel 8 since 2023[^tiktag], Apple builds its Memory Integrity Enforcement on an enhanced version of it[^apple_mie], and a RISC-V task group is defining a memory tagging extension[^riscv_mt].
+
+Its protection is probabilistic, however. With 4-bit tags, an access through a wrong pointer goes unnoticed whenever both tags happen to match, which is the case for about one in sixteen random tags.
+An attacker who can retry, or learn the tags, defeats it: the TikTag attack leaks MTE tags through speculative execution and bypassed MTE in Google Chrome and the Linux kernel[^tiktag].
+Memory tagging also does not identify pointers. A tag is just a few bits of the pointer, so any integer with the right address and the right tag is a valid pointer, and pointer integrity rests entirely on keeping the tags secret.
+Bounds are only as fine as the 16-byte granules, and a stale pointer becomes valid again once its memory is reallocated with the same tag.
+Turning memory tagging from a debugging aid into a defence therefore requires additional layers. Apple's Memory Integrity Enforcement, for example, permits only synchronous tag checking and combines it with type-segregated allocators and dedicated measures to keep tags confidential[^apple_mie].
+Control flow needs separate extensions on top: shadow stacks and landing pads (RISC-V Zicfiss and Zicfilp, Arm PAC and BTI, Intel CET) protect returns and indirect jumps, but no data.
+
+#### Capabilities: CHERI {#motivation_cheri}
+
+CHERI[^cheri], developed at the University of Cambridge and SRI International for more than fifteen years, replaces pointers by capabilities.
+A capability holds an address together with the bounds and permissions of the memory it may access, and a tag bit kept outside the addressable memory marks it as valid.
+New capabilities can only be derived from existing ones with equal or smaller bounds and permissions, and overwriting a capability with data clears its tag, so capabilities cannot be forged.
+CHERI makes C and C++ deterministically and spatially memory safe, can narrow bounds down to individual fields of a struct, and supports fine-grained compartmentalisation.
+It runs on Arm's Morello prototype and on CHERIoT microcontrollers, and its RISC-V version, RVY, is on its way to standardisation[^cheri_rvy]. CHERI is the most mature answer to memory safety for C today.
+
+CHERI's central design decision is to attach protection to the pointer: every capability carries its own bounds and permissions, and every copy of a capability is an independent authority to access memory.
+Most of CHERI's costs follow from this one decision:
+
+- **Wider pointers.** Bounds and permissions next to the address make a capability twice as wide as an address, 128 bits on RV64.
+  Pointers are part of a program's data as much as of its code, so every structure holding a pointer changes its size, alignment and layout, and so does every interface that fixes such a layout, from system calls to file formats and buffers shared with devices.
+  Pointer-heavy programs, like interpreters, compilers or anything built on linked data structures, need correspondingly more memory and cache.
+- **Compressed bounds.** To fit into these 128 bits, bounds are stored in compressed form[^cheri_concentrate]. Large allocations get exact bounds only if their size and alignment are rounded accordingly,
+  and a pointer moved too far outside its object can no longer be represented and loses its tag.
+- **Tags throughout the memory system.** Since any capability-sized word may hold a capability, its tag has to travel with it through every cache level, the interconnect and the memory controller, which typically keeps the tags of main memory in a separate table.
+  Caching this table keeps the additional memory traffic low[^joannou_tags], but the tags reach into components far outside the processor core, and writes by any agent, DMA engines included, have to clear them.
+- **Revocation instead of temporal safety.** Since every copy of a capability is an independent authority and C's *free* is kept, freeing memory does not withdraw access to it.
+  Freed memory has to stay in quarantine until a revocation sweep has found and invalidated every capability still pointing into it[^cornucopia]. Temporal safety is thus a mechanism added on top of the capability model rather than a consequence of it.
+
+### The gap RISC-ViO fills {#motivation_gap}
+
+None of the approaches that are deployed or being standardised offers deterministic spatial and temporal memory safety for C and C++ while leaving pointers, data layouts and the memory system as they are.
+Memory tagging is probabilistic and leaves pointers forgeable. CHERI is deterministic, but pays for attaching protection to the pointer with wider pointers, tags throughout the memory system and revocation.
+
+RISC-ViO fills this gap by attaching protection to the object instead.
+It takes its inspiration from Objective-RISC[^meyer_orisc][^orisc_spec] (O-RISC), which raises the hardware to the level of objects: once the hardware knows which values are pointers and which objects they belong to, bounds checks, unforgeable pointers, protected frames and exact garbage collection follow from one model.
+O-RISC realizes this idea for memory-safe, garbage-collected languages and deliberately leaves C aside. RISC-ViO brings it to C.
+
+The key to this is a different notion of a pointer. A RISC-ViO pointer consists of a reference to an object and an *index* into this object.
+Pointer arithmetic changes the index, never the reference. A pointer can therefore move freely inside its object and arbitrarily far beyond its bounds, just as C pointers do, but it can never be turned into a pointer to another object, and every access through it is checked against the bounds of the object it references.
+Bounds and permissions exist once per object rather than in every pointer, so a pointer stays XLEN bits wide. Since the reference always names the head of the object, the hardware and the garbage collector find the object belonging to any pointer immediately, even if the pointer points into the middle of it.
+And since objects are reclaimed by a garbage collector instead of being freed, there are no stale copies of a pointer left to hunt down.
 
 ::: figure
 ![Conventional architectures](svg/conv_obj_view.drawio.svg "a) Conventional architectures")
@@ -59,42 +128,187 @@ This leads to a more robust program execution without the performance impact cau
 View of the different architectures on programming language level objects in memory
 :::
 
-Being the nature of groundbreaking concepts, O-RISC is designed to be very cautious about its new responsibilities.
-One area where this can be easily observed is O-RISCs postulation of immutable pointers, they always reference the head of an object.
-To index across its contents, compilers are required to keep a separate data register next to the original pointer register.
-This contradicts the assumptions many compilers make of computer architectures. LLVMs *getelementptr* instruction[^llvm_gep] is one example
-where they can diverge.
-This in consequence makes O-RISC unable to compile the influential C programming language, reducing the amount of programs
-being source code compatible with this architecture.
-
 ## Design goals {#goals}
 
-As all children try to grow up to be a better version of their parents, RISC-ViO takes over O-RISCs belief in the new way of hardware-software
-cooperation, but draws its own set of conclusions:
+The approaches above leave five problems open. RISC-ViO answers each of them with one design goal. The trade-offs these goals involve are summarised in [trade-offs](#tradeoffs).
 
-#### 1. Make software more robust while keeping compatibility
+#### 1. Deterministic protection from a single source
 
-RISC-ViO aims to provide the same unambiguousness and integrity of pointers as well as bounds checks of objects O-RISC provides.
-Unlike O-RISC however, RISC-ViO aims to reduce the impact on existing software to a minimum. The only changes necessary should stay
-on the side of runtimes and operating systems. User code on programming language level should be able to stay as is while still benefiting from RISC-ViOs advantages.
+Today's hardware defences address one class of error per mechanism: tags against out-of-bounds accesses and stale pointers, revocation against use-after-free, shadow stacks against overwritten return addresses.
+Each mechanism has gaps and costs of its own, and only their combination approaches complete protection. Where a defence is probabilistic, an attacker who can retry, or leak the secret it depends on, defeats it[^tiktag].
 
-#### 2. Raise memory abstraction
+RISC-ViO therefore derives all of its memory protection from a single property: the hardware always knows whether a value is a pointer or a primitive, and to which object a pointer belongs.
+Bounds checks, pointer integrity, the protection of frames and return addresses as well as garbage collection all follow from this knowledge.
+The protection is deterministic. There is no probability of a missed violation, no secret to leak, no unchecked mode and no way for user code to opt out.
 
-With the introduction of hardware heap management, RISC-ViO is raising the abstraction layer of memory. combines advantages of virtual memory management
-and runtime object management including a net performance gain [citation needed].
+#### 2. Protection for the code that exists
 
-#### 3. Stay true to the RISC philosophy
+A memory safety mechanism is only worth as much as the code it reaches. Writing new code in memory-safe languages markedly reduces the number of new vulnerabilities[^android_safe_coding],
+but the existing code stays in service and keeps being changed, and operating systems, firmware and embedded software are still written in C and C++ today.
+A mechanism that requires rewriting this code protects only what gets rewritten. A mechanism that changes the representation of pointers turns adoption into a porting project,
+because pointers are part of a program's data as much as of its code: every structure, every interface and every binary format containing pointers changes with them.
+And a machine that forbids interior pointers or pointer arithmetic cannot run C at all.
 
-The benefits of robustness are worthless when they come at the cost of arbitrary execution times. That is why RISC-ViO's instructions are designed
-in such a way that they can be implemented with single-cycle latency. This keeps changes needed to conventional RISC architectures small and program
-execution stays predictable.
+RISC-ViO therefore keeps C's pointer model exactly as C defines it. A pointer is XLEN bits wide, may point anywhere inside its object and even beyond it,
+and supports the arithmetic and comparisons C programs use, including those that rely on pointer identity.
+Since every data layout stays identical to RISC-V, existing code is protected by recompiling it, not by porting it.
 
-#### 4. Be an extension, not a replacement
+#### 3. No free, no dangling pointers
 
-We propose a way the RISC-V Instruction Set Architecture can be extended without limiting other extensions or future innovation.
-This way, the idea of object-based architectures can be easily explored on a wide range of processor configurations. Reaching from minimal embedded
-applications, over vector-supporting AI accelerators to state of the art multicore, superscalar CPUs. At the same time, other researchers can easily pick up ViO
-and make use of its benefits for their own purposes.
+In Chromium, use-after-free alone accounts for about half of all memory safety bugs[^chromium_ms]. The existing answers keep *free* and try to catch its consequences:
+memory tagging detects stale pointers with some probability, and CHERI finds and invalidates them in revocation sweeps.
+Conservative garbage collectors for C remove *free*, but since they have to treat every value that looks like a pointer as one, they can neither move objects nor rule out retaining memory by mistake[^boehm].
+
+RISC-ViO therefore removes *free* altogether. Objects are reclaimed by a garbage collector once they can no longer be reached, so no pointer can ever dangle.
+Since the hardware knows every pointer, the collector is exact and may move objects to compact the heap, and since every pointer names the head of its object, the collector finds the object belonging to any pointer immediately.
+Allocation becomes a single instruction, and the allocator keeps no metadata in memory a program could corrupt.
+
+#### 4. Cheap enough to stay on
+
+A protection that costs noticeable performance gets weakened or switched off. Memory tagging offers an asynchronous checking mode for this reason, which reports a violation only after the access has taken place.
+Protection that requires microcode, iterates over memory or extends every part of the memory system makes processors more complex and execution less predictable.
+
+RISC-ViO therefore follows the RISC philosophy. No instruction performs work proportional to the size of an object or to the number of pointers it holds, and none requires microcode or iterates over memory.
+The checks an access needs rely only on information held along with the pointer in the register file, so they can run in parallel to address generation, as they do in the execute stage of the example implementation.
+Allocation takes constant time, because objects are allocated from memory that has already been cleared.
+How pointers are distinguished from primitives in memory is left to the implementation. The example implementation encodes this distinction within each memory element, so caches, interconnect and main memory remain as they are.
+This keeps RISC-ViO implementable in ordinary pipelines, from small embedded cores to superscalar designs.
+
+#### 5. Build on RISC-V
+
+An architecture is only useful for research and adoption if it can be built, programmed and compared. An ISA designed from scratch needs its own compilers, simulators and processor cores before its first program runs, and it makes a fair comparison with existing approaches hard.
+
+RISC-ViO therefore builds on RISC-V and keeps everything of it the object model allows: the instruction encodings, the 32 general-purpose registers, little-endian data, the privilege modes, CSRs and traps, the assembler syntax and ELF.
+It changes the semantics of base instructions only where objects require it, resulting in I', and adds the zhm extension.
+RISC-V's openness permits such changes, its compilers, simulators and cores are freely available, and its standard extensions, like the landing pads of Zicfilp, can be combined with RISC-ViO.
+Since CHERI and memory tagging are being standardised for RISC-V as well[^cheri_rvy][^riscv_mt], RISC-ViO can be compared to them on the same base ISA and with the same toolchains.
+
+## RISC-ViO at a glance {#overview}
+
+This section gives an informal overview of the architecture as a whole. Every concept is specified precisely in the chapter it links to.
+
+**Objects.** All memory a user mode program can access consists of objects: contiguous, bounded areas whose size is a multiple of XLEN/8 bytes.
+User code creates objects with the instructions of the [alc family](#alc_fam), which return a pointer to a new object filled with the primitive value 0.
+Every object carries tags. Its *kind* states what it may be used for: ordinary objects may hold pointers and primitives, data only objects hold primitives only, and executable objects hold instructions.
+Its *permissions* state whether it may be read or written. I/O devices are accessed through pointers as well and carry the same tags ([objects and I/O devices](#objects_devices), [object tags](#isa_tags)).
+
+**Pointers and primitives.** Every register and every XLEN-wide element of an object holds either a pointer or a primitive ([pointers and primitives](#data_vs_pointers)).
+Loads and stores take a pointer as base, add the instruction's offset to the pointer's index and check the result against the bounds of the object.
+Arithmetic on a pointer and a primitive modifies only the index, so its result is again a pointer to the same object. Subtracting two pointers to the same object yields their distance as a primitive.
+Operations which would mix up different objects, like subtracting or ordering pointers to two different objects, raise an *IncompatibleTypeException*.
+A pointer occupies exactly one XLEN-wide element in memory. It can be loaded and stored as a whole, but never in parts, so its bytes can be neither read nor partially overwritten ([RISC-V I vs I'](#riscv_i_tick)).
+In the following example, `obj.36` denotes a pointer to the object `obj` with index 36:
+
+```asm
+    alci    a0, 40          # a0 = obj.0: pointer to a new, zeroed object of 40 bytes
+    addi    a1, a0, 36      # a1 = obj.36: still a pointer to the same object
+    sw      zero, 0(a1)     # accesses bytes 36 to 39: inside the object
+    sw      zero, 4(a1)     # would access byte 40: IndexOutBoundsException
+    sub     a2, a1, a0      # a2 = 36: the distance of two pointers is a primitive
+```
+
+**Memory management.** No instruction frees an object. The memory of an object is reclaimed by a garbage collector once no pointer to the object is left,
+so neither use-after-free nor double free can occur, and memory a program forgot to release is reclaimed as well.
+Since the hardware identifies every pointer, garbage collection is exact, and the collector may move objects to compact the heap, as it is able to update every pointer to them.
+Whether the collector is implemented in privileged software or in hardware is left to the implementation. For C programs, *malloc* is realized using *alc*, and *free* has nothing left to do.
+
+**Frames.** The stack is replaced by a linked list of frame objects. A function's prologue allocates its frame with *alc* or *alci* into *sp*, which stores the previous *sp* at index 0 of the new frame. *ra* is saved in a reserved slot right behind it ([structure](#are_obj)).
+Frame objects are accessible through *sp* only, *sp* cannot be copied into another register, and colours held by *sp* and *ra* let the processor recognise whether the current function owns the current frame. Accessing another function's frame raises a *StateException* ([frame ownership](#frame_ownership)).
+*ret* clears *ra*, so a return address can be used only once. Since no function can access its caller's frame, arguments are never passed on the stack: arguments not fitting into *a0* to *a6* are passed in an argument object referenced by *a7* ([calling convention](#chap_calling_convention)).
+
+**Code.** Instructions are held in executable objects, which can be executed but never read or written, and data can never be executed ([object tags](#isa_tags)).
+*auipc*, *jal* and *jalr* produce pointers into executable objects, and an indirect jump through a pointer requires it to reference an executable object.
+Everything outside a program's own code, from global variables and string literals to functions in shared libraries, is reached through the program's global offset table. Its pointer is held in *gp*, which the hardware sets on every jump into another executable object and which user code can never write ([global offset table](#got)).
+
+**System management software.** A small set of privileged instructions allows machine and supervisor mode software to create pointers from addresses (*dtp*), inspect them (*sep*, *btd*, *itd*), read and change the tags of objects (*lt*, *st*) and clear memory for reuse (*clr*) ([privileged instructions](#priv_instructions)).
+Loaders, garbage collectors and device drivers are built on these instructions. User mode code has no access to them, which is what makes the guarantees below hold.
+
+### Guarantees {#guarantees}
+
+RISC-ViO gives every user mode program the following guarantees:
+
+1. **Spatial safety.** Every load, store and jump through a pointer is checked against the bounds of the referenced object before it takes effect.
+2. **Pointer integrity.** User code cannot create a pointer from a primitive, cannot change which object a pointer references and cannot assemble a pointer from parts of other values.
+3. **Temporal safety.** The memory of an object is reused only once the object has become unreachable, so no pointer ever references memory that has been reused for another object.
+4. **Separation of code and data.** Executable objects can neither be read nor written by any instruction, and no instruction is ever fetched from an object that is not executable.
+5. **Frame and return integrity.** A function can access only the frame it allocated itself, and a return address can only be produced by a call and consumed once by a return.
+6. **No uninitialised memory.** A newly allocated object holds nothing but the primitive value 0.
+
+Guarantees 1, 2, 4, 5 and 6 follow from the rules of this specification alone. Guarantee 3 additionally depends on a correct garbage collector, be it implemented in software or in hardware.
+All guarantees assume that the system management software uses its privileged instructions correctly.
+Indirect jumps are confined to executable objects. Restricting them further to function entries is left to the landing pads of Zicfilp, which RISC-ViO can be combined with.
+
+The following properties are deliberately not guaranteed in this version:
+
+- Bounds are checked per object. An overflow from one field of a struct into the next field of the same struct is not detected.
+- Memory that remains reachable stays allocated, even if the program never uses it again. Garbage collection removes unreachable memory, not unused memory.
+- System management software is trusted. It can create arbitrary pointers and change the tags of any object.
+
+## Trade-offs {#tradeoffs}
+
+Memory safety does not come for free, on RISC-ViO either. Each design goal involves a deliberate trade-off, and this section gives a short overview of them.
+
+**Objects as the unit of protection.** Keeping bounds and permissions once per object instead of in every pointer is what keeps pointers XLEN wide and makes revocation unnecessary.
+Accordingly, protection reaches down to objects: an overflow between two fields of the same struct stays undetected, and a read-only view of a writable object is expressed by a separate object.
+
+**Recompilation instead of binary compatibility.** RISC-ViO has no unprotected mode, so every program runs with the full set of guarantees. In turn, existing RISC-V binaries have to be recompiled.
+The toolchain, the C library and the system management software are adapted once. Application code is recompiled and needs changes only where it treats pointers as raw integers, for example by reading the bytes of a pointer or by constructing pointers from integers, just as on CHERI.
+Formally, I' is a modified base ISA rather than an extension, which is the same route CHERI takes with RVY.
+
+<!-- FIXME: quantify the porting effort on real code bases (e.g. changed lines per package) and cite it here. -->
+
+**Garbage collection.** Temporal safety by construction requires a garbage collector, whose cost depends on its design. RISC-ViO leaves this choice to the implementation, from a stop-the-world collector in software to a concurrent collector in hardware with real-time properties.
+Allocating a frame object for every call raises the allocation rate, a pattern that copying collectors are known to handle well[^appel]. Memory remains allocated as long as it is reachable.
+
+**Hardware.** Every register holds the metadata needed to check accesses along with its pointer, and every memory element records whether it holds a pointer.
+The example implementation achieves this without changes to the memory system, with an additional pipeline stage and an encoding that needs an additional memory access for some values.
+Even accesses to a program's own global data go through the global offset table.
+How RISC-ViO's net performance compares to *malloc* and *free* combined with today's mitigations is a matter of evaluation, and this specification does not state performance figures.
+
+<!-- FIXME: add measured results (or a reference to the evaluation) as soon as they are available. -->
+
+## Comparison {#related}
+
+The table summarises how RISC-ViO relates to the approaches discussed in the [motivation](#motivation).
+
+|                         | RISC-ViO                                                 | CHERI (RVY)                                        | Memory tagging (MTE)                 | O-RISC                                        |
+| :---------------------- | :------------------------------------------------------- | :------------------------------------------------- | :----------------------------------- | :-------------------------------------------- |
+| Protection attached to  | the object                                               | the pointer                                        | memory granule and pointer           | the object, rights per pointer                |
+| Pointer identification  | per register and element, encoding up to implementation  | tag bit per capability, throughout memory system   | none                                 | separation: own register file and index space |
+| Unforgeable pointers    | yes                                                      | yes                                                | no                                   | yes                                           |
+| Pointer width in memory | XLEN                                                     | 2·XLEN                                             | XLEN                                 | not visible to software                       |
+| Spatial safety          | deterministic, per object                                | deterministic, per capability, sub-object possible | probabilistic, per 16-byte granule   | deterministic, per object                     |
+| Temporal safety         | no *free*, exact garbage collection                      | revocation of freed memory                         | probabilistic, by retagging          | no *free*, garbage collection                 |
+| Pointer arithmetic      | on the index, any distance                               | on the address, within the representable range     | unrestricted                         | none                                          |
+| C and C++               | largely source compatible                                | largely source compatible                          | binary compatible                    | excluded by design                            |
+| Unmodified binaries     | no                                                       | optionally, unprotected (hybrid mode)              | yes                                  | no                                            |
+| Base ISA                | RISC-V, modified base (I') and zhm                       | RISC-V, new bases (RVY)                            | Arm extension, RISC-V in development | own ISA, influenced by RISC-V                 |
+
+Compared to memory tagging, RISC-ViO trades binary compatibility for deterministic protection and unforgeable pointers.
+Compared to CHERI, it trades sub-object bounds, permissions per pointer and a mode for unmodified code for XLEN-wide pointers, unchanged data layouts, a memory system without tags and temporal safety without revocation.
+Compared to O-RISC, which inspired it, it trades the structural separation of pointers and data for C's pointer model and the RISC-V base.
+
+## About this specification {#about}
+
+**Status.** This document is a draft. Parts of the architecture are still under discussion, and the topics listed as not yet covered below will be added in later versions.
+
+**Structure.** As the legend at the beginning states, this document consists of two kinds of chapters.
+[*ISA*]{.isa} chapters define the architecture: what every RISC-ViO processor has to do and what software can rely on. They are normative.
+[*Implementation*]{.imp} chapters describe one possible implementation, an in-order pipeline with an additional attribute stage. They are informative: an implementation may realize the ISA differently, as long as its behaviour matches the ISA chapters.
+
+- [The object based memory model](#base_spec): objects, tags, pointers and primitives, and the changes to the RISC-V base ISA
+- [The zhm extension](#instructions): allocation, attribute queries and the privileged instructions
+- [The not so stacked frames](#frames): frame objects, the calling convention and frame ownership
+- [Global offset table](#got): how programs reach their data and other code, and how they are loaded
+- [Exceptions](#exceptions): the exceptions RISC-ViO adds and the registers restricted in user mode
+- [Register file](#reg_fl), [objects in memory](#hard_obj) and [pointer and address generation](#ptr_addr): the example implementation
+- [Tables](#tables) and [appendix](#appendix): encodings, exception codes, CSRs, boot process, supervisor services and glossary
+
+**Scope.** This version specifies RV32I and RV64I in their modified form I' together with the zhm extension, for user, supervisor and machine mode.
+Not yet covered are the interaction of pointers with the standard extensions (in particular M, A, F, D, C, V and Zicfilp), multiple harts and memory ordering, thread-local storage, *setjmp*/*longjmp* and virtual memory.
+
+**Notation.** XLEN is the register width. A pointer is written as x.y, where x denotes the referenced object (or its base address) and y the index.
+In figures, pointers are drawn in shades of pink and purple, primitives in light blue. All terms are defined in the [glossary](#abbrevs_gloss).
 
 # The object based memory model {#base_spec}
 
@@ -1324,11 +1538,33 @@ Abbreviations used in the table:
 
 ::::::
 
+# Acknowledgements {#acknowledgements}
+
+RISC-ViO is inspired by the Objective-RISC architecture[^meyer_orisc][^orisc_spec], which showed that raising the hardware to the level of objects yields bounds checks, unforgeable pointers, protected frames and exact garbage collection from a single model.
+The way the example implementation tags pointers and primitives in the low-order bits of each memory element is inspired by the object representation of MicroPython[^micropython], which tells small integers, interned strings and pointers apart by the lowest bits of a machine word.
+
+<!-- FIXME: add the people, institutions and funding to be thanked, if any. -->
+
 # References {#chap_refs}
 
 ::: references
+[^chromium_ms]: The Chromium Projects: "Memory safety". <https://www.chromium.org/Home/chromium-security/memory-safety>, Last accessed 31.10.2026
+[^msrc]: M. Miller: "Trends, challenges, and strategic shifts in the software vulnerability mitigation landscape", BlueHat IL, 2019.
+[^mte]: K. Serebryany: "ARM Memory Tagging Extension and How It Improves C/C++ Memory Safety" in ;login: The USENIX Magazine 44, 2019.
+[^tiktag]: J. Kim et al.: "TikTag: Breaking ARM's Memory Tagging Extension with Speculative Execution", arXiv:2406.08719, 2024.
+[^apple_mie]: Apple Security Engineering and Architecture: "Memory Integrity Enforcement: A complete vision for memory safety in Apple devices", 09.09.2025. <https://security.apple.com/blog/memory-integrity-enforcement/>
+[^riscv_mt]: RISC-V International: "Memory Tagging" task group (RVG-161). <https://jira.riscv.org/browse/RVG-161>, Last accessed 31.10.2026
+[^cheri]: R. N. M. Watson et al.: "Capability Hardware Enhanced RISC Instructions: CHERI Instruction-Set Architecture (Version 9)", Technical Report UCAM-CL-TR-987, University of Cambridge, 2023.
+[^cheri_rvy]: RISC-V International: "RISC-V Specification for CHERI Extensions". <https://riscv.github.io/riscv-cheri/>, Last accessed 31.10.2026
+[^cheri_concentrate]: J. Woodruff et al.: "CHERI Concentrate: Practical Compressed Capabilities" in IEEE Transactions on Computers 68(10), 2019.
+[^joannou_tags]: A. Joannou et al.: "Efficient Tagged Memory" in Proceedings of the IEEE International Conference on Computer Design (ICCD), 2017.
+[^cornucopia]: N. W. Filardo et al.: "Cornucopia: Temporal Safety for CHERI Heaps" in Proceedings of the IEEE Symposium on Security and Privacy, 2020.
 [^meyer_orisc]: M.Meyer: "A Novel Processor Architecture with Exact Tag-Free Pointers" in Proceedings of the 2nd Workshop on Application Specific Processors., 2003.
-[^llvm_gep]: <https://llvm.org/docs/LangRef.html#getelementptr-instruction>, Last accessed 09.03.2025
+[^orisc_spec]: M. Meyer: "Objective-RISC User-Mode ISA Specification", draft, revision 351, University of Stuttgart, 2026. <https://content.ikr.uni-stuttgart.de/Content/Objective-RISC/objective-risc_user_mode_spec.html>
+[^android_safe_coding]: J. Vander Stoep, A. Rebert: "Eliminating Memory Safety Vulnerabilities at the Source", Google Security Blog, 25.09.2024. <https://security.googleblog.com/2024/09/eliminating-memory-safety-vulnerabilities-Android.html>
+[^boehm]: H.-J. Boehm, M. Weiser: "Garbage Collection in an Uncooperative Environment" in Software: Practice and Experience 18(9), 1988.
+[^appel]: A. W. Appel: "Garbage Collection Can Be Faster Than Stack Allocation" in Information Processing Letters 25(4), 1987.
+[^micropython]: D. P. George et al.: "MicroPython", object representations (MICROPY_OBJ_REPR) in py/mpconfig.h. <https://github.com/micropython/micropython>, Last accessed 31.10.2026
 :::
 
 # Appendix {#appendix}

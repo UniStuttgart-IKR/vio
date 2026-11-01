@@ -267,6 +267,10 @@ Since instructions are managed using executable objects, the semantics of even m
 The *auipc* instruction for example will emit a pointer instead of a primitive value.
 Due to the access to executable objects being limited as described in the [object tags](#isa_tags) section however, access to constant data is not possible using this pointer.
 
+In contrast to *auipc*, *lui* does not clear the pointer tag of its destination register.
+If rd holds a pointer, *lui* only replaces the index of this pointer with the U-immediate (the lowest 12 bits being filled with zeros), while the pointer itself is preserved.
+If rd holds a primitive, *lui* behaves just as specified by RISC-V and writes the U-immediate as a primitive.
+
 The encapsulation of instructions also alters the semantics of *jalr*. Depending on the content of its source register, *jalr* behaves in one of two ways:
 If the source register contains a pointer, this pointer has to reference an executable object. The program counter is then set to this pointer, with the immediate being added to its index.
 For the separation of data and instructions, using a pointer to any other kind of object as jump target leads to an *IncompatibleTypeException*.
@@ -1192,7 +1196,7 @@ The table lists the load and store instructions of RV32. On RV64, *ld* and *sd* 
 |                            | register file indices |||       | EX                           || ME                   || AT first pass          || AT second pass ||
 | Instruction                | rs1                   | rs2  | rd             | imm   | Actions                      | Results                                                    | Actions              | Results                          | Actions                | Results                         | Actions        | Results    |
 | :------------------------- | :-------------------- | :--- | :------------- | :---- | :--------------------------- | :--------------------------------------------------------- | :------------------- | :------------------------------- | :--------------------- | :------------------------------ | :------------- | :--------- |
-| lui                        | zero                  | zero | rd             | imm20 | ALU: add                     | rd: (T:prim, P:0, I:val, L:0, H:0)                         |                      | pass                             |                        | pass                            |                | pass       |
+| lui                        | rd                    | zero | rd             | imm20 | ALU: add                     | rd: (T:rd.T, P:rd.P, I:val, L:rd.L, H:rd.H)                |                      | pass                             |                        | pass                            |                | pass       |
 | auipc                      | zero                  | zero | rd             | imm20 | ALU: add                     | rd: (T:ptr, P:pc.ptr, I:val, L:pc.l, H:pc.hdr)             |                      | pass                             |                        | pass                            |                | pass       |
 | jal                        | zero                  | zero | rd             | imm20 |                              | rd: (T:ptr, P:pc.ptr, I:pc.ix, L:pc.l, H:pc.hdr)           |                      | pass                             |                        | pass                            |                | pass       |
 | jalr step 1                | rs1                   | zero | gp             | none  | AGU: addr                    | daddr                                                      | DC: load             | rd:(T:ptr, P:val, I:0, H:hdr, L:l) |                        | pass                            |                | pass       |

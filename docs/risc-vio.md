@@ -305,6 +305,8 @@ In fact the alc instruction family is the only way to create new objects in user
 The next section provides a short description of those instructions alongside their bit encodings.
 The objects allocated by the alc-instruction family are both readable and writable but not executable on allocation (their 'read' and 'write' bits are set).
 Newly allocated objects only contain the primitive value 0.
+Object sizes are byte granular: an object is exactly as long as requested at its allocation, and an access is only within its bounds if all of its bytes are.
+If the size is not a multiple of XLEN/8, the last element only partly belongs to the object, so a word access to that element raises an *IndexOutOfBoundsException*.
 
 In order for the system management software to influence where new objects are placed, the zhm extension introduces an additional machine mode CSR.
 The CSR *malc* contains both the current allocation address, being the address of the object last allocated, as well as the heap limit, being the lowest address still part of the heap.
@@ -314,7 +316,7 @@ The CSR index of the *malc* CSR can be extracted from the [CSR table](#t_csr).
 #### alc-instruction {#alc}
 
 The *alc* instruction is the most basic form in its family. This instruction allows the allocation of an ordinary object where the size of the object is given by the value passed via rs2.
-The size is given in bytes as per the value in rs2. Since objects are XLEN/8 byte granular, the size is rounded up to the next multiple of XLEN/8.
+The size is given in bytes as per the value in rs2 and is not rounded.
 
 ::: encoding
 | 31:25   | 24:20     | 19:15 | 14:12 | 11:7     | 6:0     | Instruction |
@@ -340,18 +342,15 @@ The alc instruction may trigger the following exceptions for the given events (x
 #### alci-instruction {#alci}
 
 The *alci* instruction is a variation of the *alc* instruction. In contrast to *alc*, the size of the new object is given by the 12 bit wide immediate.
-This immediate specifies the amount of pointers which can fit inside the object, meaning it is scaled by XLEN/8.
-So for a XLEN of 32, it specifies the number of 32 bit words that fit into the object and is encoded as imm[13:2].
-For a XLEN of 64, it specifies the number of 64 bit double words that fit into the object and is encoded as imm[14:3].
-In assembly, the immediate is written as the size of the object in bytes (e.g. `alci a0, 16`), which has to be a multiple of XLEN/8. The assembler then encodes this size divided by XLEN/8.
+This immediate is the size of the object in bytes. It is not scaled, so *alci* allocates objects of up to 4095 bytes; larger objects are allocated with *alc*.
 
 ::: encoding
 | 31:25     | 24:20 | 19:15 | 14:12 | 11:7     | 6:0     | Instruction |
 | :-------: | :---: | :---: | :---: | :------: | :-----: | :---------: |
-| imm[13:2] / imm[14:3] || 00010 | 010   | rd (dst) | 0001011 | alci        |
+| imm[11:0]             || 00010 | 010   | rd (dst) | 0001011 | alci        |
 :::
 
-Assembly syntax: `alci rd, size` (size in bytes, a multiple of XLEN/8)
+Assembly syntax: `alci rd, size` (size in bytes)
 
 Please note that the *alci* instruction behaves the same way *alc* does when rd is *sp*.
 
@@ -388,10 +387,10 @@ The *alci.d* instruction is the analogous form of *alci* regarding data only obj
 ::: encoding
 | 31:25     | 24:20 | 19:15 | 14:12 | 11:7     | 6:0     | Instruction |
 | :-------: | :---: | :---: | :---: | :------: | :-----: | :---------: |
-| imm[13:2] / imm[14:3] || 00000 | 011   | rd (dst) | 0001011 | alci.d      |
+| imm[11:0]             || 00000 | 011   | rd (dst) | 0001011 | alci.d      |
 :::
 
-Assembly syntax: `alci.d rd, size`
+Assembly syntax: `alci.d rd, size` (size in bytes)
 
 The *alci.d* instruction may trigger the following exceptions for the given events (xtval content):
 
@@ -402,7 +401,7 @@ The *alci.d* instruction may trigger the following exceptions for the given even
 ### Attribute query: qsz {#qsz}
 
 The *qsz* instruction provides a means of reading an objects size in bytes as specified at its allocation time. For this, the source register has to contain a pointer.
-Since object sizes are rounded up to multiples of XLEN/8 on allocation, the size returned by *qsz* is always a multiple of XLEN/8 as well.
+Since object sizes are byte granular, this is exactly the size requested at allocation.
 
 ::: encoding
 | 31:25   | 24:20 | 19:15     | 14:12 | 11:7     | 6:0     | Instruction |
@@ -887,9 +886,7 @@ Header Bitmap on 32-Bit Architectures
 | 5      | f    | Frame object                                             |
 | 4:0    | -    | Header identifier                                        |
 |        |      |                                                          |
-| 31:2<br>(63:3) | λ | Length of object<br>(only bits 31:2 on 32-Bit, 63:3 on 64-Bit) |
-| _1_<br>_(2:1)_ | _-_ | _don't care_                                         |
-| 0      | -    | Must be zero.<br>Guarantees a consistent memory model    |
+| 31:0<br>(63:0) | λ | Length of object in bytes                            |
 
 _On a 64-Bit Architecture the upper bits of the header bitmap are shifted upwards to 64-Bit boundaries._
 
@@ -1085,9 +1082,9 @@ Since an objects flags which signify it as being readable, writeable and data on
 | 31:25     | 24:20    | 19:15    | 14:12 | 11:7    | 6:0     | Instruction |
 | :-------: | :------: | :------: | :---: | :-----: | :-----: | :---------: |
 | 0000000   | rs2(src) | 00010    | 000   | rd(dst) | 0001011 | alc         |
-| imm[13:2] / imm[14:3] || 00010    | 010   | rd(dst) | 0001011 | alci        |
+| imm[11:0]             || 00010    | 010   | rd(dst) | 0001011 | alci        |
 | 0000000   | rs2(src) | 00000    | 001   | rd(dst) | 0001011 | alc.d       |
-| imm[13:2] / imm[14:3] || 00000    | 011   | rd(dst) | 0001011 | alci.d      |
+| imm[11:0]             || 00000    | 011   | rd(dst) | 0001011 | alci.d      |
 | 0000000   | 00000    | rs1(src) | 100   | rd(dst) | 0001011 | qsz         |
 | imm[12\|10:5] | rs2 (src)| rs1 (src) | 111 | imm[4:1\|11] | 0001011 | bso |
 | 0111111   | rs2(ix)  | rs1(base) | 000  | rd(dst) | 1110011 | dtp         |

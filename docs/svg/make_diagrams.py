@@ -337,7 +337,7 @@ def draw_continuation(drawing, x, y):
 
 # ---------------------------------------------------------------- diagrams: objects in memory (objektbaukasten)
 
-HEADER_ROW_2 = Row('green', fields(('λ(31:2)', 31, 2), ('00', 1, 0)))
+HEADER_ROW_2 = Row('green', fields(('λ(31:0)', 31, 0)))
 
 
 def header_row(permission_flags, frame_flags):

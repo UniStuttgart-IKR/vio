@@ -2,14 +2,14 @@
 pretitle: The
 title: RISC-ViO
 subtitle: Specification
-version: DRAFT V0.3.2
+version: DRAFT V0.4.0
 lang: en
 authors:
   - name: Leyla Jazz Ekinci (*B.Sc.*)
     affiliation: University of Stuttgart, IKR
     location: Stuttgart, Germany
     email: leylknci@ikr.uni-stuttgart.de
-  - name: Robin Lux (*B.Sc.*)
+  - name: Robin Lux (*M.Sc.*)
     affiliation: University of Stuttgart, IKR
     location: Stuttgart, Germany
     email: rbnlux@ikr.uni-stuttgart.de
@@ -20,6 +20,9 @@ authors:
   * 'types' -> 'kinds': still under discussion. Preferably two different words,
     one for object kinds and one for register contents (pointer vs. primitive).
 -->
+
+<!-- Figures given as raw HTML blocks are tables. The viewer (index.html) draws them like the former
+     diagrams, in light and dark mode, using the classes bf, bf-stack, t-<colour>, j and o-<edge>. -->
 
 ::: legend
 This document is split into two categories:
@@ -121,11 +124,419 @@ Bounds and permissions exist once per object rather than in every pointer, so a 
 And since objects are reclaimed by a garbage collector instead of being freed, there are no stale copies of a pointer left to hunt down.
 
 ::: figure
-![Conventional architectures](svg/conv_obj_view.drawio.svg "a) Conventional architectures")
-![O-RISC](svg/oriscv_obj_view.drawio.svg "b) O-RISC")
-![RISC-ViO](svg/vio_obj_view.drawio.svg "c) RISC-ViO")
+```{=html}
+<div class="fig-row">
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="252" height="296" viewBox="-2 -2 252 296" role="img">
+  <title>Conventional memory</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="90" y="30" width="100" height="26" class="white"/>
+  <text x="140" y="43" class="on-white">&quot;A&quot;</text>
+  <rect x="90" y="56" width="100" height="26" class="white"/>
+  <text x="140" y="69" class="on-white">&quot;B&quot;</text>
+  <rect x="90" y="82" width="100" height="26" class="white"/>
+  <text x="140" y="95" class="on-white">0x50</text>
+  <rect x="90" y="108" width="100" height="26" class="white"/>
+  <text x="140" y="121" class="on-white">&quot;D&quot;</text>
+  <rect x="90" y="134" width="100" height="26" class="white"/>
+  <text x="140" y="147" class="on-white">&quot;E&quot;</text>
+  <rect x="90" y="160" width="100" height="26" class="white"/>
+  <text x="140" y="173" class="on-white">41</text>
+  <rect x="90" y="186" width="100" height="26" class="white"/>
+  <text x="140" y="199" class="on-white">&quot;F&quot;</text>
+  <line x1="90" y1="56" x2="190" y2="56" class="divider dashed"/>
+  <line x1="90" y1="82" x2="190" y2="82" class="divider dashed"/>
+  <line x1="90" y1="108" x2="190" y2="108" class="divider dashed"/>
+  <line x1="90" y1="134" x2="190" y2="134" class="divider dashed"/>
+  <line x1="90" y1="160" x2="190" y2="160" class="divider dashed"/>
+  <line x1="90" y1="186" x2="190" y2="186" class="divider dashed"/>
+  <rect x="90" y="30" width="100" height="182" class="outline dashed"/>
+  <line x1="90" y1="14" x2="90" y2="30" class="rule"/>
+  <line x1="90" y1="212" x2="90" y2="228" class="rule"/>
+  <line x1="190" y1="14" x2="190" y2="30" class="rule"/>
+  <line x1="190" y1="212" x2="190" y2="228" class="rule"/>
+  <rect x="4" y="30" width="60" height="26" class="white"/>
+  <text x="34" y="43" class="on-white">0x40</text>
+  <rect x="4" y="30" width="60" height="26" class="outline"/>
+  <polyline points="64,43 90,43" class="arrow"/>
+  <polygon points="90,43 83,39 83,47" class="head"/>
+  <circle cx="64" cy="43" r="3" class="dot"/>
+  <text x="77" y="33" class="heading">?</text>
+  <polyline points="182,95 208,95 208,147 190,147" class="arrow"/>
+  <polygon points="190,147 197,143 197,151" class="head"/>
+  <circle cx="182" cy="95" r="3" class="dot"/>
+  <text x="218" y="121" class="heading">?</text>
+  <polyline points="182,173 224,173" class="arrow"/>
+  <polygon points="224,173 217,169 217,177" class="head"/>
+  <circle cx="182" cy="173" r="3" class="dot"/>
+  <text x="212" y="163" class="heading">?</text>
+</svg>
+<span class="subcaption">a) Conventional</span>
+</div>
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="252" height="296" viewBox="-2 -2 252 296" role="img">
+  <title>CHERI memory</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="90" y="30" width="100" height="26" class="white"/>
+  <text x="140" y="43" class="on-white">&quot;A&quot;</text>
+  <rect x="90" y="56" width="100" height="26" class="white"/>
+  <text x="140" y="69" class="on-white">&quot;B&quot;</text>
+  <rect x="90" y="82" width="100" height="52" class="pink"/>
+  <text x="140" y="108" class="on-pink">cap</text>
+  <rect x="90" y="134" width="100" height="26" class="white"/>
+  <text x="140" y="147" class="on-white">&quot;D&quot;</text>
+  <rect x="90" y="160" width="100" height="26" class="white"/>
+  <text x="140" y="173" class="on-white">&quot;E&quot;</text>
+  <rect x="90" y="186" width="100" height="26" class="white"/>
+  <text x="140" y="199" class="on-white">41</text>
+  <rect x="90" y="212" width="100" height="26" class="white"/>
+  <text x="140" y="225" class="on-white">&quot;F&quot;</text>
+  <line x1="90" y1="56" x2="190" y2="56" class="divider dashed"/>
+  <line x1="90" y1="82" x2="190" y2="82" class="divider dashed"/>
+  <line x1="90" y1="134" x2="190" y2="134" class="divider dashed"/>
+  <line x1="90" y1="160" x2="190" y2="160" class="divider dashed"/>
+  <line x1="90" y1="186" x2="190" y2="186" class="divider dashed"/>
+  <line x1="90" y1="212" x2="190" y2="212" class="divider dashed"/>
+  <rect x="90" y="30" width="100" height="208" class="outline dashed"/>
+  <line x1="90" y1="14" x2="90" y2="30" class="rule"/>
+  <line x1="90" y1="238" x2="90" y2="254" class="rule"/>
+  <line x1="190" y1="14" x2="190" y2="30" class="rule"/>
+  <line x1="190" y1="238" x2="190" y2="254" class="rule"/>
+  <text x="236" y="20" class="label">tag</text>
+  <rect x="228" y="30" width="16" height="52" class="white"/>
+  <text x="236" y="56" class="on-white">0</text>
+  <rect x="228" y="30" width="16" height="52" class="outline"/>
+  <rect x="228" y="82" width="16" height="52" class="pink"/>
+  <text x="236" y="108" class="on-pink">1</text>
+  <rect x="228" y="82" width="16" height="52" class="outline"/>
+  <rect x="228" y="134" width="16" height="52" class="white"/>
+  <text x="236" y="160" class="on-white">0</text>
+  <rect x="228" y="134" width="16" height="52" class="outline"/>
+  <rect x="228" y="186" width="16" height="52" class="white"/>
+  <text x="236" y="212" class="on-white">0</text>
+  <rect x="228" y="186" width="16" height="52" class="outline"/>
+  <polyline points="86,33 81,33 81,157 86,157" class="bracket"/>
+  <polyline points="194,163 199,163 199,235 194,235" class="bracket"/>
+  <rect x="4" y="30" width="56" height="26" class="pink"/>
+  <text x="32" y="43" class="on-pink">cap</text>
+  <rect x="4" y="30" width="56" height="26" class="outline"/>
+  <polyline points="60,43 79,43" class="arrow"/>
+  <polygon points="79,43 72,39 72,47" class="head"/>
+  <circle cx="60" cy="43" r="3" class="dot"/>
+  <polyline points="182,108 208,108 208,173 200,173" class="arrow"/>
+  <polygon points="200,173 207,169 207,177" class="head"/>
+  <circle cx="182" cy="108" r="3" class="dot"/>
+</svg>
+<span class="subcaption">b) CHERI</span>
+</div>
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="252" height="296" viewBox="-2 -2 252 296" role="img">
+  <title>Memory tagging</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="90" y="30" width="100" height="26" class="white"/>
+  <text x="140" y="43" class="on-white">&quot;A&quot;</text>
+  <rect x="90" y="56" width="100" height="26" class="white"/>
+  <text x="140" y="69" class="on-white">&quot;B&quot;</text>
+  <rect x="90" y="82" width="100" height="26" class="white"/>
+  <text x="140" y="95" class="on-white">0x50</text>
+  <rect x="90" y="108" width="100" height="26" class="white"/>
+  <text x="140" y="121" class="on-white">&quot;D&quot;</text>
+  <rect x="90" y="134" width="100" height="26" class="white"/>
+  <text x="140" y="147" class="on-white">&quot;E&quot;</text>
+  <rect x="90" y="160" width="100" height="26" class="white"/>
+  <text x="140" y="173" class="on-white">41</text>
+  <rect x="90" y="186" width="100" height="26" class="white"/>
+  <text x="140" y="199" class="on-white">&quot;F&quot;</text>
+  <line x1="90" y1="56" x2="190" y2="56" class="divider dashed"/>
+  <line x1="90" y1="82" x2="190" y2="82" class="divider dashed"/>
+  <line x1="90" y1="108" x2="190" y2="108" class="divider dashed"/>
+  <line x1="90" y1="134" x2="190" y2="134" class="divider dashed"/>
+  <line x1="90" y1="160" x2="190" y2="160" class="divider dashed"/>
+  <line x1="90" y1="186" x2="190" y2="186" class="divider dashed"/>
+  <rect x="90" y="30" width="100" height="182" class="outline dashed"/>
+  <line x1="90" y1="14" x2="90" y2="30" class="rule"/>
+  <line x1="90" y1="212" x2="90" y2="228" class="rule"/>
+  <line x1="190" y1="14" x2="190" y2="30" class="rule"/>
+  <line x1="190" y1="212" x2="190" y2="228" class="rule"/>
+  <rect x="90" y="82" width="26" height="26" class="purple"/>
+  <text x="103" y="95" class="on-purple">9</text>
+  <line x1="116" y1="82" x2="116" y2="108" class="divider"/>
+  <text x="236" y="20" class="label">tag</text>
+  <rect x="228" y="30" width="16" height="104" class="yellow"/>
+  <text x="236" y="82" class="on-yellow">3</text>
+  <rect x="228" y="30" width="16" height="104" class="outline"/>
+  <rect x="228" y="134" width="16" height="78" class="purple"/>
+  <text x="236" y="173" class="on-purple">9</text>
+  <rect x="228" y="134" width="16" height="78" class="outline"/>
+  <rect x="4" y="30" width="22" height="26" class="yellow"/>
+  <text x="15" y="43" class="on-yellow">3</text>
+  <rect x="4" y="30" width="22" height="26" class="outline"/>
+  <rect x="26" y="30" width="48" height="26" class="white"/>
+  <text x="50" y="43" class="on-white">0x40</text>
+  <rect x="26" y="30" width="48" height="26" class="outline"/>
+  <polyline points="74,43 90,43" class="arrow"/>
+  <polygon points="90,43 83,39 83,47" class="head"/>
+  <circle cx="74" cy="43" r="3" class="dot"/>
+  <polyline points="182,95 208,95 208,147 190,147" class="arrow"/>
+  <polygon points="190,147 197,143 197,151" class="head"/>
+  <circle cx="182" cy="95" r="3" class="dot"/>
+  <text x="199" y="121" class="heading">?</text>
+  <polyline points="182,173 220,173" class="arrow"/>
+  <polygon points="220,173 213,169 213,177" class="head"/>
+  <circle cx="182" cy="173" r="3" class="dot"/>
+  <text x="208" y="163" class="heading">?</text>
+</svg>
+<span class="subcaption">c) Memory tagging (MTE)</span>
+</div>
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="252" height="296" viewBox="-2 -2 252 296" role="img">
+  <title>RISC-ViO memory</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="90" y="30" width="100" height="26" class="green"/>
+  <text x="140" y="43" class="on-green">header A</text>
+  <rect x="90" y="56" width="100" height="26" class="blue"/>
+  <text x="140" y="69" class="on-blue">&quot;A&quot;</text>
+  <rect x="90" y="82" width="100" height="26" class="blue"/>
+  <text x="140" y="95" class="on-blue">&quot;B&quot;</text>
+  <rect x="90" y="108" width="100" height="26" class="pink"/>
+  <text x="140" y="121" class="on-pink">B.0</text>
+  <rect x="90" y="134" width="100" height="26" class="blue"/>
+  <text x="140" y="147" class="on-blue">&quot;D&quot;</text>
+  <line x1="90" y1="56" x2="190" y2="56" class="divider"/>
+  <line x1="90" y1="82" x2="190" y2="82" class="divider"/>
+  <line x1="90" y1="108" x2="190" y2="108" class="divider"/>
+  <line x1="90" y1="134" x2="190" y2="134" class="divider"/>
+  <rect x="90" y="30" width="100" height="130" class="outline"/>
+  <rect x="90" y="170" width="100" height="26" class="green"/>
+  <text x="140" y="183" class="on-green">header B</text>
+  <rect x="90" y="196" width="100" height="26" class="blue"/>
+  <text x="140" y="209" class="on-blue">&quot;E&quot;</text>
+  <rect x="90" y="222" width="100" height="26" class="blue"/>
+  <text x="140" y="235" class="on-blue">41</text>
+  <rect x="90" y="248" width="100" height="26" class="blue"/>
+  <text x="140" y="261" class="on-blue">&quot;F&quot;</text>
+  <line x1="90" y1="196" x2="190" y2="196" class="divider"/>
+  <line x1="90" y1="222" x2="190" y2="222" class="divider"/>
+  <line x1="90" y1="248" x2="190" y2="248" class="divider"/>
+  <rect x="90" y="170" width="100" height="104" class="outline"/>
+  <line x1="90" y1="14" x2="90" y2="30" class="rule"/>
+  <line x1="90" y1="274" x2="90" y2="290" class="rule"/>
+  <line x1="190" y1="14" x2="190" y2="30" class="rule"/>
+  <line x1="190" y1="274" x2="190" y2="290" class="rule"/>
+  <rect x="4" y="82" width="26" height="26" class="pink"/>
+  <text x="17" y="95" class="on-pink">A</text>
+  <rect x="4" y="82" width="26" height="26" class="outline"/>
+  <rect x="30" y="82" width="26" height="26" class="blue"/>
+  <text x="43" y="95" class="on-blue">4</text>
+  <rect x="30" y="82" width="26" height="26" class="outline"/>
+  <polyline points="17,82 17,43 90,43" class="arrow"/>
+  <polygon points="90,43 83,39 83,47" class="head"/>
+  <circle cx="17" cy="82" r="3" class="dot"/>
+  <polyline points="56,95 90,95" class="arrow dashed"/>
+  <polygon points="90,95 83,91 83,99" class="head"/>
+  <circle cx="56" cy="95" r="3" class="dot"/>
+  <polyline points="182,121 208,121 208,183 190,183" class="arrow"/>
+  <polygon points="190,183 197,179 197,187" class="head"/>
+  <circle cx="182" cy="121" r="3" class="dot"/>
+</svg>
+<span class="subcaption">d) RISC-ViO</span>
+</div>
+</div>
+```
 
-View of the different architectures on programming language level objects in memory
+Two objects in memory, A ("A" to "D") holding a pointer to B ("E" to "F"), as different architectures see them: a) plain words, any of which may be a pointer; b) capabilities, recognised by a tag bit outside the addressable memory and carrying the bounds of their object; c) allocation tags per granule, matched against the tag in the upper bits of a pointer, which itself stays unrecognised; d) objects whose header holds their bounds and permissions, typed elements, and pointers naming the head of their object plus an index
 :::
 
 ## Design goals {#goals}
@@ -169,7 +580,7 @@ A protection that costs noticeable performance gets weakened or switched off. Me
 Protection that requires microcode, iterates over memory or extends every part of the memory system makes processors more complex and execution less predictable.
 
 RISC-ViO therefore follows the RISC philosophy. No instruction performs work proportional to the size of an object or to the number of pointers it holds, and none requires microcode or iterates over memory.
-The checks an access needs rely only on information held along with the pointer in the register file, so they can run in parallel to address generation, as they do in the execute stage of the example implementation.
+The checks an access needs rely only on the pointer and on the attributes of the object it references. The example implementation keeps the permissions and the length of every object in an attribute cache next to the data cache, which checks every access before the data cache performs it.
 Allocation takes constant time, because objects are allocated from memory that has already been cleared.
 How pointers are distinguished from primitives in memory is left to the implementation. The example implementation encodes this distinction within each memory element, so caches, interconnect and main memory remain as they are.
 This keeps RISC-ViO implementable in ordinary pipelines, from small embedded cores to superscalar designs.
@@ -183,7 +594,7 @@ It changes the semantics of base instructions only where objects require it, res
 RISC-V's openness permits such changes, its compilers, simulators and cores are freely available, and its standard extensions, like the landing pads of Zicfilp, can be combined with RISC-ViO.
 Since CHERI and memory tagging are being standardised for RISC-V as well[^cheri_rvy][^riscv_mt], RISC-ViO can be compared to them on the same base ISA and with the same toolchains.
 
-#### 6. Make the safe case fast
+#### 6. Make the common case fast
 
 A protection that slows down what every program does all the time costs more than one that makes rare operations expensive.
 This holds in particular for languages that are already memory safe, like Java, C# or Go. They pay for their safety in software today, with bounds checks, type checks and garbage collectors that find pointers using metadata maintained by the runtime.
@@ -201,7 +612,7 @@ This section gives an informal overview of the architecture as a whole. Every co
 User code creates objects with the instructions of the [alc family](#alc_fam), which return a pointer to a new object filled with the primitive value 0.
 Every object carries tags. Its *kind* states what it may be used for: ordinary objects may hold pointers and primitives, data only objects hold primitives only, and executable objects hold instructions.
 Its *permissions* state whether it may be read or written, and ordinary objects can be marked as *weak cells*, whose pointers do not keep the objects they reference alive.
-I/O devices are accessed through pointers as well and carry the same tags ([objects and I/O devices](#objects_devices), [object tags](#isa_tags)).
+I/O devices are memory mapped: their registers form data only objects, whose read-through and write-through bits make every access reach the device ([objects and I/O devices](#objects_devices), [object tags](#isa_tags)).
 
 **Pointers and primitives.** Every register and every XLEN-wide element of an object holds either a pointer or a primitive ([pointers and primitives](#data_vs_pointers)).
 Loads and stores take a pointer as base, add the instruction's offset to the pointer's index and check the result against the bounds of the object.
@@ -211,11 +622,11 @@ A pointer occupies exactly one XLEN-wide element in memory. It can be loaded and
 In the following example, `obj.36` denotes a pointer to the object `obj` with index 36:
 
 ```asm
-    alci    a0, 40          ;# a0 = obj.0: pointer to a new, zeroed object of 40 bytes
-    addi    a1, a0, 36      ;# a1 = obj.36: still a pointer to the same object
-    sw      zero, 0(a1)     ;# accesses bytes 36 to 39: inside the object
-    sw      zero, 4(a1)     ;# would access byte 40: IndexOutBoundsException
-    sub     a2, a1, a0      ;# a2 = 36: the distance of two pointers is a primitive
+    alci    a0, 40          # a0 = obj.0: pointer to a new, zeroed object of 40 bytes
+    addi    a1, a0, 36      # a1 = obj.36: still a pointer to the same object
+    sw      zero, 0(a1)     # accesses bytes 36 to 39: inside the object
+    sw      zero, 4(a1)     # would access byte 40: IndexOutBoundsException
+    sub     a2, a1, a0      # a2 = 36: the distance of two pointers is a primitive
 ```
 
 **Memory management.** No instruction frees an object. The memory of an object is reclaimed by a garbage collector once no pointer to the object is left,
@@ -228,11 +639,11 @@ Frame objects are accessible through *sp* only, *sp* cannot be copied into anoth
 *ret* clears *ra*, so a return address can be used only once. Since no function can access its caller's frame, arguments are never passed on the stack: arguments not fitting into *a0* to *a6* are passed in an argument object referenced by *a7* ([calling convention](#chap_calling_convention)).
 
 **Code.** Instructions are held in executable objects, which can be executed but never read or written, and data can never be executed ([object tags](#isa_tags)).
-*auipc*, *jal* and *jalr* produce pointers into executable objects, and an indirect jump through a pointer requires it to reference an executable object.
+*auipc*, *jal* and *jalr* produce pointers into executable objects, and an indirect jump requires a pointer to an executable object.
 Everything outside a program's own code, from global variables and string literals to functions in shared libraries, is reached through the program's global offset table.
 Every executable object holds a pointer to this table in its GOT slot at index 0, in front of its first instruction. Code running in an executable object can load this pointer, by convention into *gp*, but no code can load the GOT slot of any other executable object, so a pointer to a function never gives access to the globals of its program ([global offset table](#got)).
 
-**System management software.** A small set of privileged instructions allows machine and supervisor mode software to create pointers to objects and I/O devices (*dtp*), inspect them (*sep*, *btd*, *itd*), read and change the tags of objects (*lt*, *st*) and clear memory for reuse (*clr*) ([privileged instructions](#priv_instructions)).
+**System management software.** A small set of privileged instructions allows machine and supervisor mode software to create pointers from addresses (*dtp*), inspect them (*sep*, *btd*, *itd*), read and change the tags of objects (*lt*, *st*) and clear memory for reuse (*clr*) ([privileged instructions](#priv_instructions)).
 Loaders, garbage collectors and device drivers are built on these instructions. User mode code has no access to them, which is what makes the guarantees below hold.
 
 ### Guarantees {#guarantees}
@@ -272,7 +683,7 @@ Formally, I' is a modified base ISA rather than an extension, which is the same 
 **Garbage collection.** Temporal safety by construction requires a garbage collector, whose cost depends on its design. RISC-ViO leaves this choice to the implementation, from a stop-the-world collector in software to a concurrent collector in hardware with real-time properties.
 Allocating a frame object for every call raises the allocation rate, a pattern that copying collectors are known to handle well[^appel]. Memory remains allocated as long as it is reachable.
 
-**Hardware.** Every register holds the metadata needed to check accesses along with its pointer, and every memory element records whether it holds a pointer.
+**Hardware.** An attribute cache next to the data cache holds the permissions and lengths of objects, and every memory element records whether it holds a pointer.
 The example implementation achieves this without changes to the memory system, with an additional pipeline stage and an encoding that needs an additional memory access for some values.
 Even accesses to a program's own global data go through the global offset table, whose pointer every function needing it first loads from its executable object, and again after every call that may leave this object.
 How RISC-ViO's net performance compares to *malloc* and *free* combined with today's mitigations is a matter of evaluation, and this specification does not state performance figures.
@@ -306,7 +717,7 @@ Compared to O-RISC, which inspired it, it trades the structural separation of po
 
 **Structure.** As the legend at the beginning states, this document consists of two kinds of chapters.
 [*ISA*]{.isa} chapters define the architecture: what every RISC-ViO processor has to do and what software can rely on. They are normative.
-[*Implementation*]{.imp} chapters describe one possible implementation, an in-order pipeline with an additional attribute stage. They are informative: an implementation may realize the ISA differently, as long as its behaviour matches the ISA chapters.
+[*Implementation*]{.imp} chapters describe one possible implementation, an in-order pipeline with an additional boxing stage. They are informative: an implementation may realize the ISA differently, as long as its behaviour matches the ISA chapters.
 
 - [The object based memory model](#base_spec): objects, tags, pointers and primitives, and the changes to the RISC-V base ISA
 - [The zhm extension](#instructions): allocation, attribute queries and the privileged instructions
@@ -336,43 +747,149 @@ These tags determine both the kind of an object and the accesses permitted on it
 The tags of an object may only be altered using special, privileged instructions.
 
 ::: figure
-![Visualization of a pointer (pink), primitive (blue) and an object](svg/software_objects/object1.svg)
+```{=html}
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="122" viewBox="-2 -2 520 122" role="img">
+  <title>A pointer, a primitive value and an object</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="0" y="46" width="140" height="26" class="pink"/>
+  <text x="70" y="59" class="on-pink">pointer</text>
+  <rect x="0" y="46" width="140" height="26" class="outline"/>
+  <rect x="188" y="46" width="140" height="26" class="blue"/>
+  <text x="258" y="59" class="on-blue">value</text>
+  <rect x="188" y="46" width="140" height="26" class="outline"/>
+  <text x="446" y="10" class="heading">Object</text>
+  <polygon points="376,20 455.1,20 436.9,46 376,46" class="blue"/>
+  <polygon points="455.1,20 516,20 516,46 436.9,46" class="pink"/>
+  <line x1="455.1" y1="20" x2="448.912" y2="28.84" class="diagonal"/>
+  <line x1="443.088" y1="37.16" x2="436.9" y2="46" class="diagonal"/>
+  <text x="446" y="33" class="small">or</text>
+  <text x="408.45" y="33" class="on-blue">val</text>
+  <text x="483.55" y="33" class="on-pink">ptr</text>
+  <polygon points="376,46 455.1,46 436.9,72 376,72" class="blue"/>
+  <polygon points="455.1,46 516,46 516,72 436.9,72" class="pink"/>
+  <line x1="455.1" y1="46" x2="448.912" y2="54.84" class="diagonal"/>
+  <line x1="443.088" y1="63.16" x2="436.9" y2="72" class="diagonal"/>
+  <text x="446" y="59" class="small">or</text>
+  <text x="408.45" y="59" class="on-blue">val</text>
+  <text x="483.55" y="59" class="on-pink">ptr</text>
+  <line x1="376" y1="46" x2="516" y2="46" class="divider"/>
+  <polygon points="376,72 455.1,72 436.9,98 376,98" class="blue"/>
+  <polygon points="455.1,72 516,72 516,98 436.9,98" class="pink"/>
+  <line x1="455.1" y1="72" x2="448.912" y2="80.84" class="diagonal"/>
+  <line x1="443.088" y1="89.16" x2="436.9" y2="98" class="diagonal"/>
+  <text x="446" y="85" class="small">or</text>
+  <text x="408.45" y="85" class="on-blue">val</text>
+  <text x="483.55" y="85" class="on-pink">ptr</text>
+  <line x1="376" y1="72" x2="516" y2="72" class="divider"/>
+  <rect x="376" y="20" width="140" height="78" class="outline"/>
+  <text x="446" y="112" class="heading">...</text>
+</svg>
+```
 
 Visualization of a pointer (pink), primitive (blue) and an object
 :::
 
-I/O devices behave similarly to objects in that they also have an XLEN-wide length as well as XLEN-wide tags.
-In contrast to objects, the length of an I/O device is fixed by the hardware and cannot be influenced by software.
-For consistency, the tags of I/O devices are encoded the same way as the tags of objects.
-They are undefined after reset and have to be set up correctly by the system management software using the [st](#st) instruction.
-I/O devices are uniquely identified by their device number.
-
-<!-- OPEN FOR DEBATE: drop the separate I/O pointer kind and model devices as data only objects at their memory-mapped
-     addresses, referenced by ordinary pointers created with dtp. This would remove the 'io' kind bit, device numbers
-     and bit 0 of the reference word. Device objects lie outside the heap and hold no pointers, so the garbage collector
-     never moves, scans or reclaims them, and data only objects already reject stores of pointers.
-     Open: an implementation keeping headers in memory cannot place one in front of a device, so the length and tags of
-     device objects have to come from elsewhere, e.g. from a table selected by address range. -->
+I/O devices are memory mapped. The registers of a device form an object at the address the device is mapped to, which is accessed through pointers like any other object.
+Since devices only accept primitives, device objects are data only objects. Their length is fixed by the hardware and cannot be influenced by software.
+Their tags are undefined after reset. The system management software creates a pointer to a device object using [dtp](#dtp) and sets its tags using [st](#st):
+the permissions the device allows and, in general, the 'read-through' and 'write-through' bits, so that every access reaches the device ([object tags](#isa_tags)).
+Device objects lie outside the heap, so the garbage collector never moves or reclaims them, and since they are data only, it never scans their contents.
 
 ::: figure
-![Ordinary, executable and data-only objects](svg/software_objects/object2.svg)
+```{=html}
+<div class="bf-row">
+<table class="bf-stack">
+<tbody>
+<tr><td class="t-green o-l o-r o-t">Ordinary</td></tr>
+<tr><td class="t-valptr o-l o-r"><span class="vp"><span>val</span><i>or</i><span>ptr</span></span></td></tr>
+<tr><td class="t-valptr o-l o-r"><span class="vp"><span>val</span><i>or</i><span>ptr</span></span></td></tr>
+<tr><td class="t-valptr o-l o-r"><span class="vp"><span>val</span><i>or</i><span>ptr</span></span></td></tr>
+<tr><td class="t-valptr o-l o-r o-b"><span class="vp"><span>val</span><i>or</i><span>ptr</span></span></td></tr>
+<tr><th>...</th></tr>
+</tbody>
+</table>
+<table class="bf-stack">
+<tbody>
+<tr><td class="t-green o-l o-r o-t">Executable</td></tr>
+<tr><td class="t-pink o-l o-r">GOT</td></tr>
+<tr><td class="t-yellow o-l o-r">code</td></tr>
+<tr><td class="t-yellow o-l o-r">code</td></tr>
+<tr><td class="t-yellow o-l o-r o-b">code</td></tr>
+<tr><th>...</th></tr>
+</tbody>
+</table>
+<table class="bf-stack">
+<tbody>
+<tr><td class="t-green o-l o-r o-t">Data-Only</td></tr>
+<tr><td class="t-cyan o-l o-r">value</td></tr>
+<tr><td class="t-cyan o-l o-r">value</td></tr>
+<tr><td class="t-cyan o-l o-r">value</td></tr>
+<tr><td class="t-cyan o-l o-r o-b">value</td></tr>
+<tr><th>...</th></tr>
+</tbody>
+</table>
+</div>
+```
 
 Ordinary, executable and data-only objects
 :::
 
 ## Object tags {#isa_tags}
 
-::: encoding
-| implementation specific | scratch | weak | permissions || kind ||||
-| XLEN-1:23               | 22:7    | 6    | 5           | 4   | 3    | 2         | 1          | 0        |
-| :---------------------: | :-----: | :--: | :---------: | :-: | :--: | :-------: | :--------: | :------: |
-| ...                     | ...     | i    | r           | w   | io   | data only | executable | ordinary |
+::: {.encoding .tiles .t-green}
+| implementation specific | scratch | weak | access |||| kind |||
+| XLEN-1:24               | 23:8    | 7    | 6   | 5   | 4   | 3   | 2         | 1          | 0        |
+| :---------------------: | :-----: | :--: | :-: | :-: | :-: | :-: | :-------: | :--------: | :------: |
+| ...                     | ...     | i    | rt  | r   | wt  | w   | data only | executable | ordinary |
 :::
 
-The tags of an object or I/O device are represented by an XLEN-wide word which can be read and written by the system management software using the privileged [lt](#lt) and [st](#st) instructions.
-They are made up of the kind bits, the permission bits, the weak bit, sixteen scratch bits and the implementation specific bits.
+The tags of an object are represented by an XLEN-wide word which can be read and written by the system management software using the privileged [lt](#lt) and [st](#st) instructions.
+They are made up of the kind bits, the permission bits, the read-through and write-through bits, the weak bit, sixteen scratch bits and the implementation specific bits.
 
-The kind bits determine what an object may be used for. Exactly one of them is set for every object or I/O device.
+The kind bits determine what an object may be used for. Exactly one of them is set for every object.
 
 Objects having their 'ordinary' bit set are denoted as ordinary objects.
 Such objects may hold any data meaning both primitives and pointers may be stored in an object of this kind.
@@ -390,10 +907,17 @@ System management software building an executable object as an ordinary or data 
 Apart from loading the GOT slot as described in the [global pointer](#gp) section, no instruction may explicitly access the contents of an object of this kind. Only the processor may implicitly read from executable objects to fetch instructions.
 This makes it necessary for system management software to load in code in the form of a data only object and then alter its kind using the *st* instruction.
 
-The 'io' bit marks the tags as belonging to an I/O device as described in the [objects and I/O devices](#objects_devices) section.
-
-The permission bits 'r' and 'w' state whether an object or I/O device may be read or written using load and store instructions.
+The permission bits 'r' and 'w' state whether an object may be read or written using load and store instructions.
 Both may be set or cleared in any combination, except for executable objects, which always have both permission bits cleared, and data only objects, which always have at least one of them set, since a data only object which can be neither read nor written has no use.
+
+The 'read-through' bit 'rt' and the 'write-through' bit 'wt' state how loads and stores reach the memory behind an object.
+Every load from an object with 'rt' set is performed on the memory or device the object is mapped to and is never answered from a cache.
+Every store to an object with 'wt' set is passed on to the memory or device right away instead of being kept in a cache.
+This way, accesses to device objects reach the device exactly as the program performs them ([objects and I/O devices](#objects_devices)), while objects in main memory usually have both bits cleared.
+'rt' only has an effect together with 'r', 'wt' only together with 'w'.
+
+<!-- FIXME: rt and wt have to be specified together with memory ordering: whether loads from read-through objects may be
+     performed speculatively, and whether accesses to read-through and write-through objects stay in program order. -->
 
 Objects having their 'i' bit set are called *weak cells*. The 'i' bit may only be set for ordinary objects.
 Pointers held in a weak cell do not keep the objects they reference alive: the garbage collector does not consider them when determining which objects are reachable.
@@ -401,13 +925,9 @@ Once an object referenced from a weak cell has been collected, every pointer to 
 A program therefore only ever loads a valid pointer or the primitive value 0 from a weak cell, the latter comparing equal to *zero* just like a null pointer in C.
 A pointer loaded from a weak cell into a register is an ordinary pointer and keeps its object alive like any other.
 All pointers held in a weak cell are weak. A runtime building a weak reference with further fields, like a reference queue, keeps these fields in an ordinary object pointing to a weak cell.
-Since the 'i' bit can only be set using *st*, user code obtains weak cells from the system management software ([supervisor services](#services)).
+Since the 'i' bit can only be set using *st*, user code obtains weak cells from the system management software ([supervisor services](#services)). Programs access weak cells only through the [runtime functions](#runtime_functions), which also provide notifications about cleared weak pointers.
 
-<!-- FIXME: not covered yet:
-     * ephemerons (a value kept alive only as long as its key is)
-     * notification about cleared weak pointers (reference queues, finalization)
-     * pointers with a non-zero index in weak cells, which the example implementation displaces into sanctuary objects
-       (see the FIXME in the sanctuaries section) -->
+<!-- FIXME: ephemerons (a value kept alive only as long as its key is) are not covered yet. -->
 
 The sixteen scratch bits are not interpreted by the hardware and may be used freely by the system management software, e.g. for the identity numbers of the [identity number service](#services).
 When the garbage collector moves an object, its tags, including the scratch bits, move along with it.
@@ -416,10 +936,10 @@ Note that information only required by an implementation, like whether an object
 
 ## Pointers and primitives {#data_vs_pointers}
 
-The RISC-V I' ISA differentiates between two data kinds in the register file and in memory: references to objects or I/O devices, called pointers, and regular data, being denoted as primitives.
+The RISC-V I' ISA differentiates between two data kinds in the register file and in memory: references to objects, called pointers, and regular data, being denoted as primitives.
 
-Pointers have a total of two separate fields. One of those is a reference field containing either an objects base address or the number of an I/O device.\
-A pointers second field always contains an index which may point to any byte of the referenced object or I/O device.
+Pointers have a total of two separate fields. One of those is a reference field containing an objects base address.\
+A pointers second field always contains an index which may point to any byte of the referenced object.
 The pointer encoding has to allow pointers to cover the entire address space of the processor of XLEN bits.
 
 A primitive like a number or a character may be arbitrarily modified just as it is possible in RISC-V.
@@ -427,14 +947,14 @@ A primitive like a number or a character may be arbitrarily modified just as it 
 For a pointer, in contrast, some restrictions apply regarding the way in which it may be modified.
 Arithmetic or logic operations on a pointer and a primitive like additions or bitwise inversions modify the pointer as a regular address would have been modified by the executed operation.
 This modification is achieved by only altering a pointers index field while the reference field stays unchanged. The result of such an operation therefore is a pointer again.
-Note that pointers having an index reaching out of the bounds of an object or I/O device are allowed in both the register file and in memory.\
-Operations on two pointers are restricted to subtraction (*sub*) as well as the logic operations *and*, *or* and *xor*. They are only allowed in the case that both pointers reference the same object or I/O device.
+Note that pointers having an index reaching out of the bounds of an object are allowed in both the register file and in memory.\
+Operations on two pointers are restricted to subtraction (*sub*) as well as the logic operations *and*, *or* and *xor*. They are only allowed in the case that both pointers reference the same object.
 Such an operation acts only on the indices of both pointers and its result is a primitive. Any other arithmetic operation on two pointers, like an addition or a shift, leads to an *IncompatibleTypeException*.
-The same restriction applies to ordered comparisons of two pointers: they act only on the indices of both pointers and are only allowed if both pointers reference the same object or I/O device.
-Trying to execute any of these operations on two pointers referencing different objects or I/O devices leads to an *IncompatibleTypeException*.
+The same restriction applies to ordered comparisons of two pointers: they act only on the indices of both pointers and are only allowed if both pointers reference the same object.
+Trying to execute any of these operations on two pointers referencing different objects leads to an *IncompatibleTypeException*.
 To check whether two pointers reference the same object, the [bso](#bso) instruction is provided.\
 Ordered comparisons of a pointer with a primitive are not allowed either and lead to an *IncompatibleTypeException*.
-Equality comparisons (*beq*, *bne*), in contrast, are always allowed. Two pointers are equal if they reference the same object or I/O device with the same index.
+Equality comparisons (*beq*, *bne*), in contrast, are always allowed. Two pointers are equal if they reference the same object with the same index.
 A pointer and a primitive are never equal. Thus, comparing a pointer with the *zero* register always yields 'not equal', which matches the semantics of a null pointer check in C.
 Note that *seqz* and *snez* are realized using *sltiu*/*sltu* in RISC-V and are therefore ordered comparisons, which may not be used on pointers.
 In order to write the result of an equality comparison into a register nonetheless, a branch using *beq* or *bne* has to be used:
@@ -455,21 +975,448 @@ In order to write the result of an equality comparison into a register nonethele
 
 ## Pointer Arithmetics {#imp_ptr_idx}
 
+In the register file of the example implementation, a pointer consists of its base address and its index.
+
 ::: figure
-![Composition of a pointer](svg/software_objects/pointer_plus_index.svg)
+```{=html}
+<svg xmlns="http://www.w3.org/2000/svg" width="388" height="44" viewBox="-2 -2 388 44" role="img">
+  <title>Composition of a pointer</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <text x="382" y="5" class="label end">0</text>
+  <text x="194" y="5" class="label start">31</text>
+  <text x="190" y="5" class="label end">32</text>
+  <text x="2" y="5" class="label start">63</text>
+  <rect x="0" y="14" width="192" height="26" class="pink"/>
+  <text x="96" y="27" class="on-pink">base</text>
+  <rect x="192" y="14" width="192" height="26" class="blue"/>
+  <text x="288" y="27" class="on-blue">index</text>
+  <line x1="192" y1="14" x2="192" y2="40" class="divider"/>
+  <rect x="0" y="14" width="384" height="26" class="outline"/>
+</svg>
+```
 
 Composition of a pointer
 :::
 
-::: figure
-![Primitive plus primitive](svg/software_objects/prim_plus_prim.svg)
-![Pointer plus primitive](svg/software_objects/pointer_plus_prim.svg)
-<!-- FIXME: the pointer plus pointer figures still show the old base address selection rule.
-     Pointer plus pointer now yields a primitive for the same object and an exception otherwise. -->
-![Pointer plus pointer, first case](svg/software_objects/pointer_plus_pointer_1.svg)
-![Pointer plus pointer, second case](svg/software_objects/pointer_plus_pointer_2.svg)
+Arithmetic and logic instructions compute on indices and primitive values exactly as RISC-V computes on integers.
+The kinds of their operands only decide which fields the result is taken from, and whether the instruction is allowed at all:
 
-Different forms of arithmetics depending on the input types
+- Two primitives give a primitive, as in RISC-V.
+- A pointer and a primitive give a pointer with the base of the pointer operand. Only its index takes the result of the operation.
+- Two pointers with the same base give a primitive for *sub*, *and*, *or* and *xor*, computed from their indices.
+- Two pointers with different bases, as well as any other operation on two pointers, like *add* or a shift, raise an *IncompatibleTypeException*.
+
+Ordered comparisons of two pointers follow the rule of *sub*: they compare the indices of two pointers with the same base and raise an *IncompatibleTypeException* otherwise.
+
+::: figure
+```{=html}
+<div class="fig-row">
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="156" height="112" viewBox="-2 -2 156 112" role="img">
+  <title>Primitive plus primitive</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="80" y="0" width="72" height="26" class="blue"/>
+  <text x="116" y="13" class="on-blue">12</text>
+  <rect x="80" y="0" width="72" height="26" class="outline"/>
+  <rect x="80" y="38" width="72" height="26" class="blue"/>
+  <text x="116" y="51" class="on-blue">34</text>
+  <rect x="80" y="38" width="72" height="26" class="outline"/>
+  <text x="9" y="51" class="heading">+</text>
+  <line x1="0" y1="72" x2="152" y2="72" class="rule"/>
+  <rect x="80" y="82" width="72" height="26" class="blue"/>
+  <text x="116" y="95" class="on-blue">46</text>
+  <rect x="80" y="82" width="72" height="26" class="outline"/>
+</svg>
+<span class="subcaption">a) primitive + primitive</span>
+</div>
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="156" height="112" viewBox="-2 -2 156 112" role="img">
+  <title>Pointer plus primitive</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="80" y="0" width="72" height="26" class="blue"/>
+  <text x="116" y="13" class="on-blue">46</text>
+  <rect x="80" y="0" width="72" height="26" class="outline"/>
+  <rect x="22" y="38" width="52" height="26" class="pink"/>
+  <text x="48" y="51" class="on-pink">A</text>
+  <rect x="22" y="38" width="52" height="26" class="outline"/>
+  <rect x="80" y="38" width="72" height="26" class="blue"/>
+  <text x="116" y="51" class="on-blue">12</text>
+  <rect x="80" y="38" width="72" height="26" class="outline"/>
+  <text x="9" y="51" class="heading">+</text>
+  <line x1="0" y1="72" x2="152" y2="72" class="rule"/>
+  <rect x="22" y="82" width="52" height="26" class="pink"/>
+  <text x="48" y="95" class="on-pink">A</text>
+  <rect x="22" y="82" width="52" height="26" class="outline"/>
+  <rect x="80" y="82" width="72" height="26" class="blue"/>
+  <text x="116" y="95" class="on-blue">58</text>
+  <rect x="80" y="82" width="72" height="26" class="outline"/>
+</svg>
+<span class="subcaption">b) pointer + primitive</span>
+</div>
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="156" height="112" viewBox="-2 -2 156 112" role="img">
+  <title>Pointer minus pointer to the same object</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="22" y="0" width="52" height="26" class="pink"/>
+  <text x="48" y="13" class="on-pink">A</text>
+  <rect x="22" y="0" width="52" height="26" class="outline"/>
+  <rect x="80" y="0" width="72" height="26" class="blue"/>
+  <text x="116" y="13" class="on-blue">58</text>
+  <rect x="80" y="0" width="72" height="26" class="outline"/>
+  <rect x="22" y="38" width="52" height="26" class="pink"/>
+  <text x="48" y="51" class="on-pink">A</text>
+  <rect x="22" y="38" width="52" height="26" class="outline"/>
+  <rect x="80" y="38" width="72" height="26" class="blue"/>
+  <text x="116" y="51" class="on-blue">12</text>
+  <rect x="80" y="38" width="72" height="26" class="outline"/>
+  <text x="9" y="51" class="heading">−</text>
+  <line x1="0" y1="72" x2="152" y2="72" class="rule"/>
+  <rect x="80" y="82" width="72" height="26" class="blue"/>
+  <text x="116" y="95" class="on-blue">46</text>
+  <rect x="80" y="82" width="72" height="26" class="outline"/>
+</svg>
+<span class="subcaption">c) pointer − pointer, same object</span>
+</div>
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="156" height="112" viewBox="-2 -2 156 112" role="img">
+  <title>Pointer minus pointer to another object</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="22" y="0" width="52" height="26" class="pink"/>
+  <text x="48" y="13" class="on-pink">A</text>
+  <rect x="22" y="0" width="52" height="26" class="outline"/>
+  <rect x="80" y="0" width="72" height="26" class="blue"/>
+  <text x="116" y="13" class="on-blue">58</text>
+  <rect x="80" y="0" width="72" height="26" class="outline"/>
+  <rect x="22" y="38" width="52" height="26" class="pink"/>
+  <text x="48" y="51" class="on-pink">B</text>
+  <rect x="22" y="38" width="52" height="26" class="outline"/>
+  <rect x="80" y="38" width="72" height="26" class="blue"/>
+  <text x="116" y="51" class="on-blue">12</text>
+  <rect x="80" y="38" width="72" height="26" class="outline"/>
+  <text x="9" y="51" class="heading">−</text>
+  <line x1="0" y1="72" x2="152" y2="72" class="rule"/>
+  <rect x="22" y="82" width="130" height="26" class="white"/>
+  <text x="87" y="95" class="on-white">exception</text>
+  <rect x="22" y="82" width="130" height="26" class="outline dashed"/>
+</svg>
+<span class="subcaption">d) pointer − pointer, different objects</span>
+</div>
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="156" height="112" viewBox="-2 -2 156 112" role="img">
+  <title>Pointer plus pointer</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <rect x="22" y="0" width="52" height="26" class="pink"/>
+  <text x="48" y="13" class="on-pink">A</text>
+  <rect x="22" y="0" width="52" height="26" class="outline"/>
+  <rect x="80" y="0" width="72" height="26" class="blue"/>
+  <text x="116" y="13" class="on-blue">12</text>
+  <rect x="80" y="0" width="72" height="26" class="outline"/>
+  <rect x="22" y="38" width="52" height="26" class="pink"/>
+  <text x="48" y="51" class="on-pink">A</text>
+  <rect x="22" y="38" width="52" height="26" class="outline"/>
+  <rect x="80" y="38" width="72" height="26" class="blue"/>
+  <text x="116" y="51" class="on-blue">46</text>
+  <rect x="80" y="38" width="72" height="26" class="outline"/>
+  <text x="9" y="51" class="heading">+</text>
+  <line x1="0" y1="72" x2="152" y2="72" class="rule"/>
+  <rect x="22" y="82" width="130" height="26" class="white"/>
+  <text x="87" y="95" class="on-white">exception</text>
+  <rect x="22" y="82" width="130" height="26" class="outline dashed"/>
+</svg>
+<span class="subcaption">e) pointer + pointer</span>
+</div>
+</div>
+```
+
+Arithmetic and logic operations in the example implementation, with a pointer drawn as its base (pink) and its index (blue)
 :::
 
 ::::::
@@ -478,8 +1425,7 @@ Different forms of arithmetics depending on the input types
 
 ## RISC-V I vs I' {#riscv_i_tick}
 
-For the differentiation between pointers and primitives to be meaningful, RISC-ViO mandates that only pointers may be used to access memory via the object abstraction. The same is also true for accesses to I/O devices: Accesses to I/O devices are only possible via their corresponding pointers.
-(Note that I/O devices only accept primitives. Pointers may not be written to I/O devices.)
+For the differentiation between pointers and primitives to be meaningful, RISC-ViO mandates that only pointers may be used to access memory via the object abstraction. This includes accesses to I/O devices, which are mapped into data only objects ([objects and I/O devices](#objects_devices)).
 This requirement influences all load and store instructions as listed below:
 
 ::: inline
@@ -494,10 +1440,10 @@ This requirement influences all load and store instructions as listed below:
 - sd (RV64)
 :::
 
-The main change for those instruction families lies in them requiring pointers to be used to select objects and I/O devices instead of memory locations.
+The main change for those instruction families lies in them requiring pointers to be used to select objects instead of memory locations.
 Offsets from those pointers using the 12 bit immediate present in those instructions are still allowed.
-Those offsets are added to the index of the pointer used to access the object to make up the offset used for the actual object or I/O device access.
-Being explicit memory accesses in the case of pointers of memory kind, these instructions may only access ordinary as well as data only objects.
+Those offsets are added to the index of the pointer used to access the object to make up the offset used for the actual object access.
+Being explicit memory accesses, these instructions may only access ordinary as well as data only objects.
 Pointers always occupy a whole XLEN wide, aligned element of an object.
 Loading only part of an element holding a pointer using a narrower load (*lb*, *lbu*, *lh*, *lhu* as well as *lw*, *lwu* on RV64) leads to an *IncompatibleTypeException*.
 A narrower store (*sb*, *sh* as well as *sw* on RV64) into an element holding a pointer first clears the whole element and then writes the stored bytes, overwriting the pointer.
@@ -517,29 +1463,15 @@ Since instructions are managed using executable objects, the semantics of even m
 The *auipc* instruction for example will emit a pointer instead of a primitive value.
 Due to the access to executable objects being limited as described in the [object tags](#isa_tags) section however, access to constant data is not possible using this pointer. The only element that can be loaded through it is the GOT slot of the current executable object ([global pointer](#gp)).
 
-The encapsulation of instructions also alters the semantics of *jalr*. Depending on the content of its source register, *jalr* behaves in one of two ways:
-If the source register contains a pointer, this pointer has to reference an executable object. The program counter is then set to this pointer, with the immediate being added to its index.
-For the separation of data and instructions, using a pointer to any other kind of object as jump target leads to an *IncompatibleTypeException*.
-If the source register contains a primitive, *jalr* jumps to the index given by this primitive and the immediate inside the currently executed executable object.
-In both cases, *jalr* will also, just as *jal* does, write a pointer to its destination register.
+The encapsulation of instructions also alters the semantics of *jalr*. Its source register has to contain a pointer to an executable object. The program counter is then set to this pointer, with the immediate being added to its index.
+For the separation of data and instructions, using a pointer to any other kind of object as jump target leads to an *IncompatibleTypeException*, and so does a primitive in the source register.
+No code has to jump through a primitive: every jump target is derived from *auipc*, from the link register written by *jal* or *jalr*, or from a pointer stored by the loader, and arithmetic with primitives keeps it a pointer.
+In turn, a function pointer field overwritten with data, which turns it into a primitive, can never be used as jump target.
+*jalr* will also, just as *jal* does, write a pointer to its destination register.
 
 Instructions are only fetched from index XLEN/8 on, since the first XLEN/8 bytes of every executable object form its GOT slot ([object tags](#isa_tags)).
 A jump or branch to an index below XLEN/8 or beyond the end of the executable object raises a *JumpIndexOutBoundsException*, and so does running past its end.
-In particular, a jump through the primitive value 0, like `jalr t0, 0(zero)` or a call through a null function pointer, raises a *JumpIndexOutBoundsException*.
-
-<!-- OPEN FOR DEBATE: jalr with a primitive source jumps to any index of the current executable object. Since overflows
-     inside an object are not detected and a narrow store into a pointer element turns it into a primitive, a corrupted
-     function pointer field becomes a jump to an arbitrary index of the current code.
-     No code needs this variant for correctness: every jump target is derived from auipc, from the link register written
-     by jal/jalr or from a pointer stored by the loader, and arithmetic with primitives keeps it a pointer. A primitive
-     target only arises from casting an integer to a function pointer, from calling a null function pointer or from
-     corruption.
-     Counter-argument: return addresses have to be cheap to save (design goal 6). This cost does not depend on the
-     variant, since jal and jalr write pointers either way (see the FIXME in loading and storing a pointer). Making
-     return addresses primitives would need primitive links and primitive jumps through ra, but breaks on tail calls
-     into another executable object: the callee would return through a primitive meant for the executable object of
-     the caller's caller. Primitive jumps through ra only (ra is restricted, so its primitives cannot be forged) would
-     keep the protection for all other registers. -->
+A jump through a primitive, like `jalr t0, 0(zero)` or a call through a null function pointer, raises an *IncompatibleTypeException*.
 
 To make sure that a return address cannot be used twice, RISC-ViO mandates that the variant of *jalr* which realizes the *ret* pseudoinstruction has to null out the register *ra* except for its state tracking residue required for [frame ownership](#frame_ownership) after updating the program counter.
 
@@ -717,20 +1649,6 @@ To enable the management of the processor system, which requires low level contr
 
 In order to be able to create and inspect pointers a total of four instructions are provided. These allow for asserting that a register contains a pointer, reading out the integral parts of a pointer as well as creating arbitrary pointers.
 
-*btd* and *dtp* exchange the reference field of a pointer in the form of a primitive called *reference word*, which also tells pointers to objects and pointers to I/O devices apart:
-
-::: encoding
-| reference word                          ||
-| XLEN-1:1                                | 0     |
-| :-------------------------------------: | :---: |
-| base address[XLEN-1:1] or device number | io    |
-:::
-
-For a pointer to an object, the reference word is the base address of the object. Implementations place objects at even base addresses, so bit 0 is always 0.
-For a pointer to an I/O device, the reference word holds the device number in bits XLEN-1:1 and has bit 0 set.
-Passing the results of *btd* and *itd* to *dtp* therefore always rebuilds the original pointer, regardless of what it references.
-How an implementation represents the reference field internally is not visible to software.
-
 #### sep-instruction {#sep}
 
 The *sep* 'set if pointer' instruction allows for checking for the kind of value present in a register. When the register given by rs1 contains a primitive, a primitive of value 0 is written into the register given by rd.
@@ -746,7 +1664,7 @@ Assembly syntax: `sep rd, rs1`
 
 #### btd-instruction {#btd}
 
-The btd 'base to data' instruction allows for reading out the reference field of a pointer. The reference word of the pointer given in rs1, i.e. the base address of the referenced object or the device number of the referenced I/O device with bit 0 set, is written into rd as a primitive.
+The btd 'base to data' instruction allows for reading out a pointers base address. This primitive value is written into rd for the pointer given in rs1.
 
 ::: encoding
 | 31:25   | 24:20 | 19:15    | 14:12 | 11:7    | 6:0     | Instruction |
@@ -778,17 +1696,17 @@ The *itd* instruction may trigger the following exceptions for the given events 
 
 #### dtp-instruction {#dtp}
 
-The dtp 'data to pointer' instruction allows for the assembly of arbitrary pointers. The reference field is set according to the reference word in rs1, the index according to the value in rs2. The result is stored in rd.
-If bit 0 of the reference word is set, the result is a pointer to the I/O device whose number is given by bits XLEN-1:1. This way, *dtp* is also used to link a pre-existing, memory-mapped I/O device to a pointer.
-The *st* instruction is then used to set the tags of this I/O device such that they represent how the I/O device may be used (see [objects and I/O devices](#objects_devices)).
+The dtp 'data to pointer' instruction allows for the assembly of arbitrary pointers. Both the base address and the index are set according to the values in registers rs1 and rs2 respectively. The result is stored in rd.
+This way, *dtp* is also used to link a pre-existing, memory-mapped I/O device to a pointer.
+The *st* instruction is then used to set the tags of this device object such that they represent how the I/O device may be used (see [objects and I/O devices](#objects_devices)).
 
 ::: encoding
 | 31:25   | 24:20    | 19:15      | 14:12 | 11:7     | 6:0     | Instruction |
 | :-----: | :------: | :--------: | :---: | :------: | :-----: | :---------: |
-| 0111111 | rs2 (ix) | rs1 (ref) | 000   | rd (dst) | 1110011 | dtp         |
+| 0111111 | rs2 (ix) | rs1 (base) | 000   | rd (dst) | 1110011 | dtp         |
 :::
 
-Assembly syntax: `dtp rd, rs1, rs2` (rs1 holds the reference word, rs2 the index)
+Assembly syntax: `dtp rd, rs1, rs2` (rs1 holds the base address, rs2 the index)
 
 The *dtp* instruction may trigger the following exceptions for the given events (xtval content):
 
@@ -801,7 +1719,7 @@ In order for a system software to gain control over the tags that make up an obj
 
 #### lt-instruction {#lt}
 
-The *lt* instruction enables reading out the tags of an object by placing the tags of the object or I/O device pointed to by the contents of rs1 into the register rd in the form of a primitive.
+The *lt* instruction enables reading out the tags of an object by placing the tags of the object pointed to by the contents of rs1 into the register rd in the form of a primitive.
 For information on how these tags are encoded, please refer to the discussion of [tags on ISA level](#isa_tags).
 *lt* always returns the tags on ISA level. How an implementation represents them in memory is never visible to software.
 
@@ -830,9 +1748,6 @@ The *lt* instruction may trigger the following exceptions for the given events (
      * Anything the system management software keeps in the scratch bits becomes readable. The field should then become
        an identity field with defined semantics, possibly leaving a few bits private to the system management software
        and masked in user mode.
-     * The example implementation answers lt from the header copy in the register file. After an identity number has
-       been assigned through one register, other registers holding a pointer to the same object still show 0, so user
-       code has to treat 0 as 'unknown' and ask the system management software.
      * The encoding of lt lies among the privileged SYSTEM instructions. A user-mode query fits better next to qsz in
        custom-0 (e.g. funct3 100, funct7 0000001). st stays privileged.
      Option: making sep usable in user mode as well. Knowing whether a value is a pointer does not help to forge one,
@@ -840,7 +1755,7 @@ The *lt* instruction may trigger the following exceptions for the given events (
 
 #### st-instruction {#st}
 
-The *st* instruction is the companion of the *lt* instruction, allowing object or I/O device tags to be written. For this, *st* sets the tags of the object or I/O device being referenced by the content of the rs1 register to the tags provided in rs2 in form of a primitive.
+The *st* instruction is the companion of the *lt* instruction, allowing object tags to be written. For this, *st* sets the tags of the object being referenced by the content of the rs1 register to the tags provided in rs2 in form of a primitive.
 *lt* and *st* are completely symmetric: the tags returned by *lt* can be passed to *st* unchanged and vice versa.
 
 ::: encoding
@@ -904,7 +1819,18 @@ This also holds for functions which do not save *ra* at all: the *ra* slot may n
 These restrictions are enforced using *ForbiddenDstException* and *ForbiddenSrcException*.
 
 ::: figure
-![A frame object for XLEN=32](svg/objektbaukasten/frame_object.svg)
+```{=html}
+<table class="bf-stack bf-ix">
+<colgroup><col><col style="width:2.5rem"></colgroup>
+<thead><tr><th></th><th>ix</th></tr></thead>
+<tbody>
+<tr><td class="t-pink o-l o-r o-t">sp</td><th>0</th></tr>
+<tr><td class="t-pink o-l o-r">ra</td><th>4</th></tr>
+<tr><td class="t-valptr o-l o-r o-b"><span class="vp"><span>...</span><span>...</span></span></td><th>8</th></tr>
+<tr><th>...</th><th>...</th></tr>
+</tbody>
+</table>
+```
 
 A frame object for XLEN=32
 :::
@@ -954,7 +1880,98 @@ Whether the processor is currently in the regular state (light blue), is given b
 If the colours of *sp* and *ra* both were black for example, the processor would be in the regular state, allowing access to the current frame.
 
 ::: {#fig-colour-transitions .figure}
-![Colour transitions](svg/vio_stack_colors_transitions.drawio.svg)
+```{=html}
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="316" viewBox="-2 -2 380 316" role="img">
+  <title>Colour transitions</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  text.code { font-size: 12px; font-weight: 400; text-anchor: start; }
+  .c-white { fill: #ffffff; stroke: #000; stroke-width: 2; }
+  .c-black { fill: #1a1a1a; stroke: #000; stroke-width: 2; }
+  .red { fill: #ff7a7a }
+  .edge { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .grey { fill: #d0d0d0 }
+  .dark-grey { fill: #a0a0a0 }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .c-white { fill: #cccccc; stroke: #cccccc; }
+    .c-black { fill: #000000; stroke: #cccccc; }
+    .red { fill: #ff7a7a40 }
+    .edge { stroke: #9a9a9a; }
+    text.on-red { fill: #ff7a7a }
+    .grey { fill: #ffffff26 }
+    .dark-grey { fill: #ffffff4d }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <text x="70" y="22" class="heading">white</text>
+  <text x="310" y="22" class="heading">black</text>
+  <circle cx="70" cy="74" r="32" class="c-white"/>
+  <circle cx="310" cy="74" r="32" class="c-black"/>
+  <text x="190" y="65">ra</text>
+  <text x="190" y="83">colour</text>
+  <path d="M97,57 Q190,2 283,57" class="arrow"/>
+  <polygon points="283.0,57.0 278.2,49.5 274.1,56.4" class="head"/>
+  <text x="190" y="16" class="heading">call / ret</text>
+  <path d="M283,91 Q190,146 97,91" class="arrow"/>
+  <polygon points="97.0,91.0 101.8,98.5 105.9,91.6" class="head"/>
+  <text x="190" y="132" class="heading">call / ret</text>
+  <text x="70" y="182" class="heading">white</text>
+  <text x="310" y="182" class="heading">black</text>
+  <circle cx="70" cy="234" r="32" class="c-white"/>
+  <circle cx="310" cy="234" r="32" class="c-black"/>
+  <text x="190" y="225">sp</text>
+  <text x="190" y="243">colour</text>
+  <path d="M97,217 Q190,162 283,217" class="arrow"/>
+  <polygon points="283.0,217.0 278.2,209.5 274.1,216.4" class="head"/>
+  <text x="190" y="176" class="heading">alc / alci sp</text>
+  <path d="M283,251 Q190,306 97,251" class="arrow"/>
+  <polygon points="97.0,251.0 101.8,258.5 105.9,251.6" class="head"/>
+  <text x="190" y="292" class="heading">alc / alci sp</text>
+</svg>
+```
 
 Colour transitions
 :::
@@ -964,10 +1981,300 @@ Part a) of this figure shows the behaviour of the colour mechanism during the ex
 In part b) the colour mechanism spots function b trying to access function a's frame, which leads to the processor raising a *StateException*.
 
 ::: {#fig-state-transitions .figure}
-![Transitions during normal program flow](svg/vio_stack_colors.drawio.svg "a) Transitions during normal program flow")
-![Transitions during abnormal program flow with exception](svg/vio_stack_colors_exception.drawio.svg "b) Transitions during abnormal program flow with exception")
+```{=html}
+<div class="fig-row">
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="392" height="446" viewBox="-2 -2 392 446" role="img">
+  <title>Colours and states during normal program flow</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  text.code { font-size: 12px; font-weight: 400; text-anchor: start; }
+  .c-white { fill: #ffffff; stroke: #000; stroke-width: 2; }
+  .c-black { fill: #1a1a1a; stroke: #000; stroke-width: 2; }
+  .red { fill: #ff7a7a }
+  .edge { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .grey { fill: #d0d0d0 }
+  .dark-grey { fill: #a0a0a0 }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .c-white { fill: #cccccc; stroke: #cccccc; }
+    .c-black { fill: #000000; stroke: #cccccc; }
+    .red { fill: #ff7a7a40 }
+    .edge { stroke: #9a9a9a; }
+    text.on-red { fill: #ff7a7a }
+    .grey { fill: #ffffff26 }
+    .dark-grey { fill: #ffffff4d }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <text x="31" y="8" class="heading">colours</text>
+  <text x="17" y="24" class="heading">ra</text>
+  <text x="45" y="24" class="heading">sp</text>
+  <text x="77" y="24" class="heading">state</text>
+  <text x="213" y="24" class="heading">instructions</text>
+  <text x="360" y="24" class="heading">function</text>
+  <rect x="10" y="34" width="14" height="51" class="c-white"/>
+  <rect x="10" y="85" width="14" height="85" class="c-black"/>
+  <rect x="10" y="170" width="14" height="153" class="c-white"/>
+  <rect x="10" y="323" width="14" height="85" class="c-black"/>
+  <rect x="10" y="408" width="14" height="34" class="c-white"/>
+  <rect x="38" y="34" width="14" height="68" class="c-white"/>
+  <rect x="38" y="102" width="14" height="85" class="c-black"/>
+  <rect x="38" y="187" width="14" height="119" class="c-white"/>
+  <rect x="38" y="306" width="14" height="85" class="c-black"/>
+  <rect x="38" y="391" width="14" height="51" class="c-white"/>
+  <rect x="66" y="34" width="22" height="51" class="blue"/>
+  <rect x="66" y="85" width="22" height="17" class="yellow"/>
+  <line x1="66" y1="85" x2="88" y2="85" class="divider"/>
+  <rect x="66" y="102" width="22" height="68" class="blue"/>
+  <line x1="66" y1="102" x2="88" y2="102" class="divider"/>
+  <rect x="66" y="170" width="22" height="17" class="yellow"/>
+  <line x1="66" y1="170" x2="88" y2="170" class="divider"/>
+  <rect x="66" y="187" width="22" height="119" class="blue"/>
+  <line x1="66" y1="187" x2="88" y2="187" class="divider"/>
+  <rect x="66" y="306" width="22" height="17" class="yellow"/>
+  <line x1="66" y1="306" x2="88" y2="306" class="divider"/>
+  <rect x="66" y="323" width="22" height="68" class="blue"/>
+  <line x1="66" y1="323" x2="88" y2="323" class="divider"/>
+  <rect x="66" y="391" width="22" height="17" class="yellow"/>
+  <line x1="66" y1="391" x2="88" y2="391" class="divider"/>
+  <rect x="66" y="408" width="22" height="34" class="blue"/>
+  <line x1="66" y1="408" x2="88" y2="408" class="divider"/>
+  <rect x="66" y="34" width="22" height="408" class="outline"/>
+  <rect x="98" y="34" width="230" height="408" class="white"/>
+  <text x="106" y="42.5" class="code">...</text>
+  <text x="150" y="42.5" class="code"></text>
+  <text x="106" y="59.5" class="code">li</text>
+  <text x="150" y="59.5" class="code">a0, 0x1</text>
+  <text x="106" y="76.5" class="code">call</text>
+  <text x="150" y="76.5" class="code">fn_a</text>
+  <text x="106" y="93.5" class="code">alci</text>
+  <text x="150" y="93.5" class="code">sp, 32</text>
+  <text x="106" y="110.5" class="code">sw</text>
+  <text x="150" y="110.5" class="code">ra, 4(sp)</text>
+  <text x="106" y="127.5" class="code">sw</text>
+  <text x="150" y="127.5" class="code">s0, 8(sp)</text>
+  <text x="106" y="144.5" class="code">li</text>
+  <text x="150" y="144.5" class="code">s0, 0x55</text>
+  <text x="106" y="161.5" class="code">call</text>
+  <text x="150" y="161.5" class="code">fn_b</text>
+  <text x="106" y="178.5" class="code">alci</text>
+  <text x="150" y="178.5" class="code">sp, 32</text>
+  <text x="106" y="195.5" class="code">sw</text>
+  <text x="150" y="195.5" class="code">ra, 4(sp)</text>
+  <text x="106" y="212.5" class="code">sw</text>
+  <text x="150" y="212.5" class="code">s0, 8(sp)</text>
+  <text x="106" y="229.5" class="code">li</text>
+  <text x="150" y="229.5" class="code">s0, 0x22</text>
+  <text x="106" y="246.5" class="code">xor</text>
+  <text x="150" y="246.5" class="code">a0, a0, s0</text>
+  <text x="106" y="263.5" class="code">lw</text>
+  <text x="150" y="263.5" class="code">s0, 8(sp)</text>
+  <text x="106" y="280.5" class="code">lw</text>
+  <text x="150" y="280.5" class="code">ra, 4(sp)</text>
+  <text x="106" y="297.5" class="code">lw</text>
+  <text x="150" y="297.5" class="code">sp, 0(sp)</text>
+  <text x="106" y="314.5" class="code">ret</text>
+  <text x="150" y="314.5" class="code"></text>
+  <text x="106" y="331.5" class="code">and</text>
+  <text x="150" y="331.5" class="code">a0, a0, s0</text>
+  <text x="106" y="348.5" class="code">lw</text>
+  <text x="150" y="348.5" class="code">s0, 8(sp)</text>
+  <text x="106" y="365.5" class="code">lw</text>
+  <text x="150" y="365.5" class="code">ra, 4(sp)</text>
+  <text x="106" y="382.5" class="code">lw</text>
+  <text x="150" y="382.5" class="code">sp, 0(sp)</text>
+  <text x="106" y="399.5" class="code">ret</text>
+  <text x="150" y="399.5" class="code"></text>
+  <text x="106" y="416.5" class="code">mv</text>
+  <text x="150" y="416.5" class="code">s0, a0</text>
+  <text x="106" y="433.5" class="code">...</text>
+  <text x="150" y="433.5" class="code"></text>
+  <rect x="98" y="34" width="230" height="408" class="outline"/>
+  <rect x="346" y="34" width="28" height="51" class="white"/>
+  <rect x="346" y="85" width="28" height="85" class="grey"/>
+  <text x="360" y="127.5" class="heading">a</text>
+  <line x1="346" y1="85" x2="374" y2="85" class="divider"/>
+  <rect x="346" y="170" width="28" height="153" class="dark-grey"/>
+  <text x="360" y="246.5" class="heading">b</text>
+  <line x1="346" y1="170" x2="374" y2="170" class="divider"/>
+  <rect x="346" y="323" width="28" height="85" class="grey"/>
+  <text x="360" y="365.5" class="heading">a</text>
+  <line x1="346" y1="323" x2="374" y2="323" class="divider"/>
+  <rect x="346" y="408" width="28" height="34" class="white"/>
+  <line x1="346" y1="408" x2="374" y2="408" class="divider"/>
+  <rect x="346" y="34" width="28" height="408" class="outline"/>
+</svg>
+<span class="subcaption">a) Transitions during normal program flow</span>
+</div>
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="392" height="208" viewBox="-2 -2 392 208" role="img">
+  <title>Colours and states when fn_b accesses the frame of fn_a</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  text.code { font-size: 12px; font-weight: 400; text-anchor: start; }
+  .c-white { fill: #ffffff; stroke: #000; stroke-width: 2; }
+  .c-black { fill: #1a1a1a; stroke: #000; stroke-width: 2; }
+  .red { fill: #ff7a7a }
+  .edge { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .grey { fill: #d0d0d0 }
+  .dark-grey { fill: #a0a0a0 }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .c-white { fill: #cccccc; stroke: #cccccc; }
+    .c-black { fill: #000000; stroke: #cccccc; }
+    .red { fill: #ff7a7a40 }
+    .edge { stroke: #9a9a9a; }
+    text.on-red { fill: #ff7a7a }
+    .grey { fill: #ffffff26 }
+    .dark-grey { fill: #ffffff4d }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <text x="31" y="8" class="heading">colours</text>
+  <text x="17" y="24" class="heading">ra</text>
+  <text x="45" y="24" class="heading">sp</text>
+  <text x="77" y="24" class="heading">state</text>
+  <text x="213" y="24" class="heading">instructions</text>
+  <text x="360" y="24" class="heading">function</text>
+  <rect x="10" y="34" width="14" height="51" class="c-white"/>
+  <rect x="10" y="85" width="14" height="85" class="c-black"/>
+  <rect x="10" y="170" width="14" height="34" class="c-white"/>
+  <rect x="38" y="34" width="14" height="68" class="c-white"/>
+  <rect x="38" y="102" width="14" height="102" class="c-black"/>
+  <rect x="66" y="34" width="22" height="51" class="blue"/>
+  <rect x="66" y="85" width="22" height="17" class="yellow"/>
+  <line x1="66" y1="85" x2="88" y2="85" class="divider"/>
+  <rect x="66" y="102" width="22" height="68" class="blue"/>
+  <line x1="66" y1="102" x2="88" y2="102" class="divider"/>
+  <rect x="66" y="170" width="22" height="17" class="red"/>
+  <line x1="66" y1="170" x2="88" y2="170" class="divider"/>
+  <rect x="66" y="187" width="22" height="17" class="white"/>
+  <line x1="66" y1="187" x2="88" y2="187" class="divider"/>
+  <rect x="66" y="34" width="22" height="170" class="outline"/>
+  <rect x="98" y="34" width="230" height="170" class="white"/>
+  <text x="106" y="42.5" class="code">...</text>
+  <text x="150" y="42.5" class="code"></text>
+  <text x="106" y="59.5" class="code">li</text>
+  <text x="150" y="59.5" class="code">a0, 0x1</text>
+  <text x="106" y="76.5" class="code">call</text>
+  <text x="150" y="76.5" class="code">fn_a</text>
+  <text x="106" y="93.5" class="code">alci</text>
+  <text x="150" y="93.5" class="code">sp, 32</text>
+  <text x="106" y="110.5" class="code">sw</text>
+  <text x="150" y="110.5" class="code">ra, 4(sp)</text>
+  <text x="106" y="127.5" class="code">sw</text>
+  <text x="150" y="127.5" class="code">s0, 8(sp)</text>
+  <text x="106" y="144.5" class="code">li</text>
+  <text x="150" y="144.5" class="code">s0, 0x55</text>
+  <text x="106" y="161.5" class="code">call</text>
+  <text x="150" y="161.5" class="code">fn_b</text>
+  <rect x="98" y="170" width="230" height="17" class="red"/>
+  <text x="322" y="178.5" class="label end">StateException</text>
+  <text x="106" y="178.5" class="code">sw</text>
+  <text x="150" y="178.5" class="code">ra, 4(sp)</text>
+  <text x="106" y="195.5" class="code">...</text>
+  <text x="150" y="195.5" class="code"></text>
+  <rect x="98" y="34" width="230" height="170" class="outline"/>
+  <rect x="346" y="34" width="28" height="51" class="white"/>
+  <rect x="346" y="85" width="28" height="85" class="grey"/>
+  <text x="360" y="127.5" class="heading">a</text>
+  <line x1="346" y1="85" x2="374" y2="85" class="divider"/>
+  <rect x="346" y="170" width="28" height="34" class="dark-grey"/>
+  <text x="360" y="187" class="heading">b</text>
+  <line x1="346" y1="170" x2="374" y2="170" class="divider"/>
+  <rect x="346" y="34" width="28" height="170" class="outline"/>
+</svg>
+<span class="subcaption">b) Transitions during abnormal program flow with exception</span>
+</div>
+</div>
+```
 
-State transitions two instruction streams
+State transitions in two instruction streams
 :::
 
 # Global offset table {#got}
@@ -1146,18 +2453,16 @@ In consequence, *LoadAccessFault*, *StoreAccessFault* or *IncompatibleTypeExcept
 *LoadAccessFault*s are triggered when the 'read' flag is cleared while *StoreAccessFault* is raised in case of a store access to an object with cleared 'write' flag.
 Since executable objects have both flags cleared, every load from or store to an executable object raises one of these faults, except for loading the GOT slot of the current executable object ([global pointer](#gp)).
 Trying to store pointers to a data only object marked by a set 'data only' flag will lead to a *IncompatibleTypeException*.
-The same exception is triggered when trying to jump to an object which is not executable using *jalr*, when trying to do an arithmetic, logic or ordered comparison operation on two pointers referencing different objects or I/O devices, when trying any arithmetic operation other than *sub* on two pointers, when comparing a pointer with a primitive using an ordered comparison or when loading only part of an element holding a pointer.
+The same exception is triggered when trying to jump to an object which is not executable or through a primitive using *jalr*, when trying to do an arithmetic, logic or ordered comparison operation on two pointers referencing different objects, when trying any arithmetic operation other than *sub* on two pointers, when comparing a pointer with a primitive using an ordered comparison or when loading only part of an element holding a pointer.
 
 To inform the software that an access to an ordinary or executable object would violate its bounds, a *JumpIndexOutBoundsException* is raised in case of an executable object or an *IndexOutBoundsException* in case of an ordinary object.
-For executable objects, the bounds of instruction fetches start at index XLEN/8, so jumping into the GOT slot, e.g. through a null function pointer, raises a *JumpIndexOutBoundsException* as well.
+For executable objects, the bounds of instruction fetches start at index XLEN/8, so jumping into the GOT slot, e.g. through a pointer to index 0 of an executable object, raises a *JumpIndexOutBoundsException* as well.
 Should the heap onto which new objects are allocated on reach the end of its capacity, a *HeapOverflowException* is raised.
 
 In the context of frame objects, a total of three exceptions are added to the exception list.
 A *StateException* catches access to foreign frame objects as described in [frame ownership](#frame_ownership).
 Even when a frame object is owned by the currently executed function, there are still two more exceptions possible: *ForbiddenDstException* is raised when trying to store anything else than *sp* or *ra* into their slots.
 *ForbiddenSrcException* checks for using these slots as specified in case of load accesses as well as for *sp* being copied into another register (see [restricted registers](#restricted_regs)).
-
-The *IncompatibleTypeException* is raised when a pointer is written to an I/O device using its corresponding pointer.
 
 ## Restricted registers {#restricted_regs}
 
@@ -1212,17 +2517,132 @@ Primitives are not denoted in any special way in text form but drawn in light bl
 
 ## Fields {#fields}
 
-The subarchitecture implementation offered here is meant only as an example implementation and is focused on higher performance while requiring more hardware resources. The register sections required by the RISC-ViO specification are denoted with 'ISA' while sections introduced by this particular implementation are denoted with 'IMP'. In this implementation, the 'IMP' sections are exclusively made up of object header metadata drawn in green.
+The implementation offered here is meant only as an example and is focused on higher performance while requiring more hardware resources.
+Every register holds a pointer bit ('Pointer?'), a base and an index or, for a primitive, its value.
+*sp* additionally holds its colour 'c', which determines the machine state ([colouring](#coloring)).
+Registers hold no attributes of the objects they reference: flags and lengths live in the attribute cache of the memory stage ([bounds and flag checks](#bounds)).
 
 ::: figure
-![An example implementation of a RISC-ViO register file](svg/register_file.svg)
+```{=html}
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="156" viewBox="-2 -2 500 156" role="img">
+  <title>An example implementation of a RISC-ViO register file</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  text.code { font-size: 12px; font-weight: 400; text-anchor: start; }
+  .c-white { fill: #ffffff; stroke: #000; stroke-width: 2; }
+  .c-black { fill: #1a1a1a; stroke: #000; stroke-width: 2; }
+  .red { fill: #ff7a7a }
+  .edge { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .grey { fill: #d0d0d0 }
+  .dark-grey { fill: #a0a0a0 }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .c-white { fill: #cccccc; stroke: #cccccc; }
+    .c-black { fill: #000000; stroke: #cccccc; }
+    .red { fill: #ff7a7a40 }
+    .edge { stroke: #9a9a9a; }
+    text.on-red { fill: #ff7a7a }
+    .grey { fill: #ffffff26 }
+    .dark-grey { fill: #ffffff4d }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <text x="69" y="8" class="heading">Pointer?</text>
+  <text x="178" y="8" class="heading">Base</text>
+  <text x="358" y="8" class="heading">Index / Value</text>
+  <text x="475" y="8" class="heading">c</text>
+  <text x="50" y="35" class="heading end">zero</text>
+  <rect x="58" y="22" width="22" height="26" class="white"/>
+  <text x="69" y="35" class="on-white">0</text>
+  <rect x="58" y="22" width="22" height="26" class="outline"/>
+  <rect x="88" y="22" width="180" height="26" class="white"/>
+  <text x="178" y="35" class="on-white">0</text>
+  <rect x="268" y="22" width="180" height="26" class="blue"/>
+  <text x="358" y="35" class="on-blue">0</text>
+  <line x1="268" y1="22" x2="268" y2="48" class="divider"/>
+  <rect x="88" y="22" width="360" height="26" class="outline"/>
+  <text x="50" y="69" class="heading end">ra</text>
+  <rect x="58" y="56" width="22" height="26" class="white"/>
+  <text x="69" y="69" class="on-white">1</text>
+  <rect x="58" y="56" width="22" height="26" class="outline"/>
+  <rect x="88" y="56" width="180" height="26" class="pink"/>
+  <text x="178" y="69" class="on-pink">ra.base</text>
+  <rect x="268" y="56" width="180" height="26" class="pink"/>
+  <text x="358" y="69" class="on-pink">ra.index</text>
+  <line x1="268" y1="56" x2="268" y2="82" class="divider"/>
+  <rect x="88" y="56" width="360" height="26" class="outline"/>
+  <text x="50" y="103" class="heading end">sp</text>
+  <rect x="58" y="90" width="22" height="26" class="white"/>
+  <text x="69" y="103" class="on-white">1</text>
+  <rect x="58" y="90" width="22" height="26" class="outline"/>
+  <rect x="88" y="90" width="180" height="26" class="pink"/>
+  <text x="178" y="103" class="on-pink">sp.base</text>
+  <rect x="268" y="90" width="180" height="26" class="pink"/>
+  <text x="358" y="103" class="on-pink">sp.index</text>
+  <line x1="268" y1="90" x2="268" y2="116" class="divider"/>
+  <rect x="88" y="90" width="360" height="26" class="outline"/>
+  <rect x="464" y="90" width="22" height="26" class="white"/>
+  <text x="475" y="103" class="on-white">x</text>
+  <rect x="464" y="90" width="22" height="26" class="outline"/>
+  <text x="50" y="137" class="heading end">x3-x31</text>
+  <rect x="58" y="124" width="22" height="26" class="white"/>
+  <text x="69" y="137" class="on-white">x</text>
+  <rect x="58" y="124" width="22" height="26" class="outline"/>
+  <rect x="88" y="124" width="180" height="26" class="white"/>
+  <text x="178" y="137" class="on-white">x</text>
+  <rect x="268" y="124" width="180" height="26" class="white"/>
+  <text x="358" y="137" class="on-white">x</text>
+  <line x1="268" y1="124" x2="268" y2="150" class="divider"/>
+  <rect x="88" y="124" width="360" height="26" class="outline"/>
+</svg>
+```
 
 An example implementation of a RISC-ViO register file
 :::
 
 *gp* is not treated specially by this implementation.
-
-<!-- FIXME: check whether the register file figure still shows a special role of gp. -->
 
 ## Colouring {#coloring}
 
@@ -1230,13 +2650,11 @@ As described in the [frames](#frames) chapter and as present in the requirements
 The implementation presented here is able to satisfy this requirement using the fields as shown in the last section only. In this implementation, the colour 'black' is encoded as a cleared bit ('0') while 'white' corresponds to a bit which is set ('1').
 Since the smallest possible instruction size specified by RISC-V is 16 bits or two bytes, the lowest bit of the index of *ra* always has to be 0.
 This is why it is possible to encode the current colour of *ra* in this bit. For *sp*, the same is not true however since its index may be set to any value.
-The colour of *sp* is instead stored in the current frames header copy in the register file. More specifically, the colour-bit in this header is used for storing *sp*'s colour.
+The colour of *sp* is instead stored in an additional bit next to *sp* in the register file, the field 'c' in the figure.
 
 ## Flags and Tags {#flgs_tgs}
 
-In order to distinguish pointers from primitives, the provided implementation uses a tag bit for all registers which may hold both primitives and pointers. Primitives are tagged as '0' while pointers are identified by a '1' bit.
-Since on ISA level, RISC-ViO only distinguishes between pointers of memory and I/O kind, only a single bit in the register file is required to keep those pointer kinds apart.
-This bit is interpreted as part of the pointer and is added to the right of the pointer base address or I/O device number for I/O pointers. It corresponds to bit 0 of the reference word exchanged by *btd* and *dtp* ([raw pointer access](#raw_ptr_access)).
+In order to distinguish pointers from primitives, the provided implementation uses a pointer bit ('Pointer?' in the figure) for all registers which may hold both primitives and pointers. Primitives are tagged as '0' while pointers are identified by a '1' bit.
 
 # Objects in memory {#hard_obj}
 
@@ -1246,28 +2664,37 @@ This bit is interpreted as part of the pointer and is added to the right of the 
 
 ## Headers {#headers}
 
-Headers mark the beginning of every object. They hold all information about the object necessary to ensure proper handling of itself. Headers are always 16-Byte aligned.
+Headers mark the beginning of every object. They hold all information about the object necessary to ensure proper handling of itself. Headers are always 16-Byte aligned and identified by the trailing *11111*-Bits.
 
 ::: figure
-![Header Bitmap on 32-Bit Architectures](svg/objektbaukasten/header.svg)
+```{=html}
+<table class="bf">
+<colgroup><col style="width:2.4em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>30</span></span></th><th>29</th><th>28</th><th>27</th><th>26</th><th>25</th><th>24</th><th>23</th><th><span class="bits"><span>22</span><span>7</span></span></th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-green o-t o-l">gc</td><td class="t-green o-t">r</td><td class="t-green j o-t">rt</td><td class="t-green j o-t">w</td><td class="t-green j o-t">wt</td><td class="t-green j o-t">d</td><td class="t-green j o-t">s</td><td class="t-green j o-t">i</td><td class="t-green o-t">sc</td><td class="t-green o-t">c</td><td class="t-green j o-t">f</td><td class="t-green o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t o-r">1</td></tr>
+<tr><td class="t-green o-b o-l" colspan="14">λ(31:2)</td><td class="t-green o-b">0</td><td class="t-green j o-b o-r">0</td></tr>
+</tbody>
+</table>
+```
 
-Header Bitmap on 32-Bit Architectures
+Header bitmap on 32-bit architectures: tag word and length word
 :::
 
 | Bits   | Sym. | Details                                                  |
 | :----: | :--: | :------------------------------------------------------: |
 | 31:30  | gc   | Reserved for the hardware garbage collector              |
 | 29     | r    | Readable                                                 |
-| 28     | w    | Writable                                                 |
-| 27     | d    | Data-Only                                                |
-| 26     | s    | Sanctuary                                                |
-| 25     | i    | Weak cell.<br>Bit 6 of the [object tags](#isa_tags)      |
-| 24     | -    | Reserved, must be zero                                   |
-| 23:8   | sc   | Scratch space.<br>Shifted down by one to bits 22:7 of the [object tags](#isa_tags) |
-| 7      | -    | Reserved, must be zero                                   |
+| 28     | rt   | Read-through                                             |
+| 27     | w    | Writable                                                 |
+| 26     | wt   | Write-through                                            |
+| 25     | d    | Data-Only                                                |
+| 24     | s    | Sanctuary                                                |
+| 23     | i    | Weak cell                                                |
+| 22:7   | sc   | Scratch space.<br>Shifted up by one to bits 23:8 of the [object tags](#isa_tags) |
 | 6      | c    | Color of frame objects.<br>See [Frames chapter](#frames) |
 | 5      | f    | Frame object                                             |
-| 4:0    | -    | Header identifier                                        |
+| 4:0    | -    | Header identifier, always 11111                          |
 |        |      |                                                          |
 | 31:2<br>(63:3) | λ | Length of object<br>(only bits 31:2 on 32-Bit, 63:3 on 64-Bit) |
 | _1_<br>_(2:1)_ | _-_ | _don't care_                                         |
@@ -1275,7 +2702,9 @@ Header Bitmap on 32-Bit Architectures
 
 _On a 64-Bit Architecture the upper bits of the header bitmap are shifted upwards to 64-Bit boundaries._
 
-<!-- FIXME: header.svg still shows the old layout (scratch 25:7, no weak bit). -->
+<!-- FIXME: device objects need a header as well, but in general no memory can be placed in front of the registers of a
+     device. Either the platform provides the header words in front of every device, or the attribute cache serves the
+     header of a device object from a table selected by its address range. -->
 
 ## Elements {#elements}
 
@@ -1283,16 +2712,34 @@ Elements of objects are tagged by the lowest Bit(s) in a chunk of memory.
 On a 32-Bit architecture this chunk is 32 bits wide, on 64-Bit architectures 64 bits.
 
 ::: figure
-![Word, half and byte locations in an ordinary object](svg/objektbaukasten/data.svg)
+```{=html}
+<table class="bf">
+<colgroup><col><col><col><col><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>25</span></span></th><th><span class="bits"><span>24</span><span>17</span></span></th><th><span class="bits"><span>16</span><span>9</span></span></th><th><span class="bits"><span>8</span><span>1</span></span></th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-blue o-t o-l" colspan="4">word(30:0)</td><td class="t-blue o-t o-r">0</td></tr>
+<tr><td class="t-blue o-l" colspan="2">h1(14:0)</td><td class="t-blue" colspan="2">h0(15:0)</td><td class="t-blue o-r">0</td></tr>
+<tr><td class="t-blue o-b o-l">b3</td><td class="t-blue o-b">b2</td><td class="t-blue o-b">b1</td><td class="t-blue o-b">b0</td><td class="t-blue o-b o-r">0</td></tr>
+</tbody>
+</table>
+```
 
-Word, half and byte locations in an ordinary object
+Word, half and byte locations of a primitive in an ordinary object (XLEN=32). Bit 31 of the primitive is not stored, since it equals bit 30.
 :::
 
 Primitives in ordinary objects are identified by the trailing *0*-Bit. If a Store is attempted, which would make the two uppermost bits of a chunk unequal (e.g. *bit-31 ≠ bit-30* on a 32-Bit Architecture)
 then the primitive is stored to the current sanctuary object instead and the corresponding displacement pointer will be stored to the address the original store was attempted to.
 
 ::: figure
-![Pointer to displaced data](svg/objektbaukasten/disp_prim_ptr.svg)
+```{=html}
+<table class="bf">
+<colgroup><col><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>2</span></span></th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-purple o-t o-b o-l">ptr(31:2)</td><td class="t-purple o-t o-b">0</td><td class="t-purple j o-t o-b o-r">1</td></tr>
+</tbody>
+</table>
+```
 
 Pointer to displaced data
 :::
@@ -1302,7 +2749,15 @@ These Pointers are identified by trailing *01*-Bits.
 Pointers to objects are identified by trailing *0111*-Bits. They can be generated by allocation instructions and point to the head of ordinary, data-only and executable objects.
 
 ::: figure
-![Pointer to an object](svg/objektbaukasten/pointer.svg)
+```{=html}
+<table class="bf">
+<colgroup><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>4</span></span></th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-pink o-t o-b o-l">ptr(31:4)</td><td class="t-pink o-t o-b">0</td><td class="t-pink j o-t o-b">1</td><td class="t-pink j o-t o-b">1</td><td class="t-pink j o-t o-b o-r">1</td></tr>
+</tbody>
+</table>
+```
 
 Pointer to an object
 :::
@@ -1311,20 +2766,20 @@ If a store is attempted on a pointer that was modified by arithmetic instruction
 is stored to the original address the store was attemped to.
 
 ::: figure
-![Pointer to a displaced Pointer](svg/objektbaukasten/disp_ptr_ptr.svg)
+```{=html}
+<table class="bf">
+<colgroup><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>3</span></span></th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-lpink o-t o-b o-l">ptr(31:3)</td><td class="t-lpink o-t o-b">0</td><td class="t-lpink j o-t o-b">1</td><td class="t-lpink j o-t o-b o-r">1</td></tr>
+</tbody>
+</table>
+```
 
 Pointer to a displaced Pointer
 :::
 
 These pointers are identified by trailing *011*-Bits.
-
-Pointers to I/O-capabilities are identified by the trailing *01111*-Bits. They hold a device-id which identify what I/O-Device is referenced.
-
-::: figure
-![I/O-Pointer](svg/objektbaukasten/io_ptr.svg)
-
-I/O-Pointer
-:::
 
 ::::
 
@@ -1335,9 +2790,22 @@ I/O-Pointer
 Ordinary objects always start with a header and can hold every element kind defined.
 
 ::: figure
-![Ordinary object and its possible elements](svg/objektbaukasten/ordinary_object.svg)
+```{=html}
+<table class="bf">
+<colgroup><col style="width:2.4em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>30</span></span></th><th>29</th><th>28</th><th>27</th><th>26</th><th>25</th><th>24</th><th>23</th><th><span class="bits"><span>22</span><span>7</span></span></th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-green o-t o-l">gc</td><td class="t-green o-t">r</td><td class="t-green j o-t">rt</td><td class="t-green j o-t">w</td><td class="t-green j o-t">wt</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">i</td><td class="t-green o-t">sc</td><td class="t-green o-t">c</td><td class="t-green j o-t">f</td><td class="t-green o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t o-r">1</td></tr>
+<tr><td class="t-green o-l" colspan="14">λ(31:2)</td><td class="t-green">0</td><td class="t-green j o-r">0</td></tr>
+<tr><td class="t-blue o-l" colspan="15">integer(30:0)</td><td class="t-blue o-r">0</td></tr>
+<tr><td class="t-purple o-l" colspan="14">ptr(31:2)</td><td class="t-purple">0</td><td class="t-purple j o-r">1</td></tr>
+<tr><td class="t-lpink o-l" colspan="13">ptr(31:3)</td><td class="t-lpink">0</td><td class="t-lpink j">1</td><td class="t-lpink j o-r">1</td></tr>
+<tr><td class="t-pink o-b o-l" colspan="12">ptr(31:4)</td><td class="t-pink o-b">0</td><td class="t-pink j o-b">1</td><td class="t-pink j o-b">1</td><td class="t-pink j o-b o-r">1</td></tr>
+</tbody>
+</table>
+```
 
-Ordinary object and its possible elements
+Ordinary object and its possible elements (XLEN=32)
 :::
 
 ## Data-Only Objects {#data-onlies}
@@ -1350,9 +2818,21 @@ A word of a data-only object with its lowest bit set would for example be read a
 System management software should therefore only retype objects between ordinary and data-only before filling them.
 
 ::: figure
-![Data-only object](svg/objektbaukasten/data_only_object.svg)
+```{=html}
+<table class="bf">
+<colgroup><col style="width:2.4em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>30</span></span></th><th>29</th><th>28</th><th>27</th><th>26</th><th>25</th><th>24</th><th>23</th><th><span class="bits"><span>22</span><span>7</span></span></th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-green o-t o-l">gc</td><td class="t-green o-t">r</td><td class="t-green j o-t">rt</td><td class="t-green j o-t">w</td><td class="t-green j o-t">wt</td><td class="t-green j o-t">1</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green o-t">sc</td><td class="t-green o-t">0</td><td class="t-green j o-t">0</td><td class="t-green o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t o-r">1</td></tr>
+<tr><td class="t-green o-l" colspan="14">λ(31:2)</td><td class="t-green">0</td><td class="t-green j o-r">0</td></tr>
+<tr><td class="t-cyan o-l o-r" colspan="16">integer(31:0)</td></tr>
+<tr><td class="t-cyan o-l o-r" colspan="16">...</td></tr>
+<tr><td class="t-cyan o-b o-l o-r" colspan="16">integer(31:0)</td></tr>
+</tbody>
+</table>
+```
 
-Data-only object
+Data-only object (XLEN=32)
 :::
 
 ## Executables {#execs}
@@ -1366,12 +2846,21 @@ Since the GOT slot is read by an ordinary XLEN wide load, a pointer with a non-z
 
 Since index 0 refers to the GOT slot regardless of whether the object is typed as ordinary, data only or executable, pointers into code created while building an executable object stay valid once it is retyped.
 
-<!-- FIXME: check that executable_object.svg shows the GOT slot as index 0. -->
-
 ::: figure
-![Executable Object](svg/objektbaukasten/executable_object.svg)
+```{=html}
+<table class="bf">
+<colgroup><col style="width:2.4em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>30</span></span></th><th>29</th><th>28</th><th>27</th><th>26</th><th>25</th><th>24</th><th>23</th><th><span class="bits"><span>22</span><span>7</span></span></th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-green o-t o-l">gc</td><td class="t-green o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">1</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green o-t">sc</td><td class="t-green o-t">0</td><td class="t-green j o-t">0</td><td class="t-green o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t o-r">1</td></tr>
+<tr><td class="t-green o-l" colspan="14">λ(31:2)</td><td class="t-green">0</td><td class="t-green j o-r">0</td></tr>
+<tr><td class="t-pink o-l" colspan="12">GOT</td><td class="t-pink">0</td><td class="t-pink j">1</td><td class="t-pink j">1</td><td class="t-pink j o-r">1</td></tr>
+<tr class="tall"><td class="t-yellow o-b o-l o-r" colspan="16">CODE</td></tr>
+</tbody>
+</table>
+```
 
-Executable Object
+Executable object (XLEN=32)
 :::
 
 ## Sanctuaries {#sancts}
@@ -1381,24 +2870,30 @@ Displaced Pointers take two element slots, one for the base pointer and one for 
 The base pointer is stored as an ordinary pointer and the index as data-only primitive.\
 Displaced primitives only take one element slot being the (Double-)Word that was displaced. These kinds can be stored at any element position inside the Sanctuary.
 
-<!-- FIXME: sanctuaries and weak cells do not fit together yet. A pointer with a non-zero index stored into a weak cell
-     is displaced, so the weak cell only holds a displacement pointer, while the actual pointer lies in a sanctuary slot,
-     next to the displaced values of other objects. Open questions:
-     * The garbage collector must not mark through the slot of a weak displaced pointer, while it has to keep the slots
-       of strong displaced pointers and their objects alive. It can therefore not scan sanctuary objects like ordinary
-       objects, and has to know for every slot whether it was reached from a weak cell.
-     * Clearing a weak pointer means replacing the displacement pointer in the weak cell by the primitive value 0 and
-       freeing its sanctuary slot. How sanctuary slots are reclaimed is not specified at all yet.
-     * A concurrent collector additionally has to handle a weak displaced pointer being loaded while it is cleared.
-     * Possible way out: weak cells only accept pointers with index 0 and raise an IncompatibleTypeException otherwise.
-       Such pointers are never displaced, and weak references usually reference the head of an object anyway. -->
+Weak cells only ever hold pointers with index 0 as long as programs access them through the [runtime functions](#runtime_functions), so their pointers are never displaced.
 
-<!-- FIXME: sanctuary objects need their own figure, this is still the data-only object figure -->
+<!-- FIXME: code bypassing the runtime functions may still store a pointer with a non-zero index into a weak cell. The
+     garbage collector then has to treat the displaced pointer as strong, which keeps its object alive but is safe, or
+     the hardware could reject such stores with an IncompatibleTypeException. -->
 
 ::: figure
-![Sanctuary Object](svg/objektbaukasten/data_only_object.svg)
+```{=html}
+<table class="bf">
+<colgroup><col style="width:2.4em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>30</span></span></th><th>29</th><th>28</th><th>27</th><th>26</th><th>25</th><th>24</th><th>23</th><th><span class="bits"><span>22</span><span>7</span></span></th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-green o-t o-l">gc</td><td class="t-green o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">1</td><td class="t-green j o-t">0</td><td class="t-green o-t">sc</td><td class="t-green o-t">0</td><td class="t-green j o-t">0</td><td class="t-green o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t o-r">1</td></tr>
+<tr><td class="t-green o-l" colspan="14">λ(31:2)</td><td class="t-green">0</td><td class="t-green j o-r">0</td></tr>
+<tr><td class="t-white o-l o-r" colspan="16">free</td></tr>
+<tr><td class="t-white o-l o-r" colspan="16">...</td></tr>
+<tr><td class="t-cyan o-l o-r" colspan="16">integer(31:0)</td></tr>
+<tr><td class="t-pink o-l" colspan="12">ptr(31:4)</td><td class="t-pink">0</td><td class="t-pink j">1</td><td class="t-pink j">1</td><td class="t-pink j o-r">1</td></tr>
+<tr><td class="t-cyan o-b o-l o-r" colspan="16">index(31:0)</td></tr>
+</tbody>
+</table>
+```
 
-Sanctuary Object
+Sanctuary object (XLEN=32). It is filled from the top, and the sanctuary index points to the last used slot, here index 8.
 :::
 
 ::::
@@ -1413,7 +2908,11 @@ In the next sections, a possible subarchitecture meeting those requirements shal
 ## Allocations {#alcs}
 
 In the presented implementation, all members of the alc instruction family place both ordinary and data only objects as well as frame objects on the heap.
+<!-- FIXME: with the frame clearing engine, frame objects no longer form a linked list on the heap. Describe where the example
+     implementation places them relative to sp and MPRG, and how the garbage collector treats the cleared region. -->
 There the objects lie in allocation order until a garbage collection cycle occurs. The CSR *malc* is used to keep track of the heap fill level and heap limit. *malc.ptr* keeps track of the newest objects start address while *malc.ix* contains the lower limit of the heap in form of an address.
+The example implementation holds *malc.ptr* in MALC and *malc.ix* in MLIM, and *msad* in MSAD, all fields of the pipeline register behind the decode stage.
+The PGU reads them in the execute stage. An allocation updates MALC there, forwards the new value to following allocations and commits it to the register at the end of the pipeline, so an exception leaves it unchanged.
 In the process of such a cycle, objects may be moved or overwritten in case of not being required anymore.
 
 The allocation process starts by calculating the address of the new object header.
@@ -1428,13 +2927,221 @@ If this value is larger than malc.ix the new object fits inside the heap and mal
 In this case, a pointer tag is added to the newly calculated address and the resulting pointer value is written to the target register.
 The initial index is set to zero.
 
-To commit the header of this new object to memory, the so-called attribute cache is used.
-This cache is located in the attribute stage located behind the memory stage and is mainly used to both retrieve and load object attributes.
-In case of primitives with their two uppermost bits being unequal or pointers with non-zero index this cache is also used to both store and retrieve these kinds of data to and from memory.
+The header of the new object is written by the attribute cache in the memory stage, which holds the headers and lengths of objects.
+Primitives with their two uppermost bits being unequal and pointers with a non-zero index are stored to and loaded from the sanctuary cache in the boxing stage behind the memory stage.
 
 ::: figure
-![Regular heap growth](svg/vio_heap_growth.drawio.svg "a) Regular heap growth")
-![Heap overflow](svg/vio_heap_overflow.drawio.svg "b) Heap overflow")
+```{=html}
+<div class="fig-row">
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="352" height="344" viewBox="-2 -2 352 344" role="img">
+  <title>Regular heap growth</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  text.code { font-size: 12px; font-weight: 400; text-anchor: start; }
+  .c-white { fill: #ffffff; stroke: #000; stroke-width: 2; }
+  .c-black { fill: #1a1a1a; stroke: #000; stroke-width: 2; }
+  .red { fill: #ff7a7a }
+  .edge { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .grey { fill: #d0d0d0 }
+  .dark-grey { fill: #a0a0a0 }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .c-white { fill: #cccccc; stroke: #cccccc; }
+    .c-black { fill: #000000; stroke: #cccccc; }
+    .red { fill: #ff7a7a40 }
+    .edge { stroke: #9a9a9a; }
+    text.on-red { fill: #ff7a7a }
+    .grey { fill: #ffffff26 }
+    .dark-grey { fill: #ffffff4d }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <text x="102" y="24" class="label end">0x00000000</text>
+  <text x="102" y="316" class="label end">0xFFFFFFFF</text>
+  <rect x="110" y="100" width="130" height="196" class="white"/>
+  <line x1="110" y1="24" x2="240" y2="24" class="edge dashed"/>
+  <line x1="110" y1="316" x2="240" y2="316" class="edge dashed"/>
+  <line x1="110" y1="24" x2="110" y2="316" class="edge"/>
+  <line x1="240" y1="24" x2="240" y2="316" class="edge"/>
+  <rect x="110" y="226" width="130" height="18" class="green"/>
+  <text x="175" y="235" class="on-green">header</text>
+  <rect x="110" y="226" width="130" height="18" class="outline"/>
+  <rect x="110" y="244" width="130" height="52" class="blue"/>
+  <text x="175" y="270" class="on-blue">body</text>
+  <rect x="110" y="244" width="130" height="52" class="outline"/>
+  <rect x="110" y="156" width="130" height="18" class="green"/>
+  <text x="175" y="165" class="on-green">header</text>
+  <rect x="110" y="156" width="130" height="18" class="outline"/>
+  <rect x="110" y="174" width="130" height="52" class="blue"/>
+  <text x="175" y="200" class="on-blue">body</text>
+  <rect x="110" y="174" width="130" height="52" class="outline"/>
+  <rect x="110" y="100" width="130" height="196" class="outline"/>
+  <text x="102" y="100" class="heading end">heap start</text>
+  <text x="102" y="296" class="heading end">heap end</text>
+  <polyline points="298,156 240,156" class="arrow"/>
+  <polygon points="240,156 247,152 247,160" class="head"/>
+  <text x="248" y="147" class="label start">malc.ptr</text>
+  <polyline points="298,100 240,100" class="arrow"/>
+  <polygon points="240,100 247,96 247,104" class="head"/>
+  <text x="248" y="109" class="label start">malc.ix</text>
+  <line x1="332" y1="290" x2="332" y2="126" class="arrow"/>
+  <polygon points="332,118 328,126 336,126" class="head"/>
+  <text x="320" y="208" class="label" transform="rotate(-90 320 208)">allocation direction</text>
+</svg>
+<span class="subcaption">a) Regular heap growth</span>
+</div>
+<div class="fig-item">
+<svg xmlns="http://www.w3.org/2000/svg" width="352" height="344" viewBox="-2 -2 352 344" role="img">
+  <title>Heap overflow</title>
+  <style>
+  text { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 13px; font-weight: 700; fill: #1a1a1a;
+          text-anchor: middle; dominant-baseline: central; }
+  text.label { font-size: 10px; font-weight: 400; fill: #5a5a5a; }
+  text.heading { font-size: 12px; }
+  text.start { text-anchor: start; }
+  text.end { text-anchor: end; }
+  text.small { font-size: 10px; font-weight: 400; font-style: italic; }
+  .outline { fill: none; stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .divider { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .diagonal { stroke: #000; stroke-width: 1; }
+  .rule { stroke: #000; stroke-width: 2; shape-rendering: crispEdges; }
+  .dashed { stroke-dasharray: 4 3; }
+  .arrow { fill: none; stroke: #1a1a1a; stroke-width: 1.5; }
+  .head, .dot { fill: #1a1a1a; }
+  .bracket { fill: none; stroke: #ff55dd; stroke-width: 2; }
+  text.code { font-size: 12px; font-weight: 400; text-anchor: start; }
+  .c-white { fill: #ffffff; stroke: #000; stroke-width: 2; }
+  .c-black { fill: #1a1a1a; stroke: #000; stroke-width: 2; }
+  .red { fill: #ff7a7a }
+  .edge { fill: none; stroke: #000; stroke-width: 1; shape-rendering: crispEdges; }
+  .grey { fill: #d0d0d0 }
+  .dark-grey { fill: #a0a0a0 }
+  .purple { fill: #ccaaff }
+  .blue { fill: #80e5ff }
+  .green { fill: #55ff99 }
+  .cyan { fill: #55ffdd }
+  .light-pink { fill: #ffaaee }
+  .pink { fill: #ff55dd }
+  .yellow { fill: #e5ff80 }
+  .white { fill: #ffffff }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #cccccc; }
+    text.label { fill: #9a9a9a; }
+    /* lines become gaps in the page colour between the tinted tiles */
+    .outline, .divider, .diagonal { stroke: #1a1a1a; }
+    .rule, .dashed { stroke: #cccccc; }
+    .arrow { stroke: #cccccc; }
+    .head, .dot { fill: #cccccc; }
+    .c-white { fill: #cccccc; stroke: #cccccc; }
+    .c-black { fill: #000000; stroke: #cccccc; }
+    .red { fill: #ff7a7a40 }
+    .edge { stroke: #9a9a9a; }
+    text.on-red { fill: #ff7a7a }
+    .grey { fill: #ffffff26 }
+    .dark-grey { fill: #ffffff4d }
+    .white { fill: #ffffff1a }
+    .purple { fill: #ccaaff40 }
+    text.on-purple { fill: #ccaaff }
+    .blue { fill: #80e5ff40 }
+    text.on-blue { fill: #80e5ff }
+    .green { fill: #55ff9940 }
+    text.on-green { fill: #55ff99 }
+    .cyan { fill: #55ffdd40 }
+    text.on-cyan { fill: #55ffdd }
+    .light-pink { fill: #ffaaee40 }
+    text.on-light-pink { fill: #ffaaee }
+    .pink { fill: #ff55dd40 }
+    text.on-pink { fill: #ff55dd }
+    .yellow { fill: #e5ff8040 }
+    text.on-yellow { fill: #e5ff80 }
+  }
+  </style>
+  <text x="102" y="24" class="label end">0x00000000</text>
+  <text x="102" y="316" class="label end">0xFFFFFFFF</text>
+  <rect x="110" y="100" width="130" height="196" class="white"/>
+  <line x1="110" y1="24" x2="240" y2="24" class="edge dashed"/>
+  <line x1="110" y1="316" x2="240" y2="316" class="edge dashed"/>
+  <line x1="110" y1="24" x2="110" y2="316" class="edge"/>
+  <line x1="240" y1="24" x2="240" y2="316" class="edge"/>
+  <rect x="110" y="226" width="130" height="18" class="green"/>
+  <text x="175" y="235" class="on-green">header</text>
+  <rect x="110" y="226" width="130" height="18" class="outline"/>
+  <rect x="110" y="244" width="130" height="52" class="blue"/>
+  <text x="175" y="270" class="on-blue">body</text>
+  <rect x="110" y="244" width="130" height="52" class="outline"/>
+  <rect x="110" y="156" width="130" height="18" class="green"/>
+  <text x="175" y="165" class="on-green">header</text>
+  <rect x="110" y="156" width="130" height="18" class="outline"/>
+  <rect x="110" y="174" width="130" height="52" class="blue"/>
+  <text x="175" y="200" class="on-blue">body</text>
+  <rect x="110" y="174" width="130" height="52" class="outline"/>
+  <rect x="110" y="100" width="130" height="196" class="outline"/>
+  <text x="102" y="100" class="heading end">heap start</text>
+  <text x="102" y="296" class="heading end">heap end</text>
+  <rect x="116" y="86" width="118" height="18" class="white"/>
+  <text x="175" y="95" class="on-white">header</text>
+  <rect x="116" y="86" width="118" height="18" class="outline dashed"/>
+  <rect x="116" y="104" width="118" height="52" class="white"/>
+  <text x="175" y="130" class="on-white">body</text>
+  <rect x="116" y="104" width="118" height="52" class="outline dashed"/>
+  <text x="248" y="86" class="heading start">overflow</text>
+  <polyline points="298,156 240,156" class="arrow"/>
+  <polygon points="240,156 247,152 247,160" class="head"/>
+  <text x="248" y="147" class="label start">malc.ptr</text>
+  <polyline points="298,100 240,100" class="arrow"/>
+  <polygon points="240,100 247,96 247,104" class="head"/>
+  <text x="248" y="109" class="label start">malc.ix</text>
+  <line x1="332" y1="290" x2="332" y2="126" class="arrow"/>
+  <polygon points="332,118 328,126 336,126" class="head"/>
+  <text x="320" y="208" class="label" transform="rotate(-90 320 208)">allocation direction</text>
+</svg>
+<span class="subcaption">b) Heap overflow</span>
+</div>
+</div>
+```
 
 Heap limits and growth.
 :::
@@ -1447,7 +3154,7 @@ The sample implementation has the sanctuary index point to the last used slot in
 When the current sanctuary object is full, which is signified by the sanctuary index being zero, while a new sanctuary slot is required, a new sanctuary object is allocated.
 For this, the current allocation address is decremented according to the implementation-dependant sanctuary object size and the sanctuary object address is set to this value.
 Also, the sanctuary slot index is set to highest possible value for the new sanctuary object to be once again be filled from the top to the bottom.
-In order to ensure the garbage collector being aware of this object, the attribute cache in the attribute stage also writes a header stub to the address at which the sanctuary object lies.
+In order to ensure the garbage collector being aware of this object, the attribute cache in the memory stage also writes a header stub to the address at which the sanctuary object lies. Since the access that needs the new sanctuary object uses the attribute cache in the same cycle, the pipeline stalls and the access loops back through the memory stage.
 In the flags field of this header, the sanctuary bit marks this object as a sanctuary object.
 
 In order to allow a system management software to control the allocation of sanctuary objects, a new CSR called *msad* is introduced. Consistent with *malc*, the pointer contained in this CSR has the address of the current sanctuary object as its base address field while the current allocation index in the sanctuary object is located in the index field of this CSR.
@@ -1455,39 +3162,45 @@ The CSR index of the *msad* CSR can be extracted from the [CSR table](#t_csr).
 
 ## Loading and storing a pointer {#load_store}
 
-As the subarchitectural implementation requires some flag bit from the object header as well as its length or lambda field, those fields also have to be retrieved from memory when loading a pointer.
-For this, the example subarchitectural implementation uses an additional pipeline stage called the attribute stage which is located behind the memory stage in the processor pipeline.\
-The [instruction behaviour table](#t_instr_in_pipe) shows how this stage interacts with the stages that come before it, this section looks at this interaction in further detail.
-After the memory stage has loaded a pointer, the attribute stage then loads the header being pointed to by the pointer base address. This header along with the actual pointer value is then handed over to the write-back stage which writes those fields into the register file.
-In the given subarchitectural implementation, the attribute stage is used to accomplish additional tasks like loading full XLEN wide primitives, meaning primitives with their two uppermost bits being unequal, or a pointer with non-zero index from an object.
-For the task of loading full XLEN wide primitives, it is the task of the attribute stage to load the actual primitive from memory instead of the memory stage.
-This is necessary since the memory stage has to determine where this primitive is located in memory first by loading the according displacement pointer.
-For pointers with a non-zero index, the attribute stage also has to become active. Since requiring both the loading of a pointers index as well as the header of the object pointed to, this operation takes two clock cycles however and therefore necessitates stalling the remaining pipeline until both operations have been completed.
-In this situation, the attributes stage will load the pointer index before loading the object header and combining the loaded fields with the pointer value loaded by the memory stage and passing the combined register file entry to the writeback stage.
+The [instruction behaviour table](#t_instr_in_pipe) shows how the stages of the example implementation work together; this section looks at loads and stores in further detail.
+Every load and store passes the attribute cache in the memory stage, which checks bounds and access rights ([bounds and flag checks](#bounds)), while the data cache performs the access.
+Since registers hold no attributes of objects, loading a pointer with index 0 takes nothing but the memory stage.
 
-The process of storing register contents is analogous to the process of loading primitives as well as pointers regarding the fundamental tasks accomplished by the memory and attribute stages. The only difference other than those stages storing instead of loading is that the attribute stage might need to allocate a new 'Sanctuary object' to store XLEN wide primitives or pointers with non-zero index into.
-This task is completed by a special subunit, which avoids the attribute stage having to stall the remaining pipeline when storing a XLEN primitive or pointer with non-zero index while also needing a new Sanctuary Object to be allocated.
+Primitives with their two uppermost bits being unequal and pointers with a non-zero index are displaced into the sanctuary cache.
+For these, the data cache in the memory stage only finds the displacement pointer, and the boxing stage loads the actual value from the sanctuary cache.
+A displaced pointer takes two slots, its base and its index, which the boxing stage reads with one double word access.
 
-<!-- FIXME: return addresses are the most frequent pointers with a non-zero index. Every non-leaf function stores ra into
-     its frame, so with the encoding above every call displaces a pointer into a sanctuary, leaving the slot as garbage
-     once the frame dies, and every return needs the two-step load of a displaced pointer. This contradicts design goal 6
-     for safe and unsafe languages alike.
-     Proposal: the ra slot can only hold ra, and only the function owning the frame can load it. This function always
-     runs in the same executable object, so the ra slot can use an encoding of its own: if ra references the executable
-     object the program counter references, only its index and colour are stored, as a primitive. Loading the slot into
-     ra takes the reference, length and header from the program counter. Only return addresses into other executable
-     objects (calls across images, callbacks) are still displaced. Values below XLEN/8 (an unused slot, the residue left
-     by ret) remain primitives. The garbage collector and the system management software interpret such slots relative
-     to the executable object of the frame's owner, which is referenced by the return address in the next younger frame,
-     or by the program counter for the youngest frame.
-     A JIT placing every compiled method into an executable object of its own would mostly hit the displaced case, so
-     JITs should place compiled code into larger executable objects. -->
+Storing works the other way round: the data cache stores the displacement pointer, taken from *msad*, while the SAD allocates the sanctuary slot and the boxing stage writes the value into the sanctuary cache.
+If the current sanctuary object is full, the SAD allocates a new one ([allocations](#alcs)), for which the pipeline stalls.
+
+Return addresses are the most frequent pointers with a non-zero index, since every non-leaf function stores *ra* into its frame.
+When *ra* is stored into the ra slot of a frame object and references the executable object the program counter references, only its index, including the colour, is stored, as a primitive.
+When the ra slot is loaded into *ra*, the reference of the program counter is inserted.
+This works since only the function owning a frame can access it, and this function always runs in the same executable object.
+Only return addresses into other executable objects, e.g. saved by a library function called from the program, are displaced.
+The garbage collector and the system management software interpret an ra slot holding only an index relative to the executable object of the frame's owner,
+which is referenced by the return address in the next younger frame, or by the program counter for the youngest frame.
+
+<!-- FIXME: an unused ra slot holds the primitive value 0, and after ret, ra holds only its colour. Inserting the reference
+     of the program counter turns such values into pointers to index 0 or 1, so a ret through them raises a
+     JumpIndexOutBoundsException instead of the IncompatibleTypeException required by the ISA. Loading values below
+     XLEN/8 as primitives would avoid this. -->
+
+## Frame clearing {#frame_clearing}
+
+Frame objects are allocated and released far more often than any other object. To let them profit from the data cache instead of forming a linked list on the heap, the example implementation clears the memory for new frames ahead of time.
+The frame clearing engine FrmClr in the memory stage issues a row clear to the data cache in every cycle without a load or store, at the address held in MPRG.
+MPRG holds the address up to which memory has been cleared. It advances whenever a row clear has succeeded in the memory stage, without travelling through the rest of the pipeline.
+A load or store at an address beyond MPRG waits until FrmClr has passed that address.
+Releasing a frame with *lw sp, 0(sp)* resets MPRG to the value *sp* had before the instruction, which the decode stage reads from rs1.
+Since the position of the current frame is given by *sp*, the decoder also places *sp* on rs1 for every *alc* and *alci*.
 
 ## Bounds and Flag checks {#bounds}
 
-As the outlined subarchitecture keeps the length of the corresponding object for each pointer in the register file, it is possible to check for an out of bound access as soon as the actual access index is available.
-This can be the case as early as in the execute stage, which allows for early raising of *IndexOutBoundsException*s.
-Since an objects flags which signify it as being readable, writeable and data only are also available as soon as the pointer to this object is available in the processor, the conditions for *LoadAccessFault* and *StoreAccessFault* exceptions can also be tested for just as early.
+The attribute cache in the memory stage holds the flags of objects, stating whether they are readable, writable, read-through, write-through and data only, together with their lengths. It is accessed with the base address of the pointer, which the AGU passes along as *me_base*.
+For every load and store, the attribute cache emits the length of the object, checks whether the access lies inside the object by comparing base plus length with the access address, checks the access rights and raises the corresponding exception otherwise.
+Only an access passing both checks is performed by the data cache, so no store takes effect before its bounds have been checked.
+Accesses to read-through and write-through objects go straight to the memory bus.
 
 # Tables {#tables}
 
@@ -1502,7 +3215,7 @@ Since an objects flags which signify it as being readable, writeable and data on
 | imm[13:2] / imm[14:3] || 00000    | 011   | rd(dst) | 0001011 | alci.d      |
 | 0000000   | 00000    | rs1(src) | 100   | rd(dst) | 0001011 | qsz         |
 | imm[12\|10:5] | rs2 (src)| rs1 (src) | 111 | imm[4:1\|11] | 0001011 | bso |
-| 0111111   | rs2(ix)  | rs1(ref) | 000  | rd(dst) | 1110011 | dtp         |
+| 0111111   | rs2(ix)  | rs1(base) | 000  | rd(dst) | 1110011 | dtp         |
 | 1011111   | 00000    | rs1(ptr) | 000   | rd(dst) | 1110011 | itd         |
 | 1101111   | 00000    | rs1(ptr) | 000   | rd(dst) | 1110011 | btd         |
 | 1110111   | 00000    | rs1(ptr) | 000   | rd(tags) | 1110011 | lt         |
@@ -1519,27 +3232,66 @@ Since an objects flags which signify it as being readable, writeable and data on
 
 #### Header
 
-![Header](svg/objektbaukasten/header.svg)
+```{=html}
+<table class="bf">
+<colgroup><col style="width:2.4em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>30</span></span></th><th>29</th><th>28</th><th>27</th><th>26</th><th>25</th><th>24</th><th>23</th><th><span class="bits"><span>22</span><span>7</span></span></th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-green o-t o-l">gc</td><td class="t-green o-t">r</td><td class="t-green j o-t">rt</td><td class="t-green j o-t">w</td><td class="t-green j o-t">wt</td><td class="t-green j o-t">d</td><td class="t-green j o-t">s</td><td class="t-green j o-t">i</td><td class="t-green o-t">sc</td><td class="t-green o-t">c</td><td class="t-green j o-t">f</td><td class="t-green o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t o-r">1</td></tr>
+<tr><td class="t-green o-b o-l" colspan="14">λ(31:2)</td><td class="t-green o-b">0</td><td class="t-green j o-b o-r">0</td></tr>
+</tbody>
+</table>
+```
 
 #### Primitive
 
-![Primitive](svg/objektbaukasten/data.svg)
+```{=html}
+<table class="bf">
+<colgroup><col><col><col><col><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>25</span></span></th><th><span class="bits"><span>24</span><span>17</span></span></th><th><span class="bits"><span>16</span><span>9</span></span></th><th><span class="bits"><span>8</span><span>1</span></span></th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-blue o-t o-l" colspan="4">word(30:0)</td><td class="t-blue o-t o-r">0</td></tr>
+<tr><td class="t-blue o-l" colspan="2">h1(14:0)</td><td class="t-blue" colspan="2">h0(15:0)</td><td class="t-blue o-r">0</td></tr>
+<tr><td class="t-blue o-b o-l">b3</td><td class="t-blue o-b">b2</td><td class="t-blue o-b">b1</td><td class="t-blue o-b">b0</td><td class="t-blue o-b o-r">0</td></tr>
+</tbody>
+</table>
+```
 
 #### Displacement pointer (primitive)
 
-![Displacement pointer (primitive)](svg/objektbaukasten/disp_prim_ptr.svg)
+```{=html}
+<table class="bf">
+<colgroup><col><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>2</span></span></th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-purple o-t o-b o-l">ptr(31:2)</td><td class="t-purple o-t o-b">0</td><td class="t-purple j o-t o-b o-r">1</td></tr>
+</tbody>
+</table>
+```
 
 #### Displacement pointer (pointer)
 
-![Displacement pointer (pointer)](svg/objektbaukasten/disp_ptr_ptr.svg)
+```{=html}
+<table class="bf">
+<colgroup><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>3</span></span></th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-lpink o-t o-b o-l">ptr(31:3)</td><td class="t-lpink o-t o-b">0</td><td class="t-lpink j o-t o-b">1</td><td class="t-lpink j o-t o-b o-r">1</td></tr>
+</tbody>
+</table>
+```
 
 #### Ordinary pointer
 
-![Ordinary pointer](svg/objektbaukasten/pointer.svg)
-
-#### I/O-Pointer
-
-![I/O-Pointer](svg/objektbaukasten/io_ptr.svg)
+```{=html}
+<table class="bf">
+<colgroup><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>4</span></span></th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-pink o-t o-b o-l">ptr(31:4)</td><td class="t-pink o-t o-b">0</td><td class="t-pink j o-t o-b">1</td><td class="t-pink j o-t o-b">1</td><td class="t-pink j o-t o-b o-r">1</td></tr>
+</tbody>
+</table>
+```
 
 ::::
 
@@ -1547,15 +3299,69 @@ Since an objects flags which signify it as being readable, writeable and data on
 
 #### Ordinary Object
 
-![Ordinary Object](svg/objektbaukasten/ordinary_object.svg)
+```{=html}
+<table class="bf">
+<colgroup><col style="width:2.4em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>30</span></span></th><th>29</th><th>28</th><th>27</th><th>26</th><th>25</th><th>24</th><th>23</th><th><span class="bits"><span>22</span><span>7</span></span></th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-green o-t o-l">gc</td><td class="t-green o-t">r</td><td class="t-green j o-t">rt</td><td class="t-green j o-t">w</td><td class="t-green j o-t">wt</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">i</td><td class="t-green o-t">sc</td><td class="t-green o-t">c</td><td class="t-green j o-t">f</td><td class="t-green o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t o-r">1</td></tr>
+<tr><td class="t-green o-l" colspan="14">λ(31:2)</td><td class="t-green">0</td><td class="t-green j o-r">0</td></tr>
+<tr><td class="t-blue o-l" colspan="15">integer(30:0)</td><td class="t-blue o-r">0</td></tr>
+<tr><td class="t-purple o-l" colspan="14">ptr(31:2)</td><td class="t-purple">0</td><td class="t-purple j o-r">1</td></tr>
+<tr><td class="t-lpink o-l" colspan="13">ptr(31:3)</td><td class="t-lpink">0</td><td class="t-lpink j">1</td><td class="t-lpink j o-r">1</td></tr>
+<tr><td class="t-pink o-b o-l" colspan="12">ptr(31:4)</td><td class="t-pink o-b">0</td><td class="t-pink j o-b">1</td><td class="t-pink j o-b">1</td><td class="t-pink j o-b o-r">1</td></tr>
+</tbody>
+</table>
+```
 
 #### Executable object
 
-![Executable object](svg/objektbaukasten/executable_object.svg)
+```{=html}
+<table class="bf">
+<colgroup><col style="width:2.4em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>30</span></span></th><th>29</th><th>28</th><th>27</th><th>26</th><th>25</th><th>24</th><th>23</th><th><span class="bits"><span>22</span><span>7</span></span></th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-green o-t o-l">gc</td><td class="t-green o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">1</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green o-t">sc</td><td class="t-green o-t">0</td><td class="t-green j o-t">0</td><td class="t-green o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t o-r">1</td></tr>
+<tr><td class="t-green o-l" colspan="14">λ(31:2)</td><td class="t-green">0</td><td class="t-green j o-r">0</td></tr>
+<tr><td class="t-pink o-l" colspan="12">GOT</td><td class="t-pink">0</td><td class="t-pink j">1</td><td class="t-pink j">1</td><td class="t-pink j o-r">1</td></tr>
+<tr class="tall"><td class="t-yellow o-b o-l o-r" colspan="16">CODE</td></tr>
+</tbody>
+</table>
+```
 
 #### Data-only object
 
-![Data-only object](svg/objektbaukasten/data_only_object.svg)
+```{=html}
+<table class="bf">
+<colgroup><col style="width:2.4em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.79em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>30</span></span></th><th>29</th><th>28</th><th>27</th><th>26</th><th>25</th><th>24</th><th>23</th><th><span class="bits"><span>22</span><span>7</span></span></th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-green o-t o-l">gc</td><td class="t-green o-t">r</td><td class="t-green j o-t">rt</td><td class="t-green j o-t">w</td><td class="t-green j o-t">wt</td><td class="t-green j o-t">1</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green o-t">sc</td><td class="t-green o-t">0</td><td class="t-green j o-t">0</td><td class="t-green o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t o-r">1</td></tr>
+<tr><td class="t-green o-l" colspan="14">λ(31:2)</td><td class="t-green">0</td><td class="t-green j o-r">0</td></tr>
+<tr><td class="t-cyan o-l o-r" colspan="16">integer(31:0)</td></tr>
+<tr><td class="t-cyan o-l o-r" colspan="16">...</td></tr>
+<tr><td class="t-cyan o-b o-l o-r" colspan="16">integer(31:0)</td></tr>
+</tbody>
+</table>
+```
+
+#### Sanctuary object
+
+```{=html}
+<table class="bf">
+<colgroup><col style="width:2.4em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"><col style="width:1.2em"></colgroup>
+<thead><tr><th><span class="bits"><span>31</span><span>30</span></span></th><th>29</th><th>28</th><th>27</th><th>26</th><th>25</th><th>24</th><th>23</th><th><span class="bits"><span>22</span><span>7</span></span></th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead>
+<tbody>
+<tr><td class="t-green o-t o-l">gc</td><td class="t-green o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">0</td><td class="t-green j o-t">1</td><td class="t-green j o-t">0</td><td class="t-green o-t">sc</td><td class="t-green o-t">0</td><td class="t-green j o-t">0</td><td class="t-green o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t">1</td><td class="t-green j o-t o-r">1</td></tr>
+<tr><td class="t-green o-l" colspan="14">λ(31:2)</td><td class="t-green">0</td><td class="t-green j o-r">0</td></tr>
+<tr><td class="t-white o-l o-r" colspan="16">free</td></tr>
+<tr><td class="t-white o-l o-r" colspan="16">...</td></tr>
+<tr><td class="t-cyan o-l o-r" colspan="16">integer(31:0)</td></tr>
+<tr><td class="t-pink o-l" colspan="12">ptr(31:4)</td><td class="t-pink">0</td><td class="t-pink j">1</td><td class="t-pink j">1</td><td class="t-pink j o-r">1</td></tr>
+<tr><td class="t-cyan o-b o-l o-r" colspan="16">index(31:0)</td></tr>
+</tbody>
+</table>
+```
 
 ::::
 
@@ -1601,46 +3407,55 @@ Since an objects flags which signify it as being readable, writeable and data on
 
 ## Instructions in a sample pipeline {#t_instr_in_pipe}
 
-This table shows how a pipeline backend implementing the RISC-ViO architecture may look like.
-For this, the fields of the content to be written to a register is shown in the EXecute, MEmory and the new ATtribute stage.
+::: figure
+![The example pipeline](svg/pipeline.svg)
+
+The example pipeline: fetch with the instruction cache, decode, execute, memory with attribute cache, data cache, SAD and frame clearing, and the boxing stage with the sanctuary cache
+:::
+
+This table shows how a pipeline backend implementing the RISC-ViO architecture may look like, following the pipeline drawn above.
+For this, the fields of the content to be written to a register are shown in the execute (EX), memory (ME) and boxing (BX) stages.
 Also, for each stage the units which are active in this stage for the given instruction are listed. A result field value of 'pass' means that this pipeline stage will only pass along the value of rd from the prior stage while '~' means that rd is invalid and this instruction will not write anything to the register file.
 The table lists the load and store instructions of RV32. On RV64, *ld* and *sd* behave like *lw* and *sw* in this table, while *lw*, *lwu* and *sw* behave like the sub-element loads and stores (*lb*/*sb* etc.).
 
-|                            ||||| Fields and Actions by Stages ||||||||
-|                            | register file indices |||       | EX                           || ME                   || AT first pass          || AT second pass ||
-| Instruction                | rs1                   | rs2  | rd             | imm   | Actions                      | Results                                                    | Actions              | Results                          | Actions                | Results                         | Actions        | Results    |
-| :------------------------- | :-------------------- | :--- | :------------- | :---- | :--------------------------- | :--------------------------------------------------------- | :------------------- | :------------------------------- | :--------------------- | :------------------------------ | :------------- | :--------- |
-| lui                        | zero                  | zero | rd             | imm20 | ALU: add                     | rd: (T:prim, P:0, I:val, L:0, H:0)                         |                      | pass                             |                        | pass                            |                | pass       |
-| auipc                      | zero                  | zero | rd             | imm20 | ALU: add                     | rd: (T:ptr, P:pc.ptr, I:val, L:pc.l, H:pc.hdr)             |                      | pass                             |                        | pass                            |                | pass       |
-| jal                        | zero                  | zero | rd             | imm20 |                              | rd: (T:ptr, P:pc.ptr, I:pc.ix, L:pc.l, H:pc.hdr)           |                      | pass                             |                        | pass                            |                | pass       |
-| jalr                       | rs1                   | zero | rd<sup>2</sup> | imm12 | DBU: b_tgt                   | rd: (T:ptr, P:pc.ptr, I:pc.ix, L:pc.l, H:pc.hdr)<sup>2</sup> |                      | pass                             |                        | pass                            |                | pass       |
-| bcc                        | rs1                   | rs2  | zero           | disp  | ALU: comp DBU: (b_tgt)       | ~                                                          |                      | ~                                |                        | ~                               |                | ~          |
-| arithi (any arith./logic op) | rs1                   | zero | rd             | imm12 | ALU: op=imm12 X rs1          | rd: (T:rs1.T, P:rs1.P, I:val, L:rs1.L, H:rs1.H)            |                      | pass                             |                        | pass                            |                | pass       |
-| arithr (any arith./logic op) | rs1                   | rs2  | rd             | none  | ALU: op=rs2 X rs1            | rd: (T:val, P:val, I:val, L:val, H:val)<sup>1</sup>        |                      | pass                             |                        | pass                            |                | pass       |
-| lb/lbu/lh/lhu              | rs1                   | zero | rd             | imm12 | AGU: addr                    | daddr                                                      | DC: lb/lbu/lh/lhu    | rd:(T:prim, P:0, I:val, H:0, L:0) |                        | pass                            |                | pass       |
-| sb/sh<sup>3</sup>          | rs1                   | rs2  | zero           | imm12 | AGU: addr                    | daddr                                                      | DC: sb/sh            | ~                                |                        | ~                               |                | ~          |
-| sb/sh<sup>4</sup>          | rs1                   | rs2  | zero           | imm12 | AGU: addr                    | daddr                                                      | DC: sw DU: alc_data  | caddr, six (sptr, aaddr)         | AC: sw (SA: alloc)     | ~                               |                | ~          |
-| lw (primitive<sup>3</sup>) | rs1                   | zero | rd             | imm12 | AGU: addr                    | daddr                                                      | DC: load             | rd:(T:prim, P:0, I: val, H:0, L:0) |                        | pass                            |                | pass       |
-| lw (primitive<sup>4</sup>) | rs1                   | zero | rd             | imm12 | AGU: addr                    | daddr                                                      | DC: load             | aaddr                            | AC: lw                 | rd: (T:prim, P:0, I:val, L:0, H:0) |                | pass       |
-| lw pointer<sup>5</sup>     | rs1                   | zero | rd             | imm12 | AGU: addr                    | daddr                                                      | DC: load             | rd:(T:ptr, P:val, I:0, H:hdr, L:l) |                        | pass                            |                | pass       |
-| lw pointer<sup>6</sup>     | rs1                   | zero | rd             | imm12 | AGU: addr                    | daddr                                                      | DC: load             | rd:(T:ptr, P:val)                | AC: lw                 | rd: ix_val                      | AC: lw         | rd: l, hdr |
-| sw (primitive<sup>3</sup>) | rs1                   | rs2  | zero           | imm12 | AGU: addr                    | daddr                                                      | DC: sw               | ~                                |                        | ~                               |                | ~          |
-| sw (primitive<sup>4</sup>) | rs1                   | rs2  | zero           | imm12 | AGU: addr                    | daddr                                                      | DC: sw, DU: alc_sadp | caddr, six (sptr, aaddr)         | AC: sw (SA: alloc)     | ~                               |                | ~          |
-| sw pointer<sup>5</sup>     | rs1                   | rs2  | zero           | imm12 | AGU: addr                    | daddr                                                      | DC: sw               | ~                                |                        | ~                               |                | ~          |
-| sw pointer<sup>6</sup>     | rs1                   | rs2  | zero           | imm12 | AGU: addr                    | daddr                                                      | DC: sw DU: alc_sadd  | caddr, six (sptr, aaddr)         | AC: sw (SA: alloc)     | ~                               |                | ~          |
-| alc                        | sp                    | rs2  | rd             | none  | AGU: addr                    | rd: (T:ptr, P:val, I:0, L: val, H:val), aaddr,caddr        |                      | pass                             | AC: sw [object header] | pass                            |                | pass       |
-| alci                       | sp                    | zero | rd             | imm12 | AGU: addr                    | rd: (T:ptr, P:val, I:0, L: val, H:val), aaddr,caddr        |                      | pass                             | AC: sw [object header] | pass                            |                | pass       |
-| alc.d                      | zero                  | rs2  | rd             | none  | AGU: addr                    | rd: (T:ptr, P:val, I:0, L: val, H:val), aaddr,caddr        |                      | pass                             | AC: sw [object header] | pass                            |                | pass       |
-| alci.d                     | zero                  | zero | rd             | imm12 | AGU: addr                    | rd: (T:ptr, P:val, I:0, L: val, H:val), aaddr,caddr        |                      | pass                             | AC: sw [object header] | pass                            |                | pass       |
-| qsz                        | rs1                   | zero | rd             | none  | PGU: rd                      | rd: (T:prim, P:0, I:val, L:0, H:0)                         |                      | pass                             |                        | pass                            |                | pass       |
-| bso                        | rs1                   | rs2  | zero           | disp  | ALU: comp DBU: (b_tgt)       | ~                                                          |                      | ~                                |                        | ~                               |                | ~          |
-| dtp                        | rs1                   | rs2  | rd             | none  | AGU: addr                    | rd: (T:ptr, P:val, I:val), caddr                           |                      | pass                             | AC: lw [object header] | rd: (L:val, H:val)              |                | pass       |
-| btd                        | rs1                   | zero | rd             | none  | PGU: rd                      | rd: (T:prim, P:0, I:val, L:0, H:0)                         |                      | pass                             |                        | pass                            |                | pass       |
-| itd                        | rs1                   | zero | rd             | none  | PGU: rd                      | rd: (T:prim, P:0, I:val, L:0, H:0)                         |                      | pass                             |                        | pass                            |                | pass       |
-| sep                        | rs1                   | zero | rd             | none  | PGU: rd                      | rd: (T:prim, P:0, I:val, L:0, H:0)                         |                      | pass                             |                        | pass                            |                | pass       |
-| lt                         | rs1                   | zero | rd             | none  | PGU: rd                      | rd: (T:prim, P:0, I:val, L:0, H:0)                         |                      | pass                             |                        | pass                            |                | pass       |
-| st                         | rs1                   | rs2  | zero           | none  | AGU: addr                    | aaddr                                                      |                      | ~                                | AC: sw [object header] | ~                               |                | ~          |
-| clr                        | rs1                   | zero | zero           | none  | AGU: addr                    | daddr                                                      | DC: sw               | ~                                |                        | ~                               |                | ~          |
+|                              ||||| Fields and Actions by Stages ||||||
+|                              | register file indices |||       | EX                       || ME                                     || BX                     ||
+| Instruction                  | rs1  | rs2  | rd             | imm   | Actions                  | Results                                    | Actions                                | Results                         | Actions                | Results                         |
+| :--------------------------- | :--- | :--- | :------------- | :---- | :----------------------- | :----------------------------------------- | :------------------------------------- | :------------------------------ | :--------------------- | :------------------------------ |
+| lui                          | zero | zero | rd             | imm20 | ALU: add                 | rd: (T:prim, P:0, I:val)                   |                                        | pass                            |                        | pass                            |
+| auipc                        | zero | zero | rd             | imm20 | ALU: add                 | rd: (T:ptr, P:pc.ptr, I:val)               |                                        | pass                            |                        | pass                            |
+| jal                          | zero | zero | rd             | imm20 |                          | rd: (T:ptr, P:pc.ptr, I:pc.ix)             |                                        | pass                            |                        | pass                            |
+| jalr                         | rs1  | zero | rd<sup>2</sup> | imm12 | DBU: b_tgt               | rd: (T:ptr, P:pc.ptr, I:pc.ix)<sup>2</sup> |                                        | pass                            |                        | pass                            |
+| bcc                          | rs1  | rs2  | zero           | disp  | ALU: comp DBU: (b_tgt)   | ~                                          |                                        | ~                               |                        | ~                               |
+| arithi (any arith./logic op) | rs1  | zero | rd             | imm12 | ALU: op=imm12 X rs1      | rd: (T:rs1.T, P:rs1.P, I:val)              |                                        | pass                            |                        | pass                            |
+| arithr (any arith./logic op) | rs1  | rs2  | rd             | none  | ALU: op=rs2 X rs1        | rd: (T:val, P:val, I:val)<sup>1</sup>      |                                        | pass                            |                        | pass                            |
+| lb/lbu/lh/lhu                | rs1  | zero | rd             | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: lb/lbu/lh/lhu            | rd: (T:prim, P:0, I:val)        |                        | pass                            |
+| sb/sh<sup>3</sup>            | rs1  | rs2  | zero           | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: sb/sh                    | ~                               |                        | ~                               |
+| sb/sh<sup>4</sup>            | rs1  | rs2  | zero           | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: sw [msad] SAD: alloc<sup>8</sup> | saddr                   | SC: sw                 | ~                               |
+| lw (primitive<sup>3</sup>)   | rs1  | zero | rd             | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: lw                       | rd: (T:prim, P:0, I:val)        |                        | pass                            |
+| lw (primitive<sup>4</sup>)   | rs1  | zero | rd             | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: lw                       | saddr                           | SC: lw                 | rd: (T:prim, P:0, I:val)        |
+| lw pointer<sup>5</sup>       | rs1  | zero | rd             | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: lw                       | rd: (T:ptr, P:val, I:0)         |                        | pass                            |
+| lw pointer<sup>6</sup>       | rs1  | zero | rd             | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: lw                       | saddr                           | SC: ld [base, index]   | rd: (T:ptr, P:val, I:val)       |
+| lw ra (ra slot)<sup>7</sup>  | sp   | zero | ra             | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: lw                       | rd: (T:ptr, P:pc.ptr, I:val)    |                        | pass                            |
+| lw sp, 0(sp)                 | sp   | zero | sp             | 0     | AGU: addr MPRG: rs1<sup>9</sup> | daddr, aaddr                        | AC: check DC: lw                       | rd: (T:ptr, P:val, I:0)         |                        | pass                            |
+| sw (primitive<sup>3</sup>)   | rs1  | rs2  | zero           | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: sw                       | ~                               |                        | ~                               |
+| sw (primitive<sup>4</sup>)   | rs1  | rs2  | zero           | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: sw [msad] SAD: alloc<sup>8</sup> | saddr                   | SC: sw                 | ~                               |
+| sw pointer<sup>5</sup>       | rs1  | rs2  | zero           | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: sw                       | ~                               |                        | ~                               |
+| sw pointer<sup>6</sup>       | rs1  | rs2  | zero           | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: sw [msad] SAD: alloc<sup>8</sup> | saddr                   | SC: sd [base, index]   | ~                               |
+| sw ra (ra slot)<sup>7</sup>  | sp   | ra   | zero           | imm12 | AGU: addr                | daddr, aaddr                               | AC: check DC: sw [ra.ix]               | ~                               |                        | ~                               |
+| alc                          | sp   | rs2  | rd             | none  | PGU: alloc               | rd: (T:ptr, P:val, I:0), aaddr             | AC: sw [object header]                 | pass                            |                        | pass                            |
+| alci                         | sp   | zero | rd             | imm12 | PGU: alloc               | rd: (T:ptr, P:val, I:0), aaddr             | AC: sw [object header]                 | pass                            |                        | pass                            |
+| alc.d                        | zero | rs2  | rd             | none  | PGU: alloc               | rd: (T:ptr, P:val, I:0), aaddr             | AC: sw [object header]                 | pass                            |                        | pass                            |
+| alci.d                       | zero | zero | rd             | imm12 | PGU: alloc               | rd: (T:ptr, P:val, I:0), aaddr             | AC: sw [object header]                 | pass                            |                        | pass                            |
+| qsz                          | rs1  | zero | rd             | none  | AGU: base                | aaddr                                      | AC: lr [length]                        | rd: (T:prim, P:0, I:val)        |                        | pass                            |
+| bso                          | rs1  | rs2  | zero           | disp  | ALU: comp DBU: (b_tgt)   | ~                                          |                                        | ~                               |                        | ~                               |
+| dtp                          | rs1  | rs2  | rd             | none  | PGU: rd                  | rd: (T:ptr, P:rs1, I:rs2)                  |                                        | pass                            |                        | pass                            |
+| btd                          | rs1  | zero | rd             | none  | PGU: rd                  | rd: (T:prim, P:0, I:val)                   |                                        | pass                            |                        | pass                            |
+| itd                          | rs1  | zero | rd             | none  | PGU: rd                  | rd: (T:prim, P:0, I:val)                   |                                        | pass                            |                        | pass                            |
+| sep                          | rs1  | zero | rd             | none  | PGU: rd                  | rd: (T:prim, P:0, I:val)                   |                                        | pass                            |                        | pass                            |
+| lt                           | rs1  | zero | rd             | none  | AGU: base                | aaddr                                      | AC: lr [tags]                          | rd: (T:prim, P:0, I:val)        |                        | pass                            |
+| st                           | rs1  | rs2  | zero           | none  | AGU: base                | aaddr                                      | AC: sw [tags]                          | ~                               |                        | ~                               |
+| clr                          | rs1  | zero | zero           | none  | AGU: addr                | daddr                                      | DC: sw                                 | ~                               |                        | ~                               |
 
 Abbreviations used in the table:
 
@@ -1649,29 +3464,26 @@ Abbreviations used in the table:
 :::: column
 
 - daddr: data cache address
-- aaddr: attribute cache address
-- caddr: malc current address
-- six: sanctuary slot index
-- sptr: sanctuary object pointer
-
-::::
-
-:::: column
-
+- aaddr: base address of the object, for the attribute cache
+- saddr: sanctuary slot address, taken from *msad*
 - T: tag (prim=primitive, ptr=pointer)
-- P: pointer value
+- P: pointer base
 - I: pointer index or primitive value
-- L: object length
-- H: object header
-- DU: displacement unit (manages displacement to sanctuary objects)
-- SA: sanctuary allocator
 
 ::::
 
 :::: column
 
-- DC: data cache
-- AC: attribute cache
+- AC: attribute cache (ME)
+- DC: data cache (ME)
+- SAD: sanctuary allocation and displacement (ME)
+- SC: sanctuary cache (BX)
+- MPRG: boundary of the memory cleared by FrmClr
+
+::::
+
+:::: column
+
 - AGU: address generation unit
 - ALU: arithmetic logic unit
 - DBU: dynamic branch unit
@@ -1682,12 +3494,15 @@ Abbreviations used in the table:
 :::::
 
 ::: notes
-1. The values of T, P, L and H are dependent on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the [pointers and primitives](#data_vs_pointers) section.
+1. The values of T and P are dependent on both the values of rs1, rs2 as well as the given operation, following the rule outlined in the [pointers and primitives](#data_vs_pointers) section.
 2. For the ret variant of jalr, the target index of rd used for the writeback into the register file is ra while the target value is only the color bit in the index field with everything else being zero.
 3. For bit XLEN-1 = bit XLEN-2
 4. For bit XLEN-1 ≠ bit XLEN-2
 5. For index = 0
 6. For index ≠ 0
+7. For a return address into the executable object the program counter references (sw: ra.ptr = pc.ptr; lw: the ra slot holds only an index)
+8. If the current sanctuary object is full, the SAD allocates a new one. The pipeline stalls while the attribute cache writes its header, and the access loops back through the memory stage.
+9. MPRG is reset to the old value of *sp*, read from rs1 in the decode stage ([frame clearing](#frame_clearing)).
 :::
 
 ::::::
@@ -1761,7 +3576,7 @@ Directly after reset, the program counter is not a pointer yet. In this raw mode
 The jump of step 4 may for example look like this on RV32, with its target index being a constant:
 
 ```asm
-0x0.0x4:  dtp     t0, zero, zero  # pointer to the code object at address zero (reference word 0)
+0x0.0x4:  dtp     t0, zero, zero  # pointer to the code object at address zero (base address 0)
 0x0.0x8:  jalr    zero, t0, 12    # jump in there, to index 12, the instruction just after this jalr
 ```
 
@@ -1792,6 +3607,7 @@ The standard services use the service numbers of Linux on RISC-V so they are eas
 | type query   | 0x7a68   | *a0* pointer                       | normalized flags of the referenced object, 0 for a primitive  |
 | identity number | 0x7a69  | *a0* pointer                       | identity number of the referenced object, 0 for a primitive   |
 | weak cell    | 0x7a6b   | *a0* size in bytes                 | pointer to a new weak cell or −errno                          |
+| weak notify  | 0x7a6e   | *a0* weak cell, *a1* weak reference, *a2* function | 0 or −errno                                   |
 
 The word compare service allows *memcmp* to determine the byte order of two differing words without trapping on pointers, since user code can neither load single bytes of a pointer nor tell a pointer from a primitive.
 The type query service gives user code access to the kind and permissions of an object, which only *lt* can read. Its result is normalized and never contains the raw tags.
@@ -1809,21 +3625,32 @@ A runtime orders two different objects by comparing their identity numbers, and 
 
 The weak cell service allocates a new [weak cell](#isa_tags) of the given size, since user code cannot set the 'i' bit itself.
 
+Notifications about cleared weak pointers are a task of the system management software. The weak notify service registers a weak reference of a weak cell together with a notification function.
+The system management software keeps these registrations in a notification list, an ordinary object holding pointers to the registered weak cells and to their notification functions, which it reallocates every so often to drop handled entries and to make room for new ones.
+Since the list holds the weak cells themselves strongly, they stay alive while they are registered.
+Every so often, a task of the system management software walks the list. If it finds the primitive value 0 as base of a registered weak reference ([runtime functions](#runtime_functions)), the referenced object has been collected, and the task invokes the corresponding notification function in the program.
+
+<!-- FIXME: open points of notifications:
+     * How the system management software enters the program to invoke a notification function and how the function
+       returns, e.g. like a signal handler.
+     * How often the task runs. Its cost grows with the number of registrations.
+     * A weak reference cleared by the program itself looks collected as well, unless the program unregisters it first. -->
+
 The trap handler serving these requests has to save and restore registers using XLEN wide loads and stores, since they may hold pointers.
 After serving a request, the saved program counter is advanced by 4 and all registers except *a0* are restored unchanged, as compilers rely on this around every *ecall*.
 Services receiving a buffer check that the argument is a pointer and that the whole range lies inside its object before accessing it.
 The system management software itself does not use these services, since an *ecall* would trap into itself. Its own library functions access the hardware directly instead.
 
-<!-- OPEN FOR DEBATE: lightweight services. Short services like the type query or the identity number service could be
-     treated like normal function calls instead of saving and restoring the whole register state. They would follow the
-     calling convention: the callee-saved registers (s0 to s11) as well as sp, ra, gp and the colours stay unchanged,
-     while the caller-saved registers may change. Such a service is short enough to run without a frame of its own, so
-     its trap handler saves nothing beyond the registers it actually needs from the callee-saved set, often none.
-     Issues:
-     * Compilers have to treat an ecall to such a service like a call, i.e. as clobbering the caller-saved registers. The
-       set of lightweight services and the registers they may change become part of the ABI.
-     * Treating these services like calls also means treating them like calls into another executable object: a
-       caller-saved register the service has used must not be left holding a value of the system management software,
+<!-- OPEN FOR DEBATE: lightweight services. Short services like the type query, the identity number or the weak cell
+     services could be treated like normal function calls instead of saving and restoring the whole register state: the
+     callee-saved registers (s0 to s11) as well as sp, ra, gp and the colours stay unchanged, while the caller-saved
+     registers may change. Such a service is short enough to run without a frame of its own.
+     Programs reach these services only through the runtime functions (see runtime functions), which execute the ecall.
+     Compiled code calls these functions like any other function and already expects the caller-saved registers to
+     change, so neither the compiler nor the ABI has to know which registers an ecall changes. The reduced guarantee is
+     a contract between the runtime functions and the system management software only.
+     Remaining issues:
+     * A caller-saved register the service has used must not be left holding a value of the system management software,
        like its GOT pointer or a pointer to the object keeping the identity counter. The service clears such registers
        instead of restoring them, which is still cheaper than saving and restoring them.
      * The trap handler has to recognise a lightweight service (xcause and a7) before it saves anything, so its entry
@@ -1840,17 +3667,45 @@ The system management software itself does not use these services, since an *eca
        objects alive at once. Identity numbers used as hash values must never change, so this is not possible for them.
      * Every hash table lookup with an object as key needs the identity number of the key, i.e. an ecall. Making lt
        usable in user mode (see the OPEN FOR DEBATE note at lt) would leave the ecall to the first request of an object only.
-     * The service number of the weak cell service is a placeholder. -->
+     * The service numbers of the weak cell and weak notify services are placeholders. -->
 
 <!-- FIXME: the word compare service is still a proposal, and the bit layout of the normalized type query flags
-     (readable, writable, data only, executable, weak cell, valid) has to be fixed here. -->
+     (readable, writable, read-through, write-through, data only, executable, weak cell, valid) has to be fixed here. -->
+
+## Runtime functions {#runtime_functions}
+
+Programs reach the RISC-ViO specific services and weak cells through functions of the compiler runtime, the compiler-rt builtins, which the compiler driver links into every image.
+The compiler and the linker therefore always know these functions, and compiled code calls them like any other function. Since they are linked statically, these calls stay inside the executable object of the caller.
+
+| Function                         | Purpose                                                                                        |
+| :------------------------------- | :--------------------------------------------------------------------------------------------- |
+| `__vio_type(p)`                  | type query service                                                                             |
+| `__vio_identity(p)`              | identity number service                                                                        |
+| `__vio_weak_alloc(n)`            | allocates a weak cell holding *n* weak references, using the weak cell service                 |
+| `__vio_weak_store(cell, i, p)`   | stores the pointer *p* as weak reference *i* of a weak cell                                    |
+| `__vio_weak_load(cell, i)`       | loads weak reference *i* of a weak cell, a null pointer once its object has been collected     |
+| `__vio_weak_notify(cell, i, fn)` | registers the notification function *fn* for weak reference *i*, using the weak notify service |
+
+A weak reference occupies two elements of a weak cell: the pointer to the referenced object with index 0, called its base, and the index of the original pointer as a primitive.
+Since pointers with index 0 are never displaced in the example implementation, the garbage collector only ever finds plain pointers in weak cells ([sanctuaries](#sancts)).
+Splitting and joining a pointer needs no privileged instruction. A logic operation with a primitive only changes the index of a pointer, so *andi* with 0 yields its base, and subtracting the base from the pointer yields its index:
+
+```asm
+    andi    t0, a2, 0       # a2 = obj.x  ->  t0 = obj.0, the base
+    sub     t1, a2, t0      # t1 = x, the index as a primitive
+    add     a0, t0, t1      # a0 = obj.x again
+```
+
+`__vio_weak_store` stores the base and the index, `__vio_weak_load` loads both and joins them again. It loads the base first, so the object stays alive once the base is in a register.
+If the garbage collector has replaced the base by the primitive value 0, `__vio_weak_load` returns a null pointer.
+
+<!-- FIXME: the function names, their exact signatures and the service numbers are proposals. -->
 
 ## Implementation notes {#implemenation_notes_chap}
 
 The provided behaviour of the example of an RISC-ViO implementation can be further specified. This list provides an incomplete list of recommendations for such an implementation:
 
-1. The dtp instruction should only load the header of a pointer if a valid pointer is specified via the rs1 register. Otherwise, the header and length fields in the pipeline should be set to 0.
-2. A concurrent garbage collector has to make sure that a pointer loaded from a weak cell during a collection cycle keeps its object alive, e.g. by marking the object on such a load.
+1. A concurrent garbage collector has to make sure that a pointer loaded from a weak cell during a collection cycle keeps its object alive, e.g. by marking the object on such a load.
 
 ## Glossary and abbreviations {#abbrevs_gloss}
 
@@ -1860,9 +3715,9 @@ The provided behaviour of the example of an RISC-ViO implementation can be furth
 4. tag - bits making up a kind information
 5. flag - a bit for a singular permission
 6. primitive - register or memory content which is not a pointer, like a number or a character
-7. pointer - reference to an object or I/O device, made up of a reference field and an index
-8. kind - the purpose of an object or I/O device as given by its tags (ordinary, data only, executable or io)
-9. permission - right to read or write an object or I/O device, given by the 'r' and 'w' bits of its tags
+7. pointer - reference to an object, made up of a reference field and an index
+8. kind - the purpose of an object as given by its tags (ordinary, data only or executable)
+9. permission - right to read or write an object, given by the 'r' and 'w' bits of its tags
 10. frame (object) - object holding the local data of a function, taking the place of a stack frame in conventional architectures
 11. colour - ownership information held by *sp* and *ra* in order to protect frame objects from foreign accesses
 12. sanctuary (object) - implementation specific object holding displaced primitives and pointers
@@ -1871,5 +3726,25 @@ The provided behaviour of the example of an RISC-ViO implementation can be furth
 15. GOT - global offset table, an ordinary object holding the pointers a program needs to reach functions and data outside of its own code
 16. GOT slot - the first XLEN/8 bytes of an executable object, holding the pointer to the GOT of its program
 17. weak cell - ordinary object with the 'i' bit set, whose pointers do not keep the objects they reference alive and are replaced by the primitive value 0 once these objects have been collected
-18. reference word - primitive representation of the reference field of a pointer used by *btd* and *dtp*, with bit 0 telling pointers to objects and pointers to I/O devices apart
-19. identity number - number kept in the scratch field of the tags of an object, assigned by the system management software on request and used by runtimes to order and hash objects by identity
+18. identity number - number kept in the scratch field of the tags of an object, assigned by the system management software on request and used by runtimes to order and hash objects by identity
+19. read-through, write-through - tag bits 'rt' and 'wt' of an object, stating that its loads, respectively its stores, always reach the memory or device behind it instead of a cache
+20. runtime functions - compiler-rt functions through which programs reach the RISC-ViO specific services and weak cells
+
+# Changelog {#changelog -}
+
+## V0.4.0
+
+- **Global pointer.** *gp* is an ordinary register. Every executable object holds the pointer to the GOT of its program in a GOT slot at index 0, which only code running in that object can load. The *GPAccessException* is gone and its xcause 25 is reserved.
+- **Executable objects.** Instructions start at index XLEN/8 for every kind of object. Jumps below that index or beyond the end raise a *JumpIndexOutBoundsException*.
+- **Jumps.** *jalr* requires a pointer to an executable object. A jump through a primitive, e.g. through a null function pointer, raises an *IncompatibleTypeException*.
+- **Object tags.** New layout with the read-through bit 'rt', the write-through bit 'wt', the weak bit 'i' and 16 scratch bits in bits 23:8. The 'io' kind is gone. Data only objects always have at least one permission bit set.
+- **I/O devices.** Devices are memory mapped into data only objects. Pointers to I/O devices and device numbers are gone; *btd* and *dtp* keep working on base addresses.
+- **Weak cells.** Ordinary objects with the 'i' bit set hold weak pointers, which become the primitive value 0 once their object has been collected.
+- **Other instructions.** *lui* is explicitly unchanged. *bso* remains the only identity check, *sso* and *algn* are removed.
+- **Calling convention and toolchain.** No register may hold a pointer into the GOT at a call, tail call or return that may leave the executable object. GOT calls take four instructions and are relaxed by the linker. The GOT is no longer limited to 511 slots.
+- **Supervisor services and runtime functions.** New identity number, weak cell and weak notify services, reached through runtime functions of compiler-rt.
+- **Design goals.** New goal 6, *make the common case fast*.
+- **Example implementation.** New header layout with the header identifier 11111. Return addresses into the current executable object are saved as their index only. *jalr* needs a single pipeline step. The register file treats *gp* like any other register and holds no attributes of objects any more, only the colour of *sp*. The attribute cache moved into the memory stage, where it checks bounds and rights before the data cache access, and the attribute stage became the boxing stage with the sanctuary cache. New are the SAD, the frame clearing engine FrmClr with MPRG, MLIM next to MALC and MSAD, and an instruction cache. The sample pipeline section shows the pipeline as a figure, and its table follows it.
+- **Document.** The bit-field and object figures are tables now, the memory views, the pointer arithmetic and the register file inline SVGs, all drawn in light and dark mode. The memory views compare RISC-ViO with conventional architectures, CHERI and memory tagging, and the arithmetic figures show the current rules for pointers. The object overview, the colour transitions, the instruction streams and the heap figures are inline SVGs in the same style, and the object tags table is coloured like the header figure. This changelog was added.
+
+<!-- TODO: add the changes of the earlier versions below. -->

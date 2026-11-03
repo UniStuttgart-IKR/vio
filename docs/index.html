@@ -202,12 +202,15 @@ section.imp :is(h1, h2, h3, h4, h5, h6, em), .imp em, span.imp, em.imp { color: 
 
 /* figures */
 #doc figure { max-width: var(--wide); margin: 2rem auto 2.4rem; text-align: center; }
-.fig-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 1.25rem 1rem; }
+/* items stretch to the tallest one and keep their sub-captions at the bottom, so these line up */
+.fig-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 1.25rem 1rem; }
 /* several images share the row and shrink a little before wrapping */
-.fig-item { display: flex; flex-direction: column; align-items: center; flex: 1 1 0; min-width: min(100%, 11rem); max-width: 100%; }
+.fig-item { display: flex; flex-direction: column; justify-content: space-between; align-items: center; flex: 1 1 0; min-width: min(100%, 11rem); max-width: 100%; }
 .fig-row > .fig-item:only-child { flex-basis: 100%; }
 .fig-row img { object-fit: contain; }
 .subcaption { display: block; margin-top: .55rem; font: .8125rem/1.4 var(--mono); }
+/* inline SVG figures scale down like images */
+#doc figure svg { max-width: 100%; height: auto; }
 #doc figcaption { max-width: var(--measure); margin: .9rem auto 0; font: .8125rem/1.5 var(--mono); text-wrap: balance; }
 .fignum { font-weight: 700; margin-right: .4em; }
 
@@ -234,6 +237,74 @@ section.imp :is(h1, h2, h3, h4, h5, h6, em), .imp em, span.imp, em.imp { color: 
 #doc .encoding th.bitrange { font-weight: 500; font-size: .75rem; padding-bottom: .3em; }
 .bits { display: flex; justify-content: space-between; gap: .5em; }
 #doc .encoding td { padding-block: .5em; }
+/* encoding tables drawn as tiles like the bit-field figures, e.g. ::: {.encoding .tiles .t-green} */
+#doc .encoding.tiles tbody td { background: var(--tile); color: #1a1a1a; font-weight: 700; border: 1px solid #000; }
+#doc .encoding.tiles tbody tr:last-child td { border-bottom-width: 2px; }
+#doc .encoding.tiles tbody tr:first-child td { border-top-width: 2px; }
+#doc .encoding.tiles tbody td:first-child { border-left-width: 2px; }
+#doc .encoding.tiles tbody td:last-child { border-right-width: 2px; }
+@media (prefers-color-scheme: dark) {
+  #doc .encoding.tiles tbody td { background: color-mix(in srgb, var(--tile) 25%, transparent); color: var(--tile); border-color: var(--bg); }
+}
+
+/* bit-field and object figures: raw HTML tables drawn like the former generated diagrams.
+   Light: solid tiles, black lines between fields. Dark: translucent tiles, text in the tile
+   colour, lines turn into gaps in the page colour.
+   Classes: t-<colour> tile colour, j joined with the left neighbour (no line between them),
+   o-t/o-b/o-l/o-r outer edge, tall a tile four rows high, vp a tile split into a primitive and a pointer. */
+.t-green { --tile: #55ff99; }
+.t-blue { --tile: #80e5ff; }
+.t-cyan { --tile: #55ffdd; }
+.t-purple { --tile: #ccaaff; }
+.t-lpink { --tile: #ffaaee; }
+.t-pink { --tile: #ff55dd; }
+.t-yellow { --tile: #e5ff80; }
+.t-white { --tile: #ffffff; }
+.bf-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 2.5rem; }
+#doc :is(table.bf, table.bf-stack) {
+  --line: #000;
+  --vp-val: #80e5ff;
+  --vp-ptr: #ff55dd;
+  width: min(100%, 25rem); margin: 0 auto; table-layout: fixed; border-collapse: collapse;
+  font: 700 .8125rem/1.2 var(--mono);
+}
+#doc table.bf-stack { width: 8.75rem; margin: 0; }
+#doc table.bf-stack.bf-ix { width: 16.25rem; margin: 0 auto; }
+#doc :is(table.bf, table.bf-stack) td {
+  height: 2em; padding: 0 .15em; border: 1px solid var(--line);
+  background: var(--tile, transparent); color: #1a1a1a;
+  white-space: nowrap; overflow: hidden;
+}
+#doc :is(table.bf, table.bf-stack) td.j { border-left-style: hidden; }
+#doc :is(table.bf, table.bf-stack) td.o-t { border-top-width: 2px; }
+#doc :is(table.bf, table.bf-stack) td.o-b { border-bottom-width: 2px; }
+#doc :is(table.bf, table.bf-stack) td.o-l { border-left-width: 2px; }
+#doc :is(table.bf, table.bf-stack) td.o-r { border-right-width: 2px; }
+#doc table.bf tr.tall td { height: 8em; }
+#doc :is(table.bf, table.bf-stack) th { border: 0; padding: 0 .1em .3em; vertical-align: bottom; }
+#doc table.bf th { font-size: .625rem; font-weight: 400; color: var(--muted); }
+#doc table.bf-stack th { font-size: .75rem; padding: .35em .3em; vertical-align: middle; }
+#doc :is(table.bf, table.bf-stack) td.t-valptr {
+  background: linear-gradient(125deg, var(--vp-val) calc(50% - .5px), var(--line) 0 calc(50% + .5px), var(--vp-ptr) 0);
+}
+.vp { display: flex; justify-content: space-around; align-items: center; }
+/* "or" sits on the diagonal and interrupts it */
+.vp i { font: italic 400 .625rem var(--mono); padding: .1em .2em; background: linear-gradient(125deg, var(--vp-val) 50%, var(--vp-ptr) 0); }
+@media (prefers-color-scheme: dark) {
+  #doc :is(table.bf, table.bf-stack) {
+    --line: var(--bg);
+    --vp-val: color-mix(in srgb, #80e5ff 25%, var(--bg));
+    --vp-ptr: color-mix(in srgb, #ff55dd 25%, var(--bg));
+  }
+  #doc :is(table.bf, table.bf-stack) td {
+    background: color-mix(in srgb, var(--tile, transparent) 25%, transparent);
+    color: var(--tile, var(--ink));
+  }
+  #doc :is(table.bf, table.bf-stack) td.t-white { background: rgb(255 255 255 / .1); color: var(--ink); }
+  .vp { color: var(--ink); }
+  .vp > span:first-child { color: #80e5ff; }
+  .vp > span:last-child { color: #ff55dd; }
+}
 
 /* columns (two-up on screen, stacked on small screens) */
 .columns {
@@ -355,9 +426,10 @@ body.awaiting-file { padding: 0 !important; }
      [text]{.class}                  span with classes
      [^key]  /  [^key]: text         citation / reference entry
      $$ … $$   and   $ … $           maths (TeX subset) rendered as MathML
+     ```{=html}  …  ```              raw HTML block, e.g. a table or an inline <svg> (see sanitizeRawHtml)
      *text* → <em> (coloured term)   _text_ → <i> (plain italics)
 
-   Raw HTML is escaped, except comments (dropped) and a few inline tags like <sup>.
+   Other raw HTML is escaped, except comments (dropped) and a few inline tags like <sup>.
    ========================================================================== */
 const Markdown = (() => {
   'use strict';
@@ -419,6 +491,71 @@ const Markdown = (() => {
     if (isScript) return '#';
     if (url.startsWith('#') || !baseUrl) return url;
     try { return new URL(url, baseUrl).href; } catch { return url; }
+  }
+
+  /* ------------------------------------------------------------------ raw HTML blocks */
+
+  // ```{=html} blocks may hold tables and inline SVG. Everything outside these allowlists is dropped,
+  // so a Markdown file can neither run scripts nor load other resources.
+  const RAW_HTML_TAGS = new Set(('a b br caption code col colgroup div em i p small span strong sub sup '
+    + 'table tbody td tfoot th thead tr u').split(' '));
+  const RAW_SVG_TAGS = new Set(('svg g defs title desc style symbol use rect line polyline polygon path '
+    + 'circle ellipse text tspan marker linearGradient radialGradient stop clipPath').split(' '));
+  const RAW_ATTRIBUTES = new Set(('class id title lang dir role colspan rowspan span scope headers style width height '
+    + 'href xlink:href xmlns xmlns:xlink viewBox preserveAspectRatio x y x1 y1 x2 y2 cx cy r rx ry dx dy points d '
+    + 'transform fill fill-opacity fill-rule stroke stroke-width stroke-dasharray stroke-dashoffset stroke-linecap '
+    + 'stroke-linejoin stroke-opacity opacity font-family font-size font-weight font-style text-anchor '
+    + 'dominant-baseline alignment-baseline baseline-shift letter-spacing shape-rendering visibility marker-start '
+    + 'marker-mid marker-end markerWidth markerHeight markerUnits refX refY orient offset stop-color stop-opacity '
+    + 'gradientUnits gradientTransform clip-path clipPathUnits').split(' '));
+  // CSS and attribute values must not reach outside the document (url() only to #fragments)
+  const UNSAFE_VALUE = /url\(\s*(?!['"]?#)|expression\s*\(|javascript:|@import|behavior\s*:/i;
+  const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
+  let inlineSvgCount = 0;
+
+  function sanitizeRawHtml(html) {
+    const template = document.createElement('template');
+    template.innerHTML = html;
+    sanitizeChildren(template.content, null);
+    return template.innerHTML;
+  }
+
+  /** `svgId` is the id of the enclosing <svg>, if any. */
+  function sanitizeChildren(parent, svgId) {
+    for (const node of [...parent.childNodes]) {
+      if (node.nodeType === Node.TEXT_NODE) continue;
+      if (node.nodeType !== Node.ELEMENT_NODE) { node.remove(); continue; } // comments, processing instructions
+
+      const name = node.localName;
+      const isSvg = node.namespaceURI === SVG_NAMESPACE;
+      const allowed = isSvg ? RAW_SVG_TAGS.has(name) && (name !== 'style' || svgId) : RAW_HTML_TAGS.has(name);
+      if (!allowed) { node.remove(); continue; }
+      sanitizeAttributes(node);
+
+      if (name === 'style') {
+        if (UNSAFE_VALUE.test(node.textContent)) { node.remove(); continue; }
+        // a <style> inside an SVG would apply to the whole page, so its rules are nested under the SVG
+        node.textContent = `#${CSS.escape(svgId)} {\n${node.textContent}\n}`;
+        continue;
+      }
+      let id = svgId;
+      if (name === 'svg' && !svgId) {
+        node.id ||= `inline-svg-${++inlineSvgCount}`;
+        id = node.id;
+      }
+      sanitizeChildren(node, id);
+    }
+  }
+
+  function sanitizeAttributes(element) {
+    for (const { name, value } of [...element.attributes]) {
+      let safe = (RAW_ATTRIBUTES.has(name) || /^(aria|data)-[\w-]+$/.test(name)) && !UNSAFE_VALUE.test(value);
+      if (safe && (name === 'href' || name === 'xlink:href')) {
+        const target = value.trim();
+        safe = target.startsWith('#') || (element.localName === 'a' && /^(https?:|mailto:)/i.test(target));
+      }
+      if (!safe) element.removeAttribute(name);
+    }
   }
 
   /* ------------------------------------------------------------------ front matter (YAML subset) */
@@ -1276,6 +1413,7 @@ const Markdown = (() => {
       case 'heading': return renderHeading(block, context);
       case 'thematicBreak': return '<hr>';
       case 'code': {
+        if (block.language === '{=html}') return sanitizeRawHtml(block.text);
         const languageClass = block.language ? ` class="language-${escapeHtml(block.language)}"` : '';
         return `<pre><code${languageClass}>${escapeHtml(block.text)}</code></pre>`;
       }
@@ -1576,7 +1714,7 @@ const Markdown = (() => {
 
   /** Tables with many columns get smaller type and scroll sideways instead of squeezing cells. */
   function markWideTables() {
-    for (const table of page.content.querySelectorAll('table')) {
+    for (const table of page.content.querySelectorAll('table:not(.bf, .bf-stack)')) {
       const lastRow = table.rows[table.rows.length - 1];
       if (lastRow && lastRow.cells.length >= 9) table.classList.add('many-cols');
     }

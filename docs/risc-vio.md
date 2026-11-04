@@ -455,7 +455,9 @@ Assembly syntax: `sep rd, rs1`
 
 #### btd-instruction {#btd}
 
-The btd 'base to data' instruction allows for reading out a pointers base address. This primitive value is written into rd for the pointer given in rs1.
+The btd 'base to data' instruction allows for reading out a pointers reference field. This primitive value is written into rd for the pointer given in rs1.
+The reference field is returned as it is encoded in memory (see [elements](#elements)), including its low bits identifying the pointer kind: an object's base address with the trailing bits *0111*, or an I/O device number followed by the trailing bits *01111*.
+Since headers are 16-byte aligned, the base address of an object is obtained by clearing the lowest four bits.
 
 ::: encoding
 | 31:25   | 24:20 | 19:15    | 14:12 | 11:7    | 6:0     | Instruction |
@@ -487,7 +489,10 @@ The *itd* instruction may trigger the following exceptions for the given events 
 
 #### dtp-instruction {#dtp}
 
-The dtp 'data to pointer' instruction allows for the assembly of arbitrary pointers. Both the base address and the index are set according to the values in registers rs1 and rs2 respectively. The result is stored in rd.
+The dtp 'data to pointer' instruction allows for the assembly of arbitrary pointers. Both the reference field and the index are set according to the values in registers rs1 and rs2 respectively. The result is stored in rd.
+The value of rs1 is taken unchanged, including its low bits, in the same form *btd* returns: a reference field written by *btd* turns into the same pointer again.
+To create a pointer to an object at a plain address, the trailing bits *0111* have to be added to that address (e.g. `ori t0, t0, 0b111`).
+Values that do not encode a pointer, like the plain addresses held by the CSRs *malc* and *msad*, are kept just as well, so *dtp* and *btd* can be used to write and read out these CSRs.
 This way, *dtp* is also used to link a pre-existing, memory-mapped I/O device to a pointer.
 The *st* instruction is then used to set the tags of this I/O device such that they represent how the I/O device may be used (see [objects and I/O devices](#objects_devices)).
 
@@ -497,7 +502,7 @@ The *st* instruction is then used to set the tags of this I/O device such that t
 | 0111111 | rs2 (ix) | rs1 (base) | 000   | rd (dst) | 1110011 | dtp         |
 :::
 
-Assembly syntax: `dtp rd, rs1, rs2` (rs1 holds the base address, rs2 the index)
+Assembly syntax: `dtp rd, rs1, rs2` (rs1 holds the reference field, rs2 the index)
 
 The *dtp* instruction may trigger the following exceptions for the given events (xtval content):
 
